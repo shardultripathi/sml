@@ -1,0 +1,4 @@
+bool x;
+uint64_t y;
+x = x + 1;
+y=y-1;
