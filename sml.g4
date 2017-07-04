@@ -35,11 +35,10 @@ expr
 ;
 
 arithExpr
-    : Constant
-    | Ident
+    : UnaryOp? Constant
+    | UnaryOp? Ident
     | arithExpr BinaryOp arithExpr
-    | UnaryOp arithExpr
-    | '(' arithExpr ')'
+    | UnaryOp? '(' arithExpr ')'
 ;
 
 boolExpr

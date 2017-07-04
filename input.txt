@@ -1,4 +1,7 @@
-bool x;
+uint64_t x;
 uint64_t y;
-x = x + 1;
-y=y-1;
+uint64_t z;
+x = input1(5);
+y = input2(7);
+z = 5 + ~4 + 7;
+output(x<y);

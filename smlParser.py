@@ -8,48 +8,52 @@ import sys
 def serializedATN():
     with StringIO() as buf:
         buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\30")
-        buf.write("\u0085\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\u008c\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\3\2\7\2\32")
         buf.write("\n\2\f\2\16\2\35\13\2\3\3\3\3\3\3\3\3\3\3\3\3\3\3\5\3")
         buf.write("&\n\3\3\4\3\4\3\4\5\4+\n\4\3\4\3\4\3\5\3\5\3\6\3\6\3\6")
         buf.write("\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7>\n\7\3\b")
-        buf.write("\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\5\bI\n\b\3\b\3\b\3\b")
-        buf.write("\7\bN\n\b\f\b\16\bQ\13\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write("\t\3\t\3\t\3\t\3\t\3\t\5\t`\n\t\3\t\3\t\3\t\3\t\3\t\3")
-        buf.write("\t\7\th\n\t\f\t\16\tk\13\t\3\n\3\n\3\n\3\n\3\n\3\n\3\13")
-        buf.write("\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\3\13\5\13}\n")
-        buf.write("\13\3\f\3\f\3\f\3\f\3\f\3\f\3\f\2\4\16\20\r\2\4\6\b\n")
-        buf.write("\f\16\20\22\24\26\2\3\3\2\6\7\2\u008d\2\33\3\2\2\2\4%")
-        buf.write("\3\2\2\2\6*\3\2\2\2\b.\3\2\2\2\n\60\3\2\2\2\f=\3\2\2\2")
-        buf.write("\16H\3\2\2\2\20_\3\2\2\2\22l\3\2\2\2\24|\3\2\2\2\26~\3")
-        buf.write("\2\2\2\30\32\5\4\3\2\31\30\3\2\2\2\32\35\3\2\2\2\33\31")
-        buf.write("\3\2\2\2\33\34\3\2\2\2\34\3\3\2\2\2\35\33\3\2\2\2\36&")
-        buf.write("\5\6\4\2\37&\5\n\6\2 !\7\3\2\2!\"\5\2\2\2\"#\7\4\2\2#")
-        buf.write("&\3\2\2\2$&\5\26\f\2%\36\3\2\2\2%\37\3\2\2\2% \3\2\2\2")
-        buf.write("%$\3\2\2\2&\5\3\2\2\2\'(\5\b\5\2()\7\26\2\2)+\3\2\2\2")
-        buf.write("*\'\3\2\2\2*+\3\2\2\2+,\3\2\2\2,-\7\5\2\2-\7\3\2\2\2.")
-        buf.write("/\t\2\2\2/\t\3\2\2\2\60\61\7\26\2\2\61\62\7\b\2\2\62\63")
-        buf.write("\5\f\7\2\63\64\7\5\2\2\64\13\3\2\2\2\65>\5\16\b\2\66>")
-        buf.write("\5\20\t\2\67>\5\22\n\289\7\t\2\29:\5\f\7\2:;\7\n\2\2;")
-        buf.write(">\3\2\2\2<>\5\24\13\2=\65\3\2\2\2=\66\3\2\2\2=\67\3\2")
-        buf.write("\2\2=8\3\2\2\2=<\3\2\2\2>\r\3\2\2\2?@\b\b\1\2@I\7\27\2")
-        buf.write("\2AI\7\26\2\2BC\7\24\2\2CI\5\16\b\4DE\7\t\2\2EF\5\16\b")
-        buf.write("\2FG\7\n\2\2GI\3\2\2\2H?\3\2\2\2HA\3\2\2\2HB\3\2\2\2H")
-        buf.write("D\3\2\2\2IO\3\2\2\2JK\f\5\2\2KL\7\23\2\2LN\5\16\b\6MJ")
-        buf.write("\3\2\2\2NQ\3\2\2\2OM\3\2\2\2OP\3\2\2\2P\17\3\2\2\2QO\3")
-        buf.write("\2\2\2RS\b\t\1\2S`\7\26\2\2T`\7\27\2\2UV\5\16\b\2VW\7")
-        buf.write("\25\2\2WX\5\16\b\2X`\3\2\2\2YZ\7\13\2\2Z`\5\20\t\6[\\")
-        buf.write("\7\t\2\2\\]\5\20\t\2]^\7\n\2\2^`\3\2\2\2_R\3\2\2\2_T\3")
-        buf.write("\2\2\2_U\3\2\2\2_Y\3\2\2\2_[\3\2\2\2`i\3\2\2\2ab\f\5\2")
-        buf.write("\2bc\7\f\2\2ch\5\20\t\6de\f\4\2\2ef\7\r\2\2fh\5\20\t\5")
-        buf.write("ga\3\2\2\2gd\3\2\2\2hk\3\2\2\2ig\3\2\2\2ij\3\2\2\2j\21")
-        buf.write("\3\2\2\2ki\3\2\2\2lm\5\20\t\2mn\7\16\2\2no\5\f\7\2op\7")
-        buf.write("\17\2\2pq\5\f\7\2q\23\3\2\2\2rs\7\20\2\2st\7\t\2\2tu\5")
-        buf.write("\16\b\2uv\7\n\2\2v}\3\2\2\2wx\7\21\2\2xy\7\t\2\2yz\5\16")
-        buf.write("\b\2z{\7\n\2\2{}\3\2\2\2|r\3\2\2\2|w\3\2\2\2}\25\3\2\2")
-        buf.write("\2~\177\7\22\2\2\177\u0080\7\t\2\2\u0080\u0081\5\f\7\2")
-        buf.write("\u0081\u0082\7\n\2\2\u0082\u0083\7\5\2\2\u0083\27\3\2")
-        buf.write("\2\2\f\33%*=HO_gi|")
+        buf.write("\3\b\5\bB\n\b\3\b\3\b\5\bF\n\b\3\b\3\b\5\bJ\n\b\3\b\3")
+        buf.write("\b\3\b\3\b\5\bP\n\b\3\b\3\b\3\b\7\bU\n\b\f\b\16\bX\13")
+        buf.write("\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t")
+        buf.write("\5\tg\n\t\3\t\3\t\3\t\3\t\3\t\3\t\7\to\n\t\f\t\16\tr\13")
+        buf.write("\t\3\n\3\n\3\n\3\n\3\n\3\n\3\13\3\13\3\13\3\13\3\13\3")
+        buf.write("\13\3\13\3\13\3\13\3\13\5\13\u0084\n\13\3\f\3\f\3\f\3")
+        buf.write("\f\3\f\3\f\3\f\2\4\16\20\r\2\4\6\b\n\f\16\20\22\24\26")
+        buf.write("\2\3\3\2\6\7\2\u0096\2\33\3\2\2\2\4%\3\2\2\2\6*\3\2\2")
+        buf.write("\2\b.\3\2\2\2\n\60\3\2\2\2\f=\3\2\2\2\16O\3\2\2\2\20f")
+        buf.write("\3\2\2\2\22s\3\2\2\2\24\u0083\3\2\2\2\26\u0085\3\2\2\2")
+        buf.write("\30\32\5\4\3\2\31\30\3\2\2\2\32\35\3\2\2\2\33\31\3\2\2")
+        buf.write("\2\33\34\3\2\2\2\34\3\3\2\2\2\35\33\3\2\2\2\36&\5\6\4")
+        buf.write("\2\37&\5\n\6\2 !\7\3\2\2!\"\5\2\2\2\"#\7\4\2\2#&\3\2\2")
+        buf.write("\2$&\5\26\f\2%\36\3\2\2\2%\37\3\2\2\2% \3\2\2\2%$\3\2")
+        buf.write("\2\2&\5\3\2\2\2\'(\5\b\5\2()\7\26\2\2)+\3\2\2\2*\'\3\2")
+        buf.write("\2\2*+\3\2\2\2+,\3\2\2\2,-\7\5\2\2-\7\3\2\2\2./\t\2\2")
+        buf.write("\2/\t\3\2\2\2\60\61\7\26\2\2\61\62\7\b\2\2\62\63\5\f\7")
+        buf.write("\2\63\64\7\5\2\2\64\13\3\2\2\2\65>\5\16\b\2\66>\5\20\t")
+        buf.write("\2\67>\5\22\n\289\7\t\2\29:\5\f\7\2:;\7\n\2\2;>\3\2\2")
+        buf.write("\2<>\5\24\13\2=\65\3\2\2\2=\66\3\2\2\2=\67\3\2\2\2=8\3")
+        buf.write("\2\2\2=<\3\2\2\2>\r\3\2\2\2?A\b\b\1\2@B\7\24\2\2A@\3\2")
+        buf.write("\2\2AB\3\2\2\2BC\3\2\2\2CP\7\27\2\2DF\7\24\2\2ED\3\2\2")
+        buf.write("\2EF\3\2\2\2FG\3\2\2\2GP\7\26\2\2HJ\7\24\2\2IH\3\2\2\2")
+        buf.write("IJ\3\2\2\2JK\3\2\2\2KL\7\t\2\2LM\5\16\b\2MN\7\n\2\2NP")
+        buf.write("\3\2\2\2O?\3\2\2\2OE\3\2\2\2OI\3\2\2\2PV\3\2\2\2QR\f\4")
+        buf.write("\2\2RS\7\23\2\2SU\5\16\b\5TQ\3\2\2\2UX\3\2\2\2VT\3\2\2")
+        buf.write("\2VW\3\2\2\2W\17\3\2\2\2XV\3\2\2\2YZ\b\t\1\2Zg\7\26\2")
+        buf.write("\2[g\7\27\2\2\\]\5\16\b\2]^\7\25\2\2^_\5\16\b\2_g\3\2")
+        buf.write("\2\2`a\7\13\2\2ag\5\20\t\6bc\7\t\2\2cd\5\20\t\2de\7\n")
+        buf.write("\2\2eg\3\2\2\2fY\3\2\2\2f[\3\2\2\2f\\\3\2\2\2f`\3\2\2")
+        buf.write("\2fb\3\2\2\2gp\3\2\2\2hi\f\5\2\2ij\7\f\2\2jo\5\20\t\6")
+        buf.write("kl\f\4\2\2lm\7\r\2\2mo\5\20\t\5nh\3\2\2\2nk\3\2\2\2or")
+        buf.write("\3\2\2\2pn\3\2\2\2pq\3\2\2\2q\21\3\2\2\2rp\3\2\2\2st\5")
+        buf.write("\20\t\2tu\7\16\2\2uv\5\f\7\2vw\7\17\2\2wx\5\f\7\2x\23")
+        buf.write("\3\2\2\2yz\7\20\2\2z{\7\t\2\2{|\5\16\b\2|}\7\n\2\2}\u0084")
+        buf.write("\3\2\2\2~\177\7\21\2\2\177\u0080\7\t\2\2\u0080\u0081\5")
+        buf.write("\16\b\2\u0081\u0082\7\n\2\2\u0082\u0084\3\2\2\2\u0083")
+        buf.write("y\3\2\2\2\u0083~\3\2\2\2\u0084\25\3\2\2\2\u0085\u0086")
+        buf.write("\7\22\2\2\u0086\u0087\7\t\2\2\u0087\u0088\5\f\7\2\u0088")
+        buf.write("\u0089\7\n\2\2\u0089\u008a\7\5\2\2\u008a\27\3\2\2\2\17")
+        buf.write("\33%*=AEIOVfnp\u0083")
         return buf.getvalue()
 
 
@@ -146,6 +150,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitCommandSeq" ):
                 listener.exitCommandSeq(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCommandSeq" ):
+                return visitor.visitCommandSeq(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -206,6 +216,12 @@ class smlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitCommand" ):
                 listener.exitCommand(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitCommand" ):
+                return visitor.visitCommand(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -277,6 +293,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitDeclaration" ):
                 listener.exitDeclaration(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitDeclaration" ):
+                return visitor.visitDeclaration(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -324,6 +346,12 @@ class smlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitVarType" ):
                 listener.exitVarType(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitVarType" ):
+                return visitor.visitVarType(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -373,6 +401,12 @@ class smlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitAssignment" ):
                 listener.exitAssignment(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitAssignment" ):
+                return visitor.visitAssignment(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -435,6 +469,12 @@ class smlParser ( Parser ):
         def exitRule(self, listener:ParseTreeListener):
             if hasattr( listener, "exitExpr" ):
                 listener.exitExpr(self)
+
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitExpr" ):
+                return visitor.visitExpr(self)
+            else:
+                return visitor.visitChildren(self)
 
 
 
@@ -499,11 +539,11 @@ class smlParser ( Parser ):
         def Constant(self):
             return self.getToken(smlParser.Constant, 0)
 
-        def Ident(self):
-            return self.getToken(smlParser.Ident, 0)
-
         def UnaryOp(self):
             return self.getToken(smlParser.UnaryOp, 0)
+
+        def Ident(self):
+            return self.getToken(smlParser.Ident, 0)
 
         def arithExpr(self, i:int=None):
             if i is None:
@@ -526,6 +566,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitArithExpr" ):
                 listener.exitArithExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitArithExpr" ):
+                return visitor.visitArithExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
     def arithExpr(self, _p:int=0):
@@ -535,40 +581,60 @@ class smlParser ( Parser ):
         _prevctx = localctx
         _startState = 12
         self.enterRecursionRule(localctx, 12, self.RULE_arithExpr, _p)
+        self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 70
-            self._errHandler.sync(self)
-            token = self._input.LA(1)
-            if token in [smlParser.Constant]:
-                self.state = 62
-                self.match(smlParser.Constant)
-                pass
-            elif token in [smlParser.Ident]:
-                self.state = 63
-                self.match(smlParser.Ident)
-                pass
-            elif token in [smlParser.UnaryOp]:
-                self.state = 64
-                self.match(smlParser.UnaryOp)
-                self.state = 65
-                self.arithExpr(2)
-                pass
-            elif token in [smlParser.T__6]:
-                self.state = 66
-                self.match(smlParser.T__6)
-                self.state = 67
-                self.arithExpr(0)
-                self.state = 68
-                self.match(smlParser.T__7)
-                pass
-            else:
-                raise NoViableAltException(self)
-
-            self._ctx.stop = self._input.LT(-1)
             self.state = 77
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
+            if la_ == 1:
+                self.state = 63
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==smlParser.UnaryOp:
+                    self.state = 62
+                    self.match(smlParser.UnaryOp)
+
+
+                self.state = 65
+                self.match(smlParser.Constant)
+                pass
+
+            elif la_ == 2:
+                self.state = 67
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==smlParser.UnaryOp:
+                    self.state = 66
+                    self.match(smlParser.UnaryOp)
+
+
+                self.state = 69
+                self.match(smlParser.Ident)
+                pass
+
+            elif la_ == 3:
+                self.state = 71
+                self._errHandler.sync(self)
+                _la = self._input.LA(1)
+                if _la==smlParser.UnaryOp:
+                    self.state = 70
+                    self.match(smlParser.UnaryOp)
+
+
+                self.state = 73
+                self.match(smlParser.T__6)
+                self.state = 74
+                self.arithExpr(0)
+                self.state = 75
+                self.match(smlParser.T__7)
+                pass
+
+
+            self._ctx.stop = self._input.LT(-1)
+            self.state = 84
+            self._errHandler.sync(self)
+            _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
                     if self._parseListeners is not None:
@@ -576,17 +642,17 @@ class smlParser ( Parser ):
                     _prevctx = localctx
                     localctx = smlParser.ArithExprContext(self, _parentctx, _parentState)
                     self.pushNewRecursionContext(localctx, _startState, self.RULE_arithExpr)
-                    self.state = 72
-                    if not self.precpred(self._ctx, 3):
+                    self.state = 79
+                    if not self.precpred(self._ctx, 2):
                         from antlr4.error.Errors import FailedPredicateException
-                        raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
-                    self.state = 73
+                        raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
+                    self.state = 80
                     self.match(smlParser.BinaryOp)
-                    self.state = 74
-                    self.arithExpr(4) 
-                self.state = 79
+                    self.state = 81
+                    self.arithExpr(3) 
+                self.state = 86
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,5,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -636,6 +702,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitBoolExpr" ):
                 listener.exitBoolExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitBoolExpr" ):
+                return visitor.visitBoolExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
     def boolExpr(self, _p:int=0):
@@ -647,87 +719,87 @@ class smlParser ( Parser ):
         self.enterRecursionRule(localctx, 14, self.RULE_boolExpr, _p)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 93
+            self.state = 100
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,6,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,9,self._ctx)
             if la_ == 1:
-                self.state = 81
+                self.state = 88
                 self.match(smlParser.Ident)
                 pass
 
             elif la_ == 2:
-                self.state = 82
+                self.state = 89
                 self.match(smlParser.Constant)
                 pass
 
             elif la_ == 3:
-                self.state = 83
+                self.state = 90
                 self.arithExpr(0)
-                self.state = 84
+                self.state = 91
                 self.match(smlParser.RelationalOp)
-                self.state = 85
+                self.state = 92
                 self.arithExpr(0)
                 pass
 
             elif la_ == 4:
-                self.state = 87
+                self.state = 94
                 self.match(smlParser.T__8)
-                self.state = 88
+                self.state = 95
                 self.boolExpr(4)
                 pass
 
             elif la_ == 5:
-                self.state = 89
+                self.state = 96
                 self.match(smlParser.T__6)
-                self.state = 90
+                self.state = 97
                 self.boolExpr(0)
-                self.state = 91
+                self.state = 98
                 self.match(smlParser.T__7)
                 pass
 
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 103
+            self.state = 110
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,11,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    self.state = 101
+                    self.state = 108
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,7,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,10,self._ctx)
                     if la_ == 1:
                         localctx = smlParser.BoolExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_boolExpr)
-                        self.state = 95
+                        self.state = 102
                         if not self.precpred(self._ctx, 3):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
-                        self.state = 96
+                        self.state = 103
                         self.match(smlParser.T__9)
-                        self.state = 97
+                        self.state = 104
                         self.boolExpr(4)
                         pass
 
                     elif la_ == 2:
                         localctx = smlParser.BoolExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_boolExpr)
-                        self.state = 98
+                        self.state = 105
                         if not self.precpred(self._ctx, 2):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
-                        self.state = 99
+                        self.state = 106
                         self.match(smlParser.T__10)
-                        self.state = 100
+                        self.state = 107
                         self.boolExpr(3)
                         pass
 
              
-                self.state = 105
+                self.state = 112
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,8,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,11,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -765,6 +837,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitConditionalExpr" ):
                 listener.exitConditionalExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitConditionalExpr" ):
+                return visitor.visitConditionalExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -774,15 +852,15 @@ class smlParser ( Parser ):
         self.enterRule(localctx, 16, self.RULE_conditionalExpr)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 106
+            self.state = 113
             self.boolExpr(0)
-            self.state = 107
+            self.state = 114
             self.match(smlParser.T__11)
-            self.state = 108
+            self.state = 115
             self.expr()
-            self.state = 109
+            self.state = 116
             self.match(smlParser.T__12)
-            self.state = 110
+            self.state = 117
             self.expr()
         except RecognitionException as re:
             localctx.exception = re
@@ -819,6 +897,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitInputExpr" ):
                 listener.exitInputExpr(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitInputExpr" ):
+                return visitor.visitInputExpr(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -827,29 +911,29 @@ class smlParser ( Parser ):
         localctx = smlParser.InputExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 18, self.RULE_inputExpr)
         try:
-            self.state = 122
+            self.state = 129
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [smlParser.InputA]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 112
+                self.state = 119
                 self.match(smlParser.InputA)
-                self.state = 113
+                self.state = 120
                 self.match(smlParser.T__6)
-                self.state = 114
+                self.state = 121
                 self.arithExpr(0)
-                self.state = 115
+                self.state = 122
                 self.match(smlParser.T__7)
                 pass
             elif token in [smlParser.InputB]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 117
+                self.state = 124
                 self.match(smlParser.InputB)
-                self.state = 118
+                self.state = 125
                 self.match(smlParser.T__6)
-                self.state = 119
+                self.state = 126
                 self.arithExpr(0)
-                self.state = 120
+                self.state = 127
                 self.match(smlParser.T__7)
                 pass
             else:
@@ -887,6 +971,12 @@ class smlParser ( Parser ):
             if hasattr( listener, "exitOutput" ):
                 listener.exitOutput(self)
 
+        def accept(self, visitor:ParseTreeVisitor):
+            if hasattr( visitor, "visitOutput" ):
+                return visitor.visitOutput(self)
+            else:
+                return visitor.visitChildren(self)
+
 
 
 
@@ -896,15 +986,15 @@ class smlParser ( Parser ):
         self.enterRule(localctx, 20, self.RULE_output)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 124
+            self.state = 131
             self.match(smlParser.Output)
-            self.state = 125
+            self.state = 132
             self.match(smlParser.T__6)
-            self.state = 126
+            self.state = 133
             self.expr()
-            self.state = 127
+            self.state = 134
             self.match(smlParser.T__7)
-            self.state = 128
+            self.state = 135
             self.match(smlParser.T__2)
         except RecognitionException as re:
             localctx.exception = re
@@ -929,7 +1019,7 @@ class smlParser ( Parser ):
 
     def arithExpr_sempred(self, localctx:ArithExprContext, predIndex:int):
             if predIndex == 0:
-                return self.precpred(self._ctx, 3)
+                return self.precpred(self._ctx, 2)
          
 
     def boolExpr_sempred(self, localctx:BoolExprContext, predIndex:int):
