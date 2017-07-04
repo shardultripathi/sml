@@ -13,7 +13,7 @@ command
 ;
 
 declaration
-    : (varType Ident)? ';' {print($varType.text + " " + $Ident.text + ";")}
+    : (varType Ident)? ';' //{print($varType.text + " " + $Ident.text + ";")}
 ;
 
 varType
@@ -22,7 +22,7 @@ varType
 ;
 
 assignment 
-    : Ident '=' expr ';' {print($Ident.text + " = " + $expr.text + ";")}
+    : Ident '=' expr ';' //{print($Ident.text + " = " + $expr.text + ";")}
 ;
 
 expr
