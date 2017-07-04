@@ -31,8 +31,7 @@ expr
     | boolExpr
     | conditionalExpr
     | '(' expr ')'
-    | InputA '(' expr ')'
-    | InputB '(' expr ')'
+    | inputExpr
 ;
 
 arithExpr
@@ -55,6 +54,11 @@ boolExpr
 
 conditionalExpr
     : boolExpr '?' expr ':' expr
+;
+
+inputExpr
+    : InputA '(' arithExpr ')'
+    | InputB '(' arithExpr ')'
 ;
 
 output

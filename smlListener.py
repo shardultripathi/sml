@@ -89,6 +89,15 @@ class smlListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by smlParser#inputExpr.
+    def enterInputExpr(self, ctx:smlParser.InputExprContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#inputExpr.
+    def exitInputExpr(self, ctx:smlParser.InputExprContext):
+        pass
+
+
     # Enter a parse tree produced by smlParser#output.
     def enterOutput(self, ctx:smlParser.OutputContext):
         pass
