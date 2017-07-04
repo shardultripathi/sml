@@ -89,3 +89,12 @@ class smlListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by smlParser#output.
+    def enterOutput(self, ctx:smlParser.OutputContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#output.
+    def exitOutput(self, ctx:smlParser.OutputContext):
+        pass
+
+

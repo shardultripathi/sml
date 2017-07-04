@@ -10,6 +10,7 @@ command
 //  | ifElse
 //  | forLoop
     | '{' commandSeq '}'
+    | output
 ;
 
 declaration
@@ -30,6 +31,8 @@ expr
     | boolExpr
     | conditionalExpr
     | '(' expr ')'
+    | InputA '(' expr ')'
+    | InputB '(' expr ')'
 ;
 
 arithExpr
@@ -52,6 +55,22 @@ boolExpr
 
 conditionalExpr
     : boolExpr '?' expr ':' expr
+;
+
+output
+    : Output '(' expr ')' ';'
+;
+
+InputA
+    : 'input1'
+;
+
+InputB
+    : 'input2'
+;
+
+Output
+    : 'output'
 ;
 
 BinaryOp
