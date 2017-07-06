@@ -19,12 +19,15 @@ class CommSeq(ASTnode):
     def __init__(self):
         super(CommSeq, self).__init__()
 
+class Block(ASTnode):
+    def __init__(self):
+        super(Block, self).__init__()
+
 class Decl(ASTnode):
     def __init__(self, data_type, idname):
         self.data_type = data_type
         self.idname = idname
         self.arity = 2
-
 
 class IdentType(ASTnode):
     def __init__(self, idtype):
@@ -43,15 +46,16 @@ class Assign(ASTnode):
         self.arity = 2
 
 class BinOp(ASTnode):
-    def __init__(self, lhs, op, rhs):
+    def __init__(self, lhs, op, optype, rhs):
         self.lhs = lhs
         self.op = op
+        self.optype = optype
         self.rhs = rhs
         self.arity = 2
 
 class UnOp(ASTnode):
-    def __init__(self, idtype, op, expr):
-        self.idtype = idtype
+    def __init__(self, optype, op, expr):
+        self.optype = optype
         self.op = op
         self.expr = expr
         self.arity = 1
@@ -94,11 +98,8 @@ def getAST(rule):
             node.addChild(getAST(com))
         return node
 
-    elif isinstance(rule, sp.CommandContext): # command
-        if rule.getChild(0).getText() != '{':
-            return getAST(rule.getChild(0))
-        else:
-            return getAST(rule.getChild(1))
+    elif isinstance(rule, sp.CommandContext): # command TODO block
+        return getAST(rule.getChild(0))
 
     elif isinstance(rule, sp.DeclarationContext): # declaration
         if rule.getText() != ';':
@@ -106,44 +107,60 @@ def getAST(rule):
         else:
             return None
 
-    elif isinstance(rule, sp.AssignmentContext): # assignment
-        return Assign(Ident(rule.getChild(0).getText()), getAST(rule.getChild(2)))
-
     elif isinstance(rule, sp.VarTypeContext): # varType
         return IdentType(rule.getText())
+
+    elif isinstance(rule, sp.AssignmentContext): # assignment
+        return Assign(Ident(rule.getChild(0).getText()), getAST(rule.getChild(2)))
 
     elif isinstance(rule, sp.OutputContext): # output
         return OutExpr(getAST(rule.getChild(2)))
 
     elif isinstance(rule, sp.ExprContext): # expr
-        if rule.getChild(0).getText() != '(':
-            return getAST(rule.getChild(0))
-        else:
-            return getAST(rule.getChild(1))
+        return getAST(rule.getChild(0))
 
     elif isinstance(rule, sp.ArithExprContext): # arithExpr
-        if rule.getChild(0).getText() != '-': # not unary op
-            if rule.getChildCount() == 3:
-                if isinstance(rule.getChild(1), sp.ArithExprContext): # ( arithExpr )
-                    return getAST(rule.getChild(1))
-                else:   # arithExpr BinOp arithExpr
-                    return BinOp(getAST(rule.getChild(0)), rule.getChild(1).getText(),
-                                getAST(rule.getChild(2)))
-            else: # Constant
-                if getSymbolicName(rule.getChild(0).getType()) == 'Constant':
-                    return Constant('uint64_t', rule.getText())
-                else: # Ident
-                    return Ident(rule.getText())
+        if rule.getChildCount() == 1: # Constant or Ident
+            if getSymbolicName(rule.getChild(0).getType()) == 'Constant':
+                    return Constant('uint64_t', rule.getText()) # convert to int or not?
+            else: # - Ident
+                return Ident(rule.getText())
+
+        elif rule.getChildCount() == 2: # UnaryOp=- arithExpr 
+            return UnOp('uint64_t', rule.getChild(0).getText(),
+                        getAST(rule.getChild(1)))
+
         else:
-            if rule.getChildCount() == 4:
-                if isinstance(rule.getChild(1), sp.ArithExprContext): # - ( arithExpr )
-                    return UnOp('uint64_t', rule.getChild(0).getText(), 
-                                getAST(rule.getChild(2)))
-            else: # - Constant
-                if getSymbolicName(rule.getChild(1).getType()) == 'Constant':
-                    return Constant('uint64_t', rule.getText())
-                else: # - Ident
-                    return Ident(rule.getText())
+            if rule.getChild(0).getText() != '(': # ( arithExpr )
+                return getAST(rule.getChild(1))
+            else: # arithExpr BinOp arithExpr
+                return BinOp(getAST(rule.getChild(0)), rule.getChild(1).getText(),
+                        'uint64_t', getAST(rule.getChild(2)))
+
+    elif isinstance(rule, sp.ConditionalExprContext): # conditionalExpr
+        return CondExpr(getAST(rule.getChild(0)), getAST(rule.getChild(2)),
+                        getAST(rule.getChild(3)))
+
+    elif isinstance(rule, sp.BoolExprContext): # boolExpr
+        if rule.getChildCount() == 1: # Constant or Ident
+            if getSymbolicName(rule.getChild(0).getType()) == 'Constant':
+                    return Constant('bool', rule.getText())
+            else: # - Ident
+                return Ident(rule.getText())
+
+        elif rule.getChildCount() == 2: # UnaryOp=! boolExpr 
+            return UnOp('bool', rule.getChild(0).getText(),
+                        getAST(rule.getChild(1)))
+
+        else:
+            if rule.getChild(0).getText() != '(': # ( boolExpr )
+                return getAST(rule.getChild(1))
+            else: # boolExpr BinOp boolExpr
+                return BinOp(getAST(rule.getChild(0)), rule.getChild(1).getText(),
+                        'bool', getAST(rule.getChild(2)))
+
+    elif isinstance(rule, sp.InputExprContext): # inputExpr
+        return InpExpr(rule.getChild(0).getText(), getAST(rule.getChild(2)))
 
     else:
         pass
