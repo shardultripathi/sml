@@ -7,52 +7,71 @@ commandSeq
 command
     : declaration
     | assignment
-//  | ifElse
-//  | forLoop
-    | '{' commandSeq '}'
+//    | forLoop
+    | block
     | output
 ;
 
+block
+    : '{' blockComm* '}'
+;
+
+blockComm
+    : assignment
+//    | forLoop
+    | block
+// not allowing output inside block
+;
+
 declaration
-    : (varType Ident)? ';' //{print($varType.text + " " + $Ident.text + ";")}
+    : (varType Ident)? ';'
 ;
 
 varType
-    : 'uint64_t'
-    | 'bool'
+    : 'uint64_t' // removed bool
 ;
 
 assignment 
-    : Ident '=' expr ';' //{print($Ident.text + " = " + $expr.text + ";")}
+    : Ident '=' expr ';'
+    | Ident '=' inputExpr ';'
 ;
 
 expr
     : arithExpr
-    | boolExpr
     | conditionalExpr
-    | '(' expr ')'
-    | inputExpr
 ;
 
 arithExpr
-    : UnaryOp? Constant
-    | UnaryOp? Ident
-    | arithExpr BinaryOp arithExpr
-    | UnaryOp? '(' arithExpr ')'
-;
-
-boolExpr
-    : Ident
+    : '(' arithExpr ')'
+    | '-' arithExpr
+    | arithExpr ('*' | '/' | '%') arithExpr
+    | arithExpr ('+' | '-') arithExpr
+    | arithExpr ('<<' | '>>') arithExpr
+    | arithExpr '&' arithExpr
+    | arithExpr '^' arithExpr
+    | arithExpr '|' arithExpr
+    | arithExpr '&&' arithExpr
+    | arithExpr '||' arithExpr
+    | Ident
     | Constant
-    | arithExpr RelationalOp arithExpr
-    | '!' boolExpr
-    | boolExpr '&' boolExpr
-    | boolExpr '|' boolExpr
-    | '(' boolExpr ')'
 ;
 
 conditionalExpr
     : boolExpr '?' expr ':' expr
+;
+
+boolExpr
+    : '(' boolExpr ')'
+    | '!' boolExpr
+    | arithExpr ('<' | '<=' | '>' | '>=') arithExpr
+    | arithExpr ('==' | '!=') arithExpr
+    | boolExpr '&' boolExpr
+    | boolExpr '^' boolExpr
+    | boolExpr '|' boolExpr
+    | boolExpr '&&' boolExpr
+    | boolExpr '||' boolExpr
+    | Constant
+    | Ident
 ;
 
 inputExpr
@@ -76,26 +95,6 @@ Output
     : 'output'
 ;
 
-BinaryOp
-    : '+'
-    | '*'
-    | '-'
-    | '/'
-    | '&'
-    | '|'
-    | '^'
-    | '||'
-    | '&&'
-    | '%'
-    | '<<'
-    | '>>'
-;
-
-UnaryOp
-    : '!'
-    | '~'
-;
-
 RelationalOp
     : '<'
     | '<='
@@ -105,6 +104,7 @@ RelationalOp
     | '!='
 ;
 
+// code below copied from c grammar
 Ident
     :   IdentNondigit
         (   IdentNondigit

@@ -39,6 +39,30 @@ public class smlBaseListener implements smlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBlock(smlParser.BlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBlock(smlParser.BlockContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBlockComm(smlParser.BlockCommContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBlockComm(smlParser.BlockCommContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDeclaration(smlParser.DeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -99,18 +123,6 @@ public class smlBaseListener implements smlListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterBoolExpr(smlParser.BoolExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBoolExpr(smlParser.BoolExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterConditionalExpr(smlParser.ConditionalExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -118,6 +130,18 @@ public class smlBaseListener implements smlListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitConditionalExpr(smlParser.ConditionalExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterBoolExpr(smlParser.BoolExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBoolExpr(smlParser.BoolExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

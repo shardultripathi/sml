@@ -26,6 +26,24 @@ class smlListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by smlParser#block.
+    def enterBlock(self, ctx:smlParser.BlockContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#block.
+    def exitBlock(self, ctx:smlParser.BlockContext):
+        pass
+
+
+    # Enter a parse tree produced by smlParser#blockComm.
+    def enterBlockComm(self, ctx:smlParser.BlockCommContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#blockComm.
+    def exitBlockComm(self, ctx:smlParser.BlockCommContext):
+        pass
+
+
     # Enter a parse tree produced by smlParser#declaration.
     def enterDeclaration(self, ctx:smlParser.DeclarationContext):
         pass
@@ -71,21 +89,21 @@ class smlListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by smlParser#boolExpr.
-    def enterBoolExpr(self, ctx:smlParser.BoolExprContext):
-        pass
-
-    # Exit a parse tree produced by smlParser#boolExpr.
-    def exitBoolExpr(self, ctx:smlParser.BoolExprContext):
-        pass
-
-
     # Enter a parse tree produced by smlParser#conditionalExpr.
     def enterConditionalExpr(self, ctx:smlParser.ConditionalExprContext):
         pass
 
     # Exit a parse tree produced by smlParser#conditionalExpr.
     def exitConditionalExpr(self, ctx:smlParser.ConditionalExprContext):
+        pass
+
+
+    # Enter a parse tree produced by smlParser#boolExpr.
+    def enterBoolExpr(self, ctx:smlParser.BoolExprContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#boolExpr.
+    def exitBoolExpr(self, ctx:smlParser.BoolExprContext):
         pass
 
 

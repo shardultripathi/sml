@@ -19,6 +19,16 @@ class smlVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by smlParser#block.
+    def visitBlock(self, ctx:smlParser.BlockContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by smlParser#blockComm.
+    def visitBlockComm(self, ctx:smlParser.BlockCommContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by smlParser#declaration.
     def visitDeclaration(self, ctx:smlParser.DeclarationContext):
         return self.visitChildren(ctx)
@@ -44,13 +54,13 @@ class smlVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by smlParser#boolExpr.
-    def visitBoolExpr(self, ctx:smlParser.BoolExprContext):
+    # Visit a parse tree produced by smlParser#conditionalExpr.
+    def visitConditionalExpr(self, ctx:smlParser.ConditionalExprContext):
         return self.visitChildren(ctx)
 
 
-    # Visit a parse tree produced by smlParser#conditionalExpr.
-    def visitConditionalExpr(self, ctx:smlParser.ConditionalExprContext):
+    # Visit a parse tree produced by smlParser#boolExpr.
+    def visitBoolExpr(self, ctx:smlParser.BoolExprContext):
         return self.visitChildren(ctx)
 
 

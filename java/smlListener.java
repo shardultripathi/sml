@@ -27,6 +27,26 @@ public interface smlListener extends ParseTreeListener {
 	 */
 	void exitCommand(smlParser.CommandContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link smlParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlock(smlParser.BlockContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#block}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlock(smlParser.BlockContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link smlParser#blockComm}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlockComm(smlParser.BlockCommContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#blockComm}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlockComm(smlParser.BlockCommContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link smlParser#declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -77,16 +97,6 @@ public interface smlListener extends ParseTreeListener {
 	 */
 	void exitArithExpr(smlParser.ArithExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link smlParser#boolExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterBoolExpr(smlParser.BoolExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link smlParser#boolExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitBoolExpr(smlParser.BoolExprContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link smlParser#conditionalExpr}.
 	 * @param ctx the parse tree
 	 */
@@ -96,6 +106,16 @@ public interface smlListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitConditionalExpr(smlParser.ConditionalExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link smlParser#boolExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterBoolExpr(smlParser.BoolExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#boolExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitBoolExpr(smlParser.BoolExprContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link smlParser#inputExpr}.
 	 * @param ctx the parse tree
