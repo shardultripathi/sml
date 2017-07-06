@@ -95,15 +95,6 @@ Output
     : 'output'
 ;
 
-RelationalOp
-    : '<'
-    | '<='
-    | '>'
-    | '>='
-    | '=='
-    | '!='
-;
-
 // code below copied from c grammar
 Ident
     :   IdentNondigit
