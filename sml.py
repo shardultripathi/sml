@@ -15,13 +15,8 @@ def main():
     stream = CommonTokenStream(lexer)
     parser = smlParser(stream)
     tree = parser.commandSeq()
-    walker = ParseTreeWalker()
     ast = getAST(tree)
     ast.visit(0)
-    # cp = CommandPrinter()
-    # walker.walk(cp,tree)
-    # for child in tree.getChildren():
-    # 	print(1);
 
 if __name__ == '__main__':
     main()
