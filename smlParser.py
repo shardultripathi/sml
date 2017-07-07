@@ -7,7 +7,7 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3$")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3%")
         buf.write("\u00b6\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\3\2\7\2\36\n\2\f\2\16\2!\13\2\3\3\3\3\3\3\3\3\5")
@@ -35,29 +35,29 @@ def serializedATN():
         buf.write("+.\3\2\2\2,*\3\2\2\2,-\3\2\2\2-/\3\2\2\2.,\3\2\2\2/\60")
         buf.write("\7\4\2\2\60\7\3\2\2\2\61\64\5\16\b\2\62\64\5\6\4\2\63")
         buf.write("\61\3\2\2\2\63\62\3\2\2\2\64\t\3\2\2\2\65\66\5\f\7\2\66")
-        buf.write("\67\7\"\2\2\679\3\2\2\28\65\3\2\2\289\3\2\2\29:\3\2\2")
-        buf.write("\2:;\7\5\2\2;\13\3\2\2\2<=\7\6\2\2=\r\3\2\2\2>?\7\"\2")
-        buf.write("\2?@\7\7\2\2@A\5\20\t\2AB\7\5\2\2BI\3\2\2\2CD\7\"\2\2")
-        buf.write("DE\7\7\2\2EF\5\30\r\2FG\7\5\2\2GI\3\2\2\2H>\3\2\2\2HC")
-        buf.write("\3\2\2\2I\17\3\2\2\2JM\5\22\n\2KM\5\24\13\2LJ\3\2\2\2")
-        buf.write("LK\3\2\2\2M\21\3\2\2\2NO\b\n\1\2OP\7\b\2\2PQ\5\22\n\2")
-        buf.write("QR\7\t\2\2RX\3\2\2\2ST\7\n\2\2TX\5\22\n\rUX\7\"\2\2VX")
-        buf.write("\7#\2\2WN\3\2\2\2WS\3\2\2\2WU\3\2\2\2WV\3\2\2\2Xs\3\2")
-        buf.write("\2\2YZ\f\f\2\2Z[\t\2\2\2[r\5\22\n\r\\]\f\13\2\2]^\t\3")
-        buf.write("\2\2^r\5\22\n\f_`\f\n\2\2`a\t\4\2\2ar\5\22\n\13bc\f\t")
-        buf.write("\2\2cd\7\21\2\2dr\5\22\n\nef\f\b\2\2fg\7\22\2\2gr\5\22")
-        buf.write("\n\thi\f\7\2\2ij\7\23\2\2jr\5\22\n\bkl\f\6\2\2lm\7\24")
-        buf.write("\2\2mr\5\22\n\7no\f\5\2\2op\7\25\2\2pr\5\22\n\6qY\3\2")
-        buf.write("\2\2q\\\3\2\2\2q_\3\2\2\2qb\3\2\2\2qe\3\2\2\2qh\3\2\2")
-        buf.write("\2qk\3\2\2\2qn\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2\2t")
-        buf.write("\23\3\2\2\2us\3\2\2\2vw\5\26\f\2wx\7\26\2\2xy\5\20\t\2")
-        buf.write("yz\7\27\2\2z{\5\20\t\2{\25\3\2\2\2|}\b\f\1\2}~\7\b\2\2")
-        buf.write("~\177\5\26\f\2\177\u0080\7\t\2\2\u0080\u008e\3\2\2\2\u0081")
+        buf.write("\67\7#\2\2\679\3\2\2\28\65\3\2\2\289\3\2\2\29:\3\2\2\2")
+        buf.write(":;\7\5\2\2;\13\3\2\2\2<=\7\6\2\2=\r\3\2\2\2>?\7#\2\2?")
+        buf.write("@\7\7\2\2@A\5\20\t\2AB\7\5\2\2BI\3\2\2\2CD\7#\2\2DE\7")
+        buf.write("\7\2\2EF\5\30\r\2FG\7\5\2\2GI\3\2\2\2H>\3\2\2\2HC\3\2")
+        buf.write("\2\2I\17\3\2\2\2JM\5\22\n\2KM\5\24\13\2LJ\3\2\2\2LK\3")
+        buf.write("\2\2\2M\21\3\2\2\2NO\b\n\1\2OP\7\b\2\2PQ\5\22\n\2QR\7")
+        buf.write("\t\2\2RX\3\2\2\2ST\7\n\2\2TX\5\22\n\rUX\7$\2\2VX\7#\2")
+        buf.write("\2WN\3\2\2\2WS\3\2\2\2WU\3\2\2\2WV\3\2\2\2Xs\3\2\2\2Y")
+        buf.write("Z\f\f\2\2Z[\t\2\2\2[r\5\22\n\r\\]\f\13\2\2]^\t\3\2\2^")
+        buf.write("r\5\22\n\f_`\f\n\2\2`a\t\4\2\2ar\5\22\n\13bc\f\t\2\2c")
+        buf.write("d\7\21\2\2dr\5\22\n\nef\f\b\2\2fg\7\22\2\2gr\5\22\n\t")
+        buf.write("hi\f\7\2\2ij\7\23\2\2jr\5\22\n\bkl\f\6\2\2lm\7\24\2\2")
+        buf.write("mr\5\22\n\7no\f\5\2\2op\7\25\2\2pr\5\22\n\6qY\3\2\2\2")
+        buf.write("q\\\3\2\2\2q_\3\2\2\2qb\3\2\2\2qe\3\2\2\2qh\3\2\2\2qk")
+        buf.write("\3\2\2\2qn\3\2\2\2ru\3\2\2\2sq\3\2\2\2st\3\2\2\2t\23\3")
+        buf.write("\2\2\2us\3\2\2\2vw\5\26\f\2wx\7\26\2\2xy\5\20\t\2yz\7")
+        buf.write("\27\2\2z{\5\20\t\2{\25\3\2\2\2|}\b\f\1\2}~\7\b\2\2~\177")
+        buf.write("\5\26\f\2\177\u0080\7\t\2\2\u0080\u008e\3\2\2\2\u0081")
         buf.write("\u0082\7\30\2\2\u0082\u008e\5\26\f\f\u0083\u0084\5\22")
         buf.write("\n\2\u0084\u0085\t\5\2\2\u0085\u0086\5\22\n\2\u0086\u008e")
         buf.write("\3\2\2\2\u0087\u0088\5\22\n\2\u0088\u0089\t\6\2\2\u0089")
-        buf.write("\u008a\5\22\n\2\u008a\u008e\3\2\2\2\u008b\u008e\7#\2\2")
-        buf.write("\u008c\u008e\7\"\2\2\u008d|\3\2\2\2\u008d\u0081\3\2\2")
+        buf.write("\u008a\5\22\n\2\u008a\u008e\3\2\2\2\u008b\u008e\7\"\2")
+        buf.write("\2\u008c\u008e\7#\2\2\u008d|\3\2\2\2\u008d\u0081\3\2\2")
         buf.write("\2\u008d\u0083\3\2\2\2\u008d\u0087\3\2\2\2\u008d\u008b")
         buf.write("\3\2\2\2\u008d\u008c\3\2\2\2\u008e\u00a0\3\2\2\2\u008f")
         buf.write("\u0090\f\t\2\2\u0090\u0091\7\21\2\2\u0091\u009f\5\26\f")
@@ -103,8 +103,8 @@ class smlParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "InputA", "InputB", "Output", "Ident", 
-                      "Constant", "WS" ]
+                      "<INVALID>", "InputA", "InputB", "Output", "BoolConstant", 
+                      "Ident", "IntegerConstant", "WS" ]
 
     RULE_commandSeq = 0
     RULE_command = 1
@@ -156,9 +156,10 @@ class smlParser ( Parser ):
     InputA=29
     InputB=30
     Output=31
-    Ident=32
-    Constant=33
-    WS=34
+    BoolConstant=32
+    Ident=33
+    IntegerConstant=34
+    WS=35
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -689,11 +690,11 @@ class smlParser ( Parser ):
                 return self.getTypedRuleContext(smlParser.ArithExprContext,i)
 
 
+        def IntegerConstant(self):
+            return self.getToken(smlParser.IntegerConstant, 0)
+
         def Ident(self):
             return self.getToken(smlParser.Ident, 0)
-
-        def Constant(self):
-            return self.getToken(smlParser.Constant, 0)
 
         def getRuleIndex(self):
             return smlParser.RULE_arithExpr
@@ -741,13 +742,13 @@ class smlParser ( Parser ):
                 self.state = 82
                 self.arithExpr(11)
                 pass
-            elif token in [smlParser.Ident]:
+            elif token in [smlParser.IntegerConstant]:
                 self.state = 83
-                self.match(smlParser.Ident)
+                self.match(smlParser.IntegerConstant)
                 pass
-            elif token in [smlParser.Constant]:
+            elif token in [smlParser.Ident]:
                 self.state = 84
-                self.match(smlParser.Constant)
+                self.match(smlParser.Ident)
                 pass
             else:
                 raise NoViableAltException(self)
@@ -977,8 +978,8 @@ class smlParser ( Parser ):
                 return self.getTypedRuleContext(smlParser.ArithExprContext,i)
 
 
-        def Constant(self):
-            return self.getToken(smlParser.Constant, 0)
+        def BoolConstant(self):
+            return self.getToken(smlParser.BoolConstant, 0)
 
         def Ident(self):
             return self.getToken(smlParser.Ident, 0)
@@ -1061,7 +1062,7 @@ class smlParser ( Parser ):
 
             elif la_ == 5:
                 self.state = 137
-                self.match(smlParser.Constant)
+                self.match(smlParser.BoolConstant)
                 pass
 
             elif la_ == 6:

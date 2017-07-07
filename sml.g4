@@ -52,8 +52,8 @@ arithExpr
     | arithExpr '|' arithExpr
     | arithExpr '&&' arithExpr
     | arithExpr '||' arithExpr
+    | IntegerConstant
     | Ident
-    | Constant
 ;
 
 conditionalExpr
@@ -70,7 +70,7 @@ boolExpr
     | boolExpr '|' boolExpr
     | boolExpr '&&' boolExpr
     | boolExpr '||' boolExpr
-    | Constant
+    | BoolConstant
     | Ident
 ;
 
@@ -96,6 +96,12 @@ Output
 ;
 
 // code below copied from c grammar
+
+BoolConstant
+    :   'true'
+    |   'false'
+;
+
 Ident
     :   IdentNondigit
         (   IdentNondigit
@@ -119,12 +125,6 @@ Digit
     :   [0-9]
 ;
 
-Constant
-    :   IntegerConstant
-    |   BoolConstant
-;
-
-fragment
 IntegerConstant
     :   DecimalConstant
 ;
@@ -137,12 +137,6 @@ DecimalConstant
 fragment
 NonzeroDigit
     :   [1-9]
-;
-
-fragment
-BoolConstant
-    :   'true'
-    |   'false'
 ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines

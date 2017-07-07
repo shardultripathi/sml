@@ -17,6 +17,7 @@ def main():
     tree = parser.commandSeq()
     walker = ParseTreeWalker()
     ast = getAST(tree)
+    ast.visit(0)
     # cp = CommandPrinter()
     # walker.walk(cp,tree)
     # for child in tree.getChildren():
