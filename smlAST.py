@@ -74,6 +74,21 @@ class Assign(ASTnode):
         self.lhs.visit(offset+off)
         self.rhs.visit(offset+off)
 
+class For(ASTnode):
+    def __init__(self, idname, start, end, step):
+        self.idname = idname
+        self.start = start
+        self.end = end
+        self.step = step
+        self.arity = 4
+
+    def visit(self, offset):
+        print(" "*offset, "For:")
+        idname.visit(offset+off)
+        start.visit(offset+off)
+        end.visit(offset+off)
+        step.visit(offset+off)
+
 class BinOp(ASTnode):
     def __init__(self, lhs, op, optype, rhs):
         self.lhs = lhs
@@ -117,7 +132,7 @@ class Constant(ASTnode):
         self.arity = 0
 
     def visit(self, offset):
-        print(" "*offset, "Constant:", self.value)
+        print(" "*offset, "Constant:", self.idtype, self.value)
 
 class CondExpr(ASTnode):
     def __init__(self, condition, expr1, expr2):

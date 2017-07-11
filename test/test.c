@@ -6,5 +6,9 @@ int main() {
 	{
 		int x = true;
 	}
+	for (x = 0; x < 5; x++)
+	{
+		a = 1;
+	}
 	return (5+7);
 }

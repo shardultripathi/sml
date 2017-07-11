@@ -4,10 +4,7 @@ from smlLexer import smlLexer
 from smlParser import smlParser
 from smlListener import smlListener
 from smlAST import *
-
-class CommandPrinter(smlListener):     
-    def enterCommand(self, ctx):         
-        print(ctx.start, ctx.stop) 
+from smlCodeGen import smlCodeGen
 
 def main():
     input = FileStream(sys.argv[1])
@@ -17,6 +14,9 @@ def main():
     tree = parser.commandSeq()
     ast = getAST(tree)
     ast.visit(0)
+    print()
+    scg = smlCodeGen()
+    scg.codeGen(ast)
 
 if __name__ == '__main__':
     main()

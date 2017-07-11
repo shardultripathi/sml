@@ -44,6 +44,16 @@ class smlVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by smlParser#forLoop.
+    def visitForLoop(self, ctx:smlParser.ForLoopContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by smlParser#rangeList.
+    def visitRangeList(self, ctx:smlParser.RangeListContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by smlParser#expr.
     def visitExpr(self, ctx:smlParser.ExprContext):
         return self.visitChildren(ctx)

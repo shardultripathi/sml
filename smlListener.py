@@ -71,6 +71,24 @@ class smlListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by smlParser#forLoop.
+    def enterForLoop(self, ctx:smlParser.ForLoopContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#forLoop.
+    def exitForLoop(self, ctx:smlParser.ForLoopContext):
+        pass
+
+
+    # Enter a parse tree produced by smlParser#rangeList.
+    def enterRangeList(self, ctx:smlParser.RangeListContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#rangeList.
+    def exitRangeList(self, ctx:smlParser.RangeListContext):
+        pass
+
+
     # Enter a parse tree produced by smlParser#expr.
     def enterExpr(self, ctx:smlParser.ExprContext):
         pass

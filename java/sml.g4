@@ -7,7 +7,7 @@ commandSeq
 command
     : declaration
     | assignment
-//    | forLoop
+    | forLoop
     | block
     | output
 ;
@@ -18,7 +18,7 @@ block
 
 blockComm
     : assignment
-//    | forLoop
+    | forLoop
     | block
 // not allowing output inside block
 ;
@@ -34,6 +34,14 @@ varType
 assignment 
     : Ident '=' expr ';'
     | Ident '=' inputExpr ';'
+;
+
+forLoop
+    : 'for' 'uint64_t' Ident '=' rangeList block
+;
+
+rangeList
+   : '[' IntegerConstant ':' IntegerConstant (':' IntegerConstant)? ']'
 ;
 
 expr
@@ -95,7 +103,7 @@ Output
     : 'output'
 ;
 
-// code below copied from c grammar
+// code below taken from c grammar
 
 BoolConstant
     :   'true'
@@ -117,7 +125,7 @@ IdentNondigit
 
 fragment
 Nondigit
-    :   [a-zA-Z_]
+    :   [a-zA-Z]
 ;
 
 fragment
