@@ -148,9 +148,10 @@ class CondExpr(ASTnode):
         self.expr2.visit(offset+off)
 
 class InpExpr(ASTnode):
-    def __init__(self, partynum, expr):
+    def __init__(self, partynum, expr, exprText):
         self.partynum = partynum
         self.expr = expr
+        self.exprText = exprText
         self.arity = 1
 
     def visit(self, offset):
@@ -245,7 +246,8 @@ def getAST(rule):
                         'bool', getAST(rule.getChild(2)))
 
     elif isinstance(rule, sp.InputExprContext): # inputExpr
-        return InpExpr(rule.getChild(0).getText(), getAST(rule.getChild(2)))
+        return InpExpr(rule.getChild(0).getText(), getAST(rule.getChild(2)), 
+                        rule.getChild(2).getText())
 
     else:
         print("I'm not supposed to be here")

@@ -1,14 +1,9 @@
+uint64_t x;;
+uint64_t y;
 {
 	x = 5;
 	{}
 }
-uint64_t x;;
-uint64_t y;
-uint64_t z;
-uint64_t a;
 x = input1(5);
-y = (7);
-a = x;
-z = -(4 + 1*2) - 3*6 - x;
-z = x + y + z + 5;
+y = input2(7);
 output((x>y) ? x : y);

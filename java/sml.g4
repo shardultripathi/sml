@@ -55,11 +55,11 @@ arithExpr
     | arithExpr ('*' | '/' | '%') arithExpr
     | arithExpr ('+' | '-') arithExpr
     | arithExpr ('<<' | '>>') arithExpr
-    | arithExpr '&' arithExpr
+    | arithExpr '&' arithExpr // bitwise and
     | arithExpr '^' arithExpr
-    | arithExpr '|' arithExpr
-    | arithExpr '&&' arithExpr
-    | arithExpr '||' arithExpr
+    | arithExpr '|' arithExpr // bitwise or
+//    | arithExpr '&&' arithExpr // logical and
+//    | arithExpr '||' arithExpr // logical or
     | IntegerConstant
     | Ident
 ;
@@ -73,9 +73,9 @@ boolExpr
     | '!' boolExpr
     | arithExpr ('<' | '<=' | '>' | '>=') arithExpr
     | arithExpr ('==' | '!=') arithExpr
-    | boolExpr '&' boolExpr
+//    | boolExpr '&' boolExpr
     | boolExpr '^' boolExpr
-    | boolExpr '|' boolExpr
+//    | boolExpr '|' boolExpr
     | boolExpr '&&' boolExpr
     | boolExpr '||' boolExpr
     | BoolConstant
@@ -83,8 +83,8 @@ boolExpr
 ;
 
 inputExpr
-    : InputA '(' arithExpr ')'
-    | InputB '(' arithExpr ')'
+    : InputA '(' expr ')'
+    | InputB '(' expr ')'
 ;
 
 output
