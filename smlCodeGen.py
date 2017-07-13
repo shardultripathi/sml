@@ -6,7 +6,9 @@ from smlAST import *
 
 class smlCodeGen:
     def __init__(self):
-        print('<insert boilerplate code>')
+        print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);')
+        print('vector<Sharing*>& sharings = party->GetSharings();')
+        print('Circuit* circ = sharings[sharing]->GetCircuitBuildRoutine();')
         self.shareSet = set()
         self.counter = 0
 
@@ -31,8 +33,10 @@ class smlCodeGen:
 
         elif isinstance(node, Constant):
             varname = 's_tmp_'+str(self.counter)
+            tmpvar = '_tmp_'+str(self.counter)
             self.counter += 1
-            print('share *',varname,'=','circ->PutCONSGate(',node.value,',bitlen);')
+            print(node.idtype, tmpvar, '=', node.value,';')
+            print('share *',varname,'=','circ->PutCONSGate(',tmpvar,',bitlen);')
             return varname
 
         elif isinstance(node, UnOp):
@@ -78,7 +82,7 @@ class smlCodeGen:
             elif isinstance(rhs, Constant):
                 print(node.lhs.name,'=',rhs.value,';')
                 print(varname,'=',end=' ')
-                print('circ->PutCONSGate(',rhs.value,',bitlen);')
+                print('circ->PutCONSGate(',node.lhs.name,',bitlen);')
 
             elif isinstance(rhs, BinOp):
                 binlhs = self.codeGen(rhs.lhs)
@@ -145,9 +149,9 @@ class smlCodeGen:
             varname = 's_tmp_'+str(self.counter)
             self.counter += 1
             expr = self.codeGen(node.expr)
-            print(varname,'= circ->PutOUTGate(',expr,', ALL);')
+            print('share *',varname,'= circ->PutOUTGate(',expr,', ALL);')
             print('party->ExecCircuit();')
-            print('uint64_t _output =', varname + '->get_clear_value<uint64_t>();')
+            print('uint32_t _output =', varname + '->get_clear_value<uint64_t>();')
 
         else:
             pass

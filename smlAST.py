@@ -208,12 +208,12 @@ def getAST(rule):
     elif isinstance(rule, sp.ArithExprContext): # arithExpr
         if rule.getChildCount() == 1: # Constant or Ident
             if rule.getChild(0).symbol.type == sp.IntegerConstant:
-                return Constant('uint64_t', rule.getText()) # convert to int or not?
+                return Constant('uint32_t', rule.getText()) # convert to int or not?
             else: # - Ident
                 return Ident(rule.getText())
 
         elif rule.getChildCount() == 2: # UnaryOp=- arithExpr 
-            return UnOp('uint64_t', rule.getChild(0).getText(),
+            return UnOp('uint32_t', rule.getChild(0).getText(),
                         getAST(rule.getChild(1)))
 
         else:
@@ -221,7 +221,7 @@ def getAST(rule):
                 return getAST(rule.getChild(1))
             else: # arithExpr BinOp arithExpr
                 return BinOp(getAST(rule.getChild(0)), rule.getChild(1).getText(),
-                        'uint64_t', getAST(rule.getChild(2)))
+                        'uint32_t', getAST(rule.getChild(2)))
 
     elif isinstance(rule, sp.ConditionalExprContext): # conditionalExpr
         return CondExpr(getAST(rule.getChild(0)), getAST(rule.getChild(2)),

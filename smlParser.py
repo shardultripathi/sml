@@ -96,7 +96,7 @@ class smlParser ( Parser ):
 
     sharedContextCache = PredictionContextCache()
 
-    literalNames = [ "<INVALID>", "'{'", "'}'", "';'", "'uint64_t'", "'='", 
+    literalNames = [ "<INVALID>", "'{'", "'}'", "';'", "'uint32_t'", "'='", 
                      "'for'", "'['", "':'", "']'", "'('", "')'", "'-'", 
                      "'*'", "'/'", "'%'", "'+'", "'<<'", "'>>'", "'&'", 
                      "'^'", "'|'", "'?'", "'!'", "'<'", "'<='", "'>'", "'>='", 

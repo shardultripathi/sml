@@ -28,7 +28,7 @@ declaration
 ;
 
 varType
-    : 'uint64_t' // removed bool
+    : 'uint32_t' // removed bool
 ;
 
 assignment 
@@ -37,7 +37,7 @@ assignment
 ;
 
 forLoop
-    : 'for' 'uint64_t' Ident '=' rangeList block
+    : 'for' 'uint32_t' Ident '=' rangeList block
 ;
 
 rangeList

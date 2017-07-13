@@ -1,9 +1,5 @@
-uint64_t x;;
-uint64_t y;
-{
-	x = 5;
-	{}
-}
+uint32_t x;;
+uint32_t y;
 x = input1(5);
 y = input2(7);
-output((x>y) ? x : y);
+output((x>y) ? 1 : 0);

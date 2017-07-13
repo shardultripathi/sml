@@ -13,8 +13,8 @@ def main():
     parser = smlParser(stream)
     tree = parser.commandSeq()
     ast = getAST(tree)
-    ast.visit(0)
-    print()
+    # ast.visit(0)
+    # print()
     scg = smlCodeGen()
     scg.codeGen(ast)
 
