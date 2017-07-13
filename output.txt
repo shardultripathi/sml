@@ -1,0 +1,26 @@
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);
+vector<Sharing*>& sharings = party->GetSharings();
+Circuit* circ = sharings[sharing]->GetCircuitBuildRoutine();
+uint32_t x;
+share *s_x;
+uint32_t y;
+share *s_y;
+x = 5+14 ;
+if (role == SERVER) {
+s_x = circ->PutINGate( x ,bitlen,SERVER);
+} else {
+s_x = circ->PutDummyINGate(bitlen);
+}
+y = 7+9 ;
+if (role == CLIENT) {
+s_y = circ->PutINGate( y ,bitlen,CLIENT);
+} else {
+s_y = circ->PutDummyINGate(bitlen);
+}
+share * s_tmp_2 = circ->PutGTGate( s_x , s_y );
+share * s_tmp_3 = circ->PutADDGate( s_x , s_y );
+share * s_tmp_4 = circ->PutSUBGate( s_x , s_y );
+share * s_tmp_1 = circ->PutMUXGate( s_tmp_3 , s_tmp_4 , s_tmp_2 );
+share * s_tmp_0 = circ->PutOUTGate( s_tmp_1 , ALL);
+party->ExecCircuit();
+uint32_t _output = s_tmp_0->get_clear_value<uint32_t>();

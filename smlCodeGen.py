@@ -151,7 +151,7 @@ class smlCodeGen:
             expr = self.codeGen(node.expr)
             print('share *',varname,'= circ->PutOUTGate(',expr,', ALL);')
             print('party->ExecCircuit();')
-            print('uint32_t _output =', varname + '->get_clear_value<uint64_t>();')
+            print('uint32_t _output =', varname + '->get_clear_value<uint32_t>();')
 
         else:
             pass

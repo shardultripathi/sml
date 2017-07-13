@@ -1,5 +1,5 @@
 uint32_t x;;
 uint32_t y;
-x = input1(5);
-y = input2(7);
-output((x>y) ? 1 : 0);
+x = input1(5+14);
+y = input2(7+9);
+output((x>y) ? x+y : x-y);
