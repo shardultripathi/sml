@@ -71,6 +71,42 @@ class smlListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by smlParser#arrDecl.
+    def enterArrDecl(self, ctx:smlParser.ArrDeclContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#arrDecl.
+    def exitArrDecl(self, ctx:smlParser.ArrDeclContext):
+        pass
+
+
+    # Enter a parse tree produced by smlParser#intRef.
+    def enterIntRef(self, ctx:smlParser.IntRefContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#intRef.
+    def exitIntRef(self, ctx:smlParser.IntRefContext):
+        pass
+
+
+    # Enter a parse tree produced by smlParser#arrExpr.
+    def enterArrExpr(self, ctx:smlParser.ArrExprContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#arrExpr.
+    def exitArrExpr(self, ctx:smlParser.ArrExprContext):
+        pass
+
+
+    # Enter a parse tree produced by smlParser#intIdRef.
+    def enterIntIdRef(self, ctx:smlParser.IntIdRefContext):
+        pass
+
+    # Exit a parse tree produced by smlParser#intIdRef.
+    def exitIntIdRef(self, ctx:smlParser.IntIdRefContext):
+        pass
+
+
     # Enter a parse tree produced by smlParser#forLoop.
     def enterForLoop(self, ctx:smlParser.ForLoopContext):
         pass

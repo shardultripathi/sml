@@ -1,7 +1,11 @@
 uint32_t x;;
 uint32_t y;
+uint32_t z[10];
 x = input1(19);
 y = input2(16);
 x = x + y - 1;
+for uint32_t i = [0:9:2] {
+	z[i] = z[i];
+}
 y = (x & y) + 7;
-output((x>y) ? 1 : 0);
+output(true ? 1 : 0);

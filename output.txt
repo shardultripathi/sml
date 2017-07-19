@@ -7,6 +7,8 @@ uint32_t x;
 share *s_x;
 uint32_t y;
 share *s_y;
+uint32_t z[10];
+share *s_z[10];
 x = 19 ;
 if (role == SERVER) {
 s_x = acirc->PutINGate( x ,bitlen,SERVER);
@@ -23,6 +25,10 @@ share * s_tmp_0 = acirc->PutADDGate( s_x , s_y );
 uint32_t _tmp_1 = 1 ;
 share * s_tmp_1 = acirc->PutCONSGate( _tmp_1 ,bitlen);
 s_x = acirc->PutSUBGate( s_tmp_0 , s_tmp_1 );
+for (uint32_t i = 0; i < 9; i += 2)
+{
+s_z[i] = create_new_share(s_z[i]->get_wire_ids(), acirc );
+}
 s_x = ycirc->PutA2YGate( s_x );
 s_y = ycirc->PutA2YGate( s_y );
 share * s_tmp_2 = ycirc->PutANDGate( s_x , s_y );
@@ -30,8 +36,8 @@ uint32_t _tmp_3 = 7 ;
 share * s_tmp_3 = acirc->PutCONSGate( _tmp_3 ,bitlen);
 s_tmp_2 = acirc->PutY2AGate( s_tmp_2 ,bcirc);
 s_y = acirc->PutADDGate( s_tmp_2 , s_tmp_3 );
-s_y = ycirc->PutA2YGate( s_y );
-share * s_tmp_6 = ycirc->PutGTGate( s_x , s_y );
+bool _tmp_6 = true ;
+share * s_tmp_6 = ycirc->PutCONSGate( _tmp_6 ,bitlen);
 uint32_t _tmp_7 = 1 ;
 share * s_tmp_7 = ycirc->PutCONSGate( _tmp_7 ,bitlen);
 uint32_t _tmp_8 = 0 ;

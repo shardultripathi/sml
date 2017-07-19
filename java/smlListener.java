@@ -77,6 +77,46 @@ public interface smlListener extends ParseTreeListener {
 	 */
 	void exitAssignment(smlParser.AssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link smlParser#arrDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrDecl(smlParser.ArrDeclContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#arrDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrDecl(smlParser.ArrDeclContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link smlParser#intRef}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntRef(smlParser.IntRefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#intRef}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntRef(smlParser.IntRefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link smlParser#arrExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterArrExpr(smlParser.ArrExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#arrExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitArrExpr(smlParser.ArrExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link smlParser#intIdRef}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntIdRef(smlParser.IntIdRefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link smlParser#intIdRef}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntIdRef(smlParser.IntIdRefContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link smlParser#forLoop}.
 	 * @param ctx the parse tree
 	 */

@@ -20,11 +20,12 @@ blockComm
     : assignment
     | forLoop
     | block
-// not allowing output inside block
+// not allowing declaration and output inside block
 ;
 
 declaration
-    : (varType Ident)? ';'
+    : varType arrDecl ';'
+    | (varType Ident)? ';'
 ;
 
 varType
@@ -32,8 +33,26 @@ varType
 ;
 
 assignment 
-    : Ident '=' expr ';'
+    : arrExpr '=' expr ';'
+    | Ident '=' expr ';'
+    | arrExpr '=' inputExpr ';'
     | Ident '=' inputExpr ';'
+;
+
+arrDecl
+    : Ident intRef
+;
+
+intRef
+    : ('[' IntegerConstant ']')+
+;
+
+arrExpr
+    : Ident intIdRef
+;
+
+intIdRef
+   : ('[' (IntegerConstant | Ident) ']')+
 ;
 
 forLoop
@@ -56,11 +75,10 @@ arithExpr
     | arithExpr ('+' | '-') arithExpr
     | arithExpr ('<<' | '>>') arithExpr
     | arithExpr '&' arithExpr // bitwise and
-    | arithExpr '^' arithExpr
+    | arithExpr '^' arithExpr // bitwise xor
     | arithExpr '|' arithExpr // bitwise or
-//    | arithExpr '&&' arithExpr // logical and
-//    | arithExpr '||' arithExpr // logical or
     | IntegerConstant
+    | arrExpr
     | Ident
 ;
 
@@ -73,13 +91,10 @@ boolExpr
     | '!' boolExpr
     | arithExpr ('<' | '<=' | '>' | '>=') arithExpr
     | arithExpr ('==' | '!=') arithExpr
-//    | boolExpr '&' boolExpr
     | boolExpr '^' boolExpr
-//    | boolExpr '|' boolExpr
     | boolExpr '&&' boolExpr
     | boolExpr '||' boolExpr
     | BoolConstant
-    | Ident
 ;
 
 inputExpr

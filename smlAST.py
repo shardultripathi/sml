@@ -63,6 +63,16 @@ class Ident(ASTnode):
     def visit(self, offset):
         print(" "*offset, "Ident:", self.name)
 
+class ArrayPub(ASTnode):
+    def __init__(self, idname, ref):
+        self.idname = idname
+        self.ref = ref
+        self.arity = 1
+
+    def visit(self, offset):
+        print(" "*offset, "ArrayPub:", self.ref)
+        self.idname.visit(offset+off)
+
 class Assign(ASTnode):
     def __init__(self, lhs, rhs):
         self.lhs = lhs
@@ -74,20 +84,22 @@ class Assign(ASTnode):
         self.lhs.visit(offset+off)
         self.rhs.visit(offset+off)
 
-class For(ASTnode):
-    def __init__(self, idname, start, end, step):
+class ForLoop(ASTnode):
+    def __init__(self, idname, start, end, step, block):
         self.idname = idname
         self.start = start
         self.end = end
         self.step = step
-        self.arity = 4
+        self.block = block
+        self.arity = 5
 
     def visit(self, offset):
         print(" "*offset, "For:")
-        idname.visit(offset+off)
-        start.visit(offset+off)
-        end.visit(offset+off)
-        step.visit(offset+off)
+        self.idname.visit(offset+off)
+        self.start.visit(offset+off)
+        self.end.visit(offset+off)
+        self.step.visit(offset+off)
+        self.block.visit(offset+off)
 
 class BinOp(ASTnode):
     def __init__(self, lhs, op, optype, rhs):
@@ -189,15 +201,33 @@ def getAST(rule):
 
     elif isinstance(rule, sp.DeclarationContext): # declaration
         if rule.getText() != ';':
+            if isinstance(rule.getChild(1), sp.ArrDeclContext):
+                return Decl(getAST(rule.getChild(0)), getAST(rule.getChild(1)))
             return Decl(getAST(rule.getChild(0)), Ident(rule.getChild(1).getText()))
-        else:
-            return None
+        return None
+
+    elif isinstance(rule, sp.ArrDeclContext): # arrDecl
+        return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText())
 
     elif isinstance(rule, sp.VarTypeContext): # varType
         return IdentType(rule.getText())
 
+    elif isinstance(rule, sp.ForLoopContext):
+        rangelist = rule.getChild(4)
+        start = rangelist.getChild(1).getText()
+        end = rangelist.getChild(3).getText()
+        step = '1'
+        if rangelist.getChildCount() > 5:
+            step = rangelist.getChild(5).getText()
+        return ForLoop(Ident(rule.getChild(2).getText()), start, end, step, getAST(rule.getChild(5)))
+
     elif isinstance(rule, sp.AssignmentContext): # assignment
+        if isinstance(rule.getChild(0), sp.ArrExprContext):
+            return Assign(getAST(rule.getChild(0)), getAST(rule.getChild(2)))
         return Assign(Ident(rule.getChild(0).getText()), getAST(rule.getChild(2)))
+
+    elif isinstance(rule, sp.ArrExprContext): # arrExpr
+        return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText())
 
     elif isinstance(rule, sp.OutputContext): # output
         return OutExpr(getAST(rule.getChild(2)))
@@ -206,8 +236,10 @@ def getAST(rule):
         return getAST(rule.getChild(0))
 
     elif isinstance(rule, sp.ArithExprContext): # arithExpr
-        if rule.getChildCount() == 1: # Constant or Ident
-            if rule.getChild(0).symbol.type == sp.IntegerConstant:
+        if rule.getChildCount() == 1: # Constant or Ident or arrExpr
+            if isinstance(rule.getChild(0), sp.ArrExprContext):
+                return getAST(rule.getChild(0))
+            elif rule.getChild(0).symbol.type == sp.IntegerConstant:
                 return Constant('uint32_t', rule.getText()) # convert to int or not?
             else: # - Ident
                 return Ident(rule.getText())

@@ -44,6 +44,26 @@ class smlVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by smlParser#arrDecl.
+    def visitArrDecl(self, ctx:smlParser.ArrDeclContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by smlParser#intRef.
+    def visitIntRef(self, ctx:smlParser.IntRefContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by smlParser#arrExpr.
+    def visitArrExpr(self, ctx:smlParser.ArrExprContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by smlParser#intIdRef.
+    def visitIntIdRef(self, ctx:smlParser.IntIdRefContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by smlParser#forLoop.
     def visitForLoop(self, ctx:smlParser.ForLoopContext):
         return self.visitChildren(ctx)
