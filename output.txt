@@ -46,3 +46,51 @@ share * s_tmp_5 = ycirc->PutMUXGate( s_tmp_7 , s_tmp_8 , s_tmp_6 );
 share * s_tmp_4 = ycirc->PutOUTGate( s_tmp_5 , ALL);
 party->ExecCircuit();
 uint32_t _output = s_tmp_4->get_clear_value<uint32_t>();
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);
+vector<Sharing*>& sharings = party->GetSharings();
+Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
+Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
+Circuit* bcirc = sharings[S_BOOL]->GetCircuitBuildRoutine();
+uint32_t x;
+share *s_x;
+uint32_t y;
+share *s_y;
+uint32_t z[10];
+share *s_z[10];
+x = 19 ;
+if (role == SERVER) {
+s_x = acirc->PutINGate( x ,bitlen,SERVER);
+} else {
+s_x = acirc->PutDummyINGate(bitlen);
+}
+y = 16 ;
+if (role == CLIENT) {
+s_y = acirc->PutINGate( y ,bitlen,CLIENT);
+} else {
+s_y = acirc->PutDummyINGate(bitlen);
+}
+share * s_tmp_0 = acirc->PutADDGate( s_x , s_y );
+uint32_t _tmp_1 = 1 ;
+share * s_tmp_1 = acirc->PutCONSGate( _tmp_1 ,bitlen);
+s_x = acirc->PutSUBGate( s_tmp_0 , s_tmp_1 );
+for (uint32_t i = 0; i < 9; i += 2)
+{
+s_z[i] = create_new_share(s_z[i]->get_wire_ids(), acirc );
+}
+s_x = ycirc->PutA2YGate( s_x );
+s_y = ycirc->PutA2YGate( s_y );
+share * s_tmp_2 = ycirc->PutANDGate( s_x , s_y );
+uint32_t _tmp_3 = 7 ;
+share * s_tmp_3 = acirc->PutCONSGate( _tmp_3 ,bitlen);
+s_tmp_2 = acirc->PutY2AGate( s_tmp_2 ,bcirc);
+s_y = acirc->PutADDGate( s_tmp_2 , s_tmp_3 );
+bool _tmp_6 = true ;
+share * s_tmp_6 = ycirc->PutCONSGate( _tmp_6 ,bitlen);
+uint32_t _tmp_7 = 1 ;
+share * s_tmp_7 = ycirc->PutCONSGate( _tmp_7 ,bitlen);
+uint32_t _tmp_8 = 0 ;
+share * s_tmp_8 = ycirc->PutCONSGate( _tmp_8 ,bitlen);
+share * s_tmp_5 = ycirc->PutMUXGate( s_tmp_7 , s_tmp_8 , s_tmp_6 );
+share * s_tmp_4 = ycirc->PutOUTGate( s_tmp_5 , ALL);
+party->ExecCircuit();
+uint32_t _output = s_tmp_4->get_clear_value<uint32_t>();
