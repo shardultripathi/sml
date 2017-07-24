@@ -64,9 +64,10 @@ class Ident(ASTnode):
         print(" "*offset, "Ident:", self.name)
 
 class ArrayPub(ASTnode):
-    def __init__(self, idname, ref):
+    def __init__(self, idname, ref, refctx):
         self.idname = idname
         self.ref = ref
+        self.refctx = refctx
         self.arity = 1
 
     def visit(self, offset):
@@ -207,7 +208,7 @@ def getAST(rule):
         return None
 
     elif isinstance(rule, sp.ArrDeclContext): # arrDecl
-        return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText())
+        return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText(), rule.getChild(1))
 
     elif isinstance(rule, sp.VarTypeContext): # varType
         return IdentType(rule.getText())
@@ -227,7 +228,7 @@ def getAST(rule):
         return Assign(Ident(rule.getChild(0).getText()), getAST(rule.getChild(2)))
 
     elif isinstance(rule, sp.ArrExprContext): # arrExpr
-        return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText())
+        return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText(), rule.getChild(1))
 
     elif isinstance(rule, sp.OutputContext): # output
         return OutExpr(getAST(rule.getChild(2)))

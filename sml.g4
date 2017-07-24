@@ -52,7 +52,7 @@ arrExpr
 ;
 
 intIdRef
-   : ('[' (IntegerConstant | Ident) ']')+
+   : ('[' arithExpr ']')+
 ;
 
 forLoop

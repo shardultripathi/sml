@@ -16,7 +16,7 @@ def main():
     # ast.visit(0)
     # print()
     scg = smlCodeGen()
-    scg.codeGen(ast)
+    scg.codeGen(ast, False)
 
 if __name__ == '__main__':
     main()

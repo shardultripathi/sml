@@ -52,7 +52,7 @@ arrExpr
 ;
 
 intIdRef
-   : ('[' (IntegerConstant | Ident) ']')+
+   : ('[' arithExpr ']')+
 ;
 
 forLoop
@@ -68,6 +68,7 @@ expr
     | conditionalExpr
 ;
 
+// TODO: / % >> <<
 arithExpr
     : '(' arithExpr ')'
     | '-' arithExpr
@@ -86,6 +87,7 @@ conditionalExpr
     : boolExpr '?' expr ':' expr
 ;
 
+// TODO: <= >= == !=
 boolExpr
     : '(' boolExpr ')'
     | '!' boolExpr
