@@ -5,13 +5,13 @@ from smlParser import smlParser
 from smlAST import *
 
 const = 4
-cdict = { # TODO: Convert pair to string
-            ('y','a') : 'PutY2AGate',
-            ('y','b') : 'PutY2BGate',
-            ('a','y') : 'PutA2YGate',
-            ('a','b') : 'PutA2BGate',
-            ('b','a') : 'PutB2AGate',
-            ('b','y') : 'PutB2YGate'
+cdict = {
+            'ya' : 'PutY2AGate',
+            'yb' : 'PutY2BGate',
+            'ay' : 'PutA2YGate',
+            'ab' : 'PutA2BGate',
+            'ba' : 'PutB2AGate',
+            'by' : 'PutB2YGate'
 }
 
 def shareName(name, circ):
@@ -57,11 +57,11 @@ class smlCodeGen:
         tgt = self.dict[name][i]
         if tgt != None and tgt != -1:
             return
-        pair = (sname[2], circ[0])
+        pair = sname[2] + circ[0]
         x = ''
-        if pair == ('a','b'):
+        if pair == 'ab':
             x = ',ycirc'
-        elif pair == ('y','a'):
+        elif pair == 'ya':
             x = ',bcirc'
         tname = 's_' + circ[0] + sname[3:]
         newshare = ''
@@ -78,11 +78,11 @@ class smlCodeGen:
         tgt = self.dict[name][i]
         if tgt != None and tgt != -1:
             return
-        pair = (sname[2], circ[0])
+        pair = sname[2] + circ[0]
         tmp = ''
-        if pair == ('a','b'):
+        if pair == 'ab':
             tmp = ',ycirc'
-        elif pair == ('y','a'):
+        elif pair == 'ya':
             tmp = ',bcirc'
         tname = 's_' + circ[0] + sname[3:]
         refctx = self.arrDict[name]

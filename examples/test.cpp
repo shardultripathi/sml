@@ -28,11 +28,11 @@ for (uint32_t i = 0; i < 100; i++)
 }
 share *s_b_a[100] ;
 for (int _i1 = 0; _i1 < 100 ; _i1++) {
-    s_b_a[_i1] = bcirc->PutA2BGate( s_a_a[_i1] ,ycirc);
+s_b_a[_i1] = bcirc->PutA2BGate( s_a_a[_i1] ,ycirc);
 }
 share *s_b_b[100] ;
 for (int _i1 = 0; _i1 < 100 ; _i1++) {
-    s_b_b[_i1] = bcirc->PutA2BGate( s_a_b[_i1] ,ycirc);
+s_b_b[_i1] = bcirc->PutA2BGate( s_a_b[_i1] ,ycirc);
 }
 for (uint32_t i = 0; i < 100; i++)
 {
@@ -43,7 +43,7 @@ for (uint32_t i = 0; i < 100; i++)
     s_b_a[i] = bcirc->PutANDGate( s_b_a[i] , s_b_b[i] );
 }
 for (int _i1 = 0; _i1 < 100 ; _i1++) {
-    s_a_a[_i1] = acirc->PutB2AGate( s_b_a[_i1] );
+s_a_a[_i1] = acirc->PutB2AGate( s_b_a[_i1] );
 }
 for (uint32_t i = 0; i < 100; i++)
 {
