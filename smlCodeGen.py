@@ -402,7 +402,7 @@ class smlCodeGen:
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
                 i = self.getIndex(circ)
-                print(tmpvar,'=',rhs.value,';', file=self.file)
+                print(' '*offset+tmpvar,'=',rhs.value,';', file=self.file)
                 if varShares[i] is None:
                     print(' '*offset+'share *'+varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
                 else:
@@ -596,15 +596,15 @@ class smlCodeGen:
                 if varShares[i] is None:
                     print(' '*offset+'share *',varname,';')
                 if rhs.partynum == 'input1':
-                    print('if (role == SERVER) {', file=self.file)
-                    print(varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,SERVER);', file=self.file)
-                    print('} else {', file=self.file)
-                    print(varname,'=',circ+'->PutDummyINGate(bitlen);\n}', file=self.file)
+                    print(' '*offset+'if (role == SERVER) {', file=self.file)
+                    print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,SERVER);', file=self.file)
+                    print(' '*offset+'} else {', file=self.file)
+                    print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
                 else:
-                    print('if (role == CLIENT) {', file=self.file)
-                    print(varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
-                    print('} else {', file=self.file)
-                    print(varname,'=',circ+'->PutDummyINGate(bitlen);\n}', file=self.file)
+                    print(' '*offset+'if (role == CLIENT) {', file=self.file)
+                    print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
+                    print(' '*offset+'} else {', file=self.file)
+                    print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
 
             else:

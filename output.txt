@@ -9,32 +9,32 @@ uint32_t x[785];
 share *s_a_x[785];
 uint32_t ans[10];
 share *s_a_ans[10];
-uint32_t tmp;
-share *s_a_tmp;
 for (uint32_t i = 0; i < 10; i++)
 {
     for (uint32_t j = 0; j < 785; j++)
     {
         w[i][j] = 50 ;
-if (role == SERVER) {
-s_a_w[i][j] = acirc->PutINGate( w[i][j] ,bitlen,SERVER);
-} else {
-s_a_w[i][j] = acirc->PutDummyINGate(bitlen);
-}
+        if (role == SERVER) {
+            s_a_w[i][j] = acirc->PutINGate( w[i][j] ,bitlen,SERVER);
+        } else {
+            s_a_w[i][j] = acirc->PutDummyINGate(bitlen);
+        }
     }
 }
 for (uint32_t i = 0; i < 785; i++)
 {
     x[i] = 100 ;
-if (role == CLIENT) {
-s_a_x[i] = acirc->PutINGate( x[i] ,bitlen,CLIENT);
-} else {
-s_a_x[i] = acirc->PutDummyINGate(bitlen);
+    if (role == CLIENT) {
+        s_a_x[i] = acirc->PutINGate( x[i] ,bitlen,CLIENT);
+    } else {
+        s_a_x[i] = acirc->PutDummyINGate(bitlen);
+    }
 }
-}
+uint32_t tmp;
+share *s_a_tmp;
 for (uint32_t i = 0; i < 10; i++)
 {
-tmp = 0 ;
+    tmp = 0 ;
     s_a_tmp = acirc->PutCONSGate( tmp ,bitlen);
     for (uint32_t j = 0; j < 785; j++)
     {
