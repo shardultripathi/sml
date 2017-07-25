@@ -5,17 +5,17 @@ from smlParser import smlParser
 from smlListener import smlListener
 from smlAST import *
 from smlCodeGen import smlCodeGen
+import os
 
 def main():
-    input = FileStream(sys.argv[1])
-    lexer = smlLexer(input)
+    inputFile = FileStream(sys.argv[1])
+    lexer = smlLexer(inputFile)
     stream = CommonTokenStream(lexer)
     parser = smlParser(stream)
     tree = parser.commandSeq()
     ast = getAST(tree)
-    # ast.visit(0)
-    # print()
-    scg = smlCodeGen()
+    filename, file_extension = os.path.splitext(sys.argv[1])
+    scg = smlCodeGen(filename + '.cpp')
     scg.codeGen(ast, False)
 
 if __name__ == '__main__':

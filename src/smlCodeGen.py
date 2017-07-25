@@ -18,13 +18,13 @@ def shareName(name, circ):
     return 's_' + circ[0] + '_' + name
 
 class smlCodeGen:
-    def __init__(self):
+    def __init__(self, filename):
         self.dict = {}  # name -> ['s_a_name', 's_b_name', 's_y_name'] None -> not declared, -1 -> dirty
         self.arrDict = {} # name -> refctx
         self.counter = 0
         self.defckt = 'bcirc'
         self.circ = 'acirc'
-        self.file = open('output.txt', 'w')
+        self.file = open(filename, 'w')
         print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);', file=self.file)
         print('vector<Sharing*>& sharings = party->GetSharings();', file=self.file)
         print('Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();', file=self.file)
