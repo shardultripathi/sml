@@ -12,13 +12,11 @@ for uint32_t i = [0:785] {
     x[i] = input2(100);
 }
 
-uint32_t tmp;
 for uint32_t i = [0:10] {
-    tmp = 0;
+    ans[i] = 0;
     for uint32_t j = [0:785] {
-        tmp = tmp + w[i][j]*x[j];
+        ans[i] = ans[i] + w[i][j]*x[j];
     }
-    ans[i] = tmp;
 }
 
 uint32_t max;

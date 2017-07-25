@@ -30,18 +30,15 @@ for (uint32_t i = 0; i < 785; i++)
         s_a_x[i] = acirc->PutDummyINGate(bitlen);
     }
 }
-uint32_t tmp;
-share *s_a_tmp;
 for (uint32_t i = 0; i < 10; i++)
 {
-    tmp = 0 ;
-    s_a_tmp = acirc->PutCONSGate( tmp ,bitlen);
+    ans[i] = 0 ;
+    s_a_ans[i] = acirc->PutCONSGate( ans[i] ,bitlen);
     for (uint32_t j = 0; j < 785; j++)
     {
         share * s_a_tmp_0 = acirc->PutMULGate( s_a_w[i][j] , s_a_x[j] );
-        s_a_tmp = acirc->PutADDGate( s_a_tmp , s_a_tmp_0 );
+        s_a_ans[i] = acirc->PutADDGate( s_a_ans[i] , s_a_tmp_0 );
     }
-    s_a_ans[i] = create_new_share(s_a_tmp->get_wire_ids(), acirc );
 }
 uint32_t max;
 share *s_a_max;

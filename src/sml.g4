@@ -74,7 +74,7 @@ arithExpr
     | '-' arithExpr
     | arithExpr ('*' | '/' | '%') arithExpr
     | arithExpr ('+' | '-') arithExpr
-    | arithExpr ('<<' | '>>') arithExpr
+    | arithExpr ('<<' | '>>') IntegerConstant
     | arithExpr '&' arithExpr // bitwise and
     | arithExpr '^' arithExpr // bitwise xor
     | arithExpr '|' arithExpr // bitwise or
