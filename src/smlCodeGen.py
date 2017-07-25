@@ -22,7 +22,7 @@ class smlCodeGen:
         self.dict = {}  # name -> ['s_a_name', 's_b_name', 's_y_name'] None -> not declared, -1 -> dirty
         self.arrDict = {} # name -> refctx
         self.counter = 0
-        self.defckt = 'bcirc'
+        self.defckt = 'ycirc'
         self.circ = 'acirc'
         self.file = open(filename, 'w')
         print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);', file=self.file)
@@ -372,9 +372,9 @@ class smlCodeGen:
                 if rhsShareList[i] is None or rhsShareList[i] == -1:
                     self.convertIdent(existing, circ)
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varname,'= create_new_share('+rhsShareList[i]+'->get_wire_ids(),',circ,');', file=self.file)
+                    print(' '*offset+'share *'+varname,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
                 else:
-                    print(' '*offset+varname,'= create_new_share('+rhsShareList[i]+'->get_wire_ids(),',circ,');', file=self.file)
+                    print(' '*offset+varname,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
 
             elif isinstance(rhs, ArrayPub):
                 if not insideFor or circ is None:
@@ -390,9 +390,9 @@ class smlCodeGen:
                     self.convertArr(existing, circ)
                 copyshare = rhsShareList[i] + rhs.ref
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varname,'= create_new_share('+copyshare+'->get_wire_ids(),',circ,');', file=self.file)
+                    print(' '*offset+'share *'+varname,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
                 else:
-                    print(' '*offset+varname,'= create_new_share('+copyshare+'->get_wire_ids(),',circ,');', file=self.file)
+                    print(' '*offset+varname,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
 
             elif isinstance(rhs, Constant):
                 if not insideFor or circ is None:

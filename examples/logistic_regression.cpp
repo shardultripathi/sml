@@ -47,16 +47,16 @@ uint32_t max;
 share *s_a_max;
 max = 0 ;
 s_a_max = acirc->PutCONSGate( max ,bitlen);
-share *s_b_ans[10] ;
+share *s_y_ans[10] ;
 for (int _i1 = 0; _i1 < 10 ; _i1++) {
-s_b_ans[_i1] = bcirc->PutA2BGate( s_a_ans[_i1] ,ycirc);
+s_y_ans[_i1] = ycirc->PutA2YGate( s_a_ans[_i1] );
 }
-share *s_b_max = bcirc->PutA2BGate( s_a_max ,ycirc);
+share *s_y_max = ycirc->PutA2YGate( s_a_max );
 for (uint32_t i = 0; i < 10; i++)
 {
-    share * s_b_tmp_1 = bcirc->PutGTGate( s_b_ans[i] , s_b_max );
-    s_b_max = bcirc->PutMUXGate( s_b_ans[i] , s_b_max , s_b_tmp_1 );
+    share * s_y_tmp_1 = ycirc->PutGTGate( s_y_ans[i] , s_y_max );
+    s_y_max = ycirc->PutMUXGate( s_y_ans[i] , s_y_max , s_y_tmp_1 );
 }
-share * s_b_tmp_2 = bcirc->PutOUTGate( s_b_max , ALL);
+share * s_y_tmp_2 = ycirc->PutOUTGate( s_y_max , ALL);
 party->ExecCircuit();
-uint32_t _output = s_b_tmp_2->get_clear_value<uint32_t>();
+uint32_t _output = s_y_tmp_2->get_clear_value<uint32_t>();
