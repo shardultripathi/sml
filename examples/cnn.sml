@@ -52,8 +52,13 @@ for uint32_t i = [0:32] {
         }
     }
     for uint32_t j = [14:19] {
+        for uint32_t k = [0:19] {
+            hpool1[i][j][k] = 0;
+        }
+    }
+    for uint32_t j = [0:19] {
         for uint32_t k = [14:19] {
-            hpool1[i][j][k] = hpool1[i][j-1][k-1];
+            hpool1[i][j][k] = 0;
         }
     }
 }
@@ -137,7 +142,7 @@ for uint32_t i = [0:1024] {
 }
 
 for uint32_t i = [0:1024] {
-    hfc1[i] = (hfc1[i] > 2147483648) ? 0 : (hfc1[i] >> 1);
+    hfc1[i] = (hfc1[i] > 2147483648) ? 0 : (hfc1[i] );
 }
 
 uint32_t wfc2[10][1024];
