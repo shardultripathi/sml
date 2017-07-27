@@ -2,6 +2,7 @@ uint32_t w[10][785];
 uint32_t x[785];
 uint32_t ans[10];
 
+// taking input
 for uint32_t i = [0:10] {
     for uint32_t j = [0:785] {
         w[i][j] = input1(50);

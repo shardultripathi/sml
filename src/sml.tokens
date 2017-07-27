@@ -36,6 +36,7 @@ BoolConstant=35
 Ident=36
 IntegerConstant=37
 WS=38
+LineComment=39
 '{'=1
 '}'=2
 ';'=3

@@ -252,6 +252,9 @@ def getAST(rule):
         else:
             if rule.getChild(0).getText() == '(': # ( arithExpr )
                 return getAST(rule.getChild(1))
+            elif not isinstance(rule.getChild(2), sp.ArithExprContext):
+                return BinOp(getAST(rule.getChild(0)), rule.getChild(1).getText(),
+                        'uint32_t', Constant('uint32_t', rule.getChild(2).getText()))
             else: # arithExpr BinOp arithExpr
                 return BinOp(getAST(rule.getChild(0)), rule.getChild(1).getText(),
                         'uint32_t', getAST(rule.getChild(2)))

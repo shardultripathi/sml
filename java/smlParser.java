@@ -21,7 +21,7 @@ public class smlParser extends Parser {
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
 		InputA=32, InputB=33, Output=34, BoolConstant=35, Ident=36, IntegerConstant=37, 
-		WS=38;
+		WS=38, LineComment=39;
 	public static final int
 		RULE_commandSeq = 0, RULE_command = 1, RULE_block = 2, RULE_blockComm = 3, 
 		RULE_declaration = 4, RULE_varType = 5, RULE_assignment = 6, RULE_arrDecl = 7, 
@@ -44,7 +44,7 @@ public class smlParser extends Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, "InputA", "InputB", "Output", 
-		"BoolConstant", "Ident", "IntegerConstant", "WS"
+		"BoolConstant", "Ident", "IntegerConstant", "WS", "LineComment"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -1084,8 +1084,44 @@ public class smlParser extends Parser {
 						_localctx = new ArithExprContext(_parentctx, _parentState);
 						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
 						setState(161);
-						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
+						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
 						setState(162);
+						match(T__18);
+						setState(163);
+						arithExpr(7);
+						}
+						break;
+					case 4:
+						{
+						_localctx = new ArithExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
+						setState(164);
+						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
+						setState(165);
+						match(T__19);
+						setState(166);
+						arithExpr(6);
+						}
+						break;
+					case 5:
+						{
+						_localctx = new ArithExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
+						setState(167);
+						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
+						setState(168);
+						match(T__20);
+						setState(169);
+						arithExpr(5);
+						}
+						break;
+					case 6:
+						{
+						_localctx = new ArithExprContext(_parentctx, _parentState);
+						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
+						setState(170);
+						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
+						setState(171);
 						_la = _input.LA(1);
 						if ( !(_la==T__16 || _la==T__17) ) {
 						_errHandler.recoverInline(this);
@@ -1095,44 +1131,8 @@ public class smlParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(163);
-						arithExpr(8);
-						}
-						break;
-					case 4:
-						{
-						_localctx = new ArithExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
-						setState(164);
-						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(165);
-						match(T__18);
-						setState(166);
-						arithExpr(7);
-						}
-						break;
-					case 5:
-						{
-						_localctx = new ArithExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
-						setState(167);
-						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(168);
-						match(T__19);
-						setState(169);
-						arithExpr(6);
-						}
-						break;
-					case 6:
-						{
-						_localctx = new ArithExprContext(_parentctx, _parentState);
-						pushNewRecursionContext(_localctx, _startState, RULE_arithExpr);
-						setState(170);
-						if (!(precpred(_ctx, 4))) throw new FailedPredicateException(this, "precpred(_ctx, 4)");
-						setState(171);
-						match(T__20);
 						setState(172);
-						arithExpr(5);
+						match(IntegerConstant);
 						}
 						break;
 					}
@@ -1516,13 +1516,13 @@ public class smlParser extends Parser {
 		case 1:
 			return precpred(_ctx, 8);
 		case 2:
-			return precpred(_ctx, 7);
-		case 3:
 			return precpred(_ctx, 6);
-		case 4:
+		case 3:
 			return precpred(_ctx, 5);
-		case 5:
+		case 4:
 			return precpred(_ctx, 4);
+		case 5:
+			return precpred(_ctx, 7);
 		}
 		return true;
 	}
@@ -1539,7 +1539,7 @@ public class smlParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3(\u00ed\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3)\u00ed\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\3\2\7\2*\n\2\f\2\16\2-\13\2\3\3\3\3\3\3\3\3\3\3\5"+
@@ -1589,11 +1589,11 @@ public class smlParser extends Parser {
 		"\u009b\u0091\3\2\2\2\u009b\u0096\3\2\2\2\u009b\u0098\3\2\2\2\u009b\u0099"+
 		"\3\2\2\2\u009b\u009a\3\2\2\2\u009c\u00b1\3\2\2\2\u009d\u009e\f\13\2\2"+
 		"\u009e\u009f\t\2\2\2\u009f\u00b0\5\36\20\f\u00a0\u00a1\f\n\2\2\u00a1\u00a2"+
-		"\t\3\2\2\u00a2\u00b0\5\36\20\13\u00a3\u00a4\f\t\2\2\u00a4\u00a5\t\4\2"+
-		"\2\u00a5\u00b0\5\36\20\n\u00a6\u00a7\f\b\2\2\u00a7\u00a8\7\25\2\2\u00a8"+
-		"\u00b0\5\36\20\t\u00a9\u00aa\f\7\2\2\u00aa\u00ab\7\26\2\2\u00ab\u00b0"+
-		"\5\36\20\b\u00ac\u00ad\f\6\2\2\u00ad\u00ae\7\27\2\2\u00ae\u00b0\5\36\20"+
-		"\7\u00af\u009d\3\2\2\2\u00af\u00a0\3\2\2\2\u00af\u00a3\3\2\2\2\u00af\u00a6"+
+		"\t\3\2\2\u00a2\u00b0\5\36\20\13\u00a3\u00a4\f\b\2\2\u00a4\u00a5\7\25\2"+
+		"\2\u00a5\u00b0\5\36\20\t\u00a6\u00a7\f\7\2\2\u00a7\u00a8\7\26\2\2\u00a8"+
+		"\u00b0\5\36\20\b\u00a9\u00aa\f\6\2\2\u00aa\u00ab\7\27\2\2\u00ab\u00b0"+
+		"\5\36\20\7\u00ac\u00ad\f\t\2\2\u00ad\u00ae\t\4\2\2\u00ae\u00b0\7\'\2\2"+
+		"\u00af\u009d\3\2\2\2\u00af\u00a0\3\2\2\2\u00af\u00a3\3\2\2\2\u00af\u00a6"+
 		"\3\2\2\2\u00af\u00a9\3\2\2\2\u00af\u00ac\3\2\2\2\u00b0\u00b3\3\2\2\2\u00b1"+
 		"\u00af\3\2\2\2\u00b1\u00b2\3\2\2\2\u00b2\37\3\2\2\2\u00b3\u00b1\3\2\2"+
 		"\2\u00b4\u00b5\5\"\22\2\u00b5\u00b6\7\30\2\2\u00b6\u00b7\5\34\17\2\u00b7"+

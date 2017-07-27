@@ -165,3 +165,7 @@ NonzeroDigit
 ;
 
 WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
+
+LineComment
+    : '//' ~[\r\n]* -> channel(HIDDEN)
+;

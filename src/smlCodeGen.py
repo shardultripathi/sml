@@ -25,7 +25,7 @@ class smlCodeGen:
         self.defckt = 'ycirc'
         self.circ = 'acirc'
         self.file = open(filename, 'w')
-        print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);', file=self.file)
+        print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 650000000);', file=self.file)
         print('vector<Sharing*>& sharings = party->GetSharings();', file=self.file)
         print('Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();', file=self.file)
         print('Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();', file=self.file)
@@ -51,12 +51,12 @@ class smlCodeGen:
 
     def convertIdent(self, sname, circ): # convert share name to circ share
         if sname[2] == circ[0]:
-            return
+            return sname
         i = self.getIndex(circ)
         name = sname[4:]
         tgt = self.dict[name][i]
         if tgt != None and tgt != -1:
-            return
+            return tgt
         pair = sname[2] + circ[0]
         x = ''
         if pair == 'ab':
@@ -69,15 +69,16 @@ class smlCodeGen:
             newshare = 'share *'
         print(newshare + tname,'=',circ+'->'+cdict[pair]+'(',sname,x+');', file=self.file)
         self.putInDict(name, tname, circ)
+        return tname
 
     def convertArr(self, sname, circ):
         if sname[2] == circ[0]:
-            return
+            return sname
         i = self.getIndex(circ)
         name = sname[4:]
         tgt = self.dict[name][i]
         if tgt != None and tgt != -1:
-            return
+            return tgt
         pair = sname[2] + circ[0]
         tmp = ''
         if pair == 'ab':
@@ -99,12 +100,13 @@ class smlCodeGen:
         for x in range(1,refctx.getChildCount(),3):
             print('}', file=self.file)
         self.putInDict(name, tname, circ)
+        return tname
 
     def checkType(self, sname, circ):
         if sname[4:] in self.arrDict:
-            self.convertArr(sname, circ)
+            return self.convertArr(sname, circ)
         else:
-            self.convertIdent(sname, circ)
+            return self.convertIdent(sname, circ)
 
     def checkOps(self, node):
         if isinstance(node, UnOp):
@@ -115,7 +117,7 @@ class smlCodeGen:
         elif isinstance(node, Ident) or isinstance(node, ArrayPub) or isinstance(node, Constant):
             return False
         elif isinstance(node, BinOp):
-            if node.op == '>' or node.op == '<' or node.op == '&&' or node.op == '&' or node.op == '||' or node.op == '|' or node.op == '^':
+            if node.op == '>>' or node.op == '>' or node.op == '<' or node.op == '&&' or node.op == '&' or node.op == '||' or node.op == '|' or node.op == '^':
                 return True
             else:
                 return self.checkOps(node.lhs) or self.checkOps(node.rhs) # python supports short circuiting
@@ -172,14 +174,42 @@ class smlCodeGen:
                 return True
         return False
 
-    def convertAll(self, block, circ):
+    def declareLhs(self, lhs, circ):
+        if isinstance(lhs, ArrayPub):
+            name = lhs.idname.name
+            varShares = self.dict[name]
+            i = self.getIndex(circ)
+            if varShares[i] is None:
+                refctx = self.arrDict[name]
+                varname = shareName(name, circ)
+                print('share *', varname + refctx.getText(), ';', file=self.file)
+                varShares[i] = varname
+        else:
+            name = lhs.name
+            varShares = self.dict[name]
+            i = self.getIndex(circ)
+            if varShares[i] is None:
+                varname = shareName(name, circ)
+                print('share *', varname, ';', file=self.file)    
+                varShares[i] = varname   
+
+    def convertAll(self, block, circ, lhsSet=None):
         for x in block.children:
             if isinstance(x, Assign):
+                # lhsSet.add(x.lhs)
                 self.convertExpr(x.rhs, circ)
+                self.declareLhs(x.lhs, circ)
             elif isinstance(x, ForLoop):
-                self.convertAll(x.block, circ)
+                self.convertAll(x.block, circ, lhsSet)
             else:
-                self.convertAll(x, circ)
+                self.convertAll(x, circ, lhsSet)
+
+    # def convertAll(self, block, circ):
+    #     lhsSet = set()
+    #     self.convertAllHelper(block, circ, lhsSet)
+    #     for x in lhsSet:
+    #         self.declareLhs(x, circ)
+
 
     def codeGen(self, node, insideFor, circ=None, offset=0):
         if isinstance(node, CommSeq):
@@ -258,7 +288,7 @@ class smlCodeGen:
             varname = shareName(tmpvar, circ)
             self.counter += 1
             expr = self.codeGen(node.expr, insideFor, circ, offset) # check expr type
-            self.checkType(expr, circ)
+            expr = self.checkType(expr, circ)
             print(' '*offset+'share *',varname,'=',circ+'->PutINVGate(', expr,');', file=self.file)
             self.putInDict(tmpvar, varname, circ)
             return varname
@@ -272,8 +302,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutADDGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '*':
@@ -282,8 +312,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutMULGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '-':
@@ -292,8 +322,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutSUBGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '>':
@@ -302,8 +332,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutGTGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '<':
@@ -312,8 +342,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutGTGate(',rhs,',',lhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '&&' or node.op == '&':
@@ -322,8 +352,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutANDGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '||' or node.op == '|':
@@ -332,8 +362,8 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutORGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif node.op == '^':
@@ -342,9 +372,22 @@ class smlCodeGen:
                 varname = shareName(tmpvar, circ)
                 lhs = self.codeGen(node.lhs, insideFor, circ, offset)
                 rhs = self.codeGen(node.rhs, insideFor, circ, offset)
-                self.checkType(lhs, circ)
-                self.checkType(rhs, circ)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutXORGate(',lhs,',',rhs,');', file=self.file)
+                self.putInDict(tmpvar, varname, circ)
+            elif node.op == '>>':
+                if not insideFor or circ is None:
+                    circ = self.defckt
+                varname = shareName(tmpvar, circ)
+                lhs = self.codeGen(node.lhs, insideFor, circ, offset)
+                lhs = self.checkType(lhs, circ)
+                rightShift = node.rhs.value
+                vec = '_vec' + str(self.counter)
+                self.counter += 1
+                print(' '*offset+'vector<uint32_t>', vec, '=', lhs+'->get_wires();', file=self.file)
+                print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
+                print(' '*offset+'share *'+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             else:
                 print('I will do this later:', node.op, file=self.file)
@@ -363,10 +406,13 @@ class smlCodeGen:
                 if not insideFor or circ is None:
                     circ = self.circ
                 varname = shareName(tmpvar, circ)
+                i = self.getIndex(circ)
                 if lhsArr:
+                    if varShares[i] is None:
+                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                i = self.getIndex(circ)
                 rhsShareList = self.dict[rhs.name]
                 existing = next((item for item in rhsShareList if item is not None and item != -1), 'No shares exist for '+rhs.name)
                 if rhsShareList[i] is None or rhsShareList[i] == -1:
@@ -380,10 +426,13 @@ class smlCodeGen:
                 if not insideFor or circ is None:
                     circ = self.circ
                 varname = shareName(tmpvar, circ)
+                i = self.getIndex(circ)
                 if lhsArr:
+                    if varShares[i] is None:
+                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                i = self.getIndex(circ)
                 rhsShareList = self.dict[rhs.idname.name]
                 existing = next((item for item in rhsShareList if item is not None and item != -1), 'No shares exist for '+rhs.idname.name)
                 if rhsShareList[i] is None or rhsShareList[i] == -1:
@@ -398,10 +447,13 @@ class smlCodeGen:
                 if not insideFor or circ is None:
                     circ = self.circ
                 varname = shareName(tmpvar, circ)
+                i = self.getIndex(circ)
                 if lhsArr:
+                    if varShares[i] is None:
+                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                i = self.getIndex(circ)
                 print(' '*offset+tmpvar,'=',rhs.value,';', file=self.file)
                 if varShares[i] is None:
                     print(' '*offset+'share *'+varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
@@ -413,14 +465,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = 'acirc'
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutADDGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
@@ -430,14 +485,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = 'acirc'
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutMULGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
@@ -447,14 +505,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = 'acirc'
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutSUBGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
@@ -464,14 +525,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = self.defckt
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutGTGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
@@ -481,14 +545,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = self.defckt
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutGTGate(',binrhs,',',binlhs,');', file=self.file)
                     else:
@@ -498,14 +565,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = self.defckt
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutANDGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
@@ -515,14 +585,17 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = self.defckt
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutORGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
@@ -532,18 +605,44 @@ class smlCodeGen:
                     if not insideFor or circ is None:
                         circ = self.defckt
                     varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
                     if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
                         varname += node.lhs.ref
                         tmpvar += node.lhs.ref
-                    i = self.getIndex(circ)
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
-                    self.checkType(binlhs, circ)
-                    self.checkType(binrhs, circ)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
                         print(' '*offset+'share *',varname,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
                         print(' '*offset+varname,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
+                    self.putInDict(tmpvar, varname, circ)
+                elif rhs.op == '>>':
+                    if not insideFor or circ is None:
+                        circ = self.defckt
+                    varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
+                    if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
+                        varname += node.lhs.ref
+                        tmpvar += node.lhs.ref
+                    binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
+                    binlhs = self.checkType(binlhs, circ)
+                    rightShift = rhs.rhs.value
+                    vec = '_vec' + str(self.counter)
+                    self.counter += 1
+                    print(' '*offset+'vector<uint32_t>', vec, '=', binlhs+'->get_wires();', file=self.file)
+                    print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
+                    if varShares[i] is None:
+                        print(' '*offset+'share *'+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
+                    else:
+                        print(' '*offset+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 else:
                     print('I will do this later:', node.op, file=self.file)
@@ -552,12 +651,15 @@ class smlCodeGen:
                 if not insideFor or circ is None:
                     circ = self.circ
                 varname = shareName(tmpvar, circ)
+                i = self.getIndex(circ)
                 if lhsArr:
+                    if varShares[i] is None:
+                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                i = self.getIndex(circ)
                 expr = self.codeGen(rhs.expr, insideFor, circ, offset) # check expr type
-                self.checkType(expr, circ)
+                expr = self.checkType(expr, circ)
                 if varShares[i] is None:        
                     print(' '*offset+'share *',varname,'=',circ+'->PutINVGate(', expr,');', file=self.file)
                 else:
@@ -568,16 +670,19 @@ class smlCodeGen:
                 if not insideFor or circ is None:
                     circ = self.defckt
                 varname = shareName(tmpvar, circ)
+                i = self.getIndex(circ)
                 if lhsArr:
+                    if varShares[i] is None:
+                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                i = self.getIndex(circ)
                 sel = self.codeGen(rhs.condition, insideFor, circ, offset)
                 ina = self.codeGen(rhs.expr1, insideFor, circ, offset)
                 inb = self.codeGen(rhs.expr2, insideFor, circ, offset)
-                self.checkType(sel, circ)
-                self.checkType(ina, circ)
-                self.checkType(inb, circ)
+                sel = self.checkType(sel, circ)
+                ina = self.checkType(ina, circ)
+                inb = self.checkType(inb, circ)
                 if varShares[i] is None:
                     print(' '*offset+'share *',varname,'=',circ+'->PutMUXGate(',ina,',',inb,',',sel,');', file=self.file)
                 else:
@@ -588,10 +693,13 @@ class smlCodeGen:
                 if not insideFor or circ is None:
                     circ = self.circ
                 varname = shareName(tmpvar, circ)
+                i = self.getIndex(circ)
                 if lhsArr:
+                    if varShares[i] is None:
+                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                i = self.getIndex(circ)
                 print(' '*offset+tmpvar,'=',rhs.exprText,';', file=self.file)
                 if varShares[i] is None:
                     print(' '*offset+'share *',varname,';')
@@ -624,9 +732,9 @@ class smlCodeGen:
             sel = self.codeGen(node.condition, insideFor, circ, offset)
             ina = self.codeGen(node.expr1, insideFor, circ, offset)
             inb = self.codeGen(node.expr2, insideFor, circ, offset)
-            self.checkType(sel, circ)
-            self.checkType(ina, circ)
-            self.checkType(inb, circ)
+            sel = self.checkType(sel, circ)
+            ina = self.checkType(ina, circ)
+            inb = self.checkType(inb, circ)
             print(' '*offset+'share *',varname,'=',circ+'->PutMUXGate(',ina,',',inb,',',sel,');', file=self.file)
             self.putInDict(tmpvar, varname, circ)
             return varname

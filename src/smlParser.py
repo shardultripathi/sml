@@ -7,7 +7,7 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3(")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3)")
         buf.write("\u00ed\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
@@ -72,15 +72,15 @@ def serializedATN():
         buf.write("\u0099\3\2\2\2\u009b\u009a\3\2\2\2\u009c\u00b1\3\2\2\2")
         buf.write("\u009d\u009e\f\13\2\2\u009e\u009f\t\2\2\2\u009f\u00b0")
         buf.write("\5\36\20\f\u00a0\u00a1\f\n\2\2\u00a1\u00a2\t\3\2\2\u00a2")
-        buf.write("\u00b0\5\36\20\13\u00a3\u00a4\f\t\2\2\u00a4\u00a5\t\4")
-        buf.write("\2\2\u00a5\u00b0\5\36\20\n\u00a6\u00a7\f\b\2\2\u00a7\u00a8")
-        buf.write("\7\25\2\2\u00a8\u00b0\5\36\20\t\u00a9\u00aa\f\7\2\2\u00aa")
-        buf.write("\u00ab\7\26\2\2\u00ab\u00b0\5\36\20\b\u00ac\u00ad\f\6")
-        buf.write("\2\2\u00ad\u00ae\7\27\2\2\u00ae\u00b0\5\36\20\7\u00af")
-        buf.write("\u009d\3\2\2\2\u00af\u00a0\3\2\2\2\u00af\u00a3\3\2\2\2")
-        buf.write("\u00af\u00a6\3\2\2\2\u00af\u00a9\3\2\2\2\u00af\u00ac\3")
-        buf.write("\2\2\2\u00b0\u00b3\3\2\2\2\u00b1\u00af\3\2\2\2\u00b1\u00b2")
-        buf.write("\3\2\2\2\u00b2\37\3\2\2\2\u00b3\u00b1\3\2\2\2\u00b4\u00b5")
+        buf.write("\u00b0\5\36\20\13\u00a3\u00a4\f\b\2\2\u00a4\u00a5\7\25")
+        buf.write("\2\2\u00a5\u00b0\5\36\20\t\u00a6\u00a7\f\7\2\2\u00a7\u00a8")
+        buf.write("\7\26\2\2\u00a8\u00b0\5\36\20\b\u00a9\u00aa\f\6\2\2\u00aa")
+        buf.write("\u00ab\7\27\2\2\u00ab\u00b0\5\36\20\7\u00ac\u00ad\f\t")
+        buf.write("\2\2\u00ad\u00ae\t\4\2\2\u00ae\u00b0\7\'\2\2\u00af\u009d")
+        buf.write("\3\2\2\2\u00af\u00a0\3\2\2\2\u00af\u00a3\3\2\2\2\u00af")
+        buf.write("\u00a6\3\2\2\2\u00af\u00a9\3\2\2\2\u00af\u00ac\3\2\2\2")
+        buf.write("\u00b0\u00b3\3\2\2\2\u00b1\u00af\3\2\2\2\u00b1\u00b2\3")
+        buf.write("\2\2\2\u00b2\37\3\2\2\2\u00b3\u00b1\3\2\2\2\u00b4\u00b5")
         buf.write("\5\"\22\2\u00b5\u00b6\7\30\2\2\u00b6\u00b7\5\34\17\2\u00b7")
         buf.write("\u00b8\7\13\2\2\u00b8\u00b9\5\34\17\2\u00b9!\3\2\2\2\u00ba")
         buf.write("\u00bb\b\22\1\2\u00bb\u00bc\7\f\2\2\u00bc\u00bd\5\"\22")
@@ -135,7 +135,7 @@ class smlParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "InputA", "InputB", "Output", "BoolConstant", "Ident", 
-                      "IntegerConstant", "WS" ]
+                      "IntegerConstant", "WS", "LineComment" ]
 
     RULE_commandSeq = 0
     RULE_command = 1
@@ -201,6 +201,7 @@ class smlParser ( Parser ):
     Ident=36
     IntegerConstant=37
     WS=38
+    LineComment=39
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -1284,57 +1285,57 @@ class smlParser ( Parser ):
                         localctx = smlParser.ArithExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_arithExpr)
                         self.state = 161
-                        if not self.precpred(self._ctx, 7):
+                        if not self.precpred(self._ctx, 6):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
                         self.state = 162
-                        _la = self._input.LA(1)
-                        if not(_la==smlParser.T__16 or _la==smlParser.T__17):
-                            self._errHandler.recoverInline(self)
-                        else:
-                            self._errHandler.reportMatch(self)
-                            self.consume()
+                        self.match(smlParser.T__18)
                         self.state = 163
-                        self.arithExpr(8)
+                        self.arithExpr(7)
                         pass
 
                     elif la_ == 4:
                         localctx = smlParser.ArithExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_arithExpr)
                         self.state = 164
-                        if not self.precpred(self._ctx, 6):
+                        if not self.precpred(self._ctx, 5):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
                         self.state = 165
-                        self.match(smlParser.T__18)
+                        self.match(smlParser.T__19)
                         self.state = 166
-                        self.arithExpr(7)
+                        self.arithExpr(6)
                         pass
 
                     elif la_ == 5:
                         localctx = smlParser.ArithExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_arithExpr)
                         self.state = 167
-                        if not self.precpred(self._ctx, 5):
+                        if not self.precpred(self._ctx, 4):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
                         self.state = 168
-                        self.match(smlParser.T__19)
+                        self.match(smlParser.T__20)
                         self.state = 169
-                        self.arithExpr(6)
+                        self.arithExpr(5)
                         pass
 
                     elif la_ == 6:
                         localctx = smlParser.ArithExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_arithExpr)
                         self.state = 170
-                        if not self.precpred(self._ctx, 4):
+                        if not self.precpred(self._ctx, 7):
                             from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
                         self.state = 171
-                        self.match(smlParser.T__20)
+                        _la = self._input.LA(1)
+                        if not(_la==smlParser.T__16 or _la==smlParser.T__17):
+                            self._errHandler.recoverInline(self)
+                        else:
+                            self._errHandler.reportMatch(self)
+                            self.consume()
                         self.state = 172
-                        self.arithExpr(5)
+                        self.match(smlParser.IntegerConstant)
                         pass
 
              
@@ -1737,19 +1738,19 @@ class smlParser ( Parser ):
          
 
             if predIndex == 2:
-                return self.precpred(self._ctx, 7)
-         
-
-            if predIndex == 3:
                 return self.precpred(self._ctx, 6)
          
 
-            if predIndex == 4:
+            if predIndex == 3:
                 return self.precpred(self._ctx, 5)
          
 
-            if predIndex == 5:
+            if predIndex == 4:
                 return self.precpred(self._ctx, 4)
+         
+
+            if predIndex == 5:
+                return self.precpred(self._ctx, 7)
          
 
     def boolExpr_sempred(self, localctx:BoolExprContext, predIndex:int):
