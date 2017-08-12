@@ -431,7 +431,7 @@ class smlCodeGen:
                     print(' '*offset+'share *'+varname,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
                 else:
                     print(' '*offset+varname,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
-
+                self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, ArrayPub):
                 if not insideFor or circ is None:
                     circ = self.circ
@@ -452,7 +452,7 @@ class smlCodeGen:
                     print(' '*offset+'share *'+varname,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
                 else:
                     print(' '*offset+varname,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
-
+                self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, Constant):
                 if not insideFor or circ is None:
                     circ = self.circ
@@ -469,7 +469,7 @@ class smlCodeGen:
                     print(' '*offset+'share *'+varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
                 else:
                     print(' '*offset+varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
-
+                self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, BinOp):
                 if rhs.op == '+':
                     if not insideFor or circ is None:

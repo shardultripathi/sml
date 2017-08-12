@@ -72,6 +72,7 @@ expr
 arithExpr
     : '(' arithExpr ')'
     | '-' arithExpr
+    | '~' arithExpr
     | arithExpr '*' arithExpr
     | arithExpr ('+' | '-') arithExpr
     | arithExpr ('<<' | '>>') IntegerConstant
