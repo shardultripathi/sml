@@ -260,6 +260,8 @@ def getAST(rule):
                         'uint32_t', getAST(rule.getChild(2)))
 
     elif isinstance(rule, sp.ConditionalExprContext): # conditionalExpr
+        if rule.getChildCount() == 3: # ( conditionalExpr )
+            return getAST(rule.getChild(1))
         return CondExpr(getAST(rule.getChild(0)), getAST(rule.getChild(2)),
                         getAST(rule.getChild(4)))
 

@@ -7,8 +7,8 @@ import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3)")
-        buf.write("\u00ed\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\'")
+        buf.write("\u00f3\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7")
         buf.write("\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f\t\f\4\r\t\r\4\16")
         buf.write("\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t\23")
         buf.write("\4\24\t\24\3\2\7\2*\n\2\f\2\16\2-\13\2\3\3\3\3\3\3\3\3")
@@ -24,88 +24,92 @@ def serializedATN():
         buf.write("\n\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20")
         buf.write("\3\20\3\20\3\20\3\20\3\20\3\20\3\20\3\20\7\20\u00b0\n")
         buf.write("\20\f\20\16\20\u00b3\13\20\3\21\3\21\3\21\3\21\3\21\3")
-        buf.write("\21\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22")
-        buf.write("\3\22\3\22\3\22\3\22\3\22\3\22\5\22\u00cb\n\22\3\22\3")
-        buf.write("\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\7\22\u00d6\n\22")
-        buf.write("\f\22\16\22\u00d9\13\22\3\23\3\23\3\23\3\23\3\23\3\23")
-        buf.write("\3\23\3\23\3\23\3\23\5\23\u00e5\n\23\3\24\3\24\3\24\3")
-        buf.write("\24\3\24\3\24\3\24\2\4\36\"\25\2\4\6\b\n\f\16\20\22\24")
-        buf.write("\26\30\32\34\36 \"$&\2\7\3\2\17\21\4\2\16\16\22\22\3\2")
-        buf.write("\23\24\3\2\32\35\3\2\36\37\2\u00fc\2+\3\2\2\2\4\63\3\2")
-        buf.write("\2\2\6\65\3\2\2\2\bA\3\2\2\2\nM\3\2\2\2\fO\3\2\2\2\16")
-        buf.write("e\3\2\2\2\20g\3\2\2\2\22m\3\2\2\2\24q\3\2\2\2\26x\3\2")
-        buf.write("\2\2\30|\3\2\2\2\32\u0083\3\2\2\2\34\u008f\3\2\2\2\36")
-        buf.write("\u009b\3\2\2\2 \u00b4\3\2\2\2\"\u00ca\3\2\2\2$\u00e4\3")
-        buf.write("\2\2\2&\u00e6\3\2\2\2(*\5\4\3\2)(\3\2\2\2*-\3\2\2\2+)")
-        buf.write("\3\2\2\2+,\3\2\2\2,\3\3\2\2\2-+\3\2\2\2.\64\5\n\6\2/\64")
-        buf.write("\5\16\b\2\60\64\5\30\r\2\61\64\5\6\4\2\62\64\5&\24\2\63")
-        buf.write(".\3\2\2\2\63/\3\2\2\2\63\60\3\2\2\2\63\61\3\2\2\2\63\62")
-        buf.write("\3\2\2\2\64\5\3\2\2\2\659\7\3\2\2\668\5\b\5\2\67\66\3")
-        buf.write("\2\2\28;\3\2\2\29\67\3\2\2\29:\3\2\2\2:<\3\2\2\2;9\3\2")
-        buf.write("\2\2<=\7\4\2\2=\7\3\2\2\2>B\5\16\b\2?B\5\30\r\2@B\5\6")
-        buf.write("\4\2A>\3\2\2\2A?\3\2\2\2A@\3\2\2\2B\t\3\2\2\2CD\5\f\7")
-        buf.write("\2DE\5\20\t\2EF\7\5\2\2FN\3\2\2\2GH\5\f\7\2HI\7&\2\2I")
-        buf.write("K\3\2\2\2JG\3\2\2\2JK\3\2\2\2KL\3\2\2\2LN\7\5\2\2MC\3")
-        buf.write("\2\2\2MJ\3\2\2\2N\13\3\2\2\2OP\7\6\2\2P\r\3\2\2\2QR\5")
-        buf.write("\24\13\2RS\7\7\2\2ST\5\34\17\2TU\7\5\2\2Uf\3\2\2\2VW\7")
-        buf.write("&\2\2WX\7\7\2\2XY\5\34\17\2YZ\7\5\2\2Zf\3\2\2\2[\\\5\24")
-        buf.write("\13\2\\]\7\7\2\2]^\5$\23\2^_\7\5\2\2_f\3\2\2\2`a\7&\2")
-        buf.write("\2ab\7\7\2\2bc\5$\23\2cd\7\5\2\2df\3\2\2\2eQ\3\2\2\2e")
-        buf.write("V\3\2\2\2e[\3\2\2\2e`\3\2\2\2f\17\3\2\2\2gh\7&\2\2hi\5")
-        buf.write("\22\n\2i\21\3\2\2\2jk\7\b\2\2kl\7\'\2\2ln\7\t\2\2mj\3")
-        buf.write("\2\2\2no\3\2\2\2om\3\2\2\2op\3\2\2\2p\23\3\2\2\2qr\7&")
-        buf.write("\2\2rs\5\26\f\2s\25\3\2\2\2tu\7\b\2\2uv\5\36\20\2vw\7")
-        buf.write("\t\2\2wy\3\2\2\2xt\3\2\2\2yz\3\2\2\2zx\3\2\2\2z{\3\2\2")
-        buf.write("\2{\27\3\2\2\2|}\7\n\2\2}~\7\6\2\2~\177\7&\2\2\177\u0080")
-        buf.write("\7\7\2\2\u0080\u0081\5\32\16\2\u0081\u0082\5\6\4\2\u0082")
-        buf.write("\31\3\2\2\2\u0083\u0084\7\b\2\2\u0084\u0085\7\'\2\2\u0085")
-        buf.write("\u0086\7\13\2\2\u0086\u0089\7\'\2\2\u0087\u0088\7\13\2")
-        buf.write("\2\u0088\u008a\7\'\2\2\u0089\u0087\3\2\2\2\u0089\u008a")
-        buf.write("\3\2\2\2\u008a\u008b\3\2\2\2\u008b\u008c\7\t\2\2\u008c")
-        buf.write("\33\3\2\2\2\u008d\u0090\5\36\20\2\u008e\u0090\5 \21\2")
-        buf.write("\u008f\u008d\3\2\2\2\u008f\u008e\3\2\2\2\u0090\35\3\2")
-        buf.write("\2\2\u0091\u0092\b\20\1\2\u0092\u0093\7\f\2\2\u0093\u0094")
-        buf.write("\5\36\20\2\u0094\u0095\7\r\2\2\u0095\u009c\3\2\2\2\u0096")
-        buf.write("\u0097\7\16\2\2\u0097\u009c\5\36\20\f\u0098\u009c\7\'")
-        buf.write("\2\2\u0099\u009c\5\24\13\2\u009a\u009c\7&\2\2\u009b\u0091")
-        buf.write("\3\2\2\2\u009b\u0096\3\2\2\2\u009b\u0098\3\2\2\2\u009b")
-        buf.write("\u0099\3\2\2\2\u009b\u009a\3\2\2\2\u009c\u00b1\3\2\2\2")
-        buf.write("\u009d\u009e\f\13\2\2\u009e\u009f\t\2\2\2\u009f\u00b0")
-        buf.write("\5\36\20\f\u00a0\u00a1\f\n\2\2\u00a1\u00a2\t\3\2\2\u00a2")
-        buf.write("\u00b0\5\36\20\13\u00a3\u00a4\f\b\2\2\u00a4\u00a5\7\25")
-        buf.write("\2\2\u00a5\u00b0\5\36\20\t\u00a6\u00a7\f\7\2\2\u00a7\u00a8")
-        buf.write("\7\26\2\2\u00a8\u00b0\5\36\20\b\u00a9\u00aa\f\6\2\2\u00aa")
-        buf.write("\u00ab\7\27\2\2\u00ab\u00b0\5\36\20\7\u00ac\u00ad\f\t")
-        buf.write("\2\2\u00ad\u00ae\t\4\2\2\u00ae\u00b0\7\'\2\2\u00af\u009d")
-        buf.write("\3\2\2\2\u00af\u00a0\3\2\2\2\u00af\u00a3\3\2\2\2\u00af")
-        buf.write("\u00a6\3\2\2\2\u00af\u00a9\3\2\2\2\u00af\u00ac\3\2\2\2")
-        buf.write("\u00b0\u00b3\3\2\2\2\u00b1\u00af\3\2\2\2\u00b1\u00b2\3")
-        buf.write("\2\2\2\u00b2\37\3\2\2\2\u00b3\u00b1\3\2\2\2\u00b4\u00b5")
-        buf.write("\5\"\22\2\u00b5\u00b6\7\30\2\2\u00b6\u00b7\5\34\17\2\u00b7")
-        buf.write("\u00b8\7\13\2\2\u00b8\u00b9\5\34\17\2\u00b9!\3\2\2\2\u00ba")
-        buf.write("\u00bb\b\22\1\2\u00bb\u00bc\7\f\2\2\u00bc\u00bd\5\"\22")
-        buf.write("\2\u00bd\u00be\7\r\2\2\u00be\u00cb\3\2\2\2\u00bf\u00c0")
-        buf.write("\7\31\2\2\u00c0\u00cb\5\"\22\t\u00c1\u00c2\5\36\20\2\u00c2")
-        buf.write("\u00c3\t\5\2\2\u00c3\u00c4\5\36\20\2\u00c4\u00cb\3\2\2")
-        buf.write("\2\u00c5\u00c6\5\36\20\2\u00c6\u00c7\t\6\2\2\u00c7\u00c8")
-        buf.write("\5\36\20\2\u00c8\u00cb\3\2\2\2\u00c9\u00cb\7%\2\2\u00ca")
-        buf.write("\u00ba\3\2\2\2\u00ca\u00bf\3\2\2\2\u00ca\u00c1\3\2\2\2")
-        buf.write("\u00ca\u00c5\3\2\2\2\u00ca\u00c9\3\2\2\2\u00cb\u00d7\3")
-        buf.write("\2\2\2\u00cc\u00cd\f\6\2\2\u00cd\u00ce\7\26\2\2\u00ce")
-        buf.write("\u00d6\5\"\22\7\u00cf\u00d0\f\5\2\2\u00d0\u00d1\7 \2\2")
-        buf.write("\u00d1\u00d6\5\"\22\6\u00d2\u00d3\f\4\2\2\u00d3\u00d4")
-        buf.write("\7!\2\2\u00d4\u00d6\5\"\22\5\u00d5\u00cc\3\2\2\2\u00d5")
-        buf.write("\u00cf\3\2\2\2\u00d5\u00d2\3\2\2\2\u00d6\u00d9\3\2\2\2")
-        buf.write("\u00d7\u00d5\3\2\2\2\u00d7\u00d8\3\2\2\2\u00d8#\3\2\2")
-        buf.write("\2\u00d9\u00d7\3\2\2\2\u00da\u00db\7\"\2\2\u00db\u00dc")
-        buf.write("\7\f\2\2\u00dc\u00dd\5\34\17\2\u00dd\u00de\7\r\2\2\u00de")
-        buf.write("\u00e5\3\2\2\2\u00df\u00e0\7#\2\2\u00e0\u00e1\7\f\2\2")
-        buf.write("\u00e1\u00e2\5\34\17\2\u00e2\u00e3\7\r\2\2\u00e3\u00e5")
-        buf.write("\3\2\2\2\u00e4\u00da\3\2\2\2\u00e4\u00df\3\2\2\2\u00e5")
-        buf.write("%\3\2\2\2\u00e6\u00e7\7$\2\2\u00e7\u00e8\7\f\2\2\u00e8")
-        buf.write("\u00e9\5\34\17\2\u00e9\u00ea\7\r\2\2\u00ea\u00eb\7\5\2")
-        buf.write("\2\u00eb\'\3\2\2\2\24+\639AJMeoz\u0089\u008f\u009b\u00af")
-        buf.write("\u00b1\u00ca\u00d5\u00d7\u00e4")
+        buf.write("\21\3\21\3\21\3\21\3\21\5\21\u00bf\n\21\3\22\3\22\3\22")
+        buf.write("\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22\3\22")
+        buf.write("\3\22\3\22\5\22\u00d1\n\22\3\22\3\22\3\22\3\22\3\22\3")
+        buf.write("\22\3\22\3\22\3\22\7\22\u00dc\n\22\f\22\16\22\u00df\13")
+        buf.write("\22\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23\3\23")
+        buf.write("\5\23\u00eb\n\23\3\24\3\24\3\24\3\24\3\24\3\24\3\24\2")
+        buf.write("\4\36\"\25\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$")
+        buf.write("&\2\6\4\2\16\16\20\20\3\2\21\22\3\2\30\33\3\2\34\35\2")
+        buf.write("\u0103\2+\3\2\2\2\4\63\3\2\2\2\6\65\3\2\2\2\bA\3\2\2\2")
+        buf.write("\nM\3\2\2\2\fO\3\2\2\2\16e\3\2\2\2\20g\3\2\2\2\22m\3\2")
+        buf.write("\2\2\24q\3\2\2\2\26x\3\2\2\2\30|\3\2\2\2\32\u0083\3\2")
+        buf.write("\2\2\34\u008f\3\2\2\2\36\u009b\3\2\2\2 \u00be\3\2\2\2")
+        buf.write("\"\u00d0\3\2\2\2$\u00ea\3\2\2\2&\u00ec\3\2\2\2(*\5\4\3")
+        buf.write("\2)(\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3\2\2\2,\3\3\2\2\2")
+        buf.write("-+\3\2\2\2.\64\5\n\6\2/\64\5\16\b\2\60\64\5\30\r\2\61")
+        buf.write("\64\5\6\4\2\62\64\5&\24\2\63.\3\2\2\2\63/\3\2\2\2\63\60")
+        buf.write("\3\2\2\2\63\61\3\2\2\2\63\62\3\2\2\2\64\5\3\2\2\2\659")
+        buf.write("\7\3\2\2\668\5\b\5\2\67\66\3\2\2\28;\3\2\2\29\67\3\2\2")
+        buf.write("\29:\3\2\2\2:<\3\2\2\2;9\3\2\2\2<=\7\4\2\2=\7\3\2\2\2")
+        buf.write(">B\5\16\b\2?B\5\30\r\2@B\5\6\4\2A>\3\2\2\2A?\3\2\2\2A")
+        buf.write("@\3\2\2\2B\t\3\2\2\2CD\5\f\7\2DE\5\20\t\2EF\7\5\2\2FN")
+        buf.write("\3\2\2\2GH\5\f\7\2HI\7$\2\2IK\3\2\2\2JG\3\2\2\2JK\3\2")
+        buf.write("\2\2KL\3\2\2\2LN\7\5\2\2MC\3\2\2\2MJ\3\2\2\2N\13\3\2\2")
+        buf.write("\2OP\7\6\2\2P\r\3\2\2\2QR\5\24\13\2RS\7\7\2\2ST\5\34\17")
+        buf.write("\2TU\7\5\2\2Uf\3\2\2\2VW\7$\2\2WX\7\7\2\2XY\5\34\17\2")
+        buf.write("YZ\7\5\2\2Zf\3\2\2\2[\\\5\24\13\2\\]\7\7\2\2]^\5$\23\2")
+        buf.write("^_\7\5\2\2_f\3\2\2\2`a\7$\2\2ab\7\7\2\2bc\5$\23\2cd\7")
+        buf.write("\5\2\2df\3\2\2\2eQ\3\2\2\2eV\3\2\2\2e[\3\2\2\2e`\3\2\2")
+        buf.write("\2f\17\3\2\2\2gh\7$\2\2hi\5\22\n\2i\21\3\2\2\2jk\7\b\2")
+        buf.write("\2kl\7%\2\2ln\7\t\2\2mj\3\2\2\2no\3\2\2\2om\3\2\2\2op")
+        buf.write("\3\2\2\2p\23\3\2\2\2qr\7$\2\2rs\5\26\f\2s\25\3\2\2\2t")
+        buf.write("u\7\b\2\2uv\5\36\20\2vw\7\t\2\2wy\3\2\2\2xt\3\2\2\2yz")
+        buf.write("\3\2\2\2zx\3\2\2\2z{\3\2\2\2{\27\3\2\2\2|}\7\n\2\2}~\7")
+        buf.write("\6\2\2~\177\7$\2\2\177\u0080\7\7\2\2\u0080\u0081\5\32")
+        buf.write("\16\2\u0081\u0082\5\6\4\2\u0082\31\3\2\2\2\u0083\u0084")
+        buf.write("\7\b\2\2\u0084\u0085\7%\2\2\u0085\u0086\7\13\2\2\u0086")
+        buf.write("\u0089\7%\2\2\u0087\u0088\7\13\2\2\u0088\u008a\7%\2\2")
+        buf.write("\u0089\u0087\3\2\2\2\u0089\u008a\3\2\2\2\u008a\u008b\3")
+        buf.write("\2\2\2\u008b\u008c\7\t\2\2\u008c\33\3\2\2\2\u008d\u0090")
+        buf.write("\5\36\20\2\u008e\u0090\5 \21\2\u008f\u008d\3\2\2\2\u008f")
+        buf.write("\u008e\3\2\2\2\u0090\35\3\2\2\2\u0091\u0092\b\20\1\2\u0092")
+        buf.write("\u0093\7\f\2\2\u0093\u0094\5\36\20\2\u0094\u0095\7\r\2")
+        buf.write("\2\u0095\u009c\3\2\2\2\u0096\u0097\7\16\2\2\u0097\u009c")
+        buf.write("\5\36\20\f\u0098\u009c\7%\2\2\u0099\u009c\5\24\13\2\u009a")
+        buf.write("\u009c\7$\2\2\u009b\u0091\3\2\2\2\u009b\u0096\3\2\2\2")
+        buf.write("\u009b\u0098\3\2\2\2\u009b\u0099\3\2\2\2\u009b\u009a\3")
+        buf.write("\2\2\2\u009c\u00b1\3\2\2\2\u009d\u009e\f\13\2\2\u009e")
+        buf.write("\u009f\7\17\2\2\u009f\u00b0\5\36\20\f\u00a0\u00a1\f\n")
+        buf.write("\2\2\u00a1\u00a2\t\2\2\2\u00a2\u00b0\5\36\20\13\u00a3")
+        buf.write("\u00a4\f\b\2\2\u00a4\u00a5\7\23\2\2\u00a5\u00b0\5\36\20")
+        buf.write("\t\u00a6\u00a7\f\7\2\2\u00a7\u00a8\7\24\2\2\u00a8\u00b0")
+        buf.write("\5\36\20\b\u00a9\u00aa\f\6\2\2\u00aa\u00ab\7\25\2\2\u00ab")
+        buf.write("\u00b0\5\36\20\7\u00ac\u00ad\f\t\2\2\u00ad\u00ae\t\3\2")
+        buf.write("\2\u00ae\u00b0\7%\2\2\u00af\u009d\3\2\2\2\u00af\u00a0")
+        buf.write("\3\2\2\2\u00af\u00a3\3\2\2\2\u00af\u00a6\3\2\2\2\u00af")
+        buf.write("\u00a9\3\2\2\2\u00af\u00ac\3\2\2\2\u00b0\u00b3\3\2\2\2")
+        buf.write("\u00b1\u00af\3\2\2\2\u00b1\u00b2\3\2\2\2\u00b2\37\3\2")
+        buf.write("\2\2\u00b3\u00b1\3\2\2\2\u00b4\u00b5\7\f\2\2\u00b5\u00b6")
+        buf.write("\5 \21\2\u00b6\u00b7\7\r\2\2\u00b7\u00bf\3\2\2\2\u00b8")
+        buf.write("\u00b9\5\"\22\2\u00b9\u00ba\7\26\2\2\u00ba\u00bb\5\34")
+        buf.write("\17\2\u00bb\u00bc\7\13\2\2\u00bc\u00bd\5\34\17\2\u00bd")
+        buf.write("\u00bf\3\2\2\2\u00be\u00b4\3\2\2\2\u00be\u00b8\3\2\2\2")
+        buf.write("\u00bf!\3\2\2\2\u00c0\u00c1\b\22\1\2\u00c1\u00c2\7\f\2")
+        buf.write("\2\u00c2\u00c3\5\"\22\2\u00c3\u00c4\7\r\2\2\u00c4\u00d1")
+        buf.write("\3\2\2\2\u00c5\u00c6\7\27\2\2\u00c6\u00d1\5\"\22\t\u00c7")
+        buf.write("\u00c8\5\36\20\2\u00c8\u00c9\t\4\2\2\u00c9\u00ca\5\36")
+        buf.write("\20\2\u00ca\u00d1\3\2\2\2\u00cb\u00cc\5\36\20\2\u00cc")
+        buf.write("\u00cd\t\5\2\2\u00cd\u00ce\5\36\20\2\u00ce\u00d1\3\2\2")
+        buf.write("\2\u00cf\u00d1\7#\2\2\u00d0\u00c0\3\2\2\2\u00d0\u00c5")
+        buf.write("\3\2\2\2\u00d0\u00c7\3\2\2\2\u00d0\u00cb\3\2\2\2\u00d0")
+        buf.write("\u00cf\3\2\2\2\u00d1\u00dd\3\2\2\2\u00d2\u00d3\f\6\2\2")
+        buf.write("\u00d3\u00d4\7\24\2\2\u00d4\u00dc\5\"\22\7\u00d5\u00d6")
+        buf.write("\f\5\2\2\u00d6\u00d7\7\36\2\2\u00d7\u00dc\5\"\22\6\u00d8")
+        buf.write("\u00d9\f\4\2\2\u00d9\u00da\7\37\2\2\u00da\u00dc\5\"\22")
+        buf.write("\5\u00db\u00d2\3\2\2\2\u00db\u00d5\3\2\2\2\u00db\u00d8")
+        buf.write("\3\2\2\2\u00dc\u00df\3\2\2\2\u00dd\u00db\3\2\2\2\u00dd")
+        buf.write("\u00de\3\2\2\2\u00de#\3\2\2\2\u00df\u00dd\3\2\2\2\u00e0")
+        buf.write("\u00e1\7 \2\2\u00e1\u00e2\7\f\2\2\u00e2\u00e3\5\34\17")
+        buf.write("\2\u00e3\u00e4\7\r\2\2\u00e4\u00eb\3\2\2\2\u00e5\u00e6")
+        buf.write("\7!\2\2\u00e6\u00e7\7\f\2\2\u00e7\u00e8\5\34\17\2\u00e8")
+        buf.write("\u00e9\7\r\2\2\u00e9\u00eb\3\2\2\2\u00ea\u00e0\3\2\2\2")
+        buf.write("\u00ea\u00e5\3\2\2\2\u00eb%\3\2\2\2\u00ec\u00ed\7\"\2")
+        buf.write("\2\u00ed\u00ee\7\f\2\2\u00ee\u00ef\5\34\17\2\u00ef\u00f0")
+        buf.write("\7\r\2\2\u00f0\u00f1\7\5\2\2\u00f1\'\3\2\2\2\25+\639A")
+        buf.write("JMeoz\u0089\u008f\u009b\u00af\u00b1\u00be\u00d0\u00db")
+        buf.write("\u00dd\u00ea")
         return buf.getvalue()
 
 
@@ -121,10 +125,9 @@ class smlParser ( Parser ):
 
     literalNames = [ "<INVALID>", "'{'", "'}'", "';'", "'uint32_t'", "'='", 
                      "'['", "']'", "'for'", "':'", "'('", "')'", "'-'", 
-                     "'*'", "'/'", "'%'", "'+'", "'<<'", "'>>'", "'&'", 
-                     "'^'", "'|'", "'?'", "'!'", "'<'", "'<='", "'>'", "'>='", 
-                     "'=='", "'!='", "'&&'", "'||'", "'input1'", "'input2'", 
-                     "'output'" ]
+                     "'*'", "'+'", "'<<'", "'>>'", "'&'", "'^'", "'|'", 
+                     "'?'", "'!'", "'<'", "'<='", "'>'", "'>='", "'=='", 
+                     "'!='", "'&&'", "'||'", "'input1'", "'input2'", "'output'" ]
 
     symbolicNames = [ "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
@@ -133,9 +136,9 @@ class smlParser ( Parser ):
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
                       "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "<INVALID>", "<INVALID>", "<INVALID>", "<INVALID>", 
-                      "InputA", "InputB", "Output", "BoolConstant", "Ident", 
-                      "IntegerConstant", "WS", "LineComment" ]
+                      "<INVALID>", "<INVALID>", "InputA", "InputB", "Output", 
+                      "BoolConstant", "Ident", "IntegerConstant", "WS", 
+                      "LineComment" ]
 
     RULE_commandSeq = 0
     RULE_command = 1
@@ -192,16 +195,14 @@ class smlParser ( Parser ):
     T__26=27
     T__27=28
     T__28=29
-    T__29=30
-    T__30=31
-    InputA=32
-    InputB=33
-    Output=34
-    BoolConstant=35
-    Ident=36
-    IntegerConstant=37
-    WS=38
-    LineComment=39
+    InputA=30
+    InputB=31
+    Output=32
+    BoolConstant=33
+    Ident=34
+    IntegerConstant=35
+    WS=36
+    LineComment=37
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
@@ -1253,12 +1254,7 @@ class smlParser ( Parser ):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 9)")
                         self.state = 156
-                        _la = self._input.LA(1)
-                        if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << smlParser.T__12) | (1 << smlParser.T__13) | (1 << smlParser.T__14))) != 0)):
-                            self._errHandler.recoverInline(self)
-                        else:
-                            self._errHandler.reportMatch(self)
-                            self.consume()
+                        self.match(smlParser.T__12)
                         self.state = 157
                         self.arithExpr(10)
                         pass
@@ -1272,7 +1268,7 @@ class smlParser ( Parser ):
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
                         self.state = 159
                         _la = self._input.LA(1)
-                        if not(_la==smlParser.T__11 or _la==smlParser.T__15):
+                        if not(_la==smlParser.T__11 or _la==smlParser.T__13):
                             self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
@@ -1289,7 +1285,7 @@ class smlParser ( Parser ):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
                         self.state = 162
-                        self.match(smlParser.T__18)
+                        self.match(smlParser.T__16)
                         self.state = 163
                         self.arithExpr(7)
                         pass
@@ -1302,7 +1298,7 @@ class smlParser ( Parser ):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
                         self.state = 165
-                        self.match(smlParser.T__19)
+                        self.match(smlParser.T__17)
                         self.state = 166
                         self.arithExpr(6)
                         pass
@@ -1315,7 +1311,7 @@ class smlParser ( Parser ):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
                         self.state = 168
-                        self.match(smlParser.T__20)
+                        self.match(smlParser.T__18)
                         self.state = 169
                         self.arithExpr(5)
                         pass
@@ -1329,7 +1325,7 @@ class smlParser ( Parser ):
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
                         self.state = 171
                         _la = self._input.LA(1)
-                        if not(_la==smlParser.T__16 or _la==smlParser.T__17):
+                        if not(_la==smlParser.T__14 or _la==smlParser.T__15):
                             self._errHandler.recoverInline(self)
                         else:
                             self._errHandler.reportMatch(self)
@@ -1356,6 +1352,10 @@ class smlParser ( Parser ):
         def __init__(self, parser, parent:ParserRuleContext=None, invokingState:int=-1):
             super().__init__(parent, invokingState)
             self.parser = parser
+
+        def conditionalExpr(self):
+            return self.getTypedRuleContext(smlParser.ConditionalExprContext,0)
+
 
         def boolExpr(self):
             return self.getTypedRuleContext(smlParser.BoolExprContext,0)
@@ -1393,17 +1393,34 @@ class smlParser ( Parser ):
         localctx = smlParser.ConditionalExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 30, self.RULE_conditionalExpr)
         try:
-            self.enterOuterAlt(localctx, 1)
-            self.state = 178
-            self.boolExpr(0)
-            self.state = 179
-            self.match(smlParser.T__21)
-            self.state = 180
-            self.expr()
-            self.state = 181
-            self.match(smlParser.T__8)
-            self.state = 182
-            self.expr()
+            self.state = 188
+            self._errHandler.sync(self)
+            la_ = self._interp.adaptivePredict(self._input,14,self._ctx)
+            if la_ == 1:
+                self.enterOuterAlt(localctx, 1)
+                self.state = 178
+                self.match(smlParser.T__9)
+                self.state = 179
+                self.conditionalExpr()
+                self.state = 180
+                self.match(smlParser.T__10)
+                pass
+
+            elif la_ == 2:
+                self.enterOuterAlt(localctx, 2)
+                self.state = 182
+                self.boolExpr(0)
+                self.state = 183
+                self.match(smlParser.T__19)
+                self.state = 184
+                self.expr()
+                self.state = 185
+                self.match(smlParser.T__8)
+                self.state = 186
+                self.expr()
+                pass
+
+
         except RecognitionException as re:
             localctx.exception = re
             self._errHandler.reportError(self, re)
@@ -1464,114 +1481,114 @@ class smlParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 200
+            self.state = 206
             self._errHandler.sync(self)
-            la_ = self._interp.adaptivePredict(self._input,14,self._ctx)
+            la_ = self._interp.adaptivePredict(self._input,15,self._ctx)
             if la_ == 1:
-                self.state = 185
+                self.state = 191
                 self.match(smlParser.T__9)
-                self.state = 186
+                self.state = 192
                 self.boolExpr(0)
-                self.state = 187
+                self.state = 193
                 self.match(smlParser.T__10)
                 pass
 
             elif la_ == 2:
-                self.state = 189
-                self.match(smlParser.T__22)
-                self.state = 190
+                self.state = 195
+                self.match(smlParser.T__20)
+                self.state = 196
                 self.boolExpr(7)
                 pass
 
             elif la_ == 3:
-                self.state = 191
+                self.state = 197
                 self.arithExpr(0)
-                self.state = 192
+                self.state = 198
                 _la = self._input.LA(1)
-                if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << smlParser.T__23) | (1 << smlParser.T__24) | (1 << smlParser.T__25) | (1 << smlParser.T__26))) != 0)):
+                if not((((_la) & ~0x3f) == 0 and ((1 << _la) & ((1 << smlParser.T__21) | (1 << smlParser.T__22) | (1 << smlParser.T__23) | (1 << smlParser.T__24))) != 0)):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 193
+                self.state = 199
                 self.arithExpr(0)
                 pass
 
             elif la_ == 4:
-                self.state = 195
+                self.state = 201
                 self.arithExpr(0)
-                self.state = 196
+                self.state = 202
                 _la = self._input.LA(1)
-                if not(_la==smlParser.T__27 or _la==smlParser.T__28):
+                if not(_la==smlParser.T__25 or _la==smlParser.T__26):
                     self._errHandler.recoverInline(self)
                 else:
                     self._errHandler.reportMatch(self)
                     self.consume()
-                self.state = 197
+                self.state = 203
                 self.arithExpr(0)
                 pass
 
             elif la_ == 5:
-                self.state = 199
+                self.state = 205
                 self.match(smlParser.BoolConstant)
                 pass
 
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 213
+            self.state = 219
             self._errHandler.sync(self)
-            _alt = self._interp.adaptivePredict(self._input,16,self._ctx)
+            _alt = self._interp.adaptivePredict(self._input,17,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
                 if _alt==1:
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    self.state = 211
+                    self.state = 217
                     self._errHandler.sync(self)
-                    la_ = self._interp.adaptivePredict(self._input,15,self._ctx)
+                    la_ = self._interp.adaptivePredict(self._input,16,self._ctx)
                     if la_ == 1:
                         localctx = smlParser.BoolExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_boolExpr)
-                        self.state = 202
+                        self.state = 208
                         if not self.precpred(self._ctx, 4):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
-                        self.state = 203
-                        self.match(smlParser.T__19)
-                        self.state = 204
+                        self.state = 209
+                        self.match(smlParser.T__17)
+                        self.state = 210
                         self.boolExpr(5)
                         pass
 
                     elif la_ == 2:
                         localctx = smlParser.BoolExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_boolExpr)
-                        self.state = 205
+                        self.state = 211
                         if not self.precpred(self._ctx, 3):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
-                        self.state = 206
-                        self.match(smlParser.T__29)
-                        self.state = 207
+                        self.state = 212
+                        self.match(smlParser.T__27)
+                        self.state = 213
                         self.boolExpr(4)
                         pass
 
                     elif la_ == 3:
                         localctx = smlParser.BoolExprContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_boolExpr)
-                        self.state = 208
+                        self.state = 214
                         if not self.precpred(self._ctx, 2):
                             from antlr4.error.Errors import FailedPredicateException
                             raise FailedPredicateException(self, "self.precpred(self._ctx, 2)")
-                        self.state = 209
-                        self.match(smlParser.T__30)
-                        self.state = 210
+                        self.state = 215
+                        self.match(smlParser.T__28)
+                        self.state = 216
                         self.boolExpr(3)
                         pass
 
              
-                self.state = 215
+                self.state = 221
                 self._errHandler.sync(self)
-                _alt = self._interp.adaptivePredict(self._input,16,self._ctx)
+                _alt = self._interp.adaptivePredict(self._input,17,self._ctx)
 
         except RecognitionException as re:
             localctx.exception = re
@@ -1622,29 +1639,29 @@ class smlParser ( Parser ):
         localctx = smlParser.InputExprContext(self, self._ctx, self.state)
         self.enterRule(localctx, 34, self.RULE_inputExpr)
         try:
-            self.state = 226
+            self.state = 232
             self._errHandler.sync(self)
             token = self._input.LA(1)
             if token in [smlParser.InputA]:
                 self.enterOuterAlt(localctx, 1)
-                self.state = 216
+                self.state = 222
                 self.match(smlParser.InputA)
-                self.state = 217
+                self.state = 223
                 self.match(smlParser.T__9)
-                self.state = 218
+                self.state = 224
                 self.expr()
-                self.state = 219
+                self.state = 225
                 self.match(smlParser.T__10)
                 pass
             elif token in [smlParser.InputB]:
                 self.enterOuterAlt(localctx, 2)
-                self.state = 221
+                self.state = 227
                 self.match(smlParser.InputB)
-                self.state = 222
+                self.state = 228
                 self.match(smlParser.T__9)
-                self.state = 223
+                self.state = 229
                 self.expr()
-                self.state = 224
+                self.state = 230
                 self.match(smlParser.T__10)
                 pass
             else:
@@ -1697,15 +1714,15 @@ class smlParser ( Parser ):
         self.enterRule(localctx, 36, self.RULE_output)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 228
+            self.state = 234
             self.match(smlParser.Output)
-            self.state = 229
+            self.state = 235
             self.match(smlParser.T__9)
-            self.state = 230
+            self.state = 236
             self.expr()
-            self.state = 231
+            self.state = 237
             self.match(smlParser.T__10)
-            self.state = 232
+            self.state = 238
             self.match(smlParser.T__2)
         except RecognitionException as re:
             localctx.exception = re

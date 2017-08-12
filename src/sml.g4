@@ -72,7 +72,7 @@ expr
 arithExpr
     : '(' arithExpr ')'
     | '-' arithExpr
-    | arithExpr ('*' | '/' | '%') arithExpr
+    | arithExpr '*' arithExpr
     | arithExpr ('+' | '-') arithExpr
     | arithExpr ('<<' | '>>') IntegerConstant
     | arithExpr '&' arithExpr // bitwise and
@@ -84,7 +84,8 @@ arithExpr
 ;
 
 conditionalExpr
-    : boolExpr '?' expr ':' expr
+    : '(' conditionalExpr ')' 
+    | boolExpr '?' expr ':' expr
 ;
 
 // TODO: <= >= == !=

@@ -376,6 +376,16 @@ class smlCodeGen:
                 rhs = self.checkType(rhs, circ)
                 print(' '*offset+'share *',varname,'=',circ+'->PutXORGate(',lhs,',',rhs,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
+            elif node.op == '==':
+                if not insideFor or circ is None:
+                    circ = self.defckt
+                varname = shareName(tmpvar, circ)
+                lhs = self.codeGen(node.lhs, insideFor, circ, offset)
+                rhs = self.codeGen(node.rhs, insideFor, circ, offset)
+                lhs = self.checkType(lhs, circ)
+                rhs = self.checkType(rhs, circ)
+                print(' '*offset+'share *',varname,'=',circ+'->PutEQGate(',lhs,',',rhs,');', file=self.file)
+                self.putInDict(tmpvar, varname, circ)
             elif node.op == '>>':
                 if not insideFor or circ is None:
                     circ = self.defckt
@@ -620,6 +630,26 @@ class smlCodeGen:
                         print(' '*offset+'share *',varname,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
                         print(' '*offset+varname,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
+                    self.putInDict(tmpvar, varname, circ)
+                elif rhs.op == '==':
+                    if not insideFor or circ is None:
+                        circ = self.defckt
+                    varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
+                    if lhsArr:
+                        if varShares[i] is None:
+                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
+                        varname += node.lhs.ref
+                        tmpvar += node.lhs.ref
+                    binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
+                    binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
+                    binlhs = self.checkType(binlhs, circ)
+                    binrhs = self.checkType(binrhs, circ)
+                    if varShares[i] is None:
+                        print(' '*offset+'share *',varname,'=',circ+'->PutEQGate(',binlhs,',',binrhs,');', file=self.file)
+                    else:
+                        print(' '*offset+varname,'=',circ+'->PutEQGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '>>':
                     if not insideFor or circ is None:
