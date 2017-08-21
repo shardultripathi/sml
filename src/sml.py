@@ -5,7 +5,7 @@ from smlParser import smlParser
 from smlListener import smlListener
 from smlAST import *
 from smlCodeGen import smlCodeGen
-from sml2c import sml2c
+# from sml2c import sml2c
 import os
 
 def main():
