@@ -7,4 +7,4 @@
 # rm *class
 # cd ../src
 java -jar /usr/local/lib/antlr-4.7-complete.jar -Dlanguage=Python3 sml.g4 -visitor
-time python3 -O sml.py $1
+time python3 -O sml.py $1 $2

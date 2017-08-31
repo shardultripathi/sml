@@ -10,7 +10,7 @@ import os
 
 def main():
     inputFile = FileStream(sys.argv[1])
-    muxCirc = FileStream(sys.argv[1])
+    muxCirc = sys.argv[2]
     filename, file_extension = os.path.splitext(sys.argv[1])
     lexer = smlLexer(inputFile)
     stream = CommonTokenStream(lexer)

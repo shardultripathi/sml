@@ -69,7 +69,7 @@ class smlCodeGen:
         #     vector<vector<vector<vector<uint32_t>>>> v = x;
         #     cout << "yo" << endl;
         # }
-        print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 650000000);', file=self.file)
+        print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);', file=self.file)
         print('vector<Sharing*>& sharings = party->GetSharings();', file=self.file)
         print('Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();', file=self.file)
         print('Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();', file=self.file)
