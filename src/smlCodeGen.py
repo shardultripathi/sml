@@ -18,13 +18,36 @@ def shareName(name, circ):
     return 's_' + circ[0] + '_' + name
 
 class smlCodeGen:
-    def __init__(self, filename):
+    def __init__(self, filename, muxCirc):
         self.dict = {}  # name -> ['s_a_name', 's_b_name', 's_y_name'] None -> not declared, -1 -> dirty
         self.arrDict = {} # name -> refctx
         self.counter = 0
         self.defckt = 'ycirc'
+        if (muxCirc == 'b'):
+            self.muxckt = 'bcirc'
+        else:
+            self.muxckt = self.defckt
         self.circ = 'acirc'
         self.file = open(filename, 'w')
+        # #include <iostream>
+        # #include <array>
+        # using namespace std;
+
+        # template <class T, std::size_t I, std::size_t... J>
+        # struct MultiDimArray 
+        # {
+        #   using Nested = typename MultiDimArray<T, J...>::type;
+        #   // typedef typename MultiDimArray<T, J...>::type Nested;
+        #   using type = std::array<Nested, I>;
+        #   // typedef std::array<Nested, I> type;
+        # };
+
+        # template <class T, std::size_t I>
+        # struct MultiDimArray<T, I> 
+        # {
+        #   using type = std::array<T, I>;
+        #   // typedef std::array<T, I> type;
+        # };
         print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 650000000);', file=self.file)
         print('vector<Sharing*>& sharings = party->GetSharings();', file=self.file)
         print('Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();', file=self.file)
@@ -89,7 +112,12 @@ class smlCodeGen:
         refctx = self.arrDict[name]
         ref = refctx.getText()
         if tgt == None:
-            print('share *'+tname+ref,';', file=self.file)
+            print('MultiDimArray<share*', end='', file=self.file)
+            for x in range(1,refctx.getChildCount(),3):
+                num = refctx.getChild(x)
+                print(',',num, end='', file=self.file)
+            print('>::type', tname, ';', file=self.file)
+        #     print('share *'+tname+ref,';', file=self.file)
         for x in range(1,refctx.getChildCount(),3):
             num = refctx.getChild(x)
             print('for (int _i'+str(x),'= 0; _i'+str(x),'<',num,'; _i'+str(x)+'++) {', file=self.file)
@@ -161,6 +189,21 @@ class smlCodeGen:
         else:
             pass
 
+    def checkMux(self, block):
+        mux = False
+        for x in block.children:
+            if isinstance(x, Assign):
+                if isinstance(x.rhs, CondExpr):
+                    mux = True
+                    return mux
+            elif isinstance(x, ForLoop):
+                mux |= self.checkMux(x.block)
+            else:
+                mux |= self.checkMux(x)
+            if mux:
+                return True
+        return False
+
     def checkBool(self, block):
         foundBool = False
         for x in block.children:
@@ -182,7 +225,11 @@ class smlCodeGen:
             if varShares[i] is None:
                 refctx = self.arrDict[name]
                 varname = shareName(name, circ)
-                print('share *', varname + refctx.getText(), ';', file=self.file)
+                print('MultiDimArray<share*', end='', file=self.file)
+                for x in range(1,refctx.getChildCount(),3):
+                    num = refctx.getChild(x)
+                    print(',',num, end='', file=self.file)
+                print('>::type', varname, ';', file=self.file)
                 varShares[i] = varname
         else:
             name = lhs.name
@@ -196,20 +243,12 @@ class smlCodeGen:
     def convertAll(self, block, circ, lhsSet=None):
         for x in block.children:
             if isinstance(x, Assign):
-                # lhsSet.add(x.lhs)
                 self.convertExpr(x.rhs, circ)
                 self.declareLhs(x.lhs, circ)
             elif isinstance(x, ForLoop):
                 self.convertAll(x.block, circ, lhsSet)
             else:
                 self.convertAll(x, circ, lhsSet)
-
-    # def convertAll(self, block, circ):
-    #     lhsSet = set()
-    #     self.convertAllHelper(block, circ, lhsSet)
-    #     for x in lhsSet:
-    #         self.declareLhs(x, circ)
-
 
     def codeGen(self, node, insideFor, circ=None, offset=0):
         if isinstance(node, CommSeq):
@@ -229,14 +268,28 @@ class smlCodeGen:
                 name = node.idname.name
                 sname = shareName(name, circ)
                 self.putInDict(name, sname, circ)
+                print(' '*offset + node.data_type.idtype, name + ';', file=self.file)
+                print(' '*offset + 'share *' + sname + ';', file=self.file)
             else:
                 name = node.idname.idname.name + node.idname.ref
-                sname = shareName(name, circ)
+                # sname = shareName(name, circ)
                 arrname = node.idname.idname.name
                 self.arrDict[arrname] = node.idname.refctx
                 self.putInDict(arrname, 's_'+circ[0]+'_'+arrname, circ)
-            print(' '*offset + node.data_type.idtype, name + ';', file=self.file)
-            print(' '*offset + 'share *' + sname + ';', file=self.file)
+                # MultiDimArray<int, 3, 4, 5, 6, 7>::type arr;
+                print(' '*offset + 'MultiDimArray<', node.data_type.idtype, end='', file=self.file)
+                refctx = node.idname.refctx
+                for x in range(1,refctx.getChildCount(),3):
+                    num = refctx.getChild(x)
+                    print(',',num, end='', file=self.file)
+                print('>::type', arrname, ';', file=self.file)
+                # print(' '*offset + 'share *' + sname + ';', file=self.file)
+                print(' '*offset + 'MultiDimArray<share*', end='', file=self.file)
+                refctx = node.idname.refctx
+                for x in range(1,refctx.getChildCount(),3):
+                    num = refctx.getChild(x)
+                    print(',',num, end='', file=self.file)
+                print('>::type', 's_'+circ[0]+'_'+arrname, ';', file=self.file)
 
         elif isinstance(node, Ident): # should always get a circ
             shareList = self.dict[node.name]
@@ -262,10 +315,11 @@ class smlCodeGen:
                 foundBool = self.checkBool(node.block)
                 if foundBool:
                     circ = self.defckt
-                    self.convertAll(node.block, circ)
+                    if self.checkMux(node.block):
+                        circ = self.muxckt
                 else:
                     circ = 'acirc'
-                    self.convertAll(node.block, circ)
+            self.convertAll(node.block, circ)
             name = node.idname.name
             if node.step == '1':
                 step = name + '++'
@@ -285,6 +339,10 @@ class smlCodeGen:
 
         elif isinstance(node, UnOp): # should always get a circ
             tmpvar = 'tmp_'+str(self.counter)
+            if node.op == '-':
+                circ = 'acirc'
+            else:
+                circ = self.defckt
             varname = shareName(tmpvar, circ)
             self.counter += 1
             expr = self.codeGen(node.expr, insideFor, circ, offset) # check expr type
@@ -680,6 +738,10 @@ class smlCodeGen:
             elif isinstance(rhs, UnOp):
                 if not insideFor or circ is None:
                     circ = self.circ
+                if rhs.op == '-':
+                    circ = 'acirc'
+                else:
+                    circ = self.defckt
                 varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:

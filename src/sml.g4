@@ -29,7 +29,8 @@ declaration
 ;
 
 varType
-    : 'uint32_t' // removed bool
+    : 'uint32_t' 
+    | 'uint16_t' // removed bool
 ;
 
 assignment 

@@ -1,23 +1,29 @@
-uint32_t a[100];
+uint32_t a[100][2][3][4234][432];
 uint32_t b[100];
 uint32_t d[100];
 
-for uint32_t i = [0:100] {
-    a[i] = input1(2);
-}
-for uint32_t i = [0:100] {
-    b[i] = input2(2);
-}
-for uint32_t i = [0:100] {
-    a[i] = b[i] & a[i];
-}
-uint32_t c[100];
-for uint32_t i = [0:100] {
-    c[i] = 2;
-}
-for uint32_t i = [0:100] {
-    a[i] = b[i] + c[i];
-}
+uint16_t x[100];
+uint32_t a1;
+uint32_t a2;
+a1 = -a2;
+a1 = ~a2;
+
+// for uint32_t i = [0:100] {
+//     a[i] = input1(2);
+// }
+// for uint32_t i = [0:100] {
+//     b[i] = input2(2);
+// }
+// for uint32_t i = [0:100] {
+//     a[i] = b[i] & a[i];
+// }
+// uint32_t c[100];
+// for uint32_t i = [0:100] {
+//     c[i] = 2;
+// }
+// for uint32_t i = [0:100] {
+//     a[i] = b[i] + c[i];
+// }
 
 
 // uint32_t a1;
