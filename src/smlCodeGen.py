@@ -30,24 +30,45 @@ class smlCodeGen:
         self.circ = 'acirc'
         self.file = open(filename, 'w')
         # #include <iostream>
-        # #include <array>
+        # #include <vector>
         # using namespace std;
 
-        # template <class T, std::size_t I, std::size_t... J>
-        # struct MultiDimArray 
-        # {
-        #   using Nested = typename MultiDimArray<T, J...>::type;
-        #   // typedef typename MultiDimArray<T, J...>::type Nested;
-        #   using type = std::array<Nested, I>;
-        #   // typedef std::array<Nested, I> type;
-        # };
+        # namespace details {
+        #     template<class T>struct tag{using type=T;};
+        #     template<class Tag>using type=typename Tag::type;
+            
+        #     template<class T, size_t n>
+        #     struct n_dim_vec:tag< std::vector< type< n_dim_vec<T, n-1> > > > {};
+        #     template<class T>
+        #     struct n_dim_vec<T, 0>:tag<T>{};
+        #     template<class T, size_t n>
+        #     using n_dim_vec_t = type<n_dim_vec<T,n>>;
 
-        # template <class T, std::size_t I>
-        # struct MultiDimArray<T, I> 
+        #     template <class T, class R=std::vector<T>>
+        #     R make_vector(size_t size) {
+        #         return R(size);
+        #     }
+
+        #     template<class T, class...Args, class R=n_dim_vec_t<T, sizeof...(Args)+1>>
+        #     R make_vector(size_t top, Args...args){
+        #         return R(top, make_vector<T>(std::forward<Args>(args)...));
+        #     }
+        # }
+
+
+        # template <class T, class... Args, class R=details::n_dim_vec_t<T, sizeof...(Args)>>
+        # R make_vector(Args... args)
         # {
-        #   using type = std::array<T, I>;
-        #   // typedef std::array<T, I> type;
-        # };
+        #     return details::make_vector<T>(std::forward<Args>(args)...);
+        # }
+
+        # int main()
+        # {
+        #     int n = 5;
+        #     auto x = make_vector<uint32_t>(n + 1, n * 2, n * 3, n * 4);
+        #     vector<vector<vector<vector<uint32_t>>>> v = x;
+        #     cout << "yo" << endl;
+        # }
         print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 650000000);', file=self.file)
         print('vector<Sharing*>& sharings = party->GetSharings();', file=self.file)
         print('Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();', file=self.file)
@@ -112,11 +133,15 @@ class smlCodeGen:
         refctx = self.arrDict[name]
         ref = refctx.getText()
         if tgt == None:
-            print('MultiDimArray<share*', end='', file=self.file)
+            # auto x = make_vector<uint32_t>(n + 1, n * 2, n * 3, n * 4);
+            print('auto', tname, '= make_vector<share*>(', end='', file=self.file)
             for x in range(1,refctx.getChildCount(),3):
                 num = refctx.getChild(x)
-                print(',',num, end='', file=self.file)
-            print('>::type', tname, ';', file=self.file)
+                if x == 1:
+                    print(num, end='', file=self.file)
+                else:
+                    print(',',num, end='', file=self.file)
+            print(');', file=self.file)
         #     print('share *'+tname+ref,';', file=self.file)
         for x in range(1,refctx.getChildCount(),3):
             num = refctx.getChild(x)
@@ -225,11 +250,14 @@ class smlCodeGen:
             if varShares[i] is None:
                 refctx = self.arrDict[name]
                 varname = shareName(name, circ)
-                print('MultiDimArray<share*', end='', file=self.file)
+                print('auto', varname, '= make_vector<share*>(', end='', file=self.file)
                 for x in range(1,refctx.getChildCount(),3):
                     num = refctx.getChild(x)
-                    print(',',num, end='', file=self.file)
-                print('>::type', varname, ';', file=self.file)
+                    if x == 1:
+                        print(num, end='', file=self.file)
+                    else:
+                        print(',',num, end='', file=self.file)
+                print(');', file=self.file)
                 varShares[i] = varname
         else:
             name = lhs.name
@@ -276,20 +304,24 @@ class smlCodeGen:
                 arrname = node.idname.idname.name
                 self.arrDict[arrname] = node.idname.refctx
                 self.putInDict(arrname, 's_'+circ[0]+'_'+arrname, circ)
-                # MultiDimArray<int, 3, 4, 5, 6, 7>::type arr;
-                print(' '*offset + 'MultiDimArray<', node.data_type.idtype, end='', file=self.file)
                 refctx = node.idname.refctx
+                print('auto', arrname, '= make_vector<'+node.data_type.idtype+'>(', end='', file=self.file)
                 for x in range(1,refctx.getChildCount(),3):
                     num = refctx.getChild(x)
-                    print(',',num, end='', file=self.file)
-                print('>::type', arrname, ';', file=self.file)
+                    if x == 1:
+                        print(num, end='', file=self.file)
+                    else:
+                        print(',',num, end='', file=self.file)
+                print(');', file=self.file)
                 # print(' '*offset + 'share *' + sname + ';', file=self.file)
-                print(' '*offset + 'MultiDimArray<share*', end='', file=self.file)
-                refctx = node.idname.refctx
+                print('auto', 's_'+circ[0]+'_'+arrname, '= make_vector<share*>(', end='', file=self.file)
                 for x in range(1,refctx.getChildCount(),3):
                     num = refctx.getChild(x)
-                    print(',',num, end='', file=self.file)
-                print('>::type', 's_'+circ[0]+'_'+arrname, ';', file=self.file)
+                    if x == 1:
+                        print(num, end='', file=self.file)
+                    else:
+                        print(',',num, end='', file=self.file)
+                print(');', file=self.file)
 
         elif isinstance(node, Ident): # should always get a circ
             shareList = self.dict[node.name]
@@ -792,16 +824,17 @@ class smlCodeGen:
                         varShares[i] = varname
                     varname += node.lhs.ref
                     tmpvar += node.lhs.ref
-                print(' '*offset+tmpvar,'=',rhs.exprText,';', file=self.file)
                 if varShares[i] is None:
                     print(' '*offset+'share *',varname,';')
                 if rhs.partynum == 'input1':
                     print(' '*offset+'if (role == SERVER) {', file=self.file)
+                    print(' '*offset+tmpvar,'=',rhs.exprText,';', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,SERVER);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
                 else:
                     print(' '*offset+'if (role == CLIENT) {', file=self.file)
+                    print(' '*offset+tmpvar,'=',rhs.exprText,';', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
