@@ -828,13 +828,13 @@ class smlCodeGen:
                     print(' '*offset+'share *',varname,';')
                 if rhs.partynum == 'input1':
                     print(' '*offset+'if (role == SERVER) {', file=self.file)
-                    print(' '*offset+tmpvar,'=',rhs.exprText,';', file=self.file)
+                    print(' '*(offset+const)+tmpvar,'=',rhs.exprText,';', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,SERVER);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
                 else:
                     print(' '*offset+'if (role == CLIENT) {', file=self.file)
-                    print(' '*offset+tmpvar,'=',rhs.exprText,';', file=self.file)
+                    print(' '*(offset+const)+tmpvar,'=',rhs.exprText,';', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
                     print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
