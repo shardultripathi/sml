@@ -215,6 +215,75 @@ tmp0 = 858993459 ;
 s_a_tmp0 = acirc->PutCONSGate( tmp0 ,bitlen);
 tmp1 = 858993459 ;
 s_a_tmp1 = acirc->PutCONSGate( tmp1 ,bitlen);
+for (uint32_t i60 = 0; i60 < 4; i60++)
+{
+    for (uint32_t i61 = 0; i61 < 1; i61++)
+    {
+        for (uint32_t i62 = 0; i62 < 7; i62++)
+        {
+            if (role == CLIENT) {
+                WW = 456 ;
+                s_a_WW[i60][i61][i62] = acirc->PutINGate( WW ,bitlen,CLIENT);
+            } else {
+                s_a_WW[i60][i61][i62] = acirc->PutDummyINGate(bitlen);
+            }
+        }
+    }
+}
+for (uint32_t i63 = 0; i63 < 4; i63++)
+{
+    for (uint32_t i64 = 0; i64 < 1; i64++)
+    {
+        for (uint32_t i65 = 0; i65 < 7; i65++)
+        {
+            if (role == CLIENT) {
+                VV = 456 ;
+                s_a_VV[i63][i64][i65] = acirc->PutINGate( VV ,bitlen,CLIENT);
+            } else {
+                s_a_VV[i63][i64][i65] = acirc->PutDummyINGate(bitlen);
+            }
+        }
+    }
+}
+for (uint32_t i66 = 0; i66 < 4; i66++)
+{
+    for (uint32_t i67 = 0; i67 < 1; i67++)
+    {
+        for (uint32_t i68 = 0; i68 < 7; i68++)
+        {
+            if (role == CLIENT) {
+                TT = 456 ;
+                s_a_TT[i66][i67][i68] = acirc->PutINGate( TT ,bitlen,CLIENT);
+            } else {
+                s_a_TT[i66][i67][i68] = acirc->PutDummyINGate(bitlen);
+            }
+        }
+    }
+}
+for (uint32_t i69 = 0; i69 < 7; i69++)
+{
+    for (uint32_t i70 = 0; i70 < 1000; i70++)
+    {
+        if (role == CLIENT) {
+            ZZ = 456 ;
+            s_a_ZZ[i69][i70] = acirc->PutINGate( ZZ ,bitlen,CLIENT);
+        } else {
+            s_a_ZZ[i69][i70] = acirc->PutDummyINGate(bitlen);
+        }
+    }
+}
+for (uint32_t i71 = 0; i71 < 1000; i71++)
+{
+    for (uint32_t i72 = 0; i72 < 1; i72++)
+    {
+        if (role == SERVER) {
+            xx = 123 ;
+            s_a_xx[i71][i72] = acirc->PutINGate( xx ,bitlen,SERVER);
+        } else {
+            s_a_xx[i71][i72] = acirc->PutDummyINGate(bitlen);
+        }
+    }
+}
 cur1 = 1 ;
 s_a_cur1 = acirc->PutCONSGate( cur1 ,bitlen);
 share *s_y_tmp0 = ycirc->PutA2YGate( s_a_tmp0 );

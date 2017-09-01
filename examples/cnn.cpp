@@ -16,8 +16,8 @@ for (uint32_t i = 0; i < 33; i++)
     for (uint32_t j = 0; j < 33; j++)
     {
         if (role == SERVER) {
-            x[i][j] = 450 ;
-            s_a_x[i][j] = acirc->PutINGate( x[i][j] ,bitlen,SERVER);
+            x = 450 ;
+            s_a_x[i][j] = acirc->PutINGate( x ,bitlen,SERVER);
         } else {
             s_a_x[i][j] = acirc->PutDummyINGate(bitlen);
         }
@@ -30,8 +30,8 @@ for (uint32_t i = 0; i < 32; i++)
         for (uint32_t k = 0; k < 5; k++)
         {
             if (role == CLIENT) {
-                wconv1[i][j][k] = 500 ;
-                s_a_wconv1[i][j][k] = acirc->PutINGate( wconv1[i][j][k] ,bitlen,CLIENT);
+                wconv1 = 500 ;
+                s_a_wconv1[i][j][k] = acirc->PutINGate( wconv1 ,bitlen,CLIENT);
             } else {
                 s_a_wconv1[i][j][k] = acirc->PutDummyINGate(bitlen);
             }
@@ -41,8 +41,8 @@ for (uint32_t i = 0; i < 32; i++)
 for (uint32_t i = 0; i < 32; i++)
 {
     if (role == CLIENT) {
-        bconv1[i] = 66882 ;
-        s_a_bconv1[i] = acirc->PutINGate( bconv1[i] ,bitlen,CLIENT);
+        bconv1 = 66882 ;
+        s_a_bconv1[i] = acirc->PutINGate( bconv1 ,bitlen,CLIENT);
     } else {
         s_a_bconv1[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -53,8 +53,8 @@ for (uint32_t i = 0; i < 32; i++)
     {
         for (uint32_t k = 0; k < 28; k++)
         {
-            hconv1[i][j][k] = 0 ;
-            s_a_hconv1[i][j][k] = acirc->PutCONSGate( hconv1[i][j][k] ,bitlen);
+            hconv1 = 0 ;
+            s_a_hconv1[i][j][k] = acirc->PutCONSGate( hconv1 ,bitlen);
             for (uint32_t l = 0; l < 5; l++)
             {
                 for (uint32_t m = 0; m < 5; m++)
@@ -98,8 +98,8 @@ for (uint32_t i = 0; i < 32; i++)
     {
         for (uint32_t k = 0; k < 28; k += 2)
         {
-            hpool1[i][j/2][k/2] = 0 ;
-            s_y_hpool1[i][j/2][k/2] = ycirc->PutCONSGate( hpool1[i][j/2][k/2] ,bitlen);
+            hpool1 = 0 ;
+            s_y_hpool1[i][j/2][k/2] = ycirc->PutCONSGate( hpool1 ,bitlen);
             share * s_y_tmp_4 = ycirc->PutGTGate( s_y_hpool1[i][j/2][k/2] , s_y_hconv1[i][j][k] );
             s_y_hpool1[i][j/2][k/2] = ycirc->PutMUXGate( s_y_hpool1[i][j/2][k/2] , s_y_hconv1[i][j][k] , s_y_tmp_4 );
             share * s_y_tmp_5 = ycirc->PutGTGate( s_y_hpool1[i][j/2][k/2] , s_y_hconv1[i][j+1][k] );
@@ -114,16 +114,16 @@ for (uint32_t i = 0; i < 32; i++)
     {
         for (uint32_t k = 0; k < 19; k++)
         {
-            hpool1[i][j][k] = 0 ;
-            s_y_hpool1[i][j][k] = ycirc->PutCONSGate( hpool1[i][j][k] ,bitlen);
+            hpool1 = 0 ;
+            s_y_hpool1[i][j][k] = ycirc->PutCONSGate( hpool1 ,bitlen);
         }
     }
     for (uint32_t j = 0; j < 19; j++)
     {
         for (uint32_t k = 14; k < 19; k++)
         {
-            hpool1[i][j][k] = 0 ;
-            s_y_hpool1[i][j][k] = ycirc->PutCONSGate( hpool1[i][j][k] ,bitlen);
+            hpool1 = 0 ;
+            s_y_hpool1[i][j][k] = ycirc->PutCONSGate( hpool1 ,bitlen);
         }
     }
 }
@@ -141,8 +141,8 @@ for (uint32_t i = 0; i < 64; i++)
         for (uint32_t k = 0; k < 5; k++)
         {
             if (role == CLIENT) {
-                wconv2[i][j][k] = 500 ;
-                s_a_wconv2[i][j][k] = acirc->PutINGate( wconv2[i][j][k] ,bitlen,CLIENT);
+                wconv2 = 500 ;
+                s_a_wconv2[i][j][k] = acirc->PutINGate( wconv2 ,bitlen,CLIENT);
             } else {
                 s_a_wconv2[i][j][k] = acirc->PutDummyINGate(bitlen);
             }
@@ -153,8 +153,8 @@ auto s_a_bconv2 = make_vector<share*>(64);
 for (uint32_t i = 0; i < 64; i++)
 {
     if (role == CLIENT) {
-        bconv2[i] = 66882 ;
-        s_a_bconv2[i] = acirc->PutINGate( bconv2[i] ,bitlen,CLIENT);
+        bconv2 = 66882 ;
+        s_a_bconv2[i] = acirc->PutINGate( bconv2 ,bitlen,CLIENT);
     } else {
         s_a_bconv2[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -174,10 +174,10 @@ for (uint32_t i = 0; i < 32; i++)
     {
         for (uint32_t k = 0; k < 14; k++)
         {
-            hconv2[2*i][j][k] = 0 ;
-            s_a_hconv2[2*i][j][k] = acirc->PutCONSGate( hconv2[2*i][j][k] ,bitlen);
-            hconv2[2*i+1][j][k] = 0 ;
-            s_a_hconv2[2*i+1][j][k] = acirc->PutCONSGate( hconv2[2*i+1][j][k] ,bitlen);
+            hconv2 = 0 ;
+            s_a_hconv2[2*i][j][k] = acirc->PutCONSGate( hconv2 ,bitlen);
+            hconv2 = 0 ;
+            s_a_hconv2[2*i+1][j][k] = acirc->PutCONSGate( hconv2 ,bitlen);
             for (uint32_t l = 0; l < 5; l++)
             {
                 for (uint32_t m = 0; m < 5; m++)
@@ -223,8 +223,8 @@ for (uint32_t i = 0; i < 64; i++)
     {
         for (uint32_t k = 0; k < 14; k += 2)
         {
-            hpool2[i][j/2][k/2] = 0 ;
-            s_y_hpool2[i][j/2][k/2] = ycirc->PutCONSGate( hpool2[i][j/2][k/2] ,bitlen);
+            hpool2 = 0 ;
+            s_y_hpool2[i][j/2][k/2] = ycirc->PutCONSGate( hpool2 ,bitlen);
             share * s_y_tmp_13 = ycirc->PutGTGate( s_y_hpool2[i][j/2][k/2] , s_y_hconv2[i][j][k] );
             s_y_hpool2[i][j/2][k/2] = ycirc->PutMUXGate( s_y_hpool2[i][j/2][k/2] , s_y_hconv2[i][j][k] , s_y_tmp_13 );
             share * s_y_tmp_14 = ycirc->PutGTGate( s_y_hpool2[i][j/2][k/2] , s_y_hconv2[i][j+1][k] );
@@ -266,8 +266,8 @@ for (uint32_t i = 0; i < 1024; i++)
     for (uint32_t j = 0; j < 3136; j++)
     {
         if (role == CLIENT) {
-            wfc1[i][j] = 460 ;
-            s_a_wfc1[i][j] = acirc->PutINGate( wfc1[i][j] ,bitlen,CLIENT);
+            wfc1 = 460 ;
+            s_a_wfc1[i][j] = acirc->PutINGate( wfc1 ,bitlen,CLIENT);
         } else {
             s_a_wfc1[i][j] = acirc->PutDummyINGate(bitlen);
         }
@@ -276,8 +276,8 @@ for (uint32_t i = 0; i < 1024; i++)
 for (uint32_t i = 0; i < 1024; i++)
 {
     if (role == CLIENT) {
-        bfc1[i] = 66892 ;
-        s_a_bfc1[i] = acirc->PutINGate( bfc1[i] ,bitlen,CLIENT);
+        bfc1 = 66892 ;
+        s_a_bfc1[i] = acirc->PutINGate( bfc1 ,bitlen,CLIENT);
     } else {
         s_a_bfc1[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -286,8 +286,8 @@ auto hfc1 = make_vector<uint32_t>(1024);
 auto s_a_hfc1 = make_vector<share*>(1024);
 for (uint32_t i = 0; i < 1024; i++)
 {
-    hfc1[i] = 0 ;
-    s_a_hfc1[i] = acirc->PutCONSGate( hfc1[i] ,bitlen);
+    hfc1 = 0 ;
+    s_a_hfc1[i] = acirc->PutCONSGate( hfc1 ,bitlen);
     for (uint32_t j = 0; j < 3136; j++)
     {
         share * s_a_tmp_17 = acirc->PutMULGate( s_a_wfc1[i][j] , s_a_hpool2flat[j] );
@@ -318,8 +318,8 @@ for (uint32_t i = 0; i < 10; i++)
     for (uint32_t j = 0; j < 1024; j++)
     {
         if (role == CLIENT) {
-            wfc2[i][j] = 460 ;
-            s_a_wfc2[i][j] = acirc->PutINGate( wfc2[i][j] ,bitlen,CLIENT);
+            wfc2 = 460 ;
+            s_a_wfc2[i][j] = acirc->PutINGate( wfc2 ,bitlen,CLIENT);
         } else {
             s_a_wfc2[i][j] = acirc->PutDummyINGate(bitlen);
         }
@@ -329,8 +329,8 @@ auto s_a_bfc2 = make_vector<share*>(10);
 for (uint32_t i = 0; i < 10; i++)
 {
     if (role == CLIENT) {
-        bfc2[i] = 66892 ;
-        s_a_bfc2[i] = acirc->PutINGate( bfc2[i] ,bitlen,CLIENT);
+        bfc2 = 66892 ;
+        s_a_bfc2[i] = acirc->PutINGate( bfc2 ,bitlen,CLIENT);
     } else {
         s_a_bfc2[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -342,8 +342,8 @@ s_a_hfc1[_i1] = acirc->PutY2AGate( s_y_hfc1[_i1] ,bcirc);
 }
 for (uint32_t i = 0; i < 10; i++)
 {
-    yconv[i] = 0 ;
-    s_a_yconv[i] = acirc->PutCONSGate( yconv[i] ,bitlen);
+    yconv = 0 ;
+    s_a_yconv[i] = acirc->PutCONSGate( yconv ,bitlen);
     for (uint32_t j = 0; j < 1024; j++)
     {
         share * s_a_tmp_21 = acirc->PutMULGate( s_a_wfc2[i][j] , s_a_hfc1[j] );

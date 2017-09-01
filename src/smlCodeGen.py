@@ -93,6 +93,16 @@ class smlCodeGen:
             return 1
         return 2
 
+    def makeVec(self, vecname, vectype, refctx):
+        print('auto', vecname, '= make_vector<'+vectype+'>(', end='', file=self.file)
+        for x in range(1,refctx.getChildCount(),3):
+            num = refctx.getChild(x)
+            if x == 1:
+                print(num, end='', file=self.file)
+            else:
+                print(',',num, end='', file=self.file)
+        print(');', file=self.file)
+
     def convertIdent(self, sname, circ): # convert share name to circ share
         if sname[2] == circ[0]:
             return sname
@@ -133,16 +143,7 @@ class smlCodeGen:
         refctx = self.arrDict[name]
         ref = refctx.getText()
         if tgt == None:
-            # auto x = make_vector<uint32_t>(n + 1, n * 2, n * 3, n * 4);
-            print('auto', tname, '= make_vector<share*>(', end='', file=self.file)
-            for x in range(1,refctx.getChildCount(),3):
-                num = refctx.getChild(x)
-                if x == 1:
-                    print(num, end='', file=self.file)
-                else:
-                    print(',',num, end='', file=self.file)
-            print(');', file=self.file)
-        #     print('share *'+tname+ref,';', file=self.file)
+            self.makeVec(tname, 'share*', refctx)
         for x in range(1,refctx.getChildCount(),3):
             num = refctx.getChild(x)
             print('for (int _i'+str(x),'= 0; _i'+str(x),'<',num,'; _i'+str(x)+'++) {', file=self.file)
@@ -200,6 +201,7 @@ class smlCodeGen:
             varShares = self.dict[tmpvar]
             if varShares[i] != None and varShares[i] != -1:
                 return
+            # print(tmpvar, varShares)
             existing = next((item for item in varShares if item is not None and item != -1), 'No shares exist for '+expr.idname.name)
             self.convertArr(existing, circ)
         elif isinstance(expr, CondExpr):
@@ -250,14 +252,7 @@ class smlCodeGen:
             if varShares[i] is None:
                 refctx = self.arrDict[name]
                 varname = shareName(name, circ)
-                print('auto', varname, '= make_vector<share*>(', end='', file=self.file)
-                for x in range(1,refctx.getChildCount(),3):
-                    num = refctx.getChild(x)
-                    if x == 1:
-                        print(num, end='', file=self.file)
-                    else:
-                        print(',',num, end='', file=self.file)
-                print(');', file=self.file)
+                self.makeVec(varname, 'share*', refctx)
                 varShares[i] = varname
         else:
             name = lhs.name
@@ -300,28 +295,12 @@ class smlCodeGen:
                 print(' '*offset + 'share *' + sname + ';', file=self.file)
             else:
                 name = node.idname.idname.name + node.idname.ref
-                # sname = shareName(name, circ)
                 arrname = node.idname.idname.name
                 self.arrDict[arrname] = node.idname.refctx
                 self.putInDict(arrname, 's_'+circ[0]+'_'+arrname, circ)
                 refctx = node.idname.refctx
-                print('auto', arrname, '= make_vector<'+node.data_type.idtype+'>(', end='', file=self.file)
-                for x in range(1,refctx.getChildCount(),3):
-                    num = refctx.getChild(x)
-                    if x == 1:
-                        print(num, end='', file=self.file)
-                    else:
-                        print(',',num, end='', file=self.file)
-                print(');', file=self.file)
-                # print(' '*offset + 'share *' + sname + ';', file=self.file)
-                print('auto', 's_'+circ[0]+'_'+arrname, '= make_vector<share*>(', end='', file=self.file)
-                for x in range(1,refctx.getChildCount(),3):
-                    num = refctx.getChild(x)
-                    if x == 1:
-                        print(num, end='', file=self.file)
-                    else:
-                        print(',',num, end='', file=self.file)
-                print(');', file=self.file)
+                self.makeVec(arrname, node.data_type.idtype, refctx)
+                self.makeVec('s_'+circ[0]+'_'+arrname, 'share*', refctx)
 
         elif isinstance(node, Ident): # should always get a circ
             shareList = self.dict[node.name]
@@ -505,253 +484,253 @@ class smlCodeGen:
             if isinstance(rhs, Ident):
                 if not insideFor or circ is None:
                     circ = self.circ
-                varname = shareName(tmpvar, circ)
+                varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:
                     if varShares[i] is None:
-                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                        # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
-                    varname += node.lhs.ref
-                    tmpvar += node.lhs.ref
+                    varref += node.lhs.ref
                 rhsShareList = self.dict[rhs.name]
                 existing = next((item for item in rhsShareList if item is not None and item != -1), 'No shares exist for '+rhs.name)
                 if rhsShareList[i] is None or rhsShareList[i] == -1:
                     self.convertIdent(existing, circ)
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varname,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
+                    print(' '*offset+'share *'+varref,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
                 else:
-                    print(' '*offset+varname,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
+                    print(' '*offset+varref,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, ArrayPub):
                 if not insideFor or circ is None:
                     circ = self.circ
-                varname = shareName(tmpvar, circ)
+                varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:
                     if varShares[i] is None:
-                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                        # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
-                    varname += node.lhs.ref
-                    tmpvar += node.lhs.ref
+                    varref += node.lhs.ref
                 rhsShareList = self.dict[rhs.idname.name]
                 existing = next((item for item in rhsShareList if item is not None and item != -1), 'No shares exist for '+rhs.idname.name)
                 if rhsShareList[i] is None or rhsShareList[i] == -1:
                     self.convertArr(existing, circ)
                 copyshare = rhsShareList[i] + rhs.ref
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varname,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
+                    print(' '*offset+'share *'+varref,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
                 else:
-                    print(' '*offset+varname,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
+                    print(' '*offset+varref,'= create_new_share('+copyshare+'->get_wires(),',circ,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, Constant):
                 if not insideFor or circ is None:
                     circ = self.circ
-                varname = shareName(tmpvar, circ)
+                varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:
                     if varShares[i] is None:
-                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                        # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
-                    varname += node.lhs.ref
-                    tmpvar += node.lhs.ref
+                    varref += node.lhs.ref
                 print(' '*offset+tmpvar,'=',rhs.value,';', file=self.file)
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                    print(' '*offset+'share *'+varref,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
                 else:
-                    print(' '*offset+varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                    print(' '*offset+varref,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, BinOp):
                 if rhs.op == '+':
                     if not insideFor or circ is None:
                         circ = 'acirc'
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutADDGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutADDGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutADDGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutADDGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '*':
                     if not insideFor or circ is None:
                         circ = 'acirc'
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutMULGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutMULGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutMULGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutMULGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '-':
                     if not insideFor or circ is None:
                         circ = 'acirc'
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutSUBGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutSUBGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutSUBGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutSUBGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '>':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutGTGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutGTGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutGTGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutGTGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '<':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutGTGate(',binrhs,',',binlhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutGTGate(',binrhs,',',binlhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutGTGate(',binrhs,',',binlhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutGTGate(',binrhs,',',binlhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '&&' or rhs.op == '&':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutANDGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutANDGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutANDGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutANDGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '||' or rhs.op == '|':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutORGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutORGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutORGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutORGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '^':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutXORGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '==':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binrhs = self.codeGen(rhs.rhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     binrhs = self.checkType(binrhs, circ)
                     if varShares[i] is None:
-                        print(' '*offset+'share *',varname,'=',circ+'->PutEQGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+'share *',varref,'=',circ+'->PutEQGate(',binlhs,',',binrhs,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'=',circ+'->PutEQGate(',binlhs,',',binrhs,');', file=self.file)
+                        print(' '*offset+varref,'=',circ+'->PutEQGate(',binlhs,',',binrhs,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 elif rhs.op == '>>':
                     if not insideFor or circ is None:
                         circ = self.defckt
-                    varname = shareName(tmpvar, circ)
+                    varref = varname = shareName(tmpvar, circ)
                     i = self.getIndex(circ)
                     if lhsArr:
                         if varShares[i] is None:
-                            print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                             varShares[i] = varname
-                        varname += node.lhs.ref
-                        tmpvar += node.lhs.ref
+                        varref += node.lhs.ref
                     binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
                     binlhs = self.checkType(binlhs, circ)
                     rightShift = rhs.rhs.value
@@ -760,9 +739,9 @@ class smlCodeGen:
                     print(' '*offset+'vector<uint32_t>', vec, '=', binlhs+'->get_wires();', file=self.file)
                     print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
                     if varShares[i] is None:
-                        print(' '*offset+'share *'+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
+                        print(' '*offset+'share *'+varref,'= create_new_share(',vec,',',circ,');', file=self.file)
                     else:
-                        print(' '*offset+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
+                        print(' '*offset+varref,'= create_new_share(',vec,',',circ,');', file=self.file)
                     self.putInDict(tmpvar, varname, circ)
                 else:
                     print('I will do this later:', node.op, file=self.file)
@@ -774,33 +753,33 @@ class smlCodeGen:
                     circ = 'acirc'
                 else:
                     circ = self.defckt
-                varname = shareName(tmpvar, circ)
+                varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:
                     if varShares[i] is None:
-                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                        # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
-                    varname += node.lhs.ref
-                    tmpvar += node.lhs.ref
+                    varref += node.lhs.ref
                 expr = self.codeGen(rhs.expr, insideFor, circ, offset) # check expr type
                 expr = self.checkType(expr, circ)
                 if varShares[i] is None:        
-                    print(' '*offset+'share *',varname,'=',circ+'->PutINVGate(', expr,');', file=self.file)
+                    print(' '*offset+'share *',varref,'=',circ+'->PutINVGate(', expr,');', file=self.file)
                 else:
-                    print(' '*offset+varname,'=',circ+'->PutINVGate(', expr,');', file=self.file)
+                    print(' '*offset+varref,'=',circ+'->PutINVGate(', expr,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
 
             elif isinstance(rhs, CondExpr):
                 if not insideFor or circ is None:
                     circ = self.defckt
-                varname = shareName(tmpvar, circ)
+                varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:
                     if varShares[i] is None:
-                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                        # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
-                    varname += node.lhs.ref
-                    tmpvar += node.lhs.ref
+                    varref += node.lhs.ref
                 sel = self.codeGen(rhs.condition, insideFor, circ, offset)
                 ina = self.codeGen(rhs.expr1, insideFor, circ, offset)
                 inb = self.codeGen(rhs.expr2, insideFor, circ, offset)
@@ -808,36 +787,36 @@ class smlCodeGen:
                 ina = self.checkType(ina, circ)
                 inb = self.checkType(inb, circ)
                 if varShares[i] is None:
-                    print(' '*offset+'share *',varname,'=',circ+'->PutMUXGate(',ina,',',inb,',',sel,');', file=self.file)
+                    print(' '*offset+'share *',varref,'=',circ+'->PutMUXGate(',ina,',',inb,',',sel,');', file=self.file)
                 else:
-                    print(' '*offset+varname,'=',circ+'->PutMUXGate(',ina,',',inb,',',sel,');', file=self.file)
+                    print(' '*offset+varref,'=',circ+'->PutMUXGate(',ina,',',inb,',',sel,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
 
             elif isinstance(rhs, InpExpr):
                 if not insideFor or circ is None:
                     circ = self.circ
-                varname = shareName(tmpvar, circ)
+                varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
                 if lhsArr:
                     if varShares[i] is None:
-                        print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                        self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                        # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
-                    varname += node.lhs.ref
-                    tmpvar += node.lhs.ref
+                    varref += node.lhs.ref
                 if varShares[i] is None:
-                    print(' '*offset+'share *',varname,';')
+                    print(' '*offset+'share *',varref,';')
                 if rhs.partynum == 'input1':
                     print(' '*offset+'if (role == SERVER) {', file=self.file)
                     print(' '*(offset+const)+tmpvar,'=',rhs.exprText,';', file=self.file)
-                    print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,SERVER);', file=self.file)
+                    print(' '*(offset+const)+varref,'=',circ+'->PutINGate(',tmpvar,',bitlen,SERVER);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
-                    print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
+                    print(' '*(offset+const)+varref,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
                 else:
                     print(' '*offset+'if (role == CLIENT) {', file=self.file)
                     print(' '*(offset+const)+tmpvar,'=',rhs.exprText,';', file=self.file)
-                    print(' '*(offset+const)+varname,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
+                    print(' '*(offset+const)+varref,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
-                    print(' '*(offset+const)+varname,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
+                    print(' '*(offset+const)+varref,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
 
             else:
