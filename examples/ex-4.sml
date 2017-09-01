@@ -106,6 +106,37 @@ uint32_t tmp95;
 uint32_t tmp96;
 tmp0 = 858993459;
 tmp1 = 858993459;
+for uint32_t i60 = [0:4] {
+  for uint32_t i61 = [0:1] {
+    for uint32_t i62 = [0:7] {
+      WW[i60][i61][i62] = input2(456);
+    }
+  }
+}
+for uint32_t i63 = [0:4] {
+  for uint32_t i64 = [0:1] {
+    for uint32_t i65 = [0:7] {
+      VV[i63][i64][i65] = input2(456);
+    }
+  }
+}
+for uint32_t i66 = [0:4] {
+  for uint32_t i67 = [0:1] {
+    for uint32_t i68 = [0:7] {
+      TT[i66][i67][i68] = input2(456);
+    }
+  }
+}
+for uint32_t i69 = [0:7] {
+  for uint32_t i70 = [0:1000] {
+    ZZ[i69][i70] = input2(456);
+  }
+}
+for uint32_t i71 = [0:1000] {
+  for uint32_t i72 = [0:1] {
+    xx[i71][i72] = input1(123);
+  }
+}
 cur1 = 1;
 tmp3 = ((tmp0<2147483648) ? (tmp0>>15) : (((tmp0^4294967295)>>15)^4294967295));
 for uint32_t i0 = [0:1] {
