@@ -797,12 +797,14 @@ class smlCodeGen:
                     circ = self.circ
                 varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
+                tmpvar1 = tmpvar
                 if lhsArr:
                     if varShares[i] is None:
                         self.makeVec(varname, 'share*', self.arrDict[tmpvar])
                         # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
                     varref += node.lhs.ref
+                    tmpvar += node.lhs.ref
                 if varShares[i] is None:
                     print(' '*offset+'share *',varref,';')
                 if rhs.partynum == 'input1':
@@ -817,7 +819,7 @@ class smlCodeGen:
                     print(' '*(offset+const)+varref,'=',circ+'->PutINGate(',tmpvar,',bitlen,CLIENT);', file=self.file)
                     print(' '*offset+'} else {', file=self.file)
                     print(' '*(offset+const)+varref,'=',circ+'->PutDummyINGate(bitlen);\n'+' '*offset+'}', file=self.file)
-                self.putInDict(tmpvar, varname, circ)
+                self.putInDict(tmpvar1, varname, circ)
 
             else:
                 print('I should not be here', file=self.file)

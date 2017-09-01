@@ -16,8 +16,8 @@ for (uint32_t i = 0; i < 33; i++)
     for (uint32_t j = 0; j < 33; j++)
     {
         if (role == SERVER) {
-            x = 450 ;
-            s_a_x[i][j] = acirc->PutINGate( x ,bitlen,SERVER);
+            x[i][j] = 450 ;
+            s_a_x[i][j] = acirc->PutINGate( x[i][j] ,bitlen,SERVER);
         } else {
             s_a_x[i][j] = acirc->PutDummyINGate(bitlen);
         }
@@ -30,8 +30,8 @@ for (uint32_t i = 0; i < 32; i++)
         for (uint32_t k = 0; k < 5; k++)
         {
             if (role == CLIENT) {
-                wconv1 = 500 ;
-                s_a_wconv1[i][j][k] = acirc->PutINGate( wconv1 ,bitlen,CLIENT);
+                wconv1[i][j][k] = 500 ;
+                s_a_wconv1[i][j][k] = acirc->PutINGate( wconv1[i][j][k] ,bitlen,CLIENT);
             } else {
                 s_a_wconv1[i][j][k] = acirc->PutDummyINGate(bitlen);
             }
@@ -41,8 +41,8 @@ for (uint32_t i = 0; i < 32; i++)
 for (uint32_t i = 0; i < 32; i++)
 {
     if (role == CLIENT) {
-        bconv1 = 66882 ;
-        s_a_bconv1[i] = acirc->PutINGate( bconv1 ,bitlen,CLIENT);
+        bconv1[i] = 66882 ;
+        s_a_bconv1[i] = acirc->PutINGate( bconv1[i] ,bitlen,CLIENT);
     } else {
         s_a_bconv1[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -141,8 +141,8 @@ for (uint32_t i = 0; i < 64; i++)
         for (uint32_t k = 0; k < 5; k++)
         {
             if (role == CLIENT) {
-                wconv2 = 500 ;
-                s_a_wconv2[i][j][k] = acirc->PutINGate( wconv2 ,bitlen,CLIENT);
+                wconv2[i][j][k] = 500 ;
+                s_a_wconv2[i][j][k] = acirc->PutINGate( wconv2[i][j][k] ,bitlen,CLIENT);
             } else {
                 s_a_wconv2[i][j][k] = acirc->PutDummyINGate(bitlen);
             }
@@ -153,8 +153,8 @@ auto s_a_bconv2 = make_vector<share*>(64);
 for (uint32_t i = 0; i < 64; i++)
 {
     if (role == CLIENT) {
-        bconv2 = 66882 ;
-        s_a_bconv2[i] = acirc->PutINGate( bconv2 ,bitlen,CLIENT);
+        bconv2[i] = 66882 ;
+        s_a_bconv2[i] = acirc->PutINGate( bconv2[i] ,bitlen,CLIENT);
     } else {
         s_a_bconv2[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -266,8 +266,8 @@ for (uint32_t i = 0; i < 1024; i++)
     for (uint32_t j = 0; j < 3136; j++)
     {
         if (role == CLIENT) {
-            wfc1 = 460 ;
-            s_a_wfc1[i][j] = acirc->PutINGate( wfc1 ,bitlen,CLIENT);
+            wfc1[i][j] = 460 ;
+            s_a_wfc1[i][j] = acirc->PutINGate( wfc1[i][j] ,bitlen,CLIENT);
         } else {
             s_a_wfc1[i][j] = acirc->PutDummyINGate(bitlen);
         }
@@ -276,8 +276,8 @@ for (uint32_t i = 0; i < 1024; i++)
 for (uint32_t i = 0; i < 1024; i++)
 {
     if (role == CLIENT) {
-        bfc1 = 66892 ;
-        s_a_bfc1[i] = acirc->PutINGate( bfc1 ,bitlen,CLIENT);
+        bfc1[i] = 66892 ;
+        s_a_bfc1[i] = acirc->PutINGate( bfc1[i] ,bitlen,CLIENT);
     } else {
         s_a_bfc1[i] = acirc->PutDummyINGate(bitlen);
     }
@@ -318,8 +318,8 @@ for (uint32_t i = 0; i < 10; i++)
     for (uint32_t j = 0; j < 1024; j++)
     {
         if (role == CLIENT) {
-            wfc2 = 460 ;
-            s_a_wfc2[i][j] = acirc->PutINGate( wfc2 ,bitlen,CLIENT);
+            wfc2[i][j] = 460 ;
+            s_a_wfc2[i][j] = acirc->PutINGate( wfc2[i][j] ,bitlen,CLIENT);
         } else {
             s_a_wfc2[i][j] = acirc->PutDummyINGate(bitlen);
         }
@@ -329,8 +329,8 @@ auto s_a_bfc2 = make_vector<share*>(10);
 for (uint32_t i = 0; i < 10; i++)
 {
     if (role == CLIENT) {
-        bfc2 = 66892 ;
-        s_a_bfc2[i] = acirc->PutINGate( bfc2 ,bitlen,CLIENT);
+        bfc2[i] = 66892 ;
+        s_a_bfc2[i] = acirc->PutINGate( bfc2[i] ,bitlen,CLIENT);
     } else {
         s_a_bfc2[i] = acirc->PutDummyINGate(bitlen);
     }

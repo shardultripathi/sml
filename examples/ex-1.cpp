@@ -40,8 +40,8 @@ for (uint32_t i9 = 0; i9 < 784; i9++)
     for (uint32_t i10 = 0; i10 < 10; i10++)
     {
         if (role == CLIENT) {
-            WW = 456 ;
-            s_a_WW[i9][i10] = acirc->PutINGate( WW ,bitlen,CLIENT);
+            WW[i9][i10] = 456 ;
+            s_a_WW[i9][i10] = acirc->PutINGate( WW[i9][i10] ,bitlen,CLIENT);
         } else {
             s_a_WW[i9][i10] = acirc->PutDummyINGate(bitlen);
         }
@@ -50,8 +50,8 @@ for (uint32_t i9 = 0; i9 < 784; i9++)
 for (uint32_t i11 = 0; i11 < 10; i11++)
 {
     if (role == CLIENT) {
-        bb = 456 ;
-        s_a_bb[i11] = acirc->PutINGate( bb ,bitlen,CLIENT);
+        bb[i11] = 456 ;
+        s_a_bb[i11] = acirc->PutINGate( bb[i11] ,bitlen,CLIENT);
     } else {
         s_a_bb[i11] = acirc->PutDummyINGate(bitlen);
     }
@@ -61,8 +61,8 @@ for (uint32_t i12 = 0; i12 < 1; i12++)
     for (uint32_t i13 = 0; i13 < 784; i13++)
     {
         if (role == SERVER) {
-            xx = 123 ;
-            s_a_xx[i12][i13] = acirc->PutINGate( xx ,bitlen,SERVER);
+            xx[i12][i13] = 123 ;
+            s_a_xx[i12][i13] = acirc->PutINGate( xx[i12][i13] ,bitlen,SERVER);
         } else {
             s_a_xx[i12][i13] = acirc->PutDummyINGate(bitlen);
         }
