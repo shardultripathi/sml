@@ -487,17 +487,19 @@ class smlCodeGen:
                     circ = self.circ
                 varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
+                tmpvar1 = tmpvar
                 if lhsArr:
                     if varShares[i] is None:
                         self.makeVec(varname, 'share*', self.arrDict[tmpvar])
                         # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
                     varref += node.lhs.ref
-                print(' '*offset+tmpvar,'=',rhs.value,';', file=self.file)
+                    tmpvar1 += node.lhs.ref
+                print(' '*offset+tmpvar1,'=',rhs.value,';', file=self.file)
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varref,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                    print(' '*offset+'share *'+varref,'=',circ+'->PutCONSGate(',tmpvar1,',bitlen);', file=self.file)
                 else:
-                    print(' '*offset+varref,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                    print(' '*offset+varref,'=',circ+'->PutCONSGate(',tmpvar1,',bitlen);', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, BinOp):
                 if rhs.op == '+':

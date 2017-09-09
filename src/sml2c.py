@@ -6,8 +6,9 @@ from smlLexer import smlLexer as sl
 import sys
 
 class sml2c:
-    def __init__(self, tree, filename):
+    def __init__(self, tree, filename, flagArr=0):
         self.file = open(filename, 'w')
+        self.flagArr = flagArr
         print('#include <iostream>', file=self.file)
         print('#include <vector>', file=self.file)
         print('using namespace std;', file=self.file)
@@ -56,7 +57,10 @@ class sml2c:
             if node.getChildCount() > 1:
                 if isinstance(node.getChild(1), sp.ArrDeclContext):
                     arrdecl = node.getChild(1)
-                    self.makeVec(arrdecl.getChild(0).getText(), node.getChild(0).getText(), arrdecl.getChild(1))
+                    if self.flagArr == 0:
+                        self.makeVec(arrdecl.getChild(0).getText(), node.getChild(0).getText(), arrdecl.getChild(1))
+                    else:
+                        print(node.getChild(0).getText(), node.getChild(1).getText(), ';', file=self.file)
                 else:
                     print(node.getChild(0).getText(), node.getChild(1).getText(), ';', file=self.file)
 
