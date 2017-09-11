@@ -35,7 +35,7 @@ for uint32_t i = [0:32] {
 for uint32_t i = [0:32] {
     for uint32_t j = [0:28] {
         for uint32_t k = [0:28] {
-            hconv1[i][j][k] = (hconv1[i][j][k] > 1) ? 0 : hconv1[i][j][k];
+            hconv1[i][j][k] = (hconv1[i][j][k] > 2147483648) ? 0 : (hconv1[i][j][k] >> 8);
         }
     }
 }
@@ -96,7 +96,7 @@ for uint32_t i = [0:32] {
 for uint32_t i = [0:64] {
     for uint32_t j = [0:14] {
         for uint32_t k = [0:14] {
-            hconv2[i][j][k] = (hconv2[i][j][k] > 2147483648) ? 0 : (hconv2[i][j][k] );
+            hconv2[i][j][k] = (hconv2[i][j][k] > 2147483648) ? 0 : (hconv2[i][j][k] >> 8);
         }
     }
 }

@@ -29,46 +29,6 @@ class smlCodeGen:
             self.muxckt = self.defckt
         self.circ = 'acirc'
         self.file = open(filename, 'w')
-        # #include <iostream>
-        # #include <vector>
-        # using namespace std;
-
-        # namespace details {
-        #     template<class T>struct tag{using type=T;};
-        #     template<class Tag>using type=typename Tag::type;
-            
-        #     template<class T, size_t n>
-        #     struct n_dim_vec:tag< std::vector< type< n_dim_vec<T, n-1> > > > {};
-        #     template<class T>
-        #     struct n_dim_vec<T, 0>:tag<T>{};
-        #     template<class T, size_t n>
-        #     using n_dim_vec_t = type<n_dim_vec<T,n>>;
-
-        #     template <class T, class R=std::vector<T>>
-        #     R make_vector(size_t size) {
-        #         return R(size);
-        #     }
-
-        #     template<class T, class...Args, class R=n_dim_vec_t<T, sizeof...(Args)+1>>
-        #     R make_vector(size_t top, Args...args){
-        #         return R(top, make_vector<T>(std::forward<Args>(args)...));
-        #     }
-        # }
-
-
-        # template <class T, class... Args, class R=details::n_dim_vec_t<T, sizeof...(Args)>>
-        # R make_vector(Args... args)
-        # {
-        #     return details::make_vector<T>(std::forward<Args>(args)...);
-        # }
-
-        # int main()
-        # {
-        #     int n = 5;
-        #     auto x = make_vector<uint32_t>(n + 1, n * 2, n * 3, n * 4);
-        #     vector<vector<vector<vector<uint32_t>>>> v = x;
-        #     cout << "yo" << endl;
-        # }
         print('ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);', file=self.file)
         print('vector<Sharing*>& sharings = party->GetSharings();', file=self.file)
         print('Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();', file=self.file)
@@ -527,17 +487,19 @@ class smlCodeGen:
                     circ = self.circ
                 varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
+                tmpvar1 = tmpvar
                 if lhsArr:
                     if varShares[i] is None:
                         self.makeVec(varname, 'share*', self.arrDict[tmpvar])
                         # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
                     varref += node.lhs.ref
-                print(' '*offset+tmpvar,'=',rhs.value,';', file=self.file)
+                    tmpvar1 += node.lhs.ref
+                print(' '*offset+tmpvar1,'=',rhs.value,';', file=self.file)
                 if varShares[i] is None:
-                    print(' '*offset+'share *'+varref,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                    print(' '*offset+'share *'+varref,'=',circ+'->PutCONSGate(',tmpvar1,',bitlen);', file=self.file)
                 else:
-                    print(' '*offset+varref,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                    print(' '*offset+varref,'=',circ+'->PutCONSGate(',tmpvar1,',bitlen);', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, BinOp):
                 if rhs.op == '+':

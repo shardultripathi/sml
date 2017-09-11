@@ -5,7 +5,7 @@ from smlParser import smlParser
 from smlListener import smlListener
 from smlAST import *
 from smlCodeGen import smlCodeGen
-# from sml2c import sml2c
+from sml2c import sml2c
 import os
 
 def main():
@@ -16,7 +16,10 @@ def main():
     stream = CommonTokenStream(lexer)
     parser = smlParser(stream)
     tree = parser.commandSeq()
-    # cpp_debug = sml2c(tree, filename + '_debug' + '.cpp')
+    flagArr = 0
+    if len(sys.argv) > 3:
+        flagArr = int(sys.argv[3])
+    cpp_debug = sml2c(tree, filename + '_debug' + '.cpp', flagArr)
     ast = getAST(tree)
     scg = smlCodeGen(filename + '.cpp', muxCirc)
     scg.codeGen(ast, False)

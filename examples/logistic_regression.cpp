@@ -1,4 +1,4 @@
-ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg);
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);
 vector<Sharing*>& sharings = party->GetSharings();
 Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
@@ -14,7 +14,7 @@ for (uint32_t i = 0; i < 10; i++)
     for (uint32_t j = 0; j < 785; j++)
     {
         if (role == SERVER) {
-        w[i][j] = 50 ;
+            w[i][j] = 50 ;
             s_a_w[i][j] = acirc->PutINGate( w[i][j] ,bitlen,SERVER);
         } else {
             s_a_w[i][j] = acirc->PutDummyINGate(bitlen);
@@ -24,7 +24,7 @@ for (uint32_t i = 0; i < 10; i++)
 for (uint32_t i = 0; i < 785; i++)
 {
     if (role == CLIENT) {
-    x[i] = 100 ;
+        x[i] = 100 ;
         s_a_x[i] = acirc->PutINGate( x[i] ,bitlen,CLIENT);
     } else {
         s_a_x[i] = acirc->PutDummyINGate(bitlen);
@@ -32,8 +32,8 @@ for (uint32_t i = 0; i < 785; i++)
 }
 for (uint32_t i = 0; i < 10; i++)
 {
-    ans[i] = 0 ;
-    s_a_ans[i] = acirc->PutCONSGate( ans[i] ,bitlen);
+    ans = 0 ;
+    s_a_ans[i] = acirc->PutCONSGate( ans ,bitlen);
     for (uint32_t j = 0; j < 785; j++)
     {
         share * s_a_tmp_0 = acirc->PutMULGate( s_a_w[i][j] , s_a_x[j] );
