@@ -2,38 +2,152 @@
 metavar termvar, x ::=   
   {{ tex \mathit{[[termvar]]} }}
 
+indexvar index, i, j, n, m, b ::=
+
 grammar
-t :: 't_' ::=  {{ com term    }}
-  | x            ::  :: Var
-  | \ x . t      ::  :: Lam
-  | t t'         ::  :: App
-  | ( t )        :: M :: Paren      
-  | { t / x } t' :: M :: Tsub  
 
-v :: 'v_' ::= {{ com value   }}
-  | \ x . t      ::  :: Lam
+l {{ tex \ell }} :: 'l_' ::= {{ com Label }}
+  | public  :: :: Public {{ tex \mathcal{P} }}
+  | secret  :: :: Secret {{ tex \mathcal{S} }}
 
-terminals :: 'terminals_' ::=
-  | \            ::  :: lambda  {{ tex \lambda }}
-  | –>          ::  :: red     {{ tex \longrightarrow }}
+bt {{ tex \sigma }} :: 'bt_' ::= {{ com Base type }}
+  | uint b    :: :: UIntb {{ tex \mathsf{uint}_{[[b]]} }}
+  | bool      :: :: Bool  {{ tex \mathsf{bool} }}
 
-subrules
-  v <:: t
+t {{ tex \tau }} :: 't_' ::= {{ com Type }}
+  | l bt               :: :: Baset  {{ tex [[bt]]^{[[l]]} }}
+  | l uint b array n   :: :: Array  {{ tex \mathsf{uint}^{ [[l]] }_{ [[b]] } [\;]_{ [[n]] } }}
+  | G ( x )            :: M :: EnvLookup
+
+e :: 'e_' ::=  {{ com Expression }}
+  | b n                           ::  :: Const {{ tex [[n]]_{[[b]]} }}
+  | x                             ::  :: Var
+  | e1 + e2                       ::  :: Binop {{ tex [[e1]] \oplus [[e2]] }}
+  | e1 ? e2 : e3                  ::  :: CondE {{ tex [[e1]]\:?\:[[e2]]\::\:[[e3]] }}
+  | e1 > e2                       ::  :: Relop
+  | x [ </ ei // i IN 1 .. n /> ] ::  :: ArrayRead
+  | mux e e1 e2                   ::  :: Mux    {{ tex [[mux]]\;[[e]]\;[[e1]]\;[[e2]] }}
+  | e1 sbinop e2                  ::  :: Sbinop {{ tex [[e1]] \oplus_{[[s]]} [[e2]] }}
+  | e1 s> e2                      ::  :: Sgt    {{ tex [[e1]] >_{[[s]]} [[e2]] }}
+  | e |> a                        ::  :: Arith   {{ tex [[e]] \rhd [[arith]] }}
+  | e |> b                        ::  :: Bool    {{ tex [[e]] \rhd [[bool]] }}
+
+c :: 'c_' ::= {{ com Command }}
+  | t x                                ::   :: Decl
+  | x := e                             ::   :: Assignment
+  | foreach x in n to m do c           ::   :: For  {{ tex [[foreach]]\;[[x]]\;\in\;[ [[n]] \dots [[m]] ]\;\{ [[c]] \} }}
+  | x [ </ ei // i IN 1 .. n /> ] := e ::   :: ArrayWrite
+  | if e c1 c2                         ::   :: If
+  | out e                              ::   :: Output
+  | c1 ; c2                            ::   :: Sequence
+  | { c }                              :: M :: Paren
+
+G {{ tex \Gamma }} :: 'G_' ::= {{ com Type environment }}
+  | emp        :: :: Empty   {{ tex \cdot }}
+  | G , x : t  :: :: Binding
+
+formula :: formula_ ::=  
+   | judgement             :: :: judgement
+   | t1 = t2               :: :: teq
+   | e1 = e2               :: :: eeq
+   | l1 = l2               :: :: leq
+   | formula1 ==> formula2 :: :: implies {{ tex [[formula1]] \Rightarrow [[formula2]] }}
 
 defns
-Jop :: '' ::=
+JLattice :: '' ::=
 
- defn
- t1 –> t2 :: ::reduce:: 'r_' {{ com [[t1]] reduces to [[t2]]}} by
+defn
+l1 < l2 :: :: lattice :: 'l_' {{ tex [[l1]] \sqsubseteq [[l2]] }}
+by
 
 
-    --------------------------  :: ax_app
-    (\x.t12) v2 –>  {v2/x}t12
+------- :: refl
+l < l
 
-    t1 –> t1'
-    -------------- :: ctx_app_fun
-    t1 t –> t1' t
+----------------- :: ps
+public < secret
 
-    t1 –> t1'
-    -------------- :: ctx_app_arg
-    v t1 –> v t1'
+
+defns
+JCompile :: '' ::=
+
+defn
+G |- e : t ~> e' :: :: compile :: 's_' {{ tex [[G]] \vdash [[e]] : [[t]] \leadsto [[e']] }}
+by
+
+
+--------------------------------- :: const
+G |- b n : public uint b ~> b n
+
+G(x) = t
+---------------- :: var
+G |- x : t ~> x
+
+G |- ei : public uint b ~> ei'
+------------------------------------- :: pbinop
+G |- e1 + e2 : public uint b ~> e1' + e2'
+
+G |- ei : secret uint b ~> ei'
+---------------------------------------------- :: sbinop
+G |- e1 + e2 : secret uint b ~> e1' sbinop e2'
+
+G |- e : public bool ~> e'
+G |- ei : t ~> ei'
+--------------------------------------- :: pcond
+G |- e ? e1 : e2 : t ~> e' ? e1' : e2'
+
+G |- e : secret bool ~> e'
+G |- ei : t ~> ei'
+--------------------------------------- :: scond
+G |- e ? e1 : e2 : t ~> mux e' e1' e2'
+
+G |- ei : public uint b ~> ei'
+---------------------------------------- :: pgt
+G |- e1 > e2 : public bool ~> e1' > e2'
+
+G |- ei : secret uint b ~> ei'
+---------------------------------------- :: sgt
+G |- e1 > e2 : secret bool ~> e1' s> e2'
+
+G |- x : l uint b array n ~> x
+G |- ei : public uint b ~> ei'
+------------------------------------------------------------------------------- :: aread
+G |- x[ </ ei // i IN 1 .. n /> ] : l uint b ~> x[ </ ei' // i IN 1 .. n /> ]
+
+G |- e : l1 bt ~> e'
+l1 < l2
+--------------------  :: sub
+G |- e : l2 bt ~> e'
+
+%   | \ x . t      ::  :: Lam
+%   | t t'         ::  :: App
+%   | ( t )        :: M :: Paren      
+%   | { t / x } t' :: M :: Tsub  
+
+% v :: 'v_' ::= {{ com value   }}
+%   | \ x . t      ::  :: Lam
+
+% terminals :: 'terminals_' ::=
+%   | \            ::  :: lambda  {{ tex \lambda }}
+%   | –>          ::  :: red     {{ tex \longrightarrow }}
+
+% subrules
+%   v <:: t
+
+% defns
+% Jop :: '' ::=
+
+%  defn
+%  t1 –> t2 :: ::reduce:: 'r_' {{ com [[t1]] reduces to [[t2]]}} by
+
+
+%     --------------------------  :: ax_app
+%     (\x.t12) v2 –>  {v2/x}t12
+
+%     t1 –> t1'
+%     -------------- :: ctx_app_fun
+%     t1 t –> t1' t
+
+%     t1 –> t1'
+%     -------------- :: ctx_app_arg
+%     v t1 –> v t1'

@@ -1,33 +1,62 @@
-metavar termvar, x ::=  
+% minimal + latex + comments
+metavar termvar, x ::=   
+  {{ tex \mathit{[[termvar]]} }}
+
+indexvar index, i, j, n, m, b ::=
 
 grammar
-t :: ’t_’ ::=              
-  | x            ::  :: Var
-  | \ x . t      ::  :: Lam
-  | t t’         ::  :: App 
-  | ( t )        :: S:: Paren
-  | { t / x } t’ :: M:: Tsub  
 
-v :: ’v_’ ::=              
-  | \ x . t      ::  :: Lam 
+l {{ tex \ell }} :: 'l_' ::= {{ com Label }}
+  | public  :: :: Public {{ tex \mathcal{P} }}
+  | secret  :: :: Secret {{ tex \mathcal{S} }}
 
-subrules
-  v <:: t
+t {{ tex \tau }} :: 't_' ::= {{ com Types }}
+  | l uint b           :: :: UIntb  {{ tex  }}
+  | l bool             :: :: Bool   {{ tex \mathsf{bool}^{ [[l]] } }}
+  | l uint b array n   :: :: Array  {{ tex  [\;]_{ [[n]] } }}
 
-defns
-Jop :: ” ::=
+e :: 'e_' ::=  {{ com Expression }}
+  | n                             ::  :: Const
+  | x                             ::  :: Var
+  | e1 + e2                       ::  :: Binop {{ tex [[e1]] \oplus [[e2]] }}
+  | e1 ? e2 : e3                  ::  :: Mux
+  | e1 > e2                       ::  :: Relop
+  | x [ </ ei // i IN 1 .. n /> ] ::  :: ArrayRead
 
- defn
- t1 –> t2 :: ::reduce::”  by
+c :: 'c_' ::= {{ com Command }}
+  | x := e                   :: :: Assignment
+  | foreach i in n to m do c :: :: For  {{ tex \mathsf{foreach}\;[[i]]\;\in\;[ [[n]] \dots [[m]] ]\;\{ [[c]] \} }}
+  | c1 ; c2                  :: :: Sequence
+
+%   | \ x . t      ::  :: Lam
+%   | t t'         ::  :: App
+%   | ( t )        :: M :: Paren      
+%   | { t / x } t' :: M :: Tsub  
+
+% v :: 'v_' ::= {{ com value   }}
+%   | \ x . t      ::  :: Lam
+
+% terminals :: 'terminals_' ::=
+%   | \            ::  :: lambda  {{ tex \lambda }}
+%   | –>          ::  :: red     {{ tex \longrightarrow }}
+
+% subrules
+%   v <:: t
+
+% defns
+% Jop :: '' ::=
+
+%  defn
+%  t1 –> t2 :: ::reduce:: 'r_' {{ com [[t1]] reduces to [[t2]]}} by
 
 
-    --------------------------  :: ax_app
-    (\x.t12) v2 –>  {v2/x}t12
+%     --------------------------  :: ax_app
+%     (\x.t12) v2 –>  {v2/x}t12
 
-    t1 –> t1’
-    -------------- :: ctx_app_fun
-    t1 t –> t1’ t
+%     t1 –> t1'
+%     -------------- :: ctx_app_fun
+%     t1 t –> t1' t
 
-    t1 –> t1’
-    -------------- :: ctx_app_arg
-    v t1 –> v t1’
+%     t1 –> t1'
+%     -------------- :: ctx_app_arg
+%     v t1 –> v t1'
