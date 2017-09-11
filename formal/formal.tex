@@ -1,0 +1,35 @@
+\documentclass{article}
+
+\include{calc_included}
+
+% currently required by Ott-generated, un-wrapped LaTeX
+\usepackage{amsmath}
+
+% required by LJ's LaTeX
+\usepackage{amssymb}
+
+% the package that allows customized layout described in this document
+\usepackage{ottlayout}
+
+% the automatically generated file (with our Makefile) to link the generated
+% LaTeX with the ottlayout package
+\include{calc_override}
+
+% supertabular package required if using the default grammar tabular
+\usepackage{supertabular}
+
+% only used in bibliography to link to LJ's webpage
+\usepackage{url}
+
+
+\begin{document}
+
+\begin{figure}
+\ottgrammartabular{\ottt\ottinterrule\ottv\ottafterlastrule}
+\end{figure}
+
+\begin{figure}
+\ottdefnreduce{}
+\end{figure}
+
+\end{document}
