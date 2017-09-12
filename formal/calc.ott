@@ -2,9 +2,11 @@
 metavar termvar, x ::=   
   {{ tex \mathit{[[termvar]]} }}
 
-indexvar index, i, j, n, m, b ::=
+indexvar index, i, j, m, b ::=
 
 grammar
+
+n :: 'n_' ::= {{ com Const }}
 
 s :: 's_' ::= {{ com Secret label }}
   | asecret  :: :: ASecret {{ tex \mathcal{A} }}
@@ -15,31 +17,31 @@ l {{ tex \ell }} :: 'l_' ::= {{ com Label }}
   | s       :: :: ASecret
 
 bt {{ tex \sigma }} :: 'bt_' ::= {{ com Base type }}
-  | uint b    :: :: UIntb {{ tex \mathsf{uint}_{[[b]]} }}
+  | uint      :: :: UInt {{ tex \mathsf{uint} }}
   | bool      :: :: Bool  {{ tex \mathsf{bool} }}
 
 t {{ tex \tau }} :: 't_' ::= {{ com Type }}
   | l bt               :: :: Baset  {{ tex [[bt]]^{[[l]]} }}
-  | l uint b array n   :: :: Array  {{ tex \mathsf{uint}^{ [[l]] }_{ [[b]] } [\;]_{ [[n]] } }}
+  | l uint array       :: :: Array  {{ tex \mathsf{uint}^{ [[l]] } [\;] }}
   | G ( x )            :: M :: EnvLookup
 
 e :: 'e_' ::=  {{ com Expression }}
-  | b n                           ::  :: Const {{ tex [[n]]_{[[b]]} }}
+  | n                             ::  :: Const {{ tex [[n]] }}
   | x                             ::  :: Var
   | e1 + e2                       ::  :: Binop {{ tex [[e1]] \oplus [[e2]] }}
   | e1 ? e2 : e3                  ::  :: CondE {{ tex [[e1]]\:?\:[[e2]]\::\:[[e3]] }}
   | e1 > e2                       ::  :: Relop
-  | x [ </ ei // i IN 1 .. n /> ] ::  :: ArrayRead
+  | x [ e ]                       ::  :: ArrayRead
   | e1 + s e2                     ::  :: Sbinop {{ tex [[e1]] \oplus_{[[s]]} [[e2]] }}
   | mux s e e1 e2                 ::  :: Mux    {{ tex [[mux]]_{[[s]]}\;[[e]]\;[[e1]]\;[[e2]] }}
   | e1 > s e2                     ::  :: Sgt    {{ tex [[e1]] >_{[[s]]} [[e2]] }}
   | e |> l                        ::  :: Coerce {{ tex [[e]] \rhd [[l]] }}
 
 c :: 'c_' ::= {{ com Command }}
-  | t x                                ::   :: Decl
+  | t x = e                            ::   :: Decl
   | x := e                             ::   :: Assignment
   | foreach x in n to m do c           ::   :: For  {{ tex [[for]]\;[[x]]\;\in\;[ [[n]] \dots [[m]] ]\;[[do]]\; [[c]] }}
-  | x [ </ ei // i IN 1 .. n /> ] := e ::   :: ArrayWrite
+  | x [ e1 ] := e2                     ::   :: ArrayWrite
   | if e c1 c2                         ::   :: If
   | out e                              ::   :: Output
   | c1 ; c2                            ::   :: Sequence
@@ -55,6 +57,8 @@ formula :: formula_ ::=
    | t1 = t2               :: :: teq
    | e1 = e2               :: :: eeq
    | l1 = l2               :: :: leq
+   | v1 = v2               :: :: veq
+   | v1 = v2 = v3          :: :: veq3
    | formula1 ==> formula2 :: :: implies {{ tex [[formula1]] \Rightarrow [[formula2]] }}
    | x notin modifies c    :: :: modifesmem {{ tex [[x]] \not\in \mathsf{modifies}([[c]]) }}
 
@@ -83,20 +87,20 @@ G |- e : t ~> e' :: :: compile :: 's_' {{ tex [[G]] \vdash [[e]] : [[t]] \leadst
 by
 
 
---------------------------------- :: const
-G |- b n : public uint b ~> b n
+-------------------------- :: const
+G |- n : public uint ~> n
 
 G(x) = t
 ---------------- :: var
 G |- x : t ~> x
 
-G |- ei : public uint b ~> ei'
------------------------------------------ :: pbinop
-G |- e1 + e2 : public uint b ~> e1' + e2'
+G |- ei : public uint ~> ei'
+--------------------------------------- :: pbinop
+G |- e1 + e2 : public uint ~> e1' + e2'
 
-G |- ei : asecret uint b ~> ei'
---------------------------------------------------- :: sbinop
-G |- e1 + e2 : asecret uint b ~> e1' + asecret e2'
+G |- ei : asecret uint ~> ei'
+------------------------------------------------- :: sbinop
+G |- e1 + e2 : asecret uint ~> e1' + asecret e2'
 
 G |- e : public bool ~> e'
 G |- ei : t ~> ei'
@@ -108,18 +112,18 @@ G |- ei : t ~> ei'
 ---------------------------------------------- :: scond
 G |- e ? e1 : e2 : t ~> mux bsecret e' e1' e2'
 
-G |- ei : public uint b ~> ei'
----------------------------------------- :: pgt
+G |- ei : public uint ~> ei'
+--------------------------------------- :: pgt
 G |- e1 > e2 : public bool ~> e1' > e2'
 
-G |- ei : bsecret uint b ~> ei'
+G |- ei : bsecret uint ~> ei'
 ------------------------------------------------ :: sgt
 G |- e1 > e2 : bsecret bool ~> e1' > bsecret e2'
 
-G |- x : l uint b array n ~> x
-G |- ei : public uint b ~> ei'
-------------------------------------------------------------------------------- :: aread
-G |- x[ </ ei // i IN 1 .. n /> ] : l uint b ~> x[ </ ei' // i IN 1 .. n /> ]
+G |- x : l uint array ~> x
+G |- e : public uint ~> e'
+----------------------------- :: aread
+G |- x[e] : l uint ~> x[e']
 
 G |- e : l1 bt ~> e'
 l1 < l2
@@ -134,24 +138,25 @@ defn
 G |- c ~> c' | G' :: :: ccompile :: 'c_' {{ tex [[G]] \vdash [[c]] \leadsto [[c']] \mid [[G']]}}
 by
 
-------------------------- :: decl
-G |- t x ~> t x | G, x:t
+G |- e : t ~> e'
+---------------------------------- :: decl
+G |- t x = e ~> t x = e' | G, x:t
 
 G (x) = t
 G |- e : t ~> e'
 --------------------------- :: vassgn
 G |- x := e ~> x := e' | G
 
-G, x:public uint b |- c ~> c' | whateverG
+G, x:public uint |- c ~> c' | whateverG
 x notin modifies c
----------------------------------------------------------------- :: for
+--------------------------------------------------------------- :: for
 G |- foreach x in n to m do c ~> foreach x in n to m do c' | G
 
-G |- x : l uint b array n ~> x
-G |- ei : public uint b ~> ei'
-G |- e : l uint b ~> e'
-------------------------------------------------------------------------------------- :: awrite
-G |- x [ </ ei // i IN 1 .. n /> ] := e ~> x [ </ ei' // i IN 1 .. n /> ] := e' | G
+G |- x : l uint array ~> x
+G |- e1 : public uint ~> e1'
+G |- e2 : l uint ~> e2'
+--------------------------------------- :: awrite
+G |- x [e1] := e2 ~> x[e1'] := e2' | G
 
 G |- e : public bool ~> e'
 G |- c1 ~> c1' | whateverG
@@ -167,6 +172,70 @@ G |- c1 ~> c1' | G1
 G1 |- c2 ~> c2' | G'
 ----------------------------- :: seq
 G |- c1; c2 ~> c1'; c2' | G'
+
+grammar
+
+bv {{ tex w }} :: 'bv_' ::= {{ com Runtime base values }}
+  | n                 ::   :: Const  {{ tex [[n]] }}
+  | true              ::   :: True   {{ tex \mathsf{true} }}
+  | false             ::   :: False  {{ tex \mathsf{false} }}
+  | bv s one          ::   :: Share1 {{ tex [[bv]]^{[[s]], 1} }}
+  | bv s two          ::   :: Share2 {{ tex [[bv]]^{[[s]], 2} }}
+  | n1 + n2           :: M :: PAdd   {{ tex [[n1]] \oplus [[n2]] }}
+  | n1 > n2           :: M :: PGt    {{ tex [[n1]] > [[n2]] }}
+
+v :: 'v_' ::= {{ com Runtime values }}
+  | bv                 ::   :: BaseValue
+  | [ </ vi // i /> ]  ::   :: Array
+  | rho [ x ]          :: M :: Lookup    {{ tex [[rho]][ [[x]] ] }}
+  | v n                :: M :: ArrayRead {{ tex [[v]]_{[[n]]} }}
+
+rho {{ tex \rho }} :: 'rho_' ::= {{ com Runtime environment }}
+  | emp            :: :: Empty {{ tex \cdot }}
+  | rho , x |-> v  :: :: Map   {{ tex [[rho]], [[x]] \mapsto [[v]] }}
+
+
+defns
+JEvalE :: '' ::=
+
+defn
+rho1 , rho2 |- e !! v :: :: eeval :: 'ee_' {{ tex [[rho1]], [[rho2]] \vdash [[e]] \Downarrow [[v]] }}
+by
+
+---------------------- :: const
+rho1, rho2 |- n !! n
+
+rho1[x] = rho2[x] = v
+---------------------- :: pvar
+rho1, rho2 |- x !! v
+
+rho1[x] = bv s one
+rho2[x] = bv s two
+--------------------- :: svar
+rho1, rho2 |- x !! v
+
+rho1, rho2 |- ei !! ni
+------------------------------------- :: pbinop
+rho1, rho2 |- e1 + e2 !! n1 + n2
+
+rho1, rho2 |- e !! true
+rho1, rho2 |- e1 !! v
+------------------------------- :: pcondt
+rho1, rho2 |- e ? e1 : e2 !! v
+
+rho1, rho2 |- e !! false
+rho1, rho2 |- e2 !! v
+------------------------------- :: pcondf
+rho1, rho2 |- e ? e1 : e2 !! v
+
+rho1, rho2 |- ei !! ni
+---------------------------------- :: pgt
+rho1, rho2 |- e1 > e2 !! n1 > n2
+
+rho1, rho2 |- e !! n
+rho1, rho2 |- x !! [ </ vi // i /> ]
+------------------------------------- :: aread
+rho1, rho2 |- x[e] !! v n
 
 % %   | \ x . t      ::  :: Lam
 % %   | t t'         ::  :: App
