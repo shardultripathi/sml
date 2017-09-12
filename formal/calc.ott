@@ -35,7 +35,7 @@ e :: 'e_' ::=  {{ com Expression }}
   | e1 + s e2                     ::  :: Sbinop {{ tex [[e1]] \oplus_{[[s]]} [[e2]] }}
   | mux s e e1 e2                 ::  :: Mux    {{ tex [[mux]]_{[[s]]}\;[[e]]\;[[e1]]\;[[e2]] }}
   | e1 > s e2                     ::  :: Sgt    {{ tex [[e1]] >_{[[s]]} [[e2]] }}
-  | e |> l                        ::  :: Coerce {{ tex [[e]] \rhd [[l]] }}
+  | e |> s                        ::  :: Coerce {{ tex [[e]] \rhd [[s]] }}
 
 c :: 'c_' ::= {{ com Command }}
   | t x = e                            ::   :: Decl
@@ -125,10 +125,10 @@ G |- e : public uint ~> e'
 ----------------------------- :: aread
 G |- x[e] : l uint ~> x[e']
 
-G |- e : l1 bt ~> e'
-l1 < l2
+G |- e : l bt ~> e'
+l < s
 ----------------------------  :: sub
-G |- e : l2 bt ~> e' |> l2
+G |- e : s bt ~> e' |> s
 
 
 defns
@@ -183,59 +183,103 @@ bv {{ tex w }} :: 'bv_' ::= {{ com Runtime base values }}
   | bv s two          ::   :: Share2 {{ tex [[bv]]^{[[s]], 2} }}
   | n1 + n2           :: M :: PAdd   {{ tex [[n1]] \oplus [[n2]] }}
   | n1 > n2           :: M :: PGt    {{ tex [[n1]] > [[n2]] }}
+  | ( bv )            :: M :: Paren
 
 v :: 'v_' ::= {{ com Runtime values }}
   | bv                 ::   :: BaseValue
   | [ </ vi // i /> ]  ::   :: Array
   | rho [ x ]          :: M :: Lookup    {{ tex [[rho]][ [[x]] ] }}
   | v n                :: M :: ArrayRead {{ tex [[v]]_{[[n]]} }}
+  | ( v )              :: M :: Paren
+  | v |> s             :: M :: Coerce    {{ tex [[v]] \rhd [[s]] }}
 
 rho {{ tex \rho }} :: 'rho_' ::= {{ com Runtime environment }}
-  | emp            :: :: Empty {{ tex \cdot }}
-  | rho , x |-> v  :: :: Map   {{ tex [[rho]], [[x]] \mapsto [[v]] }}
+  | emp             ::   :: Empty {{ tex \cdot }}
+  | rho , x |-> v   ::   :: Map   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
+  | rho [ x |-> v ] :: M :: Add   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
 
 
 defns
 JEvalE :: '' ::=
 
 defn
-rho1 , rho2 |- e !! v :: :: eeval :: 'ee_' {{ tex [[rho1]], [[rho2]] \vdash [[e]] \Downarrow [[v]] }}
+rho1 , rho2 |- e !! v1 , v2 :: :: eeval :: 'ee_' {{ tex [[rho1]], [[rho2]] \vdash [[e]] \Downarrow [[v1]], [[v2]] }}
 by
 
----------------------- :: const
-rho1, rho2 |- n !! n
+-------------------------- :: const
+rho1, rho2 |- n !! n, n
 
 rho1[x] = rho2[x] = v
----------------------- :: pvar
-rho1, rho2 |- x !! v
+------------------------- :: pvar
+rho1, rho2 |- x !! v, v
 
 rho1[x] = bv s one
 rho2[x] = bv s two
---------------------- :: svar
-rho1, rho2 |- x !! v
+-------------------------------------- :: svar
+rho1, rho2 |- x !! bv s one, bv s two
 
-rho1, rho2 |- ei !! ni
-------------------------------------- :: pbinop
-rho1, rho2 |- e1 + e2 !! n1 + n2
+rho1, rho2 |- ei !! ni, ni
+------------------------------------------ :: pbinop
+rho1, rho2 |- e1 + e2 !! n1 + n2, n1 + n2
 
-rho1, rho2 |- e !! true
-rho1, rho2 |- e1 !! v
-------------------------------- :: pcondt
-rho1, rho2 |- e ? e1 : e2 !! v
+rho1, rho2 |- e !! true, true
+rho1, rho2 |- e1 !! v1, v2
+------------------------------------- :: pcondt
+rho1, rho2 |- e ? e1 : e2 !! v1, v2
 
-rho1, rho2 |- e !! false
-rho1, rho2 |- e2 !! v
-------------------------------- :: pcondf
-rho1, rho2 |- e ? e1 : e2 !! v
+rho1, rho2 |- e !! false, false
+rho1, rho2 |- e2 !! v1, v2
+------------------------------------ :: pcondf
+rho1, rho2 |- e ? e1 : e2 !! v1, v2
 
-rho1, rho2 |- ei !! ni
----------------------------------- :: pgt
-rho1, rho2 |- e1 > e2 !! n1 > n2
+rho1, rho2 |- ei !! ni, ni
+------------------------------------------ :: pgt
+rho1, rho2 |- e1 > e2 !! n1 > n2, n1 > n2
 
-rho1, rho2 |- e !! n
-rho1, rho2 |- x !! [ </ vi // i /> ]
-------------------------------------- :: aread
-rho1, rho2 |- x[e] !! v n
+rho1, rho2 |- e !! n, n
+rho1, rho2 |- x !! [ </ v1i // i /> ], [ </ v2i // i /> ]
+--------------------------------------------------------- :: aread
+rho1, rho2 |- x[e] !! v1 n, v2 n
+
+rho1, rho2 |- ei !! ni s one, ni s two
+------------------------------------------------------------ :: sbinop
+rho1, rho2 |- e1 + s e2 !! (n1 + n2) s one, (n1 + n2) s two
+
+rho1, rho2 |- e !! true s one, true s two
+rho1, rho2 |- e1 !! v1, v2
+------------------------------------------- :: scondt
+rho1, rho2 |- mux s e e1 e2 !! v1, v2
+
+rho1, rho2 |- e !! false s one , false s two
+rho1, rho2 |- e2 !! v1, v2
+---------------------------------------------- :: scondf
+rho1, rho2 |- mux s e e1 e2 !! v1, v2
+
+rho1, rho2 |- ei !! ni s one, ni s two
+-------------------------------------------------------------- :: sgt
+rho1, rho2 |- e1 > s e2 !! (n1 > n2) s one , (n1 > n2) s two
+
+rho1, rho2 |- e !! v1, v2
+----------------------------------------- :: coerce
+rho1, rho2 |- e |> s !! v1 |> s, v2 |> s
+
+
+defns
+JEvalC :: '' ::=
+
+defn
+rho1 , rho2 |- c --> rho1' , rho2' :: :: ceval :: 'ec_' {{ tex [[rho1]], [[rho2]] \vdash [[c]] \longrightarrow [[rho1']], [[rho2']] }}
+by
+
+rho1, rho2 |- e !! v1, v2
+--------------------------------------------------------- :: decl
+rho1, rho2 |- t x = e --> rho1, x |-> v1, rho2, x |-> v2
+
+rho1, rho2 |- e !! v1, v2
+--------------------------------------------------------- :: assgn
+rho1, rho2 |- x := e --> rho1, x |-> v1, rho2, x |-> v2
+
+
 
 % %   | \ x . t      ::  :: Lam
 % %   | t t'         ::  :: App
