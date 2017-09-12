@@ -126,7 +126,6 @@ G |- e : public uint ~> e'
 G |- x[e] : l uint ~> x[e']
 
 G |- e : l bt ~> e'
-l < s
 ----------------------------  :: sub
 G |- e : s bt ~> e' |> s
 
