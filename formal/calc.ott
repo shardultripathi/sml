@@ -7,6 +7,7 @@ indexvar index, i, j, m, b ::=
 grammar
 
 n :: 'n_' ::= {{ com Const }}
+  | n + 1    :: M :: incr
 
 s :: 's_' ::= {{ com Secret label }}
   | asecret  :: :: ASecret {{ tex \mathcal{A} }}
@@ -40,7 +41,7 @@ e :: 'e_' ::=  {{ com Expression }}
 c :: 'c_' ::= {{ com Command }}
   | t x = e                            ::   :: Decl
   | x := e                             ::   :: Assignment
-  | foreach x in n to m do c           ::   :: For  {{ tex [[for]]\;[[x]]\;\in\;[ [[n]] \dots [[m]] ]\;[[do]]\; [[c]] }}
+  | foreach x in n1 to n2 do c         ::   :: For  {{ tex [[for]]\;[[x]]\;\in\;[ [[n1]] \dots [[n2]] ]\;[[do]]\; [[c]] }}
   | x [ e1 ] := e2                     ::   :: ArrayWrite
   | if e c1 c2                         ::   :: If
   | out e                              ::   :: Output
@@ -59,8 +60,10 @@ formula :: formula_ ::=
    | l1 = l2               :: :: leq
    | v1 = v2               :: :: veq
    | v1 = v2 = v3          :: :: veq3
-   | formula1 ==> formula2 :: :: implies {{ tex [[formula1]] \Rightarrow [[formula2]] }}
+   | n1 gt n2              :: :: ngt        {{ tex [[n1]] > [[n2]] }}
+   | formula1 ==> formula2 :: :: implies    {{ tex [[formula1]] \Rightarrow [[formula2]] }}
    | x notin modifies c    :: :: modifesmem {{ tex [[x]] \not\in \mathsf{modifies}([[c]]) }}
+   | mapsto                :: :: mapsto     {{ tex \mapsto }}
 
 defns
 JLattice :: '' ::=
@@ -148,8 +151,8 @@ G |- x := e ~> x := e' | G
 
 G, x:public uint |- c ~> c' | whateverG
 x notin modifies c
---------------------------------------------------------------- :: for
-G |- foreach x in n to m do c ~> foreach x in n to m do c' | G
+------------------------------------------------------------------- :: for
+G |- foreach x in n1 to n2 do c ~> foreach x in n1 to n2 do c' | G
 
 G |- x : l uint array ~> x
 G |- e1 : public uint ~> e1'
@@ -185,12 +188,13 @@ bv {{ tex w }} :: 'bv_' ::= {{ com Runtime base values }}
   | ( bv )            :: M :: Paren
 
 v :: 'v_' ::= {{ com Runtime values }}
-  | bv                 ::   :: BaseValue
-  | [ </ vi // i /> ]  ::   :: Array
-  | rho [ x ]          :: M :: Lookup    {{ tex [[rho]][ [[x]] ] }}
-  | v n                :: M :: ArrayRead {{ tex [[v]]_{[[n]]} }}
-  | ( v )              :: M :: Paren
-  | v |> s             :: M :: Coerce    {{ tex [[v]] \rhd [[s]] }}
+  | bv                                ::   :: BaseValue
+  | [ </ vi // i /> ]                 ::   :: Array
+  | rho [ x ]                         :: M :: Lookup    {{ tex [[rho]][ [[x]] ] }}
+  | v n                               :: M :: ArrayRead {{ tex [[v]]_{[[n]]} }}
+  | ( v )                             :: M :: Paren
+  | v |> s                            :: M :: Coerce    {{ tex [[v]] \rhd [[s]] }}
+  | [ </ vi // i /> ] [ n formula v ] :: M :: ArrayW
 
 rho {{ tex \rho }} :: 'rho_' ::= {{ com Runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
@@ -208,14 +212,9 @@ by
 -------------------------- :: const
 rho1, rho2 |- n !! n, n
 
-rho1[x] = rho2[x] = v
-------------------------- :: pvar
-rho1, rho2 |- x !! v, v
-
-rho1[x] = bv s one
-rho2[x] = bv s two
--------------------------------------- :: svar
-rho1, rho2 |- x !! bv s one, bv s two
+rhoi[x] = vi
+-------------------------- ::var
+rho1, rho2 |- x !! v1, v2
 
 rho1, rho2 |- ei !! ni, ni
 ------------------------------------------ :: pbinop
@@ -244,15 +243,15 @@ rho1, rho2 |- ei !! ni s one, ni s two
 ------------------------------------------------------------ :: sbinop
 rho1, rho2 |- e1 + s e2 !! (n1 + n2) s one, (n1 + n2) s two
 
+rho1, rho2 |- ei !! vi1, vi2
 rho1, rho2 |- e !! true s one, true s two
-rho1, rho2 |- e1 !! v1, v2
 ------------------------------------------- :: scondt
-rho1, rho2 |- mux s e e1 e2 !! v1, v2
+rho1, rho2 |- mux s e e1 e2 !! v11, v12
 
+rho1, rho2 |- ei !! vi1, vi2
 rho1, rho2 |- e !! false s one , false s two
-rho1, rho2 |- e2 !! v1, v2
 ---------------------------------------------- :: scondf
-rho1, rho2 |- mux s e e1 e2 !! v1, v2
+rho1, rho2 |- mux s e e1 e2 !! v21, v22
 
 rho1, rho2 |- ei !! ni s one, ni s two
 -------------------------------------------------------------- :: sgt
@@ -278,7 +277,35 @@ rho1, rho2 |- e !! v1, v2
 --------------------------------------------------------- :: assgn
 rho1, rho2 |- x := e --> rho1, x |-> v1, rho2, x |-> v2
 
+n1 gt n2
+--------------------------------------------------------- :: fort
+rho1, rho2 |- foreach x in n1 to n2 do c --> rho1, rho2
 
+rho1, x |-> n1, rho2, x |-> n2 |- c --> rho1', rho2'
+rho1', rho2' |- foreach x in n1 + 1 to n2 do c --> rho1'', rho2''
+------------------------------------------------------------------ :: fori
+rho1, rho2 |- foreach x in n1 to n2 do c --> rho1'', rho2''
+
+rho1, rho2 |- x !! [ </ v1i // i /> ], [ </ v2i // i /> ]
+rho1, rho2 |- e1 !! n, n
+rho1, rho2 |- e2 !! v1, v2
+--------------------------------------------------------------- :: awrite
+rho1, rho2 |- x[e1] := e2 --> rho1, x |-> [ </ v1i // i /> ][n mapsto v1], rho2, x |-> [ </ v2i // i /> ][n mapsto v2]
+
+rho1, rho2 |- e !! true, true
+rho1, rho2 |- c1 --> rho1', rho2'
+------------------------------------------ :: ift
+rho1, rho2 |- if e c1 c2 --> rho1', rho2'
+
+rho1, rho2 |- e !! false, false
+rho1, rho2 |- c2 --> rho1', rho2'
+------------------------------------------ :: iff
+rho1, rho2 |- if e c1 c2 --> rho1', rho2'
+
+rho1, rho2 |- c1 --> rho1', rho2'
+rho1', rho2' |- c2 --> rho1'', rho2''
+---------------------------------------- :: seq
+rho1, rho2 |- c1; c2 --> rho1'', rho2''
 
 % %   | \ x . t      ::  :: Lam
 % %   | t t'         ::  :: App
