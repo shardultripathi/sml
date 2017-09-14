@@ -32,8 +32,8 @@ for (uint32_t i = 0; i < 785; i++)
 }
 for (uint32_t i = 0; i < 10; i++)
 {
-    ans = 0 ;
-    s_a_ans[i] = acirc->PutCONSGate( ans ,bitlen);
+    ans[i] = 0 ;
+    s_a_ans[i] = acirc->PutCONSGate( ans[i] ,bitlen);
     for (uint32_t j = 0; j < 785; j++)
     {
         share * s_a_tmp_0 = acirc->PutMULGate( s_a_w[i][j] , s_a_x[j] );

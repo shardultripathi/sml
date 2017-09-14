@@ -21,13 +21,12 @@ for uint32_t i = [0:32] {
 for uint32_t i = [0:32] {
     for uint32_t j = [0:28] {
         for uint32_t k = [0:28] {
-            hconv1[i][j][k] = 0;
+            hconv1[i][j][k] = bconv1[i];
             for uint32_t l = [0:5] {
                 for uint32_t m = [0:5] {
                     hconv1[i][j][k] = hconv1[i][j][k] + wconv1[i][l][m]*x[j+l][k+m];
                 }
             }
-            hconv1[i][j][k] = hconv1[i][j][k] + bconv1[i];
         }
     }
 }

@@ -102,7 +102,7 @@ for uint32_t i = [0:16] {
     for uint32_t k = [0:4] {
       pool2out[i][j][k] = 0;
       for uint32_t l = [0:4] {
-        pool2out[i][j][k] = (c2out[i][16*j + 4*k + l] > pool2out[i][j][k]) ? c2out[i][16*j + 4*k + l] : pool2out[i][j][k]; 
+        pool2out[i][j][k] = (r2out[i][16*j + 4*k + l] > pool2out[i][j][k]) ? r2out[i][16*j + 4*k + l] : pool2out[i][j][k]; 
       }
     }
   }
