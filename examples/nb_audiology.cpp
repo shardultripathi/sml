@@ -17,10 +17,6 @@ uint32_t k;
 share *s_a_k;
 auto A = make_vector<uint32_t>(24);
 auto s_a_A = make_vector<share*>(24);
-uint32_t max;
-share *s_a_max;
-uint32_t out;
-share *s_a_out;
 for (uint32_t i = 0; i < 24; i++)
 {
     if (role == SERVER) {

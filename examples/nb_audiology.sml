@@ -5,8 +5,6 @@ uint32_t s;
 uint32_t t;
 uint32_t k;
 uint32_t A[24];
-uint32_t max;
-uint32_t out;
 
 for uint32_t i = [0:24] {
   P[i] = input1(25);
