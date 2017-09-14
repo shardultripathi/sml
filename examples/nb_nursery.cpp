@@ -106,7 +106,7 @@ maxidx = 0 ;
 s_y_maxidx = ycirc->PutCONSGate( maxidx ,bitlen);
 myj = 0 ;
 s_y_myj = ycirc->PutCONSGate( myj ,bitlen);
-for (uint32_t i = 0; i < 10; i++)
+for (uint32_t i = 0; i < 5; i++)
 {
     share * s_y_tmp_5 = ycirc->PutGTGate( s_y_A[i] , s_y_max );
     s_y_max = ycirc->PutMUXGate( s_y_A[i] , s_y_max , s_y_tmp_5 );

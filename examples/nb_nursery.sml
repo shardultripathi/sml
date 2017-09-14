@@ -37,7 +37,7 @@ uint32_t myj;
 max = 0;
 maxidx = 0;
 myj = 0;
-for uint32_t i = [0:10] {
+for uint32_t i = [0:5] {
   max = (A[i] > max) ? A[i] : max;
   maxidx = (A[i] > max) ? myj : maxidx;
   myj = myj + 1;
