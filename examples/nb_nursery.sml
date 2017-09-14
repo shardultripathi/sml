@@ -30,11 +30,20 @@ for uint32_t i = [0:5] {
   A[i] = s;
 }
 
-k = 0;
-out = 0;
-max = A[0];
-for uint32_t i = [0:5] {
-  out = (A[i] > max) ? k : out;
-  k = k + 1; 
+uint32_t max;
+uint32_t out;
+uint32_t maxidx;
+uint32_t myj;
+
+
+max = 0;
+maxidx = 0;
+myj = 0;
+for uint32_t i = [0:10] {
+  max = (A[i] > max) ? A[i] : max;
+  maxidx = (A[i] > max) ? myj : maxidx;
+  myj = myj + 1;
 }
+
+out = maxidx;
 output(out);
