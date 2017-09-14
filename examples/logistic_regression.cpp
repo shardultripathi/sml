@@ -42,18 +42,36 @@ for (uint32_t i = 0; i < 10; i++)
 }
 uint32_t max;
 share *s_a_max;
+uint32_t out;
+share *s_a_out;
+uint32_t maxidx;
+share *s_a_maxidx;
+uint32_t myj;
+share *s_a_myj;
 max = 0 ;
 s_a_max = acirc->PutCONSGate( max ,bitlen);
+maxidx = 0 ;
+s_a_maxidx = acirc->PutCONSGate( maxidx ,bitlen);
+myj = 0 ;
+s_a_myj = acirc->PutCONSGate( myj ,bitlen);
 auto s_y_ans = make_vector<share*>(10);
 for (int _i1 = 0; _i1 < 10 ; _i1++) {
 s_y_ans[_i1] = ycirc->PutA2YGate( s_a_ans[_i1] );
 }
 share *s_y_max = ycirc->PutA2YGate( s_a_max );
+share *s_y_myj = ycirc->PutA2YGate( s_a_myj );
+share *s_y_maxidx = ycirc->PutA2YGate( s_a_maxidx );
 for (uint32_t i = 0; i < 10; i++)
 {
     share * s_y_tmp_1 = ycirc->PutGTGate( s_y_ans[i] , s_y_max );
     s_y_max = ycirc->PutMUXGate( s_y_ans[i] , s_y_max , s_y_tmp_1 );
+    share * s_y_tmp_2 = ycirc->PutGTGate( s_y_ans[i] , s_y_max );
+    s_y_maxidx = ycirc->PutMUXGate( s_y_myj , s_y_maxidx , s_y_tmp_2 );
+    uint32_t _tmp_3 = 1 ;
+    share * s_y__tmp_3 = ycirc->PutCONSGate( _tmp_3 ,bitlen);
+    s_y_myj = ycirc->PutADDGate( s_y_myj , s_y__tmp_3 );
 }
-share * s_y_tmp_2 = ycirc->PutOUTGate( s_y_max , ALL);
+share *s_y_out = create_new_share(s_y_maxidx->get_wires(), ycirc );
+share * s_y_tmp_4 = ycirc->PutOUTGate( s_y_out , ALL);
 party->ExecCircuit();
-uint32_t _output = s_y_tmp_2->get_clear_value<uint32_t>();
+uint32_t _output = s_y_tmp_4->get_clear_value<uint32_t>();

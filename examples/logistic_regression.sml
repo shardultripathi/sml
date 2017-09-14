@@ -21,9 +21,18 @@ for uint32_t i = [0:10] {
 }
 
 uint32_t max;
+uint32_t out;
+uint32_t maxidx;
+uint32_t myj;
+
 max = 0;
+maxidx = 0;
+myj = 0;
 for uint32_t i = [0:10] {
-    max = (ans[i] > max) ? ans[i] : max;
+  max = (ans[i] > max) ? ans[i] : max;
+  maxidx = (ans[i] > max) ? myj : maxidx;
+  myj = myj + 1;
 }
 
-output(max);
+out = maxidx;
+output(out);
