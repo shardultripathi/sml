@@ -84,6 +84,6 @@ for uint32_t i = [0:10] {
   myj = myj + 1;
 }
 
-out = max;
+out = maxidx;
 output(out);
 
