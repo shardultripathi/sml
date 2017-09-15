@@ -21,6 +21,7 @@ class smlCodeGen:
     def __init__(self, filename, muxCirc):
         self.dict = {}  # name -> ['s_a_name', 's_b_name', 's_y_name'] None -> not declared, -1 -> dirty
         self.arrDict = {} # name -> refctx
+        self.publicSet = set()
         self.counter = 0
         self.defckt = 'ycirc'
         if (muxCirc == 'b'):
@@ -146,6 +147,25 @@ class smlCodeGen:
         else:
             return self.checkOps(rhs)
 
+    def checkExprForPublic(self, node):
+        if isinstance(node, BinOp):
+            return self.checkExprForPublic(node.lhs) and self.checkExprForPublic(node.rhs)
+        elif isinstance(node, UnOp):
+            return self.checkExprForPublic(node.expr)
+        elif isinstance(node, Constant):
+            return True
+        elif isinstance(node, Ident):
+            if node.name in self.dict:
+                return False
+            return node.name in self.publicSet
+        elif isinstance(node, ArrayPub):
+            if node.idname.name in self.dict:
+                return False
+            return node.idname.name in self.publicSet
+        else:
+            print('If Else condition node not BinOp, UnOp, Ident, ArrayPub')
+            exit()
+
     def convertExpr(self, expr, circ):
         if isinstance(expr, Ident):
             tmpvar = expr.name
@@ -185,6 +205,10 @@ class smlCodeGen:
                     return mux
             elif isinstance(x, ForLoop):
                 mux |= self.checkMux(x.block)
+            elif isinstance(x, IfElse):
+                foundBool |= self.checkMux(x.expr1)
+                if x.arity == 3:
+                    foundBool |= self.checkMux(x.expr2)
             else:
                 mux |= self.checkMux(x)
             if mux:
@@ -198,6 +222,10 @@ class smlCodeGen:
                 foundBool |= self.checkAssign(x)
             elif isinstance(x, ForLoop):
                 foundBool |= self.checkBool(x.block)
+            elif isinstance(x, IfElse):
+                foundBool |= self.checkBool(x.expr1)
+                if x.arity == 3:
+                    foundBool |= self.checkBool(x.expr2)
             else:
                 foundBool |= self.checkBool(x)
             if foundBool:
@@ -230,6 +258,10 @@ class smlCodeGen:
                 self.declareLhs(x.lhs, circ)
             elif isinstance(x, ForLoop):
                 self.convertAll(x.block, circ, lhsSet)
+            elif isinstance(x, IfElse):
+                self.convertAll(x.expr1, circ, lhsSet)
+                if x.arity == 3:
+                    self.convertAll(x.expr2, circ, lhsSet)
             else:
                 self.convertAll(x, circ, lhsSet)
 
@@ -243,6 +275,19 @@ class smlCodeGen:
             for bcom in node.children:
                 self.codeGen(bcom, insideFor, circ, offset+const)
             print(' '*offset + '}', file=self.file)
+
+        elif isinstance(node, IfElse):
+            if not insideFor or circ is None:
+                circ = self.circ
+            valid = self.checkExprForPublic(node.condNode)
+            if not valid:
+                print('If Else condition has variables which are private or not declared')
+                exit()
+            print(' '*offset + 'if (', node.condText, ')', file=self.file)
+            self.codeGen(node.expr1, insideFor, circ, offset+const)
+            if node.arity == 3:
+                print(' '*offset + 'else', file=self.file)
+                self.codeGen(node.expr2, insideFor, circ, offset+const)
 
         elif isinstance(node, Decl):
             if circ == None:
@@ -292,12 +337,17 @@ class smlCodeGen:
                     circ = 'acirc'
             self.convertAll(node.block, circ)
             name = node.idname.name
+            if name in self.dict:
+                print(name, 'is a private value')
+                exit()
+            self.publicSet.add(name)
             if node.step == '1':
                 step = name + '++'
             else:
                 step = name + ' += ' + node.step
             print(' '*offset+'for (uint32_t',name,'=',node.start+';',name,'<',node.end+';',step+')', file=self.file)
             self.codeGen(node.block, True, circ, offset)
+            self.publicSet.remove(name)
 
         elif isinstance(node, Constant): # should always get a circ
             tmpvar = '_tmp_'+str(self.counter)
@@ -426,6 +476,30 @@ class smlCodeGen:
                 self.counter += 1
                 print(' '*offset+'vector<uint32_t>', vec, '=', lhs+'->get_wires();', file=self.file)
                 print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
+                print(' '*offset+'share *'+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
+                self.putInDict(tmpvar, varname, circ)
+            elif node.op == '@>':
+                if not insideFor or circ is None:
+                    circ = self.defckt
+                varname = shareName(tmpvar, circ)
+                lhs = self.codeGen(node.lhs, insideFor, circ, offset)
+                lhs = self.checkType(lhs, circ)
+                rightShift = node.rhs.value
+                vec = '_vec' + str(self.counter)
+                self.counter += 1
+                print(' '*offset+'vector<uint32_t>', vec, '=', lhs+'->get_wires();', file=self.file)
+                print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
+                # uint32_t msb = _vec0[_vec0.size()-1];
+                # for (int i = 0; i < 3; i++) {
+                #     _vec0.push_back(msb);
+                # }
+                msb = '_msb' + str(self.counter)
+                self.counter += 1
+                print(' '*offset+'uint32_t', msb, '=', vec + '[' + vec + '.size()-1];', file=self.file)
+                print(' '*offset+'for (int _i'+str(self.counter),'= 0; _i'+str(self.counter),'<',rightShift,'; _i'+str(self.counter)+'++) {', file=self.file)
+                print(' '*(offset+const)+ vec + '.push_back(' + msb + ');', file=self.file)
+                print(' '*offset + '}', file = self.file)
+                self.counter += 1
                 print(' '*offset+'share *'+varname,'= create_new_share(',vec,',',circ,');', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             else:
@@ -700,6 +774,40 @@ class smlCodeGen:
                     self.counter += 1
                     print(' '*offset+'vector<uint32_t>', vec, '=', binlhs+'->get_wires();', file=self.file)
                     print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
+                    if varShares[i] is None:
+                        print(' '*offset+'share *'+varref,'= create_new_share(',vec,',',circ,');', file=self.file)
+                    else:
+                        print(' '*offset+varref,'= create_new_share(',vec,',',circ,');', file=self.file)
+                    self.putInDict(tmpvar, varname, circ)
+                elif rhs.op == '@>':
+                    if not insideFor or circ is None:
+                        circ = self.defckt
+                    varref = varname = shareName(tmpvar, circ)
+                    i = self.getIndex(circ)
+                    if lhsArr:
+                        if varShares[i] is None:
+                            self.makeVec(varname, 'share*', self.arrDict[tmpvar])
+                            # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
+                            varShares[i] = varname
+                        varref += node.lhs.ref
+                    binlhs = self.codeGen(rhs.lhs, insideFor, circ, offset)
+                    binlhs = self.checkType(binlhs, circ)
+                    rightShift = rhs.rhs.value
+                    vec = '_vec' + str(self.counter)
+                    self.counter += 1
+                    print(' '*offset+'vector<uint32_t>', vec, '=', binlhs+'->get_wires();', file=self.file)
+                    print(' '*offset + vec + '.erase(', vec+'.begin(),',vec+'.begin() +', rightShift, ');', file=self.file)
+                    # uint32_t msb = _vec0[_vec0.size()-1];
+                    # for (int i = 0; i < 3; i++) {
+                    #     _vec0.push_back(msb);
+                    # }
+                    msb = '_msb' + str(self.counter)
+                    self.counter += 1
+                    print(' '*offset+'uint32_t', msb, '=', vec + '[' + vec + '.size()-1];', file=self.file)
+                    print(' '*offset+'for (int _i'+str(self.counter),'= 0; _i'+str(self.counter),'<',rightShift,'; _i'+str(self.counter)+'++) {', file=self.file)
+                    print(' '*(offset+const)+ vec + '.push_back(' + msb + ');', file=self.file)
+                    print(' '*offset+'}', file=self.file)
+                    self.counter += 1
                     if varShares[i] is None:
                         print(' '*offset+'share *'+varref,'= create_new_share(',vec,',',circ,');', file=self.file)
                     else:

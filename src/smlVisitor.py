@@ -74,6 +74,11 @@ class smlVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by smlParser#ifElse.
+    def visitIfElse(self, ctx:smlParser.IfElseContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by smlParser#expr.
     def visitExpr(self, ctx:smlParser.ExprContext):
         return self.visitChildren(ctx)

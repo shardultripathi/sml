@@ -160,6 +160,23 @@ class CondExpr(ASTnode):
         self.expr1.visit(offset+off)
         self.expr2.visit(offset+off)
 
+class IfElse(ASTnode):
+    def __init__(self, condText, condNode, expr1, expr2):
+        self.condText = condText
+        self.condNode = condNode
+        self.expr1 = expr1
+        self.expr2 = expr2
+        self.arity = 2
+        if expr2 != None:
+            self.arity = 3
+
+    def visit(self, offset):
+        print(" "*offset, "CondExpr:")
+        self.condition.visit(offset+off)
+        self.expr1.visit(offset+off)
+        if self.expr2 != None:
+            self.expr2.visit(offset+off)
+
 class InpExpr(ASTnode):
     def __init__(self, partynum, expr, exprText):
         self.partynum = partynum
@@ -221,6 +238,12 @@ def getAST(rule):
         if rangelist.getChildCount() > 5:
             step = rangelist.getChild(5).getText()
         return ForLoop(Ident(rule.getChild(2).getText()), start, end, step, getAST(rule.getChild(5)))
+
+    elif isinstance(rule, sp.IfElseContext):
+        expr2 = None
+        if rule.getChildCount() > 5:
+            expr2 = getAST(rule.getChild(6))
+        return IfElse(rule.getChild(2).getText(), getAST(rule.getChild(2)), getAST(rule.getChild(4)), expr2)
 
     elif isinstance(rule, sp.AssignmentContext): # assignment
         if isinstance(rule.getChild(0), sp.ArrExprContext):

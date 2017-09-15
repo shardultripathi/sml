@@ -10,6 +10,7 @@ command
     | forLoop
     | block
     | output
+    | ifElse
 ;
 
 block
@@ -20,6 +21,7 @@ blockComm
     : assignment
     | forLoop
     | block
+    | ifElse
 // not allowing declaration and output inside block
 ;
 
@@ -64,6 +66,10 @@ rangeList
    : '[' IntegerConstant ':' IntegerConstant (':' IntegerConstant)? ']'
 ;
 
+ifElse
+    :   'if' '(' boolExpr ')' blockComm ('else' blockComm)?
+;
+
 expr
     : arithExpr
     | conditionalExpr
@@ -76,7 +82,7 @@ arithExpr
     | '~' arithExpr
     | arithExpr ('*' | '/' | '%') arithExpr
     | arithExpr ('+' | '-') arithExpr
-    | arithExpr ('<<' | '>>') IntegerConstant
+    | arithExpr ('<<' | '>>' | '@>') IntegerConstant
     | arithExpr '&' arithExpr // bitwise and
     | arithExpr '^' arithExpr // bitwise xor
     | arithExpr '|' arithExpr // bitwise or
