@@ -132,7 +132,7 @@ class smlCodeGen:
         elif isinstance(node, Ident) or isinstance(node, ArrayPub) or isinstance(node, Constant):
             return False
         elif isinstance(node, BinOp):
-            if node.op == '>>' or node.op == '>' or node.op == '<' or node.op == '&&' or node.op == '&' or node.op == '||' or node.op == '|' or node.op == '^':
+            if node.op == '>>' or node.op == '@>' or node.op == '>' or node.op == '<' or node.op == '&&' or node.op == '&' or node.op == '||' or node.op == '|' or node.op == '^':
                 return True
             else:
                 return self.checkOps(node.lhs) or self.checkOps(node.rhs) # python supports short circuiting
