@@ -10,7 +10,7 @@ A language for doing secure machine learning
 ## How to generate *.cpp from *.sml?
 ```
 cd sml/src/
-./run.sh ../examples/test.sml
+./run.sh ../examples/test.sml <y/b> <0/1>
 ```
 This will generate `sml/examples/test.cpp`.
 
