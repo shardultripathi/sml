@@ -1,10 +1,10 @@
-uint32_t testX[256];
-for uint32_t i = [0:256] {
+uint32_t testX[1000];
+for uint32_t i = [0:1000] {
   testX[i] = input1(50);
 }
-uint32_t Z[7][256];
+uint32_t Z[7][1000];
 for uint32_t i = [0:7] {
-  for uint32_t j = [0:256] {
+  for uint32_t j = [0:1000] {
     Z[i][j] = input2(1000);
   }
 }
@@ -12,7 +12,7 @@ for uint32_t i = [0:7] {
 uint32_t ZX[7];
 for uint32_t i = [0:7] {
   ZX[i] = 0;
-  for uint32_t j = [0:256] {
+  for uint32_t j = [0:1000] {
       ZX[i] = ZX[i] + testX[i]*Z[i][j]; 
   }  
 }

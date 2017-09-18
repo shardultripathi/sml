@@ -3,9 +3,9 @@ vector<Sharing*>& sharings = party->GetSharings();
 Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
 Circuit* bcirc = sharings[S_BOOL]->GetCircuitBuildRoutine();
-auto testX = make_vector<uint32_t>(256);
-auto s_a_testX = make_vector<share*>(256);
-for (uint32_t i = 0; i < 256; i++)
+auto testX = make_vector<uint32_t>(1000);
+auto s_a_testX = make_vector<share*>(1000);
+for (uint32_t i = 0; i < 1000; i++)
 {
     if (role == SERVER) {
         testX[i] = 50 ;
@@ -14,11 +14,11 @@ for (uint32_t i = 0; i < 256; i++)
         s_a_testX[i] = acirc->PutDummyINGate(bitlen);
     }
 }
-auto Z = make_vector<uint32_t>(7, 256);
-auto s_a_Z = make_vector<share*>(7, 256);
+auto Z = make_vector<uint32_t>(7, 1000);
+auto s_a_Z = make_vector<share*>(7, 1000);
 for (uint32_t i = 0; i < 7; i++)
 {
-    for (uint32_t j = 0; j < 256; j++)
+    for (uint32_t j = 0; j < 1000; j++)
     {
         if (role == CLIENT) {
             Z[i][j] = 1000 ;
@@ -34,7 +34,7 @@ for (uint32_t i = 0; i < 7; i++)
 {
     ZX[i] = 0 ;
     s_a_ZX[i] = acirc->PutCONSGate( ZX[i] ,bitlen);
-    for (uint32_t j = 0; j < 256; j++)
+    for (uint32_t j = 0; j < 1000; j++)
     {
         share * s_a_tmp_0 = acirc->PutMULGate( s_a_testX[i] , s_a_Z[i][j] );
         s_a_ZX[i] = acirc->PutADDGate( s_a_ZX[i] , s_a_tmp_0 );
