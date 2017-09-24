@@ -247,15 +247,15 @@ r3 = next_range ()
 -------------------------------------------------------- :: smult
 rho |- e1 * asecret e2 !! r3; ckt1, ckt2, mult r1 r2 r3
 
-rho |- e !! true; ckt1
-rho |- e1 !! v; ckt2
+rho |- e !! true; ckt
+rho |- e1 !! v; ckt1
 ------------------------------------------- :: pcondt
-rho |- cond public e e1 e2 !! v; ckt1,ckt2
+rho |- cond public e e1 e2 !! v; ckt,ckt1
 
-rho |- e !! false; ckt1
+rho |- e !! false; ckt
 rho |- e2 !! v; ckt2
 ------------------------------------------- :: pcondf
-rho |- cond public e e1 e2 !! v; ckt1,ckt2
+rho |- cond public e e1 e2 !! v; ckt,ckt2
 
 rho |- e !! r; ckt
 rho |- ei !! ri; ckti
