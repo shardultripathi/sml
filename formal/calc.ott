@@ -257,11 +257,11 @@ rho |- e2 !! v; ckt2
 ------------------------------------------- :: pcondf
 rho |- cond public e e1 e2 !! v; ckt1,ckt2
 
-rho |- e !! r; ckt1
+rho |- e !! r; ckt
 rho |- ei !! ri; ckti
 r3 = next_range ()
 -------------------------------------------------------------------- :: scond
-rho |- cond bsecret e e1 e2 !! r3; ckt1, ckt2, ckt3, mux r r1 r2 r3
+rho |- cond bsecret e e1 e2 !! r3; ckt, ckt1, ckt2, mux r r1 r2 r3
 
 rho |- ei !! ni; ckti
 ---------------------------------------------- :: pgt
