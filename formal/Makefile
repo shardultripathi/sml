@@ -8,10 +8,11 @@ OTT_OVERRIDE_FILE=calc_override.tex
 FORMAL=formal.tex
 
 all:
-	$(OTT) $(OTT_FLAGS)  -merge true $(OTT_FILE) -o __tmp.tex
+	$(OTT) $(OTT_FLAGS) -merge true $(OTT_FILE) -o $(OTT_INCLUDED_FILE) -tex_filter formal.mng formal.tex
 	#hack: can't figure out why it doesn't work for me without this
-	perl -pe 's|(\\mathit\{.*?\})|\\ensuremath{\1}|g' __tmp.tex &> $(OTT_INCLUDED_FILE)
-	$(OTT) $(OTT_FLAGS) -tex_filter override.tex $(OTT_OVERRIDE_FILE) empty.ott
+	perl -pe 's|(\\mathit\{.*?\})|\\ensuremath{\1}|g' $(OTT_INCLUDED_FILE) &> __tmp.tex
+	cp __tmp.tex $(OTT_INCLUDED_FILE)
+	#$(OTT) $(OTT_FLAGS)  empty.ott
 	pdflatex $(FORMAL)
 
 clean:

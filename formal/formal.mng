@@ -1,0 +1,72 @@
+\documentclass{article}
+
+% currently required by Ott-generated, un-wrapped LaTeX
+\usepackage{amsmath}
+
+% required by LJ's LaTeX
+\usepackage{amssymb}
+
+% the package that allows customized layout described in this document
+\usepackage{ottlayout}
+
+% the automatically generated file (with our Makefile) to link the generated
+% LaTeX with the ottlayout package
+\include{calc_included}
+
+% supertabular package required if using the default grammar tabular
+\usepackage{supertabular}
+
+% only used in bibliography to link to LJ's webpage
+\usepackage{url}
+
+\newcommand{\comm}[3]{\color{#1}[#2: #3]}
+\newcommand{\aseem}[1]{\comm{magenta}{Aseem}{#1}}
+
+\begin{document}
+
+\begin{figure}
+\ottgrammartabular{\otts\ottinterrule\ottl\ottinterrule\ottbt\ottinterrule\ottt\ottinterrule\ottcons\ottinterrule\otte\ottinterrule\ottc\ottafterlastrule\ottG\ottafterlastrule}
+\end{figure}
+
+\aseem{I am currently using same [[e]] syntax for source and
+target. Please understand as: the programmer always writes public
+versions of the operators, conditionals etc. Then our compiler
+translates some of them to secret operators, leaving some of them as
+public. Note in the typing rules, the source expression always has
+public subscript.}
+
+\aseem{Also, I am still using the [[i]] notation in the premises of
+  the inference rules as a convenience for now.}
+
+\aseem{The new bit is the circuit part in the evaluation
+  semantics. Expressions evaluate to a value, and emit a circuit. The
+  circuits are stitched together with wires. [[r]] represents a range
+  of wire ids that represent a source level value. A meta-function
+  [[next_range ()]] gives the next ids. It can be implemented using a
+  counter, for example.}
+
+\begin{figure}
+\ottdefnsJCompileE
+\end{figure}
+
+\begin{figure}
+\ottdefnsJCompileC
+\end{figure}
+
+\begin{figure}
+\ottgrammartabular{\ottr\ottinterrule\ottw\ottinterrule\ottv\ottinterrule\ottckt\ottinterrule\ottrho\ottinterrule}
+\end{figure}
+
+\begin{figure}
+\ottdefnsJEvalE
+\end{figure}
+
+\begin{figure}
+\ottdefnsJEvalC
+\end{figure}
+
+%% \begin{figure}
+%% \ottdefnreduce{}
+%% \end{figure}
+
+\end{document}
