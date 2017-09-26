@@ -559,27 +559,18 @@ by
 ---------------- :: emp
 G |- emp ~> emp
 
-G(x) = public uint
+G(x) = bt
+lab bt = public
 G |- srho ~> rho
------------------------------------ :: pint
-G |- srho, x |-> n ~> rho, x |-> n
-
-G(x) = s uint
-r = next_range ()
-G |- srho ~> rho
------------------------------------ :: sint
-G |- srho, x |-> n ~> rho, x |-> r
-
-G(x) = public bool
-G |- srho ~> rho
------------------------------------------- :: pbool
+----------------------------------------- :: pbt
 G |- srho, x |-> cons ~> rho, x |-> cons
 
-G(x) = s bool
+G(x) = bt
+lab bt = s
 r = next_range ()
 G |- srho ~> rho
---------------------------------------------- :: sbool
-G |- srho, x |-> whateversv ~> rho, x |-> r
+--------------------------------------- :: sbt
+G |- srho, x |-> cons ~> rho, x |-> r
 
 G(x) = bt array
 lab bt = public
