@@ -24,6 +24,27 @@
 
 \begin{document}
 
+\section{Formal Development}
+
+Correctness theorem that we will aim at:
+
+If:
+
+\begin{itemize}
+\item $[[G |- sc ~> c | G']]$
+\item $[[srho ~ G]]$
+\item $[[srho |- sc !! srho'; sobs]]$
+\item $[[rho ~ G srho]]$
+\item $[[rho |- c !! rho' ; ckt]]$
+\item $[[rho |- srho ~> G crho1, crho2]]$
+\end{itemize}
+
+Then:
+
+\begin{itemize}
+\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
+\end{itemize}
+
 \begin{figure}
 \ottgrammartabular{\otts\ottinterrule\ottl\ottinterrule\ottbt\ottinterrule\ottt\ottinterrule\ottcons\ottinterrule\ottse\ottinterrule\ottsc\ottinterrule}
 \caption{Source language}
@@ -72,6 +93,16 @@
 \begin{figure}
   \ottdefnsJEvalC
   \caption{Target command evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottgrammartabular{\ottcv\ottinterrule\ottcrho\ottinterrule}
+  \caption{Circuit runtime}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalCirc
+  \caption{Circuit evaluation}
 \end{figure}
 
 %% \begin{figure}

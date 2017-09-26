@@ -21,7 +21,6 @@ l {{ tex \ell }} :: 'l_' ::= {{ com Label }}
 bt {{ tex \sigma }} :: 'bt_' ::= {{ com Base type }}
   | l uint      :: :: UInt {{ tex \mathsf{uint}^{[[l]]} }}
   | l bool      :: :: Bool  {{ tex \mathsf{bool}^{[[l]]} }}
-
 t {{ tex \tau }} :: 't_' ::= {{ com Type }}
   | bt               ::   :: Baset  {{ tex [[bt]] }}
   | bt array         ::   :: Array  {{ tex [[bt]] [\;] }}
@@ -31,6 +30,9 @@ cons {{ tex c }} :: 'cons_' ::= {{ com Constant }}
   | n                             ::  :: Num   {{ tex [[n]] }}
   | true                          ::  :: True  {{ tex \top }}
   | false                         ::  :: False {{ tex \bot }}
+  | cons1 + cons2                 :: M :: NAdd
+  | cons1 > cons2                 :: M :: NGt
+  | ( cons )                      :: M :: Paren
 
 se {{ tex e }} :: 'se_' ::= {{ com Source expression }}
   | cons                          ::  :: Constant
@@ -53,9 +55,6 @@ sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
   | cons                              ::   :: BaseValue
   | [ </ consi // i /> ]              ::   :: Array
   | srho [ x ]                        :: M :: EnvLookup
-  | n1 + n2                           :: M :: NAdd
-  | n1 * n2                           :: M :: NMult  {{ tex [[n1]] \times [[n2]] }}
-  | n1 > n2                           :: M :: NGt
   | cons n                            :: M :: NthArr {{ tex [[cons]]_{[[n]]} }}
   | sv [ n mapsto cons ]              :: M :: ArrUpd {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
 
@@ -163,7 +162,6 @@ e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
   | cons                          ::  :: Constant
   | x                             ::  :: Var
   | e1 + l e2                     ::  :: SAdd  {{ tex [[e1]] +_{[[l]]} [[e2]] }}
-  | e1 * l e2                     ::  :: SMult {{ tex [[e1]] \times_{[[l]]} [[e2]] }}
   | cond l e e1 e2                ::  :: CondE  {{ tex [[cond]]_{[[l]]}([[e]], [[e1]], [[e2]]) }}
   | e1 > l e2                     ::  :: Relop  {{ tex [[e1]] >_{[[l]]} [[e2]] }}
   | x [ e ]                       ::  :: ArrayRead
@@ -201,6 +199,11 @@ formula :: formula_ ::=
    | base bt1 = base bt2   :: :: baseEq     {{ tex \mathsf{base}([[bt1]]) = \mathsf{base}([[bt2]]) }}
    | default t = sv        :: :: sdefaultt  {{ tex \mathsf{default}([[t]]) = [[sv]] }}
    | default t = v ; ckt   :: :: defaultt   {{ tex \mathsf{default}([[t]]) = [[v]]; [[ckt]] }}
+   | cv1 = cv2             :: :: cveq
+   | cons1 = cons2         :: :: conseq
+   | srho ~ G              :: :: rgcorres   {{ tex [[srho]] \sim [[G]] }}
+   | rho ~ G srho          :: :: srhogcorr  {{ tex [[rho]] \sim_{[[G]]} [[srho]] }}
+   | rho |- srho ~> G crho1 , crho2  :: :: circrhocorres   {{ tex [[rho]] \vdash [[srho]] \hookrightarrow_{[[G]]} [[crho1]], [[crho2]] }}
 
 
 defns
@@ -238,6 +241,7 @@ G |- cond se se1 se2 : bt ~> cond public e e1 e2
 
 G |- se : bsecret bool ~> e
 G |- sei : bt ~> ei
+lab bt = bsecret
 ------------------------------------------------------ :: scond
 G |- cond se se1 se2 : bt ~> cond bsecret e e1 e2
 
@@ -315,16 +319,12 @@ v {{ tex \widetilde{v} }} :: 'v_' ::= {{ com Compiled value }}
   | w                                 ::   :: BaseValue
   | [ </ wi // i /> ]                 ::   :: Array
   | rho [ x ]                         :: M :: EnvLookup
-  | n1 + n2                           :: M :: NAdd
-  | n1 * n2                           :: M :: NMult  {{ tex [[n1]] \times [[n2]] }}
-  | n1 > n2                           :: M :: NGt
   | w n                               :: M :: NthArr {{ tex [[w]]_{[[n]]} }}
   | v [ n mapsto w ]                  :: M :: ArrUpd {{ tex [[v]][ [[n]] \mapsto [[w]] ] }}
 
 ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
   | emp                   :: :: Emp  {{ tex \cdot }}
   | add  r1 r2 r3         :: :: Add  {{ tex \oplus([[r1]], [[r2]], [[r3]]) }}
-  | mult r1 r2 r3         :: :: Mult {{ tex \otimes([[r1]], [[r2]], [[r3]]) }}
   | mux  r1 r2 r3 r4      :: :: Mux  {{ tex \mathsf{Mux}([[r1]], [[r2]], [[r3]], [[r4]]) }}
   | gt   r1 r2 r3         :: :: Gt   {{ tex \mathsf{Gt}([[r1]], [[r2]], [[r3]]) }}
   | r1 |> s r2            :: :: Conv {{ tex [[r1]] \rhd_{[[s]]} [[r2]] }}
@@ -358,15 +358,6 @@ rho |- ei !! ri; ckti
 r3 = next_range ()
 -------------------------------------------------------- :: sadd
 rho |- e1 + asecret e2 !! r3; ckt1, ckt2, add r1 r2 r3
-
-rho |- ei !! ni; ckti
----------------------------------------------- :: pmult
-rho |- e1 * public e2 !! n1 * n2; ckt1, ckt2
-
-rho |- ei !! ri; ckti
-r3 = next_range ()
--------------------------------------------------------- :: smult
-rho |- e1 * asecret e2 !! r3; ckt1, ckt2, mult r1 r2 r3
 
 rho |- e !! true; ckt
 rho |- e1 !! v; ckt1
@@ -453,3 +444,70 @@ rho  |- c1 !! rho1; ckt1
 rho1 |- c2 !! rho2; ckt2
 ---------------------------------- :: seq
 rho |- c1; c2 !! rho2; ckt1, ckt2
+
+grammar
+
+cv {{ tex \widehat{c} }} :: 'cv_' ::= {{ com Circuit value (share) }}
+  | enc cons s 1     ::   ::  Share1  {{ tex \mathcal{E}^{[[s]]}_{1}([[cons]]) }}
+  | enc cons s 2     ::   ::  Share2  {{ tex \mathcal{E}^{[[s]]}_{2}([[cons]]) }}
+  | crho [ r ]       :: M ::  Lookup
+
+crho {{ tex \widehat{\rho} }} :: 'crho_' ::= {{ com Circuit environment }}
+  | emp                ::   :: Empty {{ tex \cdot }}
+  | crho , r |-> cv ::   :: Map   {{ tex [[crho]][ [[r]] \mapsto [[cv]] ] }}
+
+
+defns
+JEvalCirc :: '' ::=
+
+defn
+crho1 , crho2 |- ckt !! crho1' , crho2' ; sobs :: :: circeval :: 'ckt_' {{ tex [[crho1]], [[crho2]] \vdash [[ckt]] \longmapsto [[crho1']], [[crho2']]; [[sobs]] }}
+by
+
+------------------------------------------  :: emp
+crho1, crho2 |- emp !! crho1, crho2; emp
+
+crho1[r1] = enc n1 asecret 1
+crho2[r1] = enc n1 asecret 2
+crho1[r2] = enc n2 asecret 1
+crho2[r2] = enc n2 asecret 2
+--------------------------------------------------------------------------------------------------------------------- :: add
+crho1, crho2 |- add r1 r2 r3 !! crho1, r3 |-> enc (n1 + n2) asecret 1 , crho2, r3 |-> enc (n1 + n2) asecret 2; emp
+
+crho1[r1] = enc true bsecret 1
+crho2[r1] = enc true bsecret 2
+crho1[r2] = enc cons bsecret 1
+crho2[r2] = enc cons bsecret 2
+------------------------------------------------------------------------------------------------------------ :: muxt
+crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> enc cons bsecret 1 , crho2, r4 |-> enc cons bsecret 2; emp
+
+crho1[r1] = enc false bsecret 1
+crho2[r1] = enc false bsecret 2
+crho1[r3] = enc cons bsecret 1
+crho2[r3] = enc cons bsecret 2
+------------------------------------------------------------------------------------------------------------ :: muxf
+crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> enc cons bsecret 1 , crho2, r4 |-> enc cons bsecret 2; emp
+
+crho1[r1] = enc n1 bsecret 1
+crho2[r1] = enc n1 bsecret 2
+crho1[r2] = enc n2 bsecret 1
+crho2[r2] = enc n2 bsecret 2
+cons = n1 > n2
+-------------------------------------------------------------------------------------------------------- :: gt
+crho1, crho2 |- gt r1 r2 r3 !! crho1, r3 |-> enc cons bsecret 1 , crho2, r3 |-> enc cons bsecret 2; emp
+
+crho1[r1] = enc cons s1 1
+crho2[r1] = enc cons s1 2
+------------------------------------------------------------------------------------------- :: coerce
+crho1, crho2 |- r1 |> s r2 !! crho1, r2 |-> enc cons s 1 , crho2, r2 |-> enc cons s 2; emp
+
+
+crho1[r] = enc cons s 1
+crho2[r] = enc cons s 2
+-------------------------------------------- :: out
+crho1, crho2 |- out r !! crho1, crho2; cons
+
+crho1, crho2 |- ckt1 !! crho1', crho2'; sobs1
+crho1', crho2' |- ckt2 !! crho1'', crho2''; sobs2
+-------------------------------------------------------------- :: seq
+crho1, crho2 |- ckt1, ckt2 !! crho1'', crho2''; sobs1, sobs2
