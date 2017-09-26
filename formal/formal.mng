@@ -25,44 +25,53 @@
 \begin{document}
 
 \begin{figure}
-\ottgrammartabular{\otts\ottinterrule\ottl\ottinterrule\ottbt\ottinterrule\ottt\ottinterrule\ottcons\ottinterrule\otte\ottinterrule\ottc\ottafterlastrule\ottG\ottafterlastrule}
-\end{figure}
-
-\aseem{I am currently using same [[e]] syntax for source and
-target. Please understand as: the programmer always writes public
-versions of the operators, conditionals etc. Then our compiler
-translates some of them to secret operators, leaving some of them as
-public. Note in the typing rules, the source expression always has
-public subscript.}
-
-\aseem{Also, I am still using the [[i]] notation in the premises of
-  the inference rules as a convenience for now.}
-
-\aseem{The new bit is the circuit part in the evaluation
-  semantics. Expressions evaluate to a value, and emit a circuit. The
-  circuits are stitched together with wires. [[r]] represents a range
-  of wire ids that represent a source level value. A meta-function
-  [[next_range ()]] gives the next ids. It can be implemented using a
-  counter, for example.}
-
-\begin{figure}
-\ottdefnsJCompileE
+\ottgrammartabular{\otts\ottinterrule\ottl\ottinterrule\ottbt\ottinterrule\ottt\ottinterrule\ottcons\ottinterrule\ottse\ottinterrule\ottsc\ottinterrule}
+\caption{Source language}
 \end{figure}
 
 \begin{figure}
-\ottdefnsJCompileC
+\ottgrammartabular{\ottsv\ottinterrule\ottsrho\ottinterrule\ottsobs\ottinterrule}
+\caption{Source runtime}
 \end{figure}
 
 \begin{figure}
-\ottgrammartabular{\ottr\ottinterrule\ottw\ottinterrule\ottv\ottinterrule\ottckt\ottinterrule\ottrho\ottinterrule}
+  \ottdefnsJEvalSE
+  \caption{Source expression evaluation}
 \end{figure}
 
 \begin{figure}
-\ottdefnsJEvalE
+  \ottdefnsJEvalSC
+  \caption{Source command evaluation}
 \end{figure}
 
 \begin{figure}
-\ottdefnsJEvalC
+  \ottgrammartabular{\otte\ottinterrule\ottc\ottafterlastrule\ottG\ottafterlastrule}
+  \caption{Target language}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJCompileE
+  \caption{Expression compilation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJCompileC
+  \caption{Command compilation}
+\end{figure}
+
+\begin{figure}
+  \ottgrammartabular{\ottr\ottinterrule\ottw\ottinterrule\ottv\ottinterrule\ottckt\ottinterrule\ottrho\ottinterrule}
+  \caption{Target runtime}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalE
+  \caption{Target expression evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalC
+  \caption{Target command evaluation}
 \end{figure}
 
 %% \begin{figure}

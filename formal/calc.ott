@@ -32,7 +32,134 @@ cons {{ tex c }} :: 'cons_' ::= {{ com Constant }}
   | true                          ::  :: True  {{ tex \top }}
   | false                         ::  :: False {{ tex \bot }}
 
-e :: 'e_' ::=  {{ com Expression }}
+se {{ tex e }} :: 'se_' ::= {{ com Source expression }}
+  | cons                          ::  :: Constant
+  | x                             ::  :: Var
+  | se1 + se2                     ::  :: SAdd  {{ tex [[se1]] + [[se2]] }}
+  | cond se se1 se2               ::  :: CondE  {{ tex [[cond]]([[se]], [[se1]], [[se2]]) }}
+  | se1 > se2                     ::  :: Relop  {{ tex [[se1]] > [[se2]] }}
+  | x [ se ]                      ::  :: ArrayRead
+
+sc {{ tex s }} :: 'sc_' ::= {{ com Source statement }}
+  | t x                                ::   :: Decl
+  | x := se                            ::   :: Assignment
+  | foreach x in n1 to n2 do sc        ::   :: For  {{ tex [[for]]([[x]] := [[n1]]; [[x]] \leq [[n2]]; x := x + 1)\;[[sc]] }}
+  | x [ se1 ] := se2                   ::   :: ArrayWrite
+  | if se sc1 sc2                      ::   :: If   {{ tex [[if]]([[se]], [[sc1]], [[sc2]]) }}
+  | out se                             ::   :: Output
+  | sc1 ; sc2                          ::   :: Sequence
+
+sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
+  | cons                              ::   :: BaseValue
+  | [ </ consi // i /> ]              ::   :: Array
+  | srho [ x ]                        :: M :: EnvLookup
+  | n1 + n2                           :: M :: NAdd
+  | n1 * n2                           :: M :: NMult  {{ tex [[n1]] \times [[n2]] }}
+  | n1 > n2                           :: M :: NGt
+  | cons n                            :: M :: NthArr {{ tex [[cons]]_{[[n]]} }}
+  | sv [ n mapsto cons ]              :: M :: ArrUpd {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
+
+srho {{ tex \rho }} :: 'srho_' ::= {{ com Source runtime environment }}
+  | emp             ::   :: Empty {{ tex \cdot }}
+  | srho , x |-> sv ::   :: Map   {{ tex [[srho]][ [[x]] \mapsto [[sv]] ] }}
+  | srho - x        :: M :: Minus {{ tex [[srho]] \setminus [[x]] }}
+
+sobs {{ tex O }} :: 'sobs_' ::= {{ com Source observation }}
+  | emp              :: :: Emp    {{ tex \cdot }}
+  | sv               :: :: Value
+  | sobs1 , sobs2    :: :: Seq
+
+defns
+JEvalSE :: '' ::=
+
+defn
+srho |- se !! sv :: :: seeval :: 'se_' {{ tex [[srho]] \vdash [[se]] \downarrow [[sv]] }}
+by
+
+------------------------- :: const
+srho |- cons !! cons
+
+--------------------------- ::var
+srho |- x !! srho[x]
+
+srho |- sei !! ni
+------------------------------------------- :: add
+srho |- se1 + se2 !! n1 + n2
+
+srho |- se !! true
+srho |- se1 !! sv
+------------------------------------------ :: condt
+srho |- cond se se1 se2 !! sv
+
+srho |- se !! false
+srho |- se2 !! sv
+------------------------------------------ :: condf
+srho |- cond se se1 se2 !! sv
+
+srho |- sei !! ni
+-------------------------------------------- :: gt
+srho |- se1 > se2 !! n1 > n2
+
+srho |- se !! n
+srho |- x !! [ </ consi // i /> ]
+--------------------------------------- :: aread
+srho |- x[se] !! cons n
+
+
+defns
+JEvalSC :: '' ::=
+
+defn
+srho |- sc !! srho' ; sobs :: :: sceval :: 'sc_' {{ tex [[srho]] \vdash [[sc]] \longrightarrow [[srho']]; [[sobs]] }}
+by
+
+default t = sv
+----------------------------------- :: decl
+srho |- t x !! srho, x |-> sv; emp
+
+srho |- se !! sv
+--------------------------------------- :: assgn
+srho |- x := se !! srho, x |-> sv; emp
+
+n1 gt n2
+------------------------------------------------- :: fort
+srho |- foreach x in n1 to n2 do sc !! srho; emp
+
+n2 geq n1
+srho, x|-> n1 |- sc !! srho1; sobs1
+srho1 |- foreach x in n1 + 1 to n2 do sc !! srho2; sobs2
+----------------------------------------------------------- :: fori
+srho |- foreach x in n1 to n2 do sc !! srho2; sobs1, sobs2
+
+srho |- x !! [ </ consi // i /> ]
+srho |- se1 !! n
+srho |- se2 !! cons
+--------------------------------------------------------------------------------------- :: awrite
+srho |- x[se1] := se2 !! srho, x |-> [ </ consi // i /> ][n mapsto cons]; sobs1, sobs2
+
+srho |- se !! true
+srho |- sc1 !! srho'; sobs
+-------------------------------------- :: ift
+srho |- if se sc1 sc2 !! srho'; sobs
+
+srho |- se !! false
+srho |- sc2 !! srho'; sobs
+-------------------------------------- :: iff
+srho |- if se sc1 sc2 !! srho'; sobs
+
+srho |- se !! sv
+-------------------------- :: out
+srho |- out se !! srho; sv
+
+srho  |- sc1 !! srho1; sobs1
+srho1 |- sc2 !! srho2; sobs2
+---------------------------------------- :: seq
+srho |- sc1; sc2 !! srho2; sobs1, sobs2
+
+
+grammar
+
+e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
   | cons                          ::  :: Constant
   | x                             ::  :: Var
   | e1 + l e2                     ::  :: SAdd  {{ tex [[e1]] +_{[[l]]} [[e2]] }}
@@ -42,7 +169,7 @@ e :: 'e_' ::=  {{ com Expression }}
   | x [ e ]                       ::  :: ArrayRead
   | e |> s                        ::  :: Coerce {{ tex [[e]] \rhd [[s]] }}
 
-c {{ tex s }} :: 'c_' ::= {{ com Statement }}
+c {{ tex \widetilde{s} }} :: 'c_' ::= {{ com Target statement }}
   | t x                                ::   :: Decl
   | x := e                             ::   :: Assignment
   | foreach x in n1 to n2 do c         ::   :: For  {{ tex [[for]]([[x]] := [[n1]]; [[x]] \leq [[n2]]; x := x + 1)\;[[c]] }}
@@ -67,11 +194,12 @@ formula :: formula_ ::=
    | n1 gt n2              :: :: ngt        {{ tex [[n1]] > [[n2]] }}
    | n1 geq n2             :: :: ngeq       {{ tex [[n1]] \geq [[n2]] }}
    | formula1 ==> formula2 :: :: implies    {{ tex [[formula1]] \Rightarrow [[formula2]] }}
-   | x notin modifies c    :: :: modifesmem {{ tex [[x]] \not\in \mathsf{modifies}([[c]]) }}
+   | x notin modifies sc   :: :: modifesmem {{ tex [[x]] \not\in \mathsf{modifies}([[sc]]) }}
    | mapsto                :: :: mapsto     {{ tex \mapsto }}
    | l1 ne l2              :: :: labne      {{ tex [[l1]] \neq [[l2]] }}
    | l1 = l2               :: :: labeq
    | base bt1 = base bt2   :: :: baseEq     {{ tex \mathsf{base}([[bt1]]) = \mathsf{base}([[bt2]]) }}
+   | default t = sv        :: :: sdefaultt  {{ tex \mathsf{default}([[t]]) = [[sv]] }}
    | default t = v ; ckt   :: :: defaultt   {{ tex \mathsf{default}([[t]]) = [[v]]; [[ckt]] }}
 
 
@@ -79,7 +207,7 @@ defns
 JCompileE :: '' ::=
 
 defn
-G |- e : t ~> e' :: :: compile :: 's_' {{ tex [[G]] \vdash [[e]] : [[t]] \leadsto [[e']] }}
+G |- se : t ~> e :: :: compile :: 's_' {{ tex [[G]] \vdash [[se]] : [[t]] \leadsto [[e]] }}
 by
 
 -------------------------- :: const
@@ -95,103 +223,95 @@ G(x) = t
 ---------------- :: var
 G |- x : t ~> x
 
-G |- ei : public uint ~> ei'
------------------------------------------------------ :: padd
-G |- e1 + public e2 : public uint ~> e1' + public e2'
+G |- sei : public uint ~> ei
+----------------------------------------------- :: padd
+G |- se1 + se2 : public uint ~> e1 + public e2
 
-G |- ei : asecret uint ~> ei'
--------------------------------------------------------- :: sadd
-G |- e1 + public e2 : asecret uint ~> e1' + asecret e2'
+G |- sei : asecret uint ~> ei
+------------------------------------------------- :: sadd
+G |- se1 + se2 : asecret uint ~> e1 + asecret e2
 
-G |- ei : public uint ~> ei'
------------------------------------------------------ :: pmult
-G |- e1 * public e2 : public uint ~> e1' * public e2'
+G |- se : public bool ~> e
+G |- sei : bt ~> ei
+----------------------------------------------------- :: pcond
+G |- cond se se1 se2 : bt ~> cond public e e1 e2
 
-G |- ei : asecret uint ~> ei'
--------------------------------------------------------- :: smult
-G |- e1 * public e2 : asecret uint ~> e1' * asecret e2'
+G |- se : bsecret bool ~> e
+G |- sei : bt ~> ei
+------------------------------------------------------ :: scond
+G |- cond se se1 se2 : bt ~> cond bsecret e e1 e2
 
-G |- e : public bool ~> e'
-G |- ei : bt ~> ei'
-------------------------------------------------------- :: pcond
-G |- cond public e e1 e2 : bt ~> cond public e' e1' e2'
+G |- sei : public uint ~> ei
+----------------------------------------------- :: pgt
+G |- se1 > se2 : public bool ~> e1 > public e2
 
-G |- e : bsecret bool ~> e'
-G |- ei : bt ~> ei'
-------------------------------------------------------- :: scond
-G |- cond public e e1 e2 : bt ~> cond bsecret e' e1' e2'
-
-G |- ei : public uint ~> ei'
------------------------------------------------------- :: pgt
-G |- e1 > public e2 : public bool ~> e1' > public e2'
-
-G |- ei : bsecret uint ~> ei'
--------------------------------------------------------- :: sgt
-G |- e1 > public e2 : bsecret bool ~> e1' > bsecret e2'
+G |- sei : bsecret uint ~> ei
+-------------------------------------------------- :: sgt
+G |- se1 > se2 : bsecret bool ~> e1 > bsecret e2
 
 G |- x : bt array ~> x
-G |- e : public uint ~> e'
+G |- se : public uint ~> e
 --------------------------- :: aread
-G |- x[e] : bt ~> x[e']
+G |- x[se] : bt ~> x[e]
 
-G |- e : bt1 ~> e'
+G |- se : bt1 ~> e
 base bt1 = base bt2
 lab bt2 = s
 -------------------------  :: sub
-G |- e : bt2 ~> e' |> s
+G |- se : bt2 ~> e |> s
 
 
 defns
 JCompileC :: '' ::=
 
 defn
-G |- c ~> c' | G' :: :: ccompile :: 'c_' {{ tex [[G]] \vdash [[c]] \leadsto [[c']] \mid [[G']]}}
+G |- sc ~> c | G' :: :: ccompile :: 'c_' {{ tex [[G]] \vdash [[sc]] \leadsto [[c]] \mid [[G']]}}
 by
 
 -------------------------- :: decl
 G |- t x ~> t x | G, x:t
 
 G (x) = bt
-G |- e : bt ~> e'
+G |- se : bt ~> e
 --------------------------- :: vassgn
-G |- x := e ~> x := e' | G
+G |- x := se ~> x := e | G
 
-G, x:public uint |- c ~> c' | whateverG
-x notin modifies c
+G, x:public uint |- sc ~> c | whateverG
+x notin modifies sc
 ------------------------------------------------------------------- :: for
-G |- foreach x in n1 to n2 do c ~> foreach x in n1 to n2 do c' | G
+G |- foreach x in n1 to n2 do sc ~> foreach x in n1 to n2 do c | G
 
 G |- x : bt array ~> x
-G |- e1 : public uint ~> e1'
-G |- e2 : bt ~> e2'
+G |- se1 : public uint ~> e1
+G |- se2 : bt ~> e2
 --------------------------------------- :: awrite
-G |- x [e1] := e2 ~> x[e1'] := e2' | G
+G |- x [se1] := se2 ~> x[e1] := e2 | G
 
-G |- e : public bool ~> e'
-G |- ci ~> ci' | whateverG
+G |- se : public bool ~> e
+G |- sci ~> ci | whateverG
 --------------------------------------- :: if
-G |- if e c1 c2 ~> if e' c1' c2' | G
+G |- if se sc1 sc2 ~> if e c1 c2 | G
 
-G |- e : bt ~> e'
+G |- se : bt ~> e
 lab bt = s
 -------------------------- :: out
-G |- out e ~> out e' | G
+G |- out se ~> out e | G
 
-G |- c1 ~> c1' | G1
-G1 |- c2 ~> c2' | G'
+G |- sc1 ~> c1 | G1
+G1 |- sc2 ~> c2 | G'
 ----------------------------- :: seq
-G |- c1; c2 ~> c1'; c2' | G'
+G |- sc1; sc2 ~> c1; c2 | G'
 
 grammar
 
 r :: 'r_' ::= {{ com Wire id range }}
   | next_range ( )        :: M :: Next  {{ tex \mathsf{next\_range}() }}
 
-w :: 'w_' ::= {{ com Base value }}
+w {{ tex \widetilde{w} }} :: 'w_' ::= {{ com Compiled base value }}
   | cons                          ::  :: Constant
   | r                             ::  :: Range
 
-v :: 'v_' ::= {{ com Value }}
+v {{ tex \widetilde{v} }} :: 'v_' ::= {{ com Compiled value }}
   | w                                 ::   :: BaseValue
   | [ </ wi // i /> ]                 ::   :: Array
   | rho [ x ]                         :: M :: EnvLookup
@@ -207,11 +327,11 @@ ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
   | mult r1 r2 r3         :: :: Mult {{ tex \otimes([[r1]], [[r2]], [[r3]]) }}
   | mux  r1 r2 r3 r4      :: :: Mux  {{ tex \mathsf{Mux}([[r1]], [[r2]], [[r3]], [[r4]]) }}
   | gt   r1 r2 r3         :: :: Gt   {{ tex \mathsf{Gt}([[r1]], [[r2]], [[r3]]) }}
-  | r |> s r'             :: :: Conv {{ tex [[r]] \rhd_{[[s]]} [[r']] }}
+  | r1 |> s r2            :: :: Conv {{ tex [[r1]] \rhd_{[[s]]} [[r2]] }}
   | out r                 :: :: Out  {{ tex \mathsf{Out}([[r]]) }}
   | ckt1 , ckt2           :: :: Seq
 
-rho {{ tex \rho }} :: 'rho_' ::= {{ com Runtime environment }}
+rho {{ tex \widetilde{\rho} }} :: 'rho_' ::= {{ com Runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
   | rho , x |-> v   ::   :: Map   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
   | rho - x         :: M :: Minus {{ tex [[rho]] \setminus [[x]] }}
@@ -288,7 +408,7 @@ defns
 JEvalC :: '' ::=
 
 defn
-rho |- c !! rho' ; ckt :: :: ceval :: 'ec_' {{ tex [[rho]] \vdash [[c]] \Downarrow [[rho']]; [[ckt]] }}
+rho |- c !! rho' ; ckt :: :: ceval :: 'ec_' {{ tex [[rho]] \vdash [[c]] \Longrightarrow [[rho']]; [[ckt]] }}
 by
 
 default t = v; ckt
@@ -333,41 +453,3 @@ rho  |- c1 !! rho1; ckt1
 rho1 |- c2 !! rho2; ckt2
 ---------------------------------- :: seq
 rho |- c1; c2 !! rho2; ckt1, ckt2
-
-% rho1, rho2 |- c1 --> rho1', rho2'
-% rho1', rho2' |- c2 --> rho1'', rho2''
-% ---------------------------------------- :: seq
-% rho1, rho2 |- c1; c2 --> rho1'', rho2''
-
-% %   | \ x . t      ::  :: Lam
-% %   | t t'         ::  :: App
-% %   | ( t )        :: M :: Paren      
-% %   | { t / x } t' :: M :: Tsub  
-
-% % v :: 'v_' ::= {{ com value   }}
-% %   | \ x . t      ::  :: Lam
-
-% % terminals :: 'terminals_' ::=
-% %   | \            ::  :: lambda  {{ tex \lambda }}
-% %   | –>          ::  :: red     {{ tex \longrightarrow }}
-
-% % subrules
-% %   v <:: t
-
-% % defns
-% % Jop :: '' ::=
-
-% %  defn
-% %  t1 –> t2 :: ::reduce:: 'r_' {{ com [[t1]] reduces to [[t2]]}} by
-
-
-% %     --------------------------  :: ax_app
-% %     (\x.t12) v2 –>  {v2/x}t12
-
-% %     t1 –> t1'
-% %     -------------- :: ctx_app_fun
-% %     t1 t –> t1' t
-
-% %     t1 –> t1'
-% %     -------------- :: ctx_app_arg
-% %     v t1 –> v t1'
