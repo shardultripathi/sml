@@ -172,7 +172,8 @@ G |- ci ~> ci' | whateverG
 --------------------------------------- :: if
 G |- if e c1 c2 ~> if e' c1' c2' | G
 
-G |- e : t ~> e'
+G |- e : bt ~> e'
+lab bt = s
 -------------------------- :: out
 G |- out e ~> out e' | G
 
