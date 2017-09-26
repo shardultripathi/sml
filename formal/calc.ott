@@ -604,26 +604,17 @@ by
 --------------------------- :: emp
 G ; rho |- emp ~> emp; emp
 
-G(x) = public uint
+G(x) = bt
+lab bt = public
 G ; rho |- srho ~> crho1; crho2
------------------------------------------ :: pint
+----------------------------------------- :: pbt
 G ; rho |- srho, x |-> n ~> crho1; crho2
 
-G(x) = s uint
+G(x) = bt
+lab bt = s
 rho[x] = r
 G ; rho |- srho ~> crho1; crho2
---------------------------------------------------------------------------- :: sint
-G ; rho |- srho, x |-> n ~> crho1, r|-> enc n s 1; crho2, r |-> enc n s 2
-
-G(x) = public bool
-G ; rho |- srho ~> crho1; crho2
--------------------------------------------- :: pbool
-G ; rho |- srho, x |-> cons ~> crho1; crho2
-
-G(x) = s bool
-rho[x] = r
-G ; rho |- srho ~> crho1; crho2
------------------------------------------------------------------------------------ :: sbool
+---------------------------------------------------------------------------------- :: sbt
 G ; rho |- srho, x |-> cons ~> crho1, r|-> enc cons s 1; crho2, r |-> enc cons s 2
 
 G(x) = bt array
