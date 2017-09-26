@@ -31,18 +31,18 @@ Correctness theorem that we will aim at:
 If:
 
 \begin{itemize}
-\item $[[G |- sc ~> c | G']]$
-\item $[[G ~ srho]]$
-\item $[[srho |- sc !! srho'; sobs]]$
-\item $[[G |- srho ~> rho]]$
-\item $[[G; rho |- srho ~> crho1; crho2]]$
+\item $[[G |- sc ~> c | G']]$  (Compilation of source command)
+\item $[[G ~ srho]]$  (Source environment, maps free variables to values)
+\item $[[srho |- sc !! srho'; sobs]]$  (Source semantics, no MPC)
+\item $[[G |- srho ~> rho]]$  (Compiling source environment to C++ environment, free secret variables are mapped to wire ranges)
+\item $[[G; rho |- srho ~> crho1; crho2]]$  (Compiling source enviroment to circuit environment, secret variables are converted to shares)
 \end{itemize}
 
 Then:
 
 \begin{itemize}
-\item $[[rho |- c !! rho' ; ckt]]$
-\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
+\item $[[rho |- c !! rho' ; ckt]]$  (The C++ ABY program)
+\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$  (Circuit evaluation)
 \end{itemize}
 
 \begin{figure}
