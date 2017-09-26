@@ -326,7 +326,7 @@ rho |- if e c1 c2 !! rho'; ckt1, ckt2
 
 rho |- e !! r; ckt
 --------------------------------- :: out
-rho |- out e !! rho; ckt1, out r
+rho |- out e !! rho; ckt, out r
 
 rho  |- c1 !! rho1; ckt1
 rho1 |- c2 !! rho2; ckt2
