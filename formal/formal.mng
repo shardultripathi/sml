@@ -32,11 +32,11 @@ If:
 
 \begin{itemize}
 \item $[[G |- sc ~> c | G']]$
-\item $[[srho ~ G]]$
+\item $[[G ~ srho]]$
 \item $[[srho |- sc !! srho'; sobs]]$
-\item $[[rho ~ G srho]]$
+\item $[[G |- srho ~> rho]]$
 \item $[[rho |- c !! rho' ; ckt]]$
-\item $[[rho |- srho ~> G crho1, crho2]]$
+\item $[[G; rho |- srho ~> crho1; crho2]]$
 \end{itemize}
 
 Then:
@@ -63,6 +63,11 @@ Then:
 \begin{figure}
   \ottdefnsJEvalSC
   \caption{Source command evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJSVTyping
+  \caption{Value typing}
 \end{figure}
 
 \begin{figure}
@@ -103,6 +108,21 @@ Then:
 \begin{figure}
   \ottdefnsJEvalCirc
   \caption{Circuit evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJSEnvGammaEquiv
+  \caption{Source environment and type environment consistency}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJTEnvCompile
+  \caption{Source environment to target environment compilation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJCktEnvCompile
+  \caption{Source environment to circuit environment compilation}
 \end{figure}
 
 %% \begin{figure}

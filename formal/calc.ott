@@ -21,10 +21,12 @@ l {{ tex \ell }} :: 'l_' ::= {{ com Label }}
 bt {{ tex \sigma }} :: 'bt_' ::= {{ com Base type }}
   | l uint      :: :: UInt {{ tex \mathsf{uint}^{[[l]]} }}
   | l bool      :: :: Bool  {{ tex \mathsf{bool}^{[[l]]} }}
+
 t {{ tex \tau }} :: 't_' ::= {{ com Type }}
-  | bt               ::   :: Baset  {{ tex [[bt]] }}
-  | bt array         ::   :: Array  {{ tex [[bt]] [\;] }}
+  | bt               ::   :: Baset   {{ tex [[bt]] }}
+  | bt array         ::   :: Array   {{ tex [[bt]] [\;] }}
   | G ( x )          :: M :: EnvLookup
+  | l t              :: M :: PublicT {{ tex [ [[t]] ]_{[[l]]} }}
 
 cons {{ tex c }} :: 'cons_' ::= {{ com Constant }}
   | n                             ::  :: Num   {{ tex [[n]] }}
@@ -57,6 +59,7 @@ sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
   | srho [ x ]                        :: M :: EnvLookup
   | cons n                            :: M :: NthArr {{ tex [[cons]]_{[[n]]} }}
   | sv [ n mapsto cons ]              :: M :: ArrUpd {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
+  | whateversv                        :: M :: WhatEv {{ tex \_ }}
 
 srho {{ tex \rho }} :: 'srho_' ::= {{ com Source runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
@@ -156,6 +159,26 @@ srho1 |- sc2 !! srho2; sobs2
 srho |- sc1; sc2 !! srho2; sobs1, sobs2
 
 
+defns
+JSVTyping :: '' ::=
+
+defn
+sv : t :: :: svtyp :: 'v_' {{ tex [[sv]] : [[t]] }}
+by
+
+---------------- :: int
+n : public uint
+
+------------------- :: true
+true : public bool
+
+------------------- :: false
+false : public bool
+
+consi : bt
+-------------------------------- :: arr
+[ </ consi // i /> ] : bt array
+
 grammar
 
 e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
@@ -201,9 +224,6 @@ formula :: formula_ ::=
    | default t = v ; ckt   :: :: defaultt   {{ tex \mathsf{default}([[t]]) = [[v]]; [[ckt]] }}
    | cv1 = cv2             :: :: cveq
    | cons1 = cons2         :: :: conseq
-   | srho ~ G              :: :: rgcorres   {{ tex [[srho]] \sim [[G]] }}
-   | rho ~ G srho          :: :: srhogcorr  {{ tex [[rho]] \sim_{[[G]]} [[srho]] }}
-   | rho |- srho ~> G crho1 , crho2  :: :: circrhocorres   {{ tex [[rho]] \vdash [[srho]] \hookrightarrow_{[[G]]} [[crho1]], [[crho2]] }}
 
 
 defns
@@ -511,3 +531,110 @@ crho1, crho2 |- ckt1 !! crho1', crho2'; sobs1
 crho1', crho2' |- ckt2 !! crho1'', crho2''; sobs2
 -------------------------------------------------------------- :: seq
 crho1, crho2 |- ckt1, ckt2 !! crho1'', crho2''; sobs1, sobs2
+
+
+defns
+JSEnvGammaEquiv :: '' ::=
+
+defn
+G ~ srho :: :: senvgammaequiv :: 'sen_' {{ tex [[G]] \sim [[srho]] }}
+by
+
+---------- :: emp
+emp ~ emp
+
+sv : public t
+G ~ srho
+----------------------- :: bnd
+G, x:t ~ srho, x |-> sv
+
+
+defns
+JTEnvCompile :: '' ::=
+
+defn
+G |- srho ~> rho :: :: tenvcompile :: 'ten_' {{ tex [[G]] \vdash [[srho]] \hookrightarrow [[rho]] }}
+by
+
+---------------- :: emp
+G |- emp ~> emp
+
+G(x) = public uint
+G |- srho ~> rho
+----------------------------------- :: pint
+G |- srho, x |-> n ~> rho, x |-> n
+
+G(x) = s uint
+r = next_range ()
+G |- srho ~> rho
+----------------------------------- :: sint
+G |- srho, x |-> n ~> rho, x |-> r
+
+G(x) = public bool
+G |- srho ~> rho
+------------------------------------------ :: pbool
+G |- srho, x |-> cons ~> rho, x |-> cons
+
+G(x) = s bool
+r = next_range ()
+G |- srho ~> rho
+--------------------------------------------- :: sbool
+G |- srho, x |-> whateversv ~> rho, x |-> r
+
+G(x) = bt array
+lab bt = public
+G |- srho ~> rho
+------------------------------------------------------------------------- :: parr
+G |- srho, x |-> [ </ consi // i /> ] ~> rho, x |-> [ </ consi // i /> ]
+
+G(x) = bt array
+lab bt = s
+ri = next_range ()
+G |- srho ~> rho
+----------------------------------------------------------------------- :: sarr
+G |- srho, x |-> [ </ consi // i /> ] ~> rho, x |-> [ </ ri // i /> ]
+
+defns
+JCktEnvCompile :: '' ::=
+
+defn
+G ; rho |- srho ~> crho1 ; crho2 :: :: cktenvcompile :: 'cen_' {{ tex [[G]] ; [[rho]] \vdash [[srho]] \hookrightarrow [[crho1]], [[crho2]] }}
+by
+
+--------------------------- :: emp
+G ; rho |- emp ~> emp; emp
+
+G(x) = public uint
+G ; rho |- srho ~> crho1; crho2
+----------------------------------------- :: pint
+G ; rho |- srho, x |-> n ~> crho1; crho2
+
+G(x) = s uint
+rho[x] = r
+G ; rho |- srho ~> crho1; crho2
+--------------------------------------------------------------------------- :: sint
+G ; rho |- srho, x |-> n ~> crho1, r|-> enc n s 1; crho2, r |-> enc n s 2
+
+G(x) = public bool
+G ; rho |- srho ~> crho1; crho2
+-------------------------------------------- :: pbool
+G ; rho |- srho, x |-> cons ~> crho1; crho2
+
+G(x) = s bool
+rho[x] = r
+G ; rho |- srho ~> crho1; crho2
+----------------------------------------------------------------------------------- :: sbool
+G ; rho |- srho, x |-> cons ~> crho1, r|-> enc cons s 1; crho2, r |-> enc cons s 2
+
+G(x) = bt array
+lab bt = public
+G ; rho |- srho ~> crho1; crho2
+----------------------------------------------------------- :: parr
+G; rho |- srho, x |-> [ </ consi // i /> ] ~> crho1; crho2
+
+G(x) = bt array
+lab bt = s
+rho[x] = [ </ ri // i /> ]
+G ; rho |- srho ~> crho1; crho2
+-------------------------------------------------------------------------------------------------------- :: sarr
+G ; rho |- srho, x |-> [ </ consi // i /> ] ~> crho1, ri |-> enc consi s 1; crho2, ri |-> enc consi s 2
