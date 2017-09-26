@@ -213,7 +213,7 @@ ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
 rho {{ tex \rho }} :: 'rho_' ::= {{ com Runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
   | rho , x |-> v   ::   :: Map   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
-  | rho - x         ::   :: Minus {{ tex [[rho]] \setminus [[x]] }}
+  | rho - x         :: M :: Minus {{ tex [[rho]] \setminus [[x]] }}
 
 
 defns
