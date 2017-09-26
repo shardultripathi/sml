@@ -933,7 +933,9 @@ class smlCodeGen:
             print(' '*offset+'share *',varname,'=',circ+'->PutOUTGate(',expr,', ALL);', file=self.file)
             self.putInDict(tmpvar, varname, circ)
             print(' '*offset+'party->ExecCircuit();', file=self.file)
-            print(' '*offset+'uint32_t _output =', varname + '->get_clear_value<uint32_t>();', file=self.file)
+            outvar = '_output' + str(self.counter)
+            self.counter += 1
+            print(' '*offset+'uint32_t',outvar,'=', varname + '->get_clear_value<uint32_t>();', file=self.file)
 
         else:
             print('I should not be here')

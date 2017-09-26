@@ -29,9 +29,9 @@ max = 0;
 maxidx = 0;
 myj = 0;
 for uint32_t i = [0:10] {
-  max = (ans[i] > max) ? ans[i] : max;
-  maxidx = (ans[i] > max) ? myj : maxidx;
-  myj = myj + 1;
+    maxidx = (ans[i] > max) ? myj : maxidx;
+    max = (ans[i] > max) ? ans[i] : max;
+    myj = myj + 1;
 }
 
 out = maxidx;

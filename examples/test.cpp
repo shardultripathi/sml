@@ -32,4 +32,4 @@ for (uint32_t i = 0; i < 100; i++)
 }
 share * s_a_tmp_4 = acirc->PutOUTGate( s_a_a1 , ALL);
 party->ExecCircuit();
-uint32_t _output = s_a_tmp_4->get_clear_value<uint32_t>();
+uint32_t _output5 = s_a_tmp_4->get_clear_value<uint32_t>();
