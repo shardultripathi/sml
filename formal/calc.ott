@@ -304,7 +304,7 @@ rho |- foreach x in n1 to n2 do c !! rho; emp
 
 n2 geq n1
 rho, x|-> n1 |- c !! rho1; ckt1
-rho1 - x |- foreach x in n1 + 1 to n2 do c !! rho2; ckt2
+rho1 |- foreach x in n1 + 1 to n2 do c !! rho2; ckt2
 --------------------------------------------------------- :: fori
 rho |- foreach x in n1 to n2 do c !! rho2; ckt1, ckt2
 
