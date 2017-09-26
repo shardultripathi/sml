@@ -45,7 +45,7 @@ e :: 'e_' ::=  {{ com Expression }}
 c {{ tex s }} :: 'c_' ::= {{ com Statement }}
   | t x                                ::   :: Decl
   | x := e                             ::   :: Assignment
-  | foreach x in n1 to n2 do c         ::   :: For  {{ tex [[for]]([[x]] := [[n1]]; [[x]] < [[n2]]; x := x + 1)\;[[c]] }}
+  | foreach x in n1 to n2 do c         ::   :: For  {{ tex [[for]]([[x]] := [[n1]]; [[x]] \leq [[n2]]; x := x + 1)\;[[c]] }}
   | x [ e1 ] := e2                     ::   :: ArrayWrite
   | if e c1 c2                         ::   :: If   {{ tex [[if]]([[e]], [[c1]], [[c2]]) }}
   | out e                              ::   :: Output
@@ -65,12 +65,14 @@ formula :: formula_ ::=
    | v1 = v2               :: :: veq
    | v1 = v2 = v3          :: :: veq3
    | n1 gt n2              :: :: ngt        {{ tex [[n1]] > [[n2]] }}
+   | n1 geq n2             :: :: ngeq       {{ tex [[n1]] \geq [[n2]] }}
    | formula1 ==> formula2 :: :: implies    {{ tex [[formula1]] \Rightarrow [[formula2]] }}
    | x notin modifies c    :: :: modifesmem {{ tex [[x]] \not\in \mathsf{modifies}([[c]]) }}
    | mapsto                :: :: mapsto     {{ tex \mapsto }}
    | l1 ne l2              :: :: labne      {{ tex [[l1]] \neq [[l2]] }}
    | l1 = l2               :: :: labeq
-   | base bt1 = base bt2   :: :: BaseEq     {{ tex \mathsf{base}([[bt1]]) = \mathsf{base}([[bt2]]) }}
+   | base bt1 = base bt2   :: :: baseEq     {{ tex \mathsf{base}([[bt1]]) = \mathsf{base}([[bt2]]) }}
+   | default t = v ; ckt   :: :: defaultt   {{ tex \mathsf{default}([[t]]) = [[v]]; [[ckt]] }}
 
 
 defns
@@ -110,24 +112,20 @@ G |- ei : asecret uint ~> ei'
 G |- e1 * public e2 : asecret uint ~> e1' * asecret e2'
 
 G |- e : public bool ~> e'
-G |- e1 : bt ~> e1'
-G |- e2 : bt ~> e2'
+G |- ei : bt ~> ei'
 ------------------------------------------------------- :: pcond
 G |- cond public e e1 e2 : bt ~> cond public e' e1' e2'
 
 G |- e : bsecret bool ~> e'
-G |- e1 : bt ~> e1'
-G |- e2 : bt ~> e2'
+G |- ei : bt ~> ei'
 ------------------------------------------------------- :: scond
 G |- cond public e e1 e2 : bt ~> cond bsecret e' e1' e2'
 
-G |- e1 : public uint ~> e1'
-G |- e2 : public uint ~> e2'
+G |- ei : public uint ~> ei'
 ------------------------------------------------------ :: pgt
 G |- e1 > public e2 : public bool ~> e1' > public e2'
 
-G |- e1 : bsecret uint ~> e1'
-G |- e2 : bsecret uint ~> e2'
+G |- ei : bsecret uint ~> ei'
 -------------------------------------------------------- :: sgt
 G |- e1 > public e2 : bsecret bool ~> e1' > bsecret e2'
 
@@ -170,8 +168,7 @@ G |- e2 : bt ~> e2'
 G |- x [e1] := e2 ~> x[e1'] := e2' | G
 
 G |- e : public bool ~> e'
-G |- c1 ~> c1' | whateverG
-G |- c2 ~> c2' | whateverG
+G |- ci ~> ci' | whateverG
 --------------------------------------- :: if
 G |- if e c1 c2 ~> if e' c1' c2' | G
 
@@ -201,7 +198,8 @@ v :: 'v_' ::= {{ com Value }}
   | n1 * n2                           :: M :: NMult  {{ tex [[n1]] \times [[n2]] }}
   | n1 > n2                           :: M :: NGt
   | w n                               :: M :: NthArr {{ tex [[w]]_{[[n]]} }}
-  
+  | v [ n mapsto w ]                  :: M :: ArrUpd {{ tex [[v]][ [[n]] \mapsto [[w]] ] }}
+
 ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
   | emp                   :: :: Emp  {{ tex \cdot }}
   | add  r1 r2 r3         :: :: Add  {{ tex \oplus([[r1]], [[r2]], [[r3]]) }}
@@ -209,11 +207,13 @@ ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
   | mux  r1 r2 r3 r4      :: :: Mux  {{ tex \mathsf{Mux}([[r1]], [[r2]], [[r3]], [[r4]]) }}
   | gt   r1 r2 r3         :: :: Gt   {{ tex \mathsf{Gt}([[r1]], [[r2]], [[r3]]) }}
   | r |> s r'             :: :: Conv {{ tex [[r]] \rhd_{[[s]]} [[r']] }}
+  | out r                 :: :: Out  {{ tex \mathsf{Out}([[r]]) }}
   | ckt1 , ckt2           :: :: Seq
 
 rho {{ tex \rho }} :: 'rho_' ::= {{ com Runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
   | rho , x |-> v   ::   :: Map   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
+  | rho - x         ::   :: Minus {{ tex [[rho]] \setminus [[x]] }}
 
 
 defns
@@ -283,45 +283,55 @@ r' = next_range ()
 rho |- e |> s !! r'; ckt, r |> s r'
 
 
-% defns
-% JEvalC :: '' ::=
+defns
+JEvalC :: '' ::=
 
-% defn
-% rho1 , rho2 |- c --> rho1' , rho2' :: :: ceval :: 'ec_' {{ tex [[rho1]], [[rho2]] \vdash [[c]] \longrightarrow [[rho1']], [[rho2']] }}
-% by
+defn
+rho |- c !! rho' ; ckt :: :: ceval :: 'ec_' {{ tex [[rho]] \vdash [[c]] \Downarrow [[rho']]; [[ckt]] }}
+by
 
-% rho1, rho2 |- e !! v1, v2
-% --------------------------------------------------------- :: decl
-% rho1, rho2 |- t x = e --> rho1, x |-> v1, rho2, x |-> v2
+default t = v; ckt
+--------------------------------- :: decl
+rho |- t x !! rho, x |-> v; ckt
 
-% rho1, rho2 |- e !! v1, v2
-% --------------------------------------------------------- :: assgn
-% rho1, rho2 |- x := e --> rho1, x |-> v1, rho2, x |-> v2
+rho |- e !! v; ckt
+----------------------------------- :: assgn
+rho |- x := e !! rho, x |-> v; ckt
 
-% n1 gt n2
-% --------------------------------------------------------- :: fort
-% rho1, rho2 |- foreach x in n1 to n2 do c --> rho1, rho2
+n1 gt n2
+---------------------------------------------- :: fort
+rho |- foreach x in n1 to n2 do c !! rho; emp
 
-% rho1, x |-> n1, rho2, x |-> n2 |- c --> rho1', rho2'
-% rho1', rho2' |- foreach x in n1 + 1 to n2 do c --> rho1'', rho2''
-% ------------------------------------------------------------------ :: fori
-% rho1, rho2 |- foreach x in n1 to n2 do c --> rho1'', rho2''
+n2 geq n1
+rho, x|-> n1 |- c !! rho1; ckt1
+rho1 - x |- foreach x in n1 + 1 to n2 do c !! rho2; ckt2
+--------------------------------------------------------- :: fori
+rho |- foreach x in n1 to n2 do c !! rho2; ckt1, ckt2
 
-% rho1, rho2 |- x !! [ </ v1i // i /> ], [ </ v2i // i /> ]
-% rho1, rho2 |- e1 !! n, n
-% rho1, rho2 |- e2 !! v1, v2
-% --------------------------------------------------------------- :: awrite
-% rho1, rho2 |- x[e1] := e2 --> rho1, x |-> [ </ v1i // i /> ][n mapsto v1], rho2, x |-> [ </ v2i // i /> ][n mapsto v2]
+rho |- x !! [ </ wi // i /> ]; emp
+rho |- e1 !! n; ckt1
+rho |- e2 !! w; ckt2
+-------------------------------------------------------------------------- :: awrite
+rho |- x[e1] := e2 !! rho, x |-> [ </ wi // i /> ][n mapsto w]; ckt1, ckt2
 
-% rho1, rho2 |- e !! true, true
-% rho1, rho2 |- c1 --> rho1', rho2'
-% ------------------------------------------ :: ift
-% rho1, rho2 |- if e c1 c2 --> rho1', rho2'
+rho |- e !! true; ckt1
+rho |- c1 !! rho'; ckt2
+-------------------------------------- :: ift
+rho |- if e c1 c2 !! rho'; ckt1, ckt2
 
-% rho1, rho2 |- e !! false, false
-% rho1, rho2 |- c2 --> rho1', rho2'
-% ------------------------------------------ :: iff
-% rho1, rho2 |- if e c1 c2 --> rho1', rho2'
+rho |- e !! false; ckt1
+rho |- c2 !! rho'; ckt2
+-------------------------------------- :: iff
+rho |- if e c1 c2 !! rho'; ckt1, ckt2
+
+rho |- e !! r; ckt
+--------------------------------- :: out
+rho |- out e !! rho; ckt1, out r
+
+rho  |- c1 !! rho1; ckt1
+rho1 |- c2 !! rho2; ckt2
+---------------------------------- :: seq
+rho |- c1; c2 !! rho2; ckt1, ckt2
 
 % rho1, rho2 |- c1 --> rho1', rho2'
 % rho1', rho2' |- c2 --> rho1'', rho2''
