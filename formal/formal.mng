@@ -35,13 +35,13 @@ If:
 \item $[[G ~ srho]]$
 \item $[[srho |- sc !! srho'; sobs]]$
 \item $[[G |- srho ~> rho]]$
-\item $[[rho |- c !! rho' ; ckt]]$
 \item $[[G; rho |- srho ~> crho1; crho2]]$
 \end{itemize}
 
 Then:
 
 \begin{itemize}
+\item $[[rho |- c !! rho' ; ckt]]$
 \item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
 \end{itemize}
 
