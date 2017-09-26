@@ -598,8 +598,8 @@ G ; rho |- emp ~> emp; emp
 G(x) = bt
 lab bt = public
 G ; rho |- srho ~> crho1; crho2
------------------------------------------ :: pbt
-G ; rho |- srho, x |-> n ~> crho1; crho2
+-------------------------------------------- :: pbt
+G ; rho |- srho, x |-> cons ~> crho1; crho2
 
 G(x) = bt
 lab bt = s
