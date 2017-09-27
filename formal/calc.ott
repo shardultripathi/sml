@@ -1,5 +1,5 @@
 % minimal + latex + comments
-metavar termvar, x ::=   
+metavar termvar, x, y ::=   
   {{ tex \mathit{[[termvar]]} }}
 
 indexvar index, i, j, m, b ::=
@@ -224,6 +224,7 @@ formula :: formula_ ::=
    | default t = v ; ckt   :: :: defaultt   {{ tex \mathsf{default}([[t]]) = [[v]]; [[ckt]] }}
    | cv1 = cv2             :: :: cveq
    | cons1 = cons2         :: :: conseq
+   | G1 = G2               :: :: gammaeq
 
 
 defns
