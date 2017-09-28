@@ -1,0 +1,204 @@
+\documentclass{article}
+
+% currently required by Ott-generated, un-wrapped LaTeX
+\usepackage{amsmath}
+
+% required by LJ's LaTeX
+\usepackage{amssymb}
+
+% the package that allows customized layout described in this document
+\usepackage{ottlayout}
+
+% the automatically generated file (with our Makefile) to link the generated
+% LaTeX with the ottlayout package
+\include{calc_included}
+
+% supertabular package required if using the default grammar tabular
+\usepackage{supertabular}
+
+% only used in bibliography to link to LJ's webpage
+\usepackage{url}
+
+\newcommand{\comm}[3]{\color{#1}[#2: #3]}
+\newcommand{\aseem}[1]{\comm{magenta}{Aseem}{#1}}
+
+\begin{document}
+
+\section{Formal Development}
+
+Correctness theorem that we will aim at:
+
+If:
+
+\begin{itemize}
+\item $[[G |- sc ~> c | G']]$  (Compilation of source command)
+\item $[[G ~ srho]]$  (Source environment, maps free variables to values)
+\item $[[srho |- sc !! srho'; sobs]]$  (Source semantics, no MPC)
+\item $[[G |- srho ~> rho]]$  (Compiling source environment to C++ environment, free secret variables are mapped to wire ranges)
+\item $[[G; rho |- srho ~> crho1; crho2]]$  (Compiling source enviroment to circuit environment, secret variables are converted to shares)
+\end{itemize}
+
+Then:
+
+\begin{itemize}
+\item $[[rho |- c !! rho' ; ckt]]$  (The C++ ABY program)
+\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$  (Circuit evaluation)
+\end{itemize}
+
+The setup is as follows: Programmer writes a source
+statement $[[sc]]$. The statement $[[sc]]$ might have some free
+variables in it (i.e. variables that are used but not declared in the 
+statement). For example, inputs of the two parties can be modeled this
+way, without having an explicit input command.
+
+The initial type environment $[[G]]$ gives types to the free variables
+of $[[sc]]$. For example, say the parties inputs are $[[x]]$ and
+$[[y]]$, and they are free in $[[sc]]$,
+then $[[G = emp, x:asecret uint, y:asecret uint]]$.
+
+The first premise compiles the statement $[[sc]]$ into a target
+statement $[[c]]$ (the output type enviroment is not important for the
+top-most invocation of compilation). This judgment
+compiles operators into their public or secret versions, and inserts
+coercions (e.g. from $[[asecret]]$ to $[[bsecret]]$).
+
+Now we need to talk about evaluation. First, we have an ideal
+semantics for the source statements
+$[[srho |- sc !! srho'; sobs]]$. This ideal semantics effectively
+ignores the public/secret distinction, and just does plain evaluation,
+emitting observations for each $[[out e]]$ statement. In this
+judgment, $[[srho]]$ is the environment that maps free variables to
+values. The second premise says that the mappings in
+$[[srho]]$ are consistent with the mappings in $[[G]]$. For example,
+if a variable in $[[G]]$ is
+boolean, then it indeed contains a boolean value in $[[srho]]$ (else
+our evaluation will get stuck). And the third judgment is the source
+evaluation (the ideal semantics).
+
+The ideal semantics is realized in two steps. The first is where we
+only compute over public parts of the statement and generate a
+circuit. The judgment for this semantics is
+$[[rho |- c !! rho'; ckt]]$, where $[[ckt]]$ is the output circuit,
+and $[[rho]]$ is the environment (mapping from variables to values).
+
+To start this evaluation, we need to correspond the $[[rho]]$ with
+$[[srho]]$, i.e. somehow make sure that they are consistent. What is
+the notion of consistency here?
+
+The consistency between $[[srho]]$ and $[[rho]]$ is defined as
+follows: For public variables, both should contain the same value, and
+for secret variables $[[rho]]$ should contain \emph{a wire
+  range}. That's essentially the fourth premise of the
+theorem. $[[G]]$ in that premise helps us figure public/private
+annotations.
+
+And then, the first conclusion of the theorem says that the C++
+program evaluates well, and gives us a circuit. There are no
+observations in this phase.
+
+Now what remains is evaluating the circuit $[[ckt]]$ generated in the
+first conclusion of the theorem.
+
+The judgment $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
+evaluates a circuit. In the circuit environment $[[crho]]$, wire
+ranges are mapped to shares of values $[[enc cons s 1]]$ in
+$[[crho1]]$ and $[[enc cons s 2]]$ in $[[crho2]]$. The value
+$[[enc cons s 1]]$  is first $[[s]]$ share of $[[cons]]$, where
+$[[s]]$ is $[[asecret]]$ or $[[bsecret]]$.
+
+But before we start evaluating the circuit, we have to make sure that
+the environments $[[crho1]]$ and $[[crho2]]$ are consistent with the
+source environment $[[srho]]$. What is consistency here? For secret
+typed variables, we should split the mapping in $[[srho]]$ into shares
+and put them in $[[crho1]]$ and $[[crho2]]$, and ignore the public
+variables.
+
+This is what the fifth premise does. And then the second conclusion
+says circuit evaluation generates same observations as in the source
+semantics.
+
+\begin{figure}
+\ottgrammartabular{\otts\ottinterrule\ottl\ottinterrule\ottbt\ottinterrule\ottt\ottinterrule\ottcons\ottinterrule\ottse\ottinterrule\ottsc\ottinterrule}
+\caption{Source language}
+\end{figure}
+
+\begin{figure}
+\ottgrammartabular{\ottsv\ottinterrule\ottsrho\ottinterrule\ottsobs\ottinterrule}
+\caption{Source runtime}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalSE
+  \caption{Source expression evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalSC
+  \caption{Source command evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJSVTyping
+  \caption{Value typing}
+\end{figure}
+
+\begin{figure}
+  \ottgrammartabular{\otte\ottinterrule\ottc\ottafterlastrule\ottG\ottafterlastrule}
+  \caption{Target language}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJCompileE
+  \caption{Expression compilation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJCompileC
+  \caption{Command compilation}
+\end{figure}
+
+\begin{figure}
+  \ottgrammartabular{\ottr\ottinterrule\ottw\ottinterrule\ottv\ottinterrule\ottckt\ottinterrule\ottrho\ottinterrule}
+  \caption{Target runtime}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalE
+  \caption{Target expression evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalC
+  \caption{Target command evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottgrammartabular{\ottcv\ottinterrule\ottcrho\ottinterrule}
+  \caption{Circuit runtime}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalCirc
+  \caption{Circuit evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJSEnvGammaEquiv
+  \caption{Source environment and type environment consistency}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJTEnvCompile
+  \caption{Source environment to target environment compilation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJCktEnvCompile
+  \caption{Source environment to circuit environment compilation}
+\end{figure}
+
+%% \begin{figure}
+%% \ottdefnreduce{}
+%% \end{figure}
+
+\end{document}
