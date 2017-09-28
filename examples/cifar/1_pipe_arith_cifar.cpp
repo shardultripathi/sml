@@ -1,4 +1,4 @@
-ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 120000000);
 vector<Sharing*>& sharings = party->GetSharings();
 Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
@@ -19,7 +19,7 @@ auto Rc2in = make_vector<uint32_t>(576, 1024);
 auto s_a_Rc2in = make_vector<share*>(576, 1024);
 auto IRc2in = make_vector<uint32_t>(576, 1024);
 auto s_a_IRc2in = make_vector<share*>(576, 1024);
-{
+if(role == SERVER){
 ofstream fout("IRc2in", std::ofstream::out | std::ofstream::app);
 for(int i = 0; i < 576; i++) {
 	for(int j = 0; j < 1024; j++) {
@@ -154,4 +154,4 @@ if(role == SERVER) {
 	}
 	fout.close();
 }
-uint32_t _output = s_a_tmp_4->get_clear_value<uint32_t>();
+uint32_t _output6 = s_a_tmp_4->get_clear_value<uint32_t>();

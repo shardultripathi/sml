@@ -1,4 +1,4 @@
-ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 120000000);
 vector<Sharing*>& sharings = party->GetSharings();
 Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
@@ -17,7 +17,7 @@ auto Rc2outIS0IE16 = make_vector<uint32_t>(64, 1024);
 auto s_a_Rc2outIS0IE16 = make_vector<share*>(64, 1024);
 auto IRc2outIS0IE16 = make_vector<uint32_t>(64, 1024);
 auto s_a_IRc2outIS0IE16 = make_vector<share*>(64, 1024);
-{
+if(role == SERVER){
 ifstream fin("IRc2in");
 while(!fin.eof()){
 	uint32_t i, j, val;
@@ -26,22 +26,25 @@ while(!fin.eof()){
 }
 fin.close();
 }
-{
+if(role == SERVER){
 ifstream fin("c2in");
 while(!fin.eof()){
 	uint32_t i, j, val;
 	fin >> i >> j >> val;
-	if(role == SERVER) {
-		c2in[i][j] = val;
-		s_a_c2in[i][j]= acirc->PutINGate(c2in[i][j] ,bitlen,SERVER);
-	} else {
-		s_a_c2in[i][j] = acirc->PutDummyINGate(bitlen);
-	}
-
+	c2in[i][j] = val;
+	s_a_c2in[i][j]= acirc->PutINGate(c2in[i][j] ,bitlen,SERVER);
+	
 }
 fin.close();
 }
-{
+else {
+ for(int i = 0; i <576;i++) {
+	for (int j = 0; j <1024; j++) {
+		s_a_c2in[i][j] = acirc->PutDummyINGate(bitlen);
+	}
+}
+}
+if(role == SERVER){
 ofstream fout("IRc2out", std::ofstream::out | std::ofstream::app);
 for(int i = 0; i < 16; i++) {
 	for(int j = 0; j < 1024; j++) {
@@ -120,4 +123,4 @@ if(role == SERVER) {
 	}
 	fout.close();
 }
-uint32_t _output = s_a_tmp_2->get_clear_value<uint32_t>();
+uint32_t _output4 = s_a_tmp_2->get_clear_value<uint32_t>();

@@ -1,4 +1,4 @@
-ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 120000000);
 vector<Sharing*>& sharings = party->GetSharings();
 Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
@@ -45,7 +45,7 @@ auto Rc4in = make_vector<uint32_t>(576, 256);
 auto s_a_Rc4in = make_vector<share*>(576, 256);
 auto IRc4in = make_vector<uint32_t>(576, 256);
 auto s_a_IRc4in = make_vector<share*>(576, 256);
-{
+if(role == SERVER){
 ifstream fin("IRc4in");
 while(!fin.eof()){
 	uint32_t i, j, val;
@@ -54,20 +54,23 @@ while(!fin.eof()){
 }
 fin.close();
 }
-{
+if(role == SERVER){
 ifstream fin("c4in");
 while(!fin.eof()){
 	uint32_t i, j, val;
 	fin >> i >> j >> val;
-	if(role == SERVER) {
-		c4in[i][j] = val;
-		s_a_c4in[i][j]= acirc->PutINGate(c4in[i][j] ,bitlen,SERVER);
-	} else {
-		s_a_c4in[i][j] = acirc->PutDummyINGate(bitlen);
-	}
-
+	c4in[i][j] = val;
+	s_a_c4in[i][j]= acirc->PutINGate(c4in[i][j] ,bitlen,SERVER);
+	
 }
 fin.close();
+}
+else {
+ for(int i = 0; i <576;i++) {
+	for (int j = 0; j <256; j++) {
+		s_a_c4in[i][j] = acirc->PutDummyINGate(bitlen);
+	}
+}
 }
 for (uint32_t i = 0; i < 576; i++)
 {
@@ -360,4 +363,4 @@ uint32_t _tmp_19 = 1 ;
 share * s_a__tmp_19 = acirc->PutCONSGate( _tmp_19 ,bitlen);
 share * s_a_tmp_18 = acirc->PutOUTGate( s_a__tmp_19 , ALL);
 party->ExecCircuit();
-uint32_t _output = s_a_tmp_18->get_clear_value<uint32_t>();
+uint32_t _output20 = s_a_tmp_18->get_clear_value<uint32_t>();
