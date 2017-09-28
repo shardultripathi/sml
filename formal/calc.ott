@@ -56,10 +56,10 @@ sc {{ tex s }} :: 'sc_' ::= {{ com Source statement }}
 sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
   | cons                              ::   :: BaseValue
   | [ </ consi // i /> ]              ::   :: Array
-  | srho [ x ]                        :: M :: EnvLookup
-  | cons n                            :: M :: NthArr {{ tex [[cons]]_{[[n]]} }}
-  | sv [ n mapsto cons ]              :: M :: ArrUpd {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
-  | whateversv                        :: M :: WhatEv {{ tex \_ }}
+  | srho [ x ]                        :: M :: EnvLookup  {{ tex [[srho]]([[x]]) }}
+  | cons n                            :: M :: NthArr     {{ tex [[cons]]_{[[n]]} }}
+  | sv [ n mapsto cons ]              :: M :: ArrUpd     {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
+  | whateversv                        :: M :: WhatEv     {{ tex \_ }}
 
 srho {{ tex \rho }} :: 'srho_' ::= {{ com Source runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
@@ -112,7 +112,7 @@ defns
 JEvalSC :: '' ::=
 
 defn
-srho |- sc !! srho' ; sobs :: :: sceval :: 'sc_' {{ tex [[srho]] \vdash [[sc]] \longrightarrow [[srho']]; [[sobs]] }}
+srho |- sc !! srho' ; sobs :: :: sceval :: 'sc_' {{ tex [[srho]] \vdash [[sc]] \downarrow [[srho']]; [[sobs]] }}
 by
 
 default t = sv
@@ -184,7 +184,7 @@ grammar
 e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
   | cons                          ::  :: Constant
   | x                             ::  :: Var
-  | e1 + l e2                     ::  :: SAdd  {{ tex [[e1]] +_{[[l]]} [[e2]] }}
+  | e1 + l e2                     ::  :: SAdd   {{ tex [[e1]] +_{[[l]]} [[e2]] }}
   | cond l e e1 e2                ::  :: CondE  {{ tex [[cond]]_{[[l]]}([[e]], [[e1]], [[e2]]) }}
   | e1 > l e2                     ::  :: Relop  {{ tex [[e1]] >_{[[l]]} [[e2]] }}
   | x [ e ]                       ::  :: ArrayRead
