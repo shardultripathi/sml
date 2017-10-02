@@ -1,104 +1,10 @@
-
-
-
 \documentclass[conference,compsoc]{IEEEtran}
 
-\usepackage{epsfig,endnotes}
-\usepackage{varwidth}
-\usepackage{algorithm}
-\usepackage{algpseudocode}
-\usepackage{balance}
-\usepackage{color}
-\usepackage{nicefrac}
-\usepackage{amsmath}
-\usepackage{braket}
-\usepackage{bm}
-\usepackage{mathtools}
-\usepackage{multirow}
-\usepackage{bigdelim}
-\usepackage{mathtools}
-\usepackage{amssymb}
-\usepackage{indentfirst}
-\usepackage{booktabs}
-\usepackage{enumitem}
-\usepackage{boxedminipage}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{caption}
-\usepackage{cleveref}
-\usepackage{subcaption}
-\usepackage[normalem]{ulem}
-\usepackage{xpatch}
-\usepackage{stmaryrd}
-
-
-\makeatletter
-\xpatchcmd{\algorithmic}{\itemsep\z@}{\itemsep=0.3ex plus2pt}{}{}
-\makeatother
-
-\renewcommand{\algorithmicrequire}{\textbf{Input:}}
-\renewcommand{\algorithmicensure}{\textbf{Output:}}
-\newcommand{\crefrangeconjunction}{ to~}
-\newcommand{\minus}{\scalebox{0.75}[1.0]{$-$}}
-\newcommand{\sameer}[1]{{\leavevmode\color{red}{#1}}}
-\setlength{\textfloatsep}{0.3cm}
-\newcommand{\ourprotocol}{Tuffy}
-
-\newcommand{\bits}{\{0,1\}}
-\newcommand{\Ex}{\mathbb{E}}
-\newcommand{\To}{\rightarrow}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\F}{\mathbb{F}}
-\newcommand{\GF}{\mathsf{GF}}
-
-\usepackage{MnSymbol}
-\newcommand{\maxpr}{\text{\rm max-pr}}
-\newcommand{\cclass}[1]{\mathbf{#1}}
-\renewcommand{\P}{\cclass{P}}
-\newtheorem{problem}{Problem}
-\newtheorem{theorem}{Theorem}
-\newtheorem{conjecture}[theorem]{Conjecture}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{proposition}[theorem]{Proposition}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{claim}[theorem]{Claim}
-\newtheorem{fact}[theorem]{Fact}
-\newtheorem{remk}[theorem]{Remark}
-\newtheorem{apdxlemma}{Lemma}
-
-\newcommand{\etal}{{\it et~al.\ }}
-\newcommand{\ie} {{\it i.e.,\ }}
-\newcommand{\eg} {{\it e.g.,\ }}
-\newcommand{\cf}{{\it cf.,\ }}
-\newcommand{\suchthat}{{\;\; : \;\;}}
-\newcommand{\pr}[1]{\Pr\left[#1\right]}
-
-\newcommand{\class}[1]{\mathbf{#1}}
-\newcommand{\SZK}{\class{SZK}}
-\newcommand{\BPP}{\class{BPP}}
-\newcommand{\NP}{\class{NP}}
-\renewcommand{\P}{\class{P}}
-\newcommand{\negl}{{\mathrm{neg}}}
-
-\newcommand{\Enc}{E}
-\newcommand{\Dec}{D}
-\newcommand{\Gen}{G}
-
-\newcommand{\PK}{\mathit{PK}}
-\newcommand{\SK}{\mathit{SK}}
-\newcommand{\pk}{\mathit{pk}}
-\newcommand{\sk}{\mathit{sk}}
-\newcommand{\MD}[1]{\mathrm{MD{#1}}}
-\newcommand{\SHA}{\mbox{SHA-1}}
-
-
+\input{headers}
 
 
 \begin{document}
-\title{SecureDNN: Efficient Analytics over Encrypted Data}
+\title{Democratizing MPC}
 
 
 % author names and affiliations
