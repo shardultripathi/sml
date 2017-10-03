@@ -42,7 +42,7 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
 \end{tabular}
 
  \caption{Linear classification benchmarks}
- \label{tab:lcd} 
+ \label{tab:lc} 
 \end{table*}
 
 \begin{table*}
@@ -56,7 +56,7 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37 & 750k & 0 & 4219k & 50\\
 \end{tabular}
 
  \caption{Naive Bayes benchmarks}
- \label{tab:lcd} 
+ \label{tab:nb} 
 \end{table*}
 
 \begin{table*}
@@ -70,7 +70,7 @@ ECG &  0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
 \end{tabular}
 
  \caption{Decision tree benchmarks}
- \label{tab:lcd} 
+ \label{tab:dt} 
 \end{table*}
 
 
@@ -103,7 +103,7 @@ CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 1640k & 667k & 9480k & 154\\
 \end{tabular}
 
  \caption{Neural network benchmarks}
- \label{tab:lcd} 
+ \label{tab:nn} 
 \end{table*}
 
 
@@ -137,7 +137,7 @@ CNN        &  30.5        & 60.3        & 2955         & 6082k & 4163k &  42104k
 \end{tabular}
 
  \caption{Tensorflow tutorial benchmarks}
- \label{tab:lcd} 
+ \label{tab:tf} 
 \end{table*}
 
 
@@ -170,7 +170,7 @@ WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k
 \end{tabular}
 
  \caption{Bonsai benchmarks}
- \label{tab:lcd} 
+ \label{tab:bonsai} 
 \end{table*}
 
 \subsection{Pipelining}
@@ -181,10 +181,12 @@ The next four stages perform a convolution that involves multiplying a $64\times
 $576\times 1024$ matrix. The next stage performs a ReLU, a meanpool, and a convolution.
 The final stage performs four convolutions, a mean pool, five ReLU and a fully connected layer.
 The results show the end-to-end results as well as the statistics for the heaviest stage.
+In contrast, \minion takes 544 seconds and 9272 Mb for this model. As before, we are faster than
+\minion in the LAN setting and slower in the WAN setting.
 
 \begin{table*}
 \begin{tabular}{c|c|c|c |c|c|c}
-           & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates \\
+           &  LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates \\
 \hline
 Total      &  265.6       & 647.5        & 40683       & 21m    & 61m    &  337m  \\
 \hline
@@ -193,7 +195,7 @@ Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  
 \end{tabular}
 
  \caption{Pipelining results}
- \label{tab:lcd} 
+ \label{tab:cifar} 
 \end{table*}
 
 %stage | time | comm | gates | mul | add | depth
