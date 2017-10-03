@@ -2,7 +2,7 @@
 metavar termvar, x, y ::=   
   {{ tex \mathit{[[termvar]]} }}
 
-indexvar index, i, j, m, b ::=
+indexvar index, i, j, m ::=
 
 grammar
 
@@ -60,6 +60,7 @@ sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
   | cons n                            :: M :: NthArr     {{ tex [[cons]]_{[[n]]} }}
   | sv [ n mapsto cons ]              :: M :: ArrUpd     {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
   | whateversv                        :: M :: WhatEv     {{ tex \_ }}
+  | combine s b1 b2                   :: M :: CombSh     {{ tex \mathcal{D}_{[[s]]}([[b1]], [[b2]] }}
 
 srho {{ tex \rho }} :: 'srho_' ::= {{ com Source runtime environment }}
   | emp             ::   :: Empty {{ tex \cdot }}
@@ -225,6 +226,8 @@ formula :: formula_ ::=
    | cv1 = cv2             :: :: cveq
    | cons1 = cons2         :: :: conseq
    | G1 = G2               :: :: gammaeq
+   | sv1 = sv2             :: :: sveq
+   | b1 b2 = share s cons  :: :: share      {{ tex ([[b1]], [[b2]]) = \mathcal{E}_{[[s]]}([[cons]]) }}
 
 
 defns
@@ -468,14 +471,12 @@ rho |- c1; c2 !! rho2; ckt1, ckt2
 
 grammar
 
-cv {{ tex \widehat{c} }} :: 'cv_' ::= {{ com Circuit value (share) }}
-  | enc cons s 1     ::   ::  Share1  {{ tex \mathcal{E}^{[[s]]}_{1}([[cons]]) }}
-  | enc cons s 2     ::   ::  Share2  {{ tex \mathcal{E}^{[[s]]}_{2}([[cons]]) }}
+b :: 'cv_' ::= {{ com Share (byte string) }}
   | crho [ r ]       :: M ::  Lookup
 
 crho {{ tex \widehat{\rho} }} :: 'crho_' ::= {{ com Circuit environment }}
   | emp                ::   :: Empty {{ tex \cdot }}
-  | crho , r |-> cv ::   :: Map   {{ tex [[crho]][ [[r]] \mapsto [[cv]] ] }}
+  | crho , r |-> b     ::   :: Map   {{ tex [[crho]][ [[r]] \mapsto [[b]] ] }}
 
 
 defns
@@ -488,43 +489,37 @@ by
 ------------------------------------------  :: emp
 crho1, crho2 |- emp !! crho1, crho2; emp
 
-crho1[r1] = enc n1 asecret 1
-crho2[r1] = enc n1 asecret 2
-crho1[r2] = enc n2 asecret 1
-crho2[r2] = enc n2 asecret 2
---------------------------------------------------------------------------------------------------------------------- :: add
-crho1, crho2 |- add r1 r2 r3 !! crho1, r3 |-> enc (n1 + n2) asecret 1 , crho2, r3 |-> enc (n1 + n2) asecret 2; emp
 
-crho1[r1] = enc true bsecret 1
-crho2[r1] = enc true bsecret 2
-crho1[r2] = enc cons bsecret 1
-crho2[r2] = enc cons bsecret 2
------------------------------------------------------------------------------------------------------------- :: muxt
-crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> enc cons bsecret 1 , crho2, r4 |-> enc cons bsecret 2; emp
+n1 = combine asecret crho1[r1] crho2[r1]
+n2 = combine asecret crho1[r2] crho2[r2]
+b1 b2 = share asecret n1 + n2
+----------------------------------------------------------------------- :: add
+crho1, crho2 |- add r1 r2 r3 !! crho1, r3 |-> b1, crho2, r3 |-> b2; emp
 
-crho1[r1] = enc false bsecret 1
-crho2[r1] = enc false bsecret 2
-crho1[r3] = enc cons bsecret 1
-crho2[r3] = enc cons bsecret 2
------------------------------------------------------------------------------------------------------------- :: muxf
-crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> enc cons bsecret 1 , crho2, r4 |-> enc cons bsecret 2; emp
+true = combine bsecret crho1[r1] crho2[r1]
+cons = combine bsecret crho1[r2] crho2[r2]
+b1 b2 = share bsecret cons
+--------------------------------------------------------------------------- :: muxt
+crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> b1 , crho2, r4 |-> b2; emp
 
-crho1[r1] = enc n1 bsecret 1
-crho2[r1] = enc n1 bsecret 2
-crho1[r2] = enc n2 bsecret 1
-crho2[r2] = enc n2 bsecret 2
-cons = n1 > n2
--------------------------------------------------------------------------------------------------------- :: gt
-crho1, crho2 |- gt r1 r2 r3 !! crho1, r3 |-> enc cons bsecret 1 , crho2, r3 |-> enc cons bsecret 2; emp
+false = combine bsecret crho1[r1] crho2[r1]
+cons = combine bsecret crho1[r3] crho2[r3]
+b1 b2 = share bsecret cons
+--------------------------------------------------------------------------- :: muxf
+crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> b1 , crho2, r4 |-> b2; emp
 
-crho1[r1] = enc cons s1 1
-crho2[r1] = enc cons s1 2
-------------------------------------------------------------------------------------------- :: coerce
-crho1, crho2 |- r1 |> s r2 !! crho1, r2 |-> enc cons s 1 , crho2, r2 |-> enc cons s 2; emp
+n1 = combine bsecret crho1[r1] crho2[r1]
+n2 = combine bsecret crho1[r2] crho2[r2]
+b1 b2 = share bsecret n1 > n2
+------------------------------------------------------------------------ :: gt
+crho1, crho2 |- gt r1 r2 r3 !! crho1, r3 |-> b1 , crho2, r3 |-> b2; emp
 
+cons = combine s1 crho1[r1] crho2[r1]
+b1 b2 = share s cons
+------------------------------------------------------------------------ :: coerce
+crho1, crho2 |- r1 |> s r2 !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
 
-crho1[r] = enc cons s 1
-crho2[r] = enc cons s 2
+cons = combine s crho1[r] crho2[r]
 -------------------------------------------- :: out
 crho1, crho2 |- out r !! crho1, crho2; cons
 
@@ -554,70 +549,36 @@ defns
 JTEnvCompile :: '' ::=
 
 defn
-G |- srho ~> rho :: :: tenvcompile :: 'ten_' {{ tex [[G]] \vdash [[srho]] \hookrightarrow [[rho]] }}
+G |- srho ~> rho ; crho1 , crho2 :: :: envcompile :: 'en_' {{ tex [[G]] \vdash [[srho]] \hookrightarrow [[rho]]; [[crho1]], [[crho2]] }}
 by
 
----------------- :: emp
-G |- emp ~> emp
+-------------------------- :: emp
+G |- emp ~> emp; emp, emp
 
 G(x) = bt
 lab bt = public
-G |- srho ~> rho
------------------------------------------ :: pbt
-G |- srho, x |-> cons ~> rho, x |-> cons
+G |- srho ~> rho; crho1, crho2
+------------------------------------------------------- :: pbt
+G |- srho, x |-> cons ~> rho, x |-> cons; crho1, crho2
 
 G(x) = bt
 lab bt = s
 r = next_range ()
-G |- srho ~> rho
---------------------------------------- :: sbt
-G |- srho, x |-> cons ~> rho, x |-> r
+b1 b2 = share s cons
+G |- srho ~> rho; crho1, crho2
+------------------------------------------------------------------------ :: sbt
+G |- srho, x |-> cons ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
 
 G(x) = bt array
 lab bt = public
-G |- srho ~> rho
-------------------------------------------------------------------------- :: parr
-G |- srho, x |-> [ </ consi // i /> ] ~> rho, x |-> [ </ consi // i /> ]
+G |- srho ~> rho; crho1, crho2
+--------------------------------------------------------------------------------------- :: parr
+G |- srho, x |-> [ </ consi // i /> ] ~> rho, x |-> [ </ consi // i /> ]; crho1, crho2
 
 G(x) = bt array
 lab bt = s
 ri = next_range ()
-G |- srho ~> rho
------------------------------------------------------------------------ :: sarr
-G |- srho, x |-> [ </ consi // i /> ] ~> rho, x |-> [ </ ri // i /> ]
-
-defns
-JCktEnvCompile :: '' ::=
-
-defn
-G ; rho |- srho ~> crho1 ; crho2 :: :: cktenvcompile :: 'cen_' {{ tex [[G]] ; [[rho]] \vdash [[srho]] \hookrightarrow [[crho1]], [[crho2]] }}
-by
-
---------------------------- :: emp
-G ; rho |- emp ~> emp; emp
-
-G(x) = bt
-lab bt = public
-G ; rho |- srho ~> crho1; crho2
--------------------------------------------- :: pbt
-G ; rho |- srho, x |-> cons ~> crho1; crho2
-
-G(x) = bt
-lab bt = s
-rho[x] = r
-G ; rho |- srho ~> crho1; crho2
----------------------------------------------------------------------------------- :: sbt
-G ; rho |- srho, x |-> cons ~> crho1, r|-> enc cons s 1; crho2, r |-> enc cons s 2
-
-G(x) = bt array
-lab bt = public
-G ; rho |- srho ~> crho1; crho2
------------------------------------------------------------ :: parr
-G; rho |- srho, x |-> [ </ consi // i /> ] ~> crho1; crho2
-
-G(x) = bt array
-lab bt = s
-rho[x] = [ </ ri // i /> ]
-G ; rho |- srho ~> crho1; crho2
+b1i b2i = share s consi
+G |- srho ~> rho; crho1, crho2
 -------------------------------------------------------------------------------------------------------- :: sarr
-G ; rho |- srho, x |-> [ </ consi // i /> ] ~> crho1, ri |-> enc consi s 1; crho2, ri |-> enc consi s 2
+G |- srho, x |-> [ </ consi // i /> ] ~> rho, x |-> [ </ ri // i /> ]; crho1, ri |-> b1i, crho2, ri |-> b2i
