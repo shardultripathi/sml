@@ -1,6 +1,24 @@
+\section{Evaluation}
+\label{sec:eval}
+
 We first implement benchmarks of ~\cite{shafindss} and~\cite{minionn} in \tool.
-Next, we show the generality of \tool by implementing state-of-the-art machine learning models
-. 
+Next, we show the generality of \tool by implementing state-of-the-art machine learning models.
+Finally, we discuss a model that requires pipelinig.
+Our results are in two settings, a LAN setting and a cross-continent WAN setting.
+The round trip time for two machines in a LAN setting is 1ms and in WAN setting is 40ms.
+
+\subsection{Standard models}
+\label{sec:shallow}
+We consider three types of classifiers: linear, Naive Bayes, and decision trees. 
+These classifiers are trained on the followinng data sets from the UCI  machine learning repository:
+ the Wisconsin Breast Cancer data set, 
+Credit Approval data set, Audiology (Standardized) data set, Nursery data set, and
+ECG (electrocardiogram) classification data from~\cite{barni}.
+
+%dataset  | size | gates | and | mul | depth
+
+%dataset | time | comm | timeL | commL | timeW | commW
+
 lin
 nb
 tree\\
