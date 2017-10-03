@@ -1,4 +1,12 @@
 \section{Introduction}
 \label{sec:intro}
 
-Start here \cite{lambdaps,wysteria}
+Secure multiparty computation \cite{yao,gmw} (SMC) is a powerful cryptographic tool that allows a set of mutually distrusting parties to compute a joint function of their secret inputs. Examples of these include running machine learning prediction algorithm where one party holds the secret medical report and the other party holds the model for desease. Since the introduction of SMC in 1980's, there has been a large body of work \cite{..} that has transformed SMC from a mere theoretical tool to something that can be used in practice. 
+
+Unfortunately, implementing fuctionalities using SMC protocols requires thorogh understanding of cryptography. To allow for widespread use of SMC, it is critical that SMC protocols are programmable by non-cryptographic experts. To cater to this, there have been several efforts developing domain-specific languages that are programmer friendly and compile to a SMC back-end. Most notable of these systems include \cite{...}. A common feature of all of these works is that they use a boolean circuit based cryptographic backend such as garbled circuits. As one can expect, compiling a function to a boolean circuit is one of the biggest efficiency bottleneck. 
+
+Recent works \cite{aby,secureml,minion} have shown that great performance benefit can be obtained by mixing arithmetic and boolean computations in the back-end. Certain computations such as integer multiplication are efficient when implemented using arithmetic SMC \cite{gmw} whereas max(x,0) needs to be computed using a boolean back-end \cite{yao}. More details later.. 
+
+
+
+\cite{lambdaps,wysteria}
