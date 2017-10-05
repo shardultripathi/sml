@@ -18,7 +18,7 @@ a classifier can predict a label ``male'' or ``female''.
 
 A binary linear classifier is one of the simplest classifers. Here, the input data point $x\in\R^d$
 and the model is a vector $w\in\R^d$. The possible labels $\ell\in\{\mathit{true},\mathit{false}\}$
-and the classifier $C_w\equiv w^Tx>0$, where $T$ denotes the matrix transpose operator.
+and the classifier $C_w\equiv w^Tx>0$, where $\cdot^T$ denotes the matrix transpose operator.
 This classifier requires $n$ multiplications, $n-1$ additions, and a comparison.
 
 A more interesting classifier is Naive Bayes that predicts labels from the set $[n]$.
@@ -34,7 +34,7 @@ The classifier $C_{P,T}(x)$ outputs
 This classifier requires $ndF$ comparisons and additions.
 
 A decision tree of size $N$ takes as input $x\in\R^n$ and the model consists of a boolean predicate
-assigned to each internal node of the tree. In particular, a node $j\in[N]$ at depth $i$ has a predicate $b_{j}^i\equiv x_i\leq w_i$. We start evaluating the tree from the root and if the predicate at the current node $b_j^i$ is false (true) then $x$ is passed to the left (right) node $b_{2j+1}^{i+1}$ ($b_{2j+2}^{i+1}$). This process is repeated till we reach a leaf. The leaves of the tree have labels and the output label is the leaf visited by this traversal.
+assigned to each internal node of the tree. In particular, a node $j\in[N]$ at depth $i$ has a predicate $b_{j}^i\equiv x_i\leq w_i$. We start evaluating the tree from the root and if the predicate at the current node $b_j^i$ is false (true) then $x$ is passed to the left (right) node $b_{2j+1}^{i+1}$ ($b_{2j+2}^{i+1}$). This process is repeated till we reach a leaf. The leaves of the tree are labels and the output label is the leaf visited by this traversal.
 Such a (binary) decision tree can be encoded as a polynomial and then prediction
 reduces to polynomial evaluation. E.g., a binary tree with depth one and size $N=3$ can be encoded as the polynomial
 $(1-b(x))\ell_1 + b(x)\ell_2$ where $b(x)$ is the predicate at the root, $\ell_1$ is the label of the left leaf and $\ell_r$ is the label of the right leaf.
@@ -53,8 +53,9 @@ Here, $W_i$'s are matrices that are part of the model and $f_i$'s are the activa
 The operator $\cdot$ denotes a matrix multiplication.
 Neural nets usually have one or more fully connected layers.
 These layers multiply a matrix with a vector.
-Some neural nets have convolution layers and these are called CNNs.
-For the purpose of this paper, a convolution can be considered as a (heavy) matrix-matrix multiplication. The size of matrices manipulated by convolution layers grows linearly with {\it window size} (typically 9 or 25) and the number of {\it output channels} (typically 16, 32, or 64).
+Some neural nets have convolution layers and such DNNs are also called CNNs.
+For the purpose of this paper, a convolution can be considered as a (heavy) matrix-matrix multiplication. The size of matrices manipulated by a convolution layer grows linearly with {\it window size} (typically 9 or 25), the number of {\it output channels} (typically 16, 32, or 64),
+and the size of the matrix input to this layer. 
 Therefore, fully connected layers are easier computation-wise compared
 to convolution layers. Such DNNs and CNNs are computationaly heavy but provide
 much better accuracies on computer vision tasks than the classifiers discussed above. 
