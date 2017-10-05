@@ -7,11 +7,44 @@ Unfortunately, implementing fuctionalities using SMC protocols requires thorogh 
 
 Recent works \cite{aby,secureml,minion} have shown that great performance benefit can be obtained by mixing arithmetic and boolean computations in the back-end. Certain computations such as integer multiplication are efficient when implemented using arithmetic SMC \cite{gmw} whereas max(x,0) needs to be computed using a boolean back-end \cite{yao}. More details later.. ABY \cite{aby} requires programmer to be aware of arithmetic and boolean trade-offs and  write high-level circuits consisting of both arithmetic and boolean gates and share-conversion gates. Other works such as \cite{secureml,minion} build on ideas from \cite{aby} and develop tailor made algorithms for neural network training and prediction \cite{ml} and claim huge improvements over only boolean implementations. As is already mentioned in these works, their systems are mere proofs-of-concept and far from being implementable.
 
-In this work, we develop and implement our framework \tool where the programmer writes a high level C-like program (instead of a circuit) to describe the function to be computed. The programmer is oblivious of the cryptographic backend being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
+In this work, we develop and implement our framework \tool where the programmer writes a high level C-like program (instead of a circuit) to describe the function to be computed. The programmer is oblivious of the cryptographic backend being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. \divya{Say something about what kind of backend we want. provides SMC for a mix of arithmetic and boolean circuit with appropriate secure conversion between two types and ABY provides such a framework for semi-honest 2pc.} Our work is compatible with malicious, multiparty as well... etc We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
 
-\subsection{\tool: Overview and Contributions}
+\subsection{\tool: Overview and Contributions} Write high level overview of programming language and tool..
 
-\noindent\textbf{Scaling to large programs.} Describe pipeling here...
+\divya{ideally have small paragraphs about key features}
+1. ease to programming.. refer to section with example in our language; contrast to verilog paper; programmer is completely oblivious of security; looks like a normal C program
+
+2. first programmable system that supports a mix of arithmetic and boolean for efficiency give example of multiplication of integers; linear algebra; logistic regression
+
+3. prove correctness, type system guarantees correct termination, progress etc..; In contrast with most systems that require a programmer to label variables as public secret, we automatically infer them. leads to more efficiency compared to default secret
+
+4. Scaling to large programs. Describe pipeling here...
+
+5. can serve as a baseline for future works on hand-crafted algorithms for specific applications
+
+6. Suitable to use multiple crypto backends; We formalize the guarantees needed from crypto backend; it is easy for expert programmers to to extend our framework for example add another SMC backend. say more about this later... there say that possible to integrate minion's more efficient matrix based preprocessing into our framework and matrix ops as native types and instructions in our language
+
+7. experiment results...
+
+
 
 \noindent\textbf{Related Work}
 \cite{lambdaps,wysteria}
+
+\divya{Useful phrases:} progress in practical efficiency; non-specialist programmers; fundamental representation gap; circuits as an abstraction of computation; 
+
+\divya{useful thoughts} It is widely believed that garbled circuit based 2pc is most practical; but not quite true..
+
+\divya{points that have to be there...} Security; traces are ``oblivious'' of secret values if observables/outputs are same; formal cryptographic security guarantee uses simulation paradigm \cite{canetti2000} 
+
+
+\divya{not sure if we wanna say anything about these} 1. all the programs written in our language are memory trace oblivious because array indices are public 2. instruction trace obliviousness handled by using a multiplexor or executing both branches.. plus all loops are public counters. Our type system rejects programs that loop on secret variables
+
+\divya{questions:} Does ABY allow secret array indices? or does it allow arrays? thats not so important actually
+
+\divya{Related Work: writing some citations here to be used appropriately.}
+\begin{enumerate}
+\item Secure Computation of MIPS Machine Code %https://eprint.iacr.org/2015/547
+
+\end{enumerate}
+\newpage
