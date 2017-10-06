@@ -8,8 +8,8 @@ Finally, we discuss a model that requires pipelinig.
 Our results are in two settings, a LAN setting and a cross-continent WAN setting.
 The round trip time for two machines in a LAN setting is 1ms and in WAN setting is 40ms.
 Each machine has a Intel(R) Xeon(R) CPU E5-2673 v3 processor running at 2.40GHz with
-28 GBs of RAM. Since most of our benchmarks are related to machine learning,
-we set up some notation standard to machine learning next.
+28 GBs of RAM. The \tool compiler is written in Python and compiles each of our benchmarks
+in under a second to ABY code~\cite{aby}. Since most of our benchmarks are related to machine learning, we set up some notation standard to machine learning next. 
 
 \subsection{Benchmarks}
 In this paper, we focus on machine learning models for {\it classification}.
@@ -18,7 +18,7 @@ a classifier can predict a label ``male'' or ``female''.
 
 A binary linear classifier is one of the simplest classifers. Here, the input data point $x\in\R^d$
 and the model is a vector $w\in\R^d$. The possible labels $\ell\in\{\mathit{true},\mathit{false}\}$
-and the classifier $C_w\equiv w^Tx>0$, where $T$ denotes the matrix transpose operator.
+and the classifier $C_w\equiv w^Tx>0$, where $\cdot^T$ denotes the matrix transpose operator.
 This classifier requires $n$ multiplications, $n-1$ additions, and a comparison.
 
 A more interesting classifier is Naive Bayes that predicts labels from the set $[n]$.
@@ -34,7 +34,7 @@ The classifier $C_{P,T}(x)$ outputs
 This classifier requires $ndF$ comparisons and additions.
 
 A decision tree of size $N$ takes as input $x\in\R^n$ and the model consists of a boolean predicate
-assigned to each internal node of the tree. In particular, a node $j\in[N]$ at depth $i$ has a predicate $b_{j}^i\equiv x_i\leq w_i$. We start evaluating the tree from the root and if the predicate at the current node $b_j^i$ is false (true) then $x$ is passed to the left (right) node $b_{2j+1}^{i+1}$ ($b_{2j+2}^{i+1}$). This process is repeated till we reach a leaf. The leaves of the tree have labels and the output label is the leaf visited by this traversal.
+assigned to each internal node of the tree. In particular, a node $j\in[N]$ at depth $i$ has a predicate $b_{j}^i\equiv x_i\leq w_i$. We start evaluating the tree from the root and if the predicate at the current node $b_j^i$ is false (true) then $x$ is passed to the left (right) node $b_{2j+1}^{i+1}$ ($b_{2j+2}^{i+1}$). This process is repeated till we reach a leaf. The leaves of the tree are labels and the output label is the leaf visited by this traversal.
 Such a (binary) decision tree can be encoded as a polynomial and then prediction
 reduces to polynomial evaluation. E.g., a binary tree with depth one and size $N=3$ can be encoded as the polynomial
 $(1-b(x))\ell_1 + b(x)\ell_2$ where $b(x)$ is the predicate at the root, $\ell_1$ is the label of the left leaf and $\ell_r$ is the label of the right leaf.
@@ -53,8 +53,10 @@ Here, $W_i$'s are matrices that are part of the model and $f_i$'s are the activa
 The operator $\cdot$ denotes a matrix multiplication.
 Neural nets usually have one or more fully connected layers.
 These layers multiply a matrix with a vector.
-Some neural nets have convolution layers and these are called CNNs.
-For the purpose of this paper, a convolution can be considered as a (heavy) matrix-matrix multiplication. Therefore, fully connected layers are easier computation-wise compared
+Some neural nets have convolution layers and such DNNs are also called CNNs.
+For the purpose of this paper, a convolution can be considered as a (heavy) matrix-matrix multiplication. The size of matrices manipulated by a convolution layer grows linearly with {\it window size} (typically 9 or 25), the number of {\it output channels} (typically 16, 32, or 64),
+and the size of the matrix input to this layer. 
+Therefore, fully connected layers are easier computation-wise compared
 to convolution layers. Such DNNs and CNNs are computationaly heavy but provide
 much better accuracies on computer vision tasks than the classifiers discussed above. 
 
@@ -77,14 +79,26 @@ In the following, we implement these classifiers in \tool and report the time ta
 \subsection{Standard models}
 \label{sec:shallow}
 We consider three types of classifiers: linear, Naive Bayes, and decision trees. 
-These classifiers are trained on the followinng data sets from the UCI  machine learning repository:
+These classifiers are trained on the followinng data sets from the UCI  machine learning repository~\cite{uci}:
  the Wisconsin Breast Cancer data set, 
 Credit Approval data set, Audiology (Standardized) data set, Nursery data set, and
 ECG (electrocardiogram) classification data from~\cite{barni}.
 
-\begin{table*}
+The results for linear classification are in Table~\ref{tab:lc}. The input and model are both vectors of length $d$. The time in columns ``Prev. time'' and communication ``Prev.Comm'' is the time and total network communication reported in~\cite{shafindss}. They remark that these times are obtained by mimicing a network with 40ms round trip time, which is the same as our WAN setting. The total execution time of \tool generated code in the LAN and the WAN setting is reported next followed by the total communication.
+The execution time is dominated by multiplications and boolean-ands.
+The number of boolean-and gates (\#And) remains constant for both the benchmnarks as they reflect the number of and gates required for a single 32-bit integer comparison with zero. The number of multiplication gates (\#Mul) is the same as the model size $d$. The last column shows the lines of code of \tool program, which is also independent of the model size.
+
+The results for Naive Bayes are in Table~\ref{tab:nb}. As before, $n$ denotes the length of the input feature vector $x=(x_1,\ldots,x_n)$ and $F$ is the number of possible values of each $x_i$.
+Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons that result in many boolean-and gates (13k/750k denote 13000/75000). 
+Here, again columns 4 and 5 show the results reported in~\cite{shafindss} with 40ms network round trip time. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Naive Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
+
+This claim is further validated by Table~\ref{tab:dt}.
+In~\cite{wu}, Wu et al. describe specialized protocols for trees and forests (that perfrom better than~\cite{shafindss}) and we report their performance in columns 3 and 4 of Table~\ref{tab:dt}.
+Again, we observe that the performance of \tool generated generic 2PC code is competitive with specialized protocols. Therefore, we believe that \tool can be a good baseline to compare against and can aid the development of specialized protocols.
+
+\begin{table*}[ht]
 \begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & size\\
+Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
 \hline
 Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25 & 95 & 30 & 727 & 20\\
 \hline
@@ -92,27 +106,27 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
 \hline
 \end{tabular}
 
- \caption{Linear classification benchmarks}
+ \caption{Linear classification results}
  \label{tab:lc} 
 \end{table*}
 
-\begin{table*}
+\begin{table*}[ht]
 \begin{tabular}{c|c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $n$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And  & \#Gates  & size\\
+Dataset & $n$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates  & LOC\\
 \hline
-Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6 & 13k  & 73k & 50\\
+Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6 & 13k & 0 & 73k & 50\\
 \hline
-Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37 & 750k & 4219k & 50\\
+Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37 & 750k & 0 & 4219k & 50\\
 \hline
 \end{tabular}
 
- \caption{Naive Bayes benchmarks}
+ \caption{Naive Bayes results}
  \label{tab:nb} 
 \end{table*}
 
-\begin{table*}
+\begin{table*}[ht]
 \begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
-Dataset  & $N$ & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & size\\
+Dataset  & $N$ & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
 \hline
 Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 504 & 3 & 3324 & 20\\
 \hline
@@ -129,21 +143,31 @@ ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
 
 %dataset | time | comm | timeL | timeW | comm
 \subsection{Neural networks}
-We evaluate on the benchmarks described in \minion~\cite{minionn}.
-The first is the neural network described in SecureML~\cite{secureml}.
+We evaluate \tool on the DNNs described in \minion~\cite{minionn} and the results are reported in Table~\ref{tab:nn}\footnote{~\cite{minionn} do not report the network round-trip time.}.
+Our goal here is to demonstrate that \tool
+can provide performance competitive to specialized protocols for DNNs described in~\cite{secureml,cryptonets,minionn}. 
+The first benchmark  is the DNN described in SecureML~\cite{secureml}.
 It has three fully connected layers with square as the activation function.
+This DNN is light-weight as it requires only arithmetic computations (additions and multiplications)
+except for the {\it argmax} at the end.
 Next, we implement the neural network of Cryptonets~\cite{cryptonets} in \tool.
-This network also uses square as the activation function and has one convolution (with 5 output channels), one maxpool, and one fully connected layer.
-Finally, we compare against\minion on a convolutional neural network
-with two convolutions (with 16 output channels), two maxpool, and two fully connected layers.
-In contrast to the previous two, this network uses ReLU for activation.
-In our results, we only compare with \minion, as it outperforms the earlier systems of
-Cryptonets and SecureML.
+This network also uses square as the activation function and has one convolution (with 5 output channels) and one fully connected layer.
+Finally, we compare against\minion on a CNN
+with two convolutions (with 16 output channels) and two fully connected layers.
+In contrast to the previous two DNNs, this DNN uses ReLU for activation and
+has significantly higher number of boolean-and gates.
+Recall, that square activation can be implemented using arithmetic gates but ReLU requires boolean-and gates.  For a complete description of these benchmarks,  the reader is referred to the original references.
+
+For the benchmarks in Table~\ref{tab:nn}, \minion
+outperforms SecureML and Cryptonets and columns 2 and 3 show the time taken by \minion.
+We observe that our performance is competitive with \minion in the LAN and the WAN settings and the lines of code required are still small.
+However, \minion also reports performance results on a neural network with 7 convolution layers.
+\tool does not scale to this network without pipelining and we discuss this network in Section~\ref{sec:pipeeval}.
 %net | minionT | minionC | timeL | timeW | comm | gates | and | mul | length 
 
 \begin{table*}
 \begin{tabular}{c|c|c|c |c|c|c|c|c|c}
-Name  & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & size\\
+Name  & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & LOC\\
 \hline
 SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &  2k   & 119k & 366k   & 78\\
 \hline
@@ -160,26 +184,32 @@ CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 1640k & 667k & 9480k & 154\\
 
 \subsection{Practical models}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
-Its tutorial describes two prediction models for handwritten digit recognition
-using the MNIST dataset~\cite{mnist} which has 55,000 images as training data,
-10,000 images as test data (mnist.test), and 5,000 images as validation data.
-Each image is a greyscale image of size $28\times 28$.
-The first model that the tutorial describes is a softmax regression
+Its introductory tutorial describes two prediction models for handwritten digit recognition
+using the MNIST dataset~\cite{mnist}.
+Each image in this dataset is a greyscale image of digits 0 to 9 of size $28\times 28$.
+The first model that the tutorial describes is softmax regression
 which provides an accuracy of 92\%. Since this model is over floating-point,
-as is standard~\cite{secureml,minionn}, we port it to a model over 32-bit integers manually. After our port, the accuracy is still preserved.
-Next, we implement this model in \tool and the results are shown below.
+as is standard (\cite{secureml,minionn}), we port it to a model over 32-bit integers manually. After our port, the prediction accuracy is still preserved.
+Next, we implement this ported model in \tool and the results are shown in the first row of Table~\ref{tab:tf}.
+Since, we are not familiar with any other tools that have used this model as a benchmark,
+the columns ``Prev. Time'' and ``Prev. Comm.'' are missing.
+The column ``Model size'' is the number of 32 bit integers in the trained model.
+
 
 The next model in the Tensorflow tutorial is a convolution neural net with two convolutions
-(with 32 output channels), two maxpool, and two fully connected layers.
+(with 32 output channels) and two fully connected layers with RELU as the activation function.
 This network is both bigger and more accurate than the networks presented in the previous section.
 In particular, it has an accuracy of 99.2\%. Again, since this model is in floating-point,
 we port it to integers while maintaining the accuracy\footnote{The accuracy of the integer model is 0.04\% higher than the floating-point model.}.
+We observe that this CNN can take a minute per prediction in the WAN setting and is the largest
+benchmark that we have evaluated without pipelining.
+
 
 % benchmark | size | gates | and | mul | depth  | length | comm | timeL | timeW
 
 \begin{table*}
 \begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
-Name       & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model size & Program size\\
+Name       & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model size & LOC\\
 \hline
 Regression &  0.1         & 0.7         & 5            & 2k    & 8k    &  35k    & 8k   & 38\\
 \hline
@@ -192,13 +222,21 @@ CNN        &  30.5        & 60.3        & 2955         & 6082k & 4163k &  42104k
 \end{table*}
 
 
-We show \bonsai results on three standard data sets: character  (Chars4k~\cite{campos}), text (USPS~\cite{hull}), and object categorization (WARD~\cite{yang}). There are other other benchmarks in~\cite{bonsai} that do not add any new insights and we do not report them here. We remark that the dataset WARD requires the largest model. These models are already over integers and no port from floating-point is required.
+Before discussing pipelining, we show \bonsai results on three standard data sets: character  (Chars4k~\cite{campos}, accuracy 74.71\%) recognition, text (USPS~\cite{hull}, accuracy 94.4\%) recognition, and object categorization (WARD~\cite{yang}, accuracy 95.7\%). 
+The \bonsai models are already over integers and no port from floating-point is required.
+We implement the trained models in \tool for all benchmarks in~\cite{bonsai}
+and show a subset of our results in Table~\ref{tab:bonsai}.
+In particular, we do not report the results that do not add any additional insight.
+Out of all benchmarks in~\cite{bonsai}, the dataset WARD requires the largest model.
+The column depth shows the depth of the tree used by \bonsai. The size of \tool
+program grows with the depth of the tree as the \tool implementation requires the
+loop over nodes of the tree to be unrolled. 
 %dataset | size | gates | and | mul | depth | length | comm | timeL | timeW
 
 
 \begin{table*}
 \begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
-Name       & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & depth & Program size\\
+Name       & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & depth & LOC\\
 \hline
 Chars4k    &  0.1         & 0.7         & 2            & 18k    & 3k    &  85k     & 1   & 89\\
 \hline
@@ -213,16 +251,20 @@ WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k
 \end{table*}
 
 \subsection{Pipelining}
-The largest benchmark of \minion is a neural network for CIFAR-10 dataset~\cite{cifar}: label colored images for objects in 10 classes. This network needs more memory than what is available
+\label{sec:pipeeval}
+The largest benchmark of \minion is a DNN for CIFAR-10 dataset~\cite{cifar}.
+The predictor's task is to label colored ($32\times 32$) images for objects in 10 classes. A secure evaluation of this DNN needs more memory than what is available
 on our machines. Therefore, we use pipelining and divide the computation into seven stages.
 The first step does a convolution with 64 output channels and a ReLU activation.
-The next four stages perform a convolution that involves multiplying a $64\times 576$ matrix with a
-$576\times 1024$ matrix. The next stage performs a ReLU, a meanpool, and a convolution.
-The final stage performs four convolutions, a mean pool, five ReLU and a fully connected layer.
-The results show the end-to-end results as well as the statistics for the heaviest stage.
-In contrast, \minion takes 544 seconds and 9272 Mb for this model. As before, we are faster than
-\minion in the LAN setting and slower in the WAN setting.
+The next four stages together perform a convolution that involves multiplying a $64\times 576$ matrix with a
+$576\times 1024$ matrix. The next stage performs a ReLU and a convolution.
+The final stage has four convolutions, five ReLUs, and a fully connected layer.
+The total number of lines of \tool code for this benchamrk is 336 lines.
 
+
+The results in Table~\ref{tab:cifar} show the end-to-end results as well as the statistics for the heaviest stage (the sixth stage). The number of gates are in millions, hence the suffix 'm' in the last three columns.
+For this DNN, \minion takes 544 seconds and communicates 9272 Mb. 
+Like the previous comparisons in Table~\ref{tab:nn}, \tool generated implementations are competitive with \minion here as well. 
 \begin{table*}
 \begin{tabular}{c|c|c|c |c|c|c}
            &  LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates \\
