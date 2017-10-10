@@ -1,0 +1,13 @@
+\begin{figure}
+\begin{verbatim}
+uint temp = 1<<31-1;
+uint j = 0;
+
+for uint i = [0:30] {
+  j = j + (w[i] * x[i]);
+}
+output((j > temp) ? 1 : 0);
+
+\end{verbatim}
+\caption{Code in \tool}
+\end{figure}
