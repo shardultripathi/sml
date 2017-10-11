@@ -43,7 +43,7 @@ The reason being all SMC implementations use a circuit-like representation as an
 To address this issue, we develop a technique called \emph{pipelining} that allows us to run aribitrarily large programs. At a high level, we break the original program into a sequence of small sub-programs and mask the intermediate outputs using secure secret sharing between the two parties. We appropriately append the share-reconstruction function to the beginning of the subsequent sub-program. Now, we execute each of these sub-programs sequentially in our framework. We provide details of pipelining and prove the correctness and security of this transformation in \sectionref{pipe}.
 
 Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted SMC protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
-Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline comparison of performance. But, it has been observed multiple times this approach does not scale on realistic examples.
+Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline for comparison of performance. But, it has been observed multiple times this approach does not even scale on realistic examples.
 
 
 \input{fig-ex-aby}
