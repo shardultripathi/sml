@@ -1,7 +1,17 @@
 \section{Introduction}
 \label{sec:intro}
+Today it is hard for developers to create secure implementations using cryptographic techniques.
+Typical developers lack an understanding of cryptography protocols
+and cannot be expected to implement them correctly without tool support.
+In an ideal world, a developer declares the functionality to be implemented
+in a general purpose programming language and an automatic tool takes care
+of all the cryptography and generates a secure and efficient implementation  of the functionality. 
+This paper provides a language-based solution to make
+secure multiparty computation (SMC) accessible to the software developer community.
 
-Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
+%Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
+
+%Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
 
 Secure multi-party computation \cite{yao,gmw} (SMC) is a powerful cryptographic tool that allows a set of mutually distrusting parties to compute a joint function of their secret inputs. Examples of these include various machine learning prediction algorithm where one party holds the secret input such as a medical report and the other party holds the ML model for disease prediction. Since the introduction of SMC in 1980's, there has been a large body of work \cite{..} that has transformed SMC from a mere theoretical tool to something practically efficient/usable. Hence, there have been efforts to make SMC accessible to non-specialist programmers. To understand the state-of-the-art, let us consider the following toy example.
 
