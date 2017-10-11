@@ -31,7 +31,7 @@ The other matrix $T$ has size $n\times d\times F$ and $T(i)(j)(x_j)\equiv\log p(
 the $j^{th}$ input feature is $x_j$ (where $j\in [d]$) given that the output label is $i$.
 The classifier $C_{P,T}(x)$ outputs
 \[
-{\it argmax}_i P(i)+\sum_{j=1}^d T(i)(j)(x_j)
+{\sf argmax}_i P(i)+\sum_{j=1}^d T(i)(j)(x_j)
 \]
 This classifier requires $ndF$ comparisons and additions.
 
@@ -49,7 +49,7 @@ If $A$ is a matrix then the output of $f(A)$ is also a matrix that contains $f$ 
  to each entry of $A$ pointwise.
 Given an input vector $x$, the predicted label of a DNN is
 \[
- \mathit{argmax} W_n\cdot f_{N-1}(\ldots f_1(W_1\cdot x)\ldots)
+ \mathsf{argmax} W_n\cdot f_{N-1}(\ldots f_1(W_1\cdot x)\ldots)
 \]
 Here, $W_i$'s are matrices that are part of the model and $f_i$'s are the activation functions.
 The operator $\cdot$ denotes a matrix multiplication.
@@ -69,7 +69,7 @@ In particular, each node $j$ evaluates a predicate $\theta_j^TZx > 0$ to decide 
 to pass $x$ to the left branch or the right branch ($\theta_j$ is a vector and $Z$ is a matrix).
 The predicted value is
 \[
-{\it argmax} \sum_j I_j(x)W_j^TZx\circ f(V_j^TZx) 
+{\sf argmax} \sum_j I_j(x)W_j^TZx\circ f(V_j^TZx) 
 \]
 Here, $I_j$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
 and is zero otherwise. 
@@ -199,7 +199,7 @@ Each image in this dataset is a greyscale $28\times 28$ image of digits 0 to 9.
 The first model that the tutorial describes is softmax regression
 that provides an accuracy of 92\%. The classifier here evaluates
 \[
- \mathit{argmax}_{i} w_i^Tx+b_i
+ \mathsf{argmax}_{i} w_i^Tx+b_i
 \]
 Here, $i\in[0,9]\cap\mathbb{Z}$, $x$ is a 784 length vector obtained from the input image,
 each $w_i$ is a 784 length vector, and each $b_i$ is a scalar. 
