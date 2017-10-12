@@ -141,11 +141,11 @@ share * s_a_tmp_4 = acirc->PutOUTGate( s_a__tmp_5 , ALL);
 auto s_a_c2in_o = make_vector<share*>(576, 1024);
 for(int i = 0; i < 576; i++) {
 	for(int j = 0; j < 1024; j++) {
-		s_a_c2in_o[i][j] = acirc->PutOUTGate(s_a_c2in[i][j], SERVER);
+		s_a_c2in_o[i][j] = acirc->PutOUTGate(s_a_c2in[i][j], CLIENT);
 	}
 }
 party->ExecCircuit();
-if(role == SERVER) {
+if(role == CLIENT) {
 	ofstream fout("c2in", std::ofstream::out | std::ofstream::app);
 	for(int i = 0; i < 576; i++) {
 		for(int j = 0; j < 1024; j++) {
