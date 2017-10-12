@@ -1,0 +1,24 @@
+\section{Random}
+
+Divya is putting some stash here to be used later...
+
+\divya{Useful phrases:} progress in practical efficiency; non-specialist programmers; fundamental representation gap; circuits as an abstraction of computation; task becomes even more tedious, time-consuming, and error-prone,
+since each secure computation protocol has its own
+representation in which a functionality has to be described, e.g.,
+Arithmetic vs. Boolean circuits.
+
+\divya{useful thoughts} It is widely believed that garbled circuit based 2pc is most practical; but not quite true..
+
+\divya{points that have to be there...} Security; traces are ``oblivious'' of secret values if observables/outputs are same; formal cryptographic security guarantee uses simulation paradigm \cite{canetti2000} 
+
+
+\divya{not sure if we wanna say anything about these} 1. all the programs written in our language are memory trace oblivious because array indices are public 2. instruction trace obliviousness handled by using a multiplexor or executing both branches.. plus all loops are public counters. Our type system rejects programs that loop on secret variables
+
+\divya{questions:} Does ABY allow secret array indices? or does it allow arrays? thats not so important actually
+
+
+
+
+
+
+\divya{where to put this.. 6. Suitable to use multiple crypto backends; We formalize the guarantees needed from crypto backend; it is easy for expert programmers to to extend our framework for example add another SMC backend. say more about this later... there say that possible to integrate minion's more efficient matrix based preprocessing into our framework and matrix ops as native types and instructions in our language}

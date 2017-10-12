@@ -1,7 +1,17 @@
 \section{Introduction}
 \label{sec:intro}
+Today it is hard for developers to create secure implementations using cryptographic techniques.
+Typical developers lack an understanding of cryptography protocols
+and cannot be expected to implement them correctly without tool support.
+In an ideal world, a developer declares the functionality to be implemented
+in a general purpose programming language and an automatic tool takes care
+of all the cryptography and generates a secure and efficient implementation  of the functionality. 
+This paper provides a language-based solution to make
+secure multiparty computation (SMC) accessible to the software developer community.
 
-Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
+%Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
+
+%Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
 
 Secure multi-party computation \cite{yao,gmw} (SMC) is a powerful cryptographic tool that allows a set of mutually distrusting parties to compute a joint function of their secret inputs. Examples of these include various machine learning prediction algorithm where one party holds the secret input such as a medical report and the other party holds the ML model for disease prediction. Since the introduction of SMC in 1980's, there has been a large body of work \cite{..} that has transformed SMC from a mere theoretical tool to something practically efficient/usable. Hence, there have been efforts to make SMC accessible to non-specialist programmers. To understand the state-of-the-art, let us consider the following toy example.
 
@@ -28,84 +38,63 @@ In this work, we develop and implement our framework \tool for secure computatio
 
 \subsection{\tool: Overview and Contributions} 
 \label{sec:contrib}
-Write high level overview of programming language and tool.. \divya{have some preamble}
+%Write high level overview of programming language and tool.. \divya{have some preamble}
 
 \tool is a programmer-friendly framework to express the function to be computed and uses a mix of arithmetic and boolean SMC back-ends. We illustrate the above toy example of $w^Tx >0$ in our language in \figureref{ex-sml}. As is clear from the code, the programmer is not required to write keywords such as {\em secret} or {\em public} and can remain completely oblivious of the cryptographic back-end. In contrast, \figureref{ex-aby} illustrates the same example using the framework in ABY \cite{aby}. Here, as already mentioned, the programmer needs to write the low level gates like $\mathrm{MULT, ADD, CONS, GT}$, etc. The programmer is also required to use the appropriate share conversion gates such as A2Y that converts Arithmetic shares to Yao shares. 
 
 Our compiler is aware of cryptographic costs of different representations and inter-conversions.  Based on these costs, our compiler, given a program in \tool, automatically picks Arithmetic and Boolean representations for different sub-parts of the program and inserts the required inter-conversions as well. 
 Our experiments show that automatically generated protocols using \tool match the performance of tailor-made protocols in \cite{minionn,shafindss} (see \sectionref{eval}). This shows that  \tool achieves generality, performance and programmer productivity. These features allow us to evaluate our system on a variety of benchmarks, especially, state-of-the-art ML prediction algorithms with \emph{real} data and models. 
 
-We give a formal {\em type system} for our language and prove useful properties. We prove that if a program type checks in our language then it would run correctly, e.g., there would not be any array index out of bounds error. The programmer writes a single code describing the inputs from each party and the function to be computed. Our compiler automatically generates separate executables for the server and the client that can be executed in the distributed setting. We prove the {\em correctness} for this compilation, i.e., the outputs obtained in the distributed execution are identical to the stand-alone execution by a trusted third party. We formally reduce the {\em security} of our system to the security of the cryptographic back-end. For details on correctness and security theorems see \sectionref{ld-proofs}.
+We give a formal {\em type system} for our language and prove useful properties. We prove that if a program type checks in our language then it would run correctly, e.g., there would not be any array index out of bounds error. The programmer writes a single code describing the inputs from each party and the function to be computed. Our compiler automatically generates separate executables for the server and the client that can be executed in the distributed setting. We prove the {\em correctness} for this compilation, i.e., the outputs obtained in the distributed execution are identical to the stand-alone execution by a trusted third party. We formally reduce the {\em security} of our system to the security of the cryptographic back-end. For details on formal language, correctness and security theorems see \sectionref{ld}.
 
 Another issue in adoption of SMC is difficulty in scaling to large programs. 
 %In general, SMC implementations struggle in scaling to large programssize of memory on a system limits the largest compute inside the SMC and hence,. 
-The reason being all SMC implementations use a circuit-like representation as an intermediate representation. Hence, the largest compute that can be done securely is upper-bounded by the amount of memory on a machine.
+The reason being all SMC implementations use a circuit-like representation as an intermediate representation. Hence, the largest compute that can be done securely is upper-bounded by the largest circuit that can fit in memory on a machine.
+To address this issue, we develop a technique called \emph{pipelining} that allows us to run aribitrarily large programs. At a high level, we break the original program into a sequence of small sub-programs and mask the intermediate outputs using secure secret sharing between the two parties. We appropriately append the share-reconstruction function to the beginning of the subsequent sub-program. Now, we execute each of these sub-programs sequentially in our framework. We provide details of pipelining and prove the correctness and security of this transformation in \sectionref{pipe}.
 
+Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted SMC protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
+Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline for comparison of performance. But, it has been observed multiple times this approach does not even scale on realistic examples.
 
 
 \input{fig-ex-aby}
 \input{fig-ex-sml}
 
-\newpage
-\divya{ideally have small paragraphs about key features}
-1. ease to programming.. refer to section with example in our language; contrast to verilog paper; programmer is completely oblivious of security; looks like a normal/vanilla/ regular C program;
-Moreover, the developer does not write keywords such as secret and public; 
-
-
-2. first programmable system that supports a mix of arithmetic and boolean for efficiency give example of multiplication of integers; linear algebra; logistic regression and evaluate on state of the art ML prediction tasks
-
-3. prove correctness, type system guarantees correct termination, progress etc..; 
-
-%In contrast with most systems that require a programmer to label variables as public secret, we automatically infer them. leads to more efficiency compared to default secret
-
-If program type-checks then runs correctly for example no array out of bound errors
-code runs correctly in distributed env
-programmer writes one code; compiles to server code and client code
-we prove and outputs identical to stand-alone output
-distributed code produces same output as if the code were run by distributed third party
-
-
-4. Scaling to large programs. Describe pipeling here... Like all MPC implementations use an intermediate rep as a circuit and largest compute that can run is given by largest circuit that can fit in memory are restricted by memory of machines. This in turn limits the size of functions 
-We implement/give/design a generic technique called pipelining that allow us to run arbitrarily large computations without affecting security.
-
-
-5. Previous papers when comparing with generic 2pc compare with Yao; does not scale etc...
-can serve as a baseline for future works on hand-crafted algorithms for specific applications cite minion etc here...
-
-
-
+%\newpage
+%\divya{ideally have small paragraphs about key features}
+%1. ease to programming.. refer to section with example in our language; contrast to verilog paper; programmer is completely oblivious of security; looks like a normal/vanilla/ regular C program;
+%Moreover, the developer does not write keywords such as secret and public; 
+%
+%
+%2. first programmable system that supports a mix of arithmetic and boolean for efficiency give example of multiplication of integers; linear algebra; logistic regression and evaluate on state of the art ML prediction tasks
+%
+%3. prove correctness, type system guarantees correct termination, progress etc..; 
+%
+%%In contrast with most systems that require a programmer to label variables as public secret, we automatically infer them. leads to more efficiency compared to default secret
+%
+%If program type-checks then runs correctly for example no array out of bound errors
+%code runs correctly in distributed env
+%programmer writes one code; compiles to server code and client code
+%we prove and outputs identical to stand-alone output
+%distributed code produces same output as if the code were run by distributed third party
+%
+%
+%4. Scaling to large programs. Describe pipeling here... Like all MPC implementations use an intermediate rep as a circuit and largest compute that can run is given by largest circuit that can fit in memory are restricted by memory of machines. This in turn limits the size of functions 
+%We implement/give/design a generic technique called pipelining that allow us to run arbitrarily large computations without affecting security.
+%
+%
+%5. Previous papers when comparing with generic 2pc compare with Yao; does not scale etc...
+%can serve as a baseline for future works on hand-crafted algorithms for specific applications cite minion etc here...
+%
 
 
 
 
-\noindent\textbf{Related Work}
+\vspace{10pt}
+
+\noindent\textbf{Related Work} \divya{I think we should say a few words here about the following: minionn, verilog paper, 
 \cite{lambdaps,wysteria}
 
-\divya{Useful phrases:} progress in practical efficiency; non-specialist programmers; fundamental representation gap; circuits as an abstraction of computation; task becomes even more tedious, time-consuming, and error-prone,
-since each secure computation protocol has its own
-representation in which a functionality has to be described, e.g.,
-Arithmetic vs. Boolean circuits.
+}
 
-\divya{useful thoughts} It is widely believed that garbled circuit based 2pc is most practical; but not quite true..
-
-\divya{points that have to be there...} Security; traces are ``oblivious'' of secret values if observables/outputs are same; formal cryptographic security guarantee uses simulation paradigm \cite{canetti2000} 
-
-
-\divya{not sure if we wanna say anything about these} 1. all the programs written in our language are memory trace oblivious because array indices are public 2. instruction trace obliviousness handled by using a multiplexor or executing both branches.. plus all loops are public counters. Our type system rejects programs that loop on secret variables
-
-\divya{questions:} Does ABY allow secret array indices? or does it allow arrays? thats not so important actually
-
-\divya{Related Work: writing some citations here to be used appropriately.}
-\begin{enumerate}
-\item Secure Computation of MIPS Machine Code %https://eprint.iacr.org/2015/547
-\item TASTY https://eprint.iacr.org/2010/365.pdf
-
-\end{enumerate}
-
-
-There have been many languages and compilers that compile to cryptographic backends
-exception of TASTY
-
-\divya{where to put this.. 6. Suitable to use multiple crypto backends; We formalize the guarantees needed from crypto backend; it is easy for expert programmers to to extend our framework for example add another SMC backend. say more about this later... there say that possible to integrate minion's more efficient matrix based preprocessing into our framework and matrix ops as native types and instructions in our language}
 
 \newpage

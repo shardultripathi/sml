@@ -37,7 +37,8 @@ class Block(ASTnode):
             bcom.visit(offset+off)
 
 class Decl(ASTnode):
-    def __init__(self, data_type, idname):
+    def __init__(self, data_type, idname, publicflag=False):
+        self.isPublic = publicflag
         self.data_type = data_type
         self.idname = idname
         self.arity = 2
@@ -75,9 +76,10 @@ class ArrayPub(ASTnode):
         self.idname.visit(offset+off)
 
 class Assign(ASTnode):
-    def __init__(self, lhs, rhs):
+    def __init__(self, lhs, rhs, rhsText):
         self.lhs = lhs
         self.rhs = rhs
+        self.rhsText = rhsText
         self.arity = 2
 
     def visit(self, offset):
@@ -221,6 +223,8 @@ def getAST(rule):
         if rule.getText() != ';':
             if isinstance(rule.getChild(1), sp.ArrDeclContext):
                 return Decl(getAST(rule.getChild(0)), getAST(rule.getChild(1)))
+            if (rule.getChildCount() == 4):
+                return Decl(getAST(rule.getChild(1)), Ident(rule.getChild(2).getText()), True)
             return Decl(getAST(rule.getChild(0)), Ident(rule.getChild(1).getText()))
         return None
 
@@ -230,7 +234,7 @@ def getAST(rule):
     elif isinstance(rule, sp.VarTypeContext): # varType
         return IdentType(rule.getText())
 
-    elif isinstance(rule, sp.ForLoopContext):
+    elif isinstance(rule, sp.ForLoopContext): # for loop
         rangelist = rule.getChild(4)
         start = rangelist.getChild(1).getText()
         end = rangelist.getChild(3).getText()
@@ -239,7 +243,7 @@ def getAST(rule):
             step = rangelist.getChild(5).getText()
         return ForLoop(Ident(rule.getChild(2).getText()), start, end, step, getAST(rule.getChild(5)))
 
-    elif isinstance(rule, sp.IfElseContext):
+    elif isinstance(rule, sp.IfElseContext): # if else
         expr2 = None
         if rule.getChildCount() > 5:
             expr2 = getAST(rule.getChild(6))
@@ -247,8 +251,8 @@ def getAST(rule):
 
     elif isinstance(rule, sp.AssignmentContext): # assignment
         if isinstance(rule.getChild(0), sp.ArrExprContext):
-            return Assign(getAST(rule.getChild(0)), getAST(rule.getChild(2)))
-        return Assign(Ident(rule.getChild(0).getText()), getAST(rule.getChild(2)))
+            return Assign(getAST(rule.getChild(0)), getAST(rule.getChild(2)), rule.getChild(2).getText())
+        return Assign(Ident(rule.getChild(0).getText()), getAST(rule.getChild(2)), rule.getChild(2).getText())
 
     elif isinstance(rule, sp.ArrExprContext): # arrExpr
         return ArrayPub(Ident(rule.getChild(0).getText()), rule.getChild(1).getText(), rule.getChild(1))
