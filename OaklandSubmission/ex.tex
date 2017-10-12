@@ -46,7 +46,7 @@ The {\tt PutA2Y gate} is a conversion gate that converts an arithmetic share of
 {\tt acc} to a Yao share. We need Yao shares for the comparison operator ({\tt >}).
 This operator cannot be implemented on arithmetic shares and needs a boolean sharing like Yao.
 After the {\tt PutGTGate} for comparison, we generate gates that create Yao shares of zero and one.
-Next, a multiplexer gate {\tt PutMUXGate}} encodes the logic of the {\tt ? :} operator.
+Next, a multiplexer gate {\tt PutMUXGate} encodes the logic of the {\tt ? :} operator.
 Finally, we add an output gate by {\tt PutOUTGate}.
 
 Next, we execute this circuit using {\tt ExecCircuit} and Alice reads the output result.
