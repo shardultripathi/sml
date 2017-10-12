@@ -1,32 +1,46 @@
 \begin{figure}
 \begin{verbatim}
+//fin is an input filestream
+if(role == SERVER) {
+  for(uint32_t i = 0; i < 30; i++) {
+     fin >> w[i];
+     s_a_w[i] = acirc->
+    		PutINGate( w[i] ,bitlen,SERVER);
+  }
+  fin >> b;
+  s_a_b[i] = acirc->
+    		PutINGate( b[i] ,bitlen,SERVER); 
+  ...
+  }
+} else { //role == CLIENT
+...
+}
 for (uint32_t i = 0; i < 30; i++)
 {
     share * s_a_tmp_0 = acirc->
-    					PutMULGate( s_a_a[i] , s_a_b[i] );
-    s_a_j = acirc->
-    		PutADDGate( s_a_j , s_a_tmp_0 );
+    					PutMULGate( s_a_w[i] , s_a_x[i] );
+    s_a_acc = acirc->
+    		PutADDGate( s_a_acc , s_a_tmp_0 );
 }
 
-share *s_y_j = ycirc->PutA2YGate( s_a_j );
-uint32_t _tmp_2 = 1<<31-1 ;
-share * s_y__tmp_2 = ycirc->PutCONSGate
-					( _tmp_2 ,bitlen);
-share * s_y_tmp_1 = ycirc->PutGTGate
-					( s_y_j , s_y__tmp_2 );
-uint32_t _tmp_3 = 1 ;
-share * s_y__tmp_3 = ycirc->PutCONSGate
-					( _tmp_3 ,bitlen);
-uint32_t _tmp_4 = 0 ;
-share * s_y__tmp_4 = ycirc->PutCONSGate
-					( _tmp_4 ,bitlen);
-share * s_y_k = ycirc->PutMUXGate
-					( s_y__tmp_3 , s_y__tmp_4 , s_y_tmp_1 );
-share * s_y_tmp_5 = ycirc->PutOUTGate
-					( s_y_k , ALL);
+share *s_y_acc = ycirc->PutA2YGate( s_a_acc );
+share * s_y_pred = ycirc->PutGTGate
+					( s_y_acc , s_y_b );
+uint32_t one = 1 ;
+share * s_y_one = ycirc->PutCONSGate
+					( one ,bitlen);
+uint32_t zero = 0 ;
+share * s_y_zero = ycirc->PutCONSGate
+					( zero ,bitlen);
+share * s_y_t = ycirc->PutMUXGate
+					( s_y_pred , s_y_one , s_y_zero );
+share * s_y_out = ycirc->PutOUTGate
+					( s_y_t , CLIENT);
 party->ExecCircuit();
-uint32_t _output = s_y_tmp_5->
-			get_clear_value<uint32_t>();
+if(role==CLIENT) {
+  uint32_t _output = s_y_out->
+			    get_clear_value<uint32_t>();
+}
 \end{verbatim}
 \caption{Code in ABY}
 \label{fig:ex-aby}

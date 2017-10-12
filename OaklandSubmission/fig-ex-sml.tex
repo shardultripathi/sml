@@ -1,13 +1,23 @@
 \begin{figure}
 \begin{verbatim}
-uint temp = 1<<31-1;
-uint j = 0;
-
-for uint i = [0:30] {
-  j = j + (w[i] * x[i]);
+uint w[30];
+uint b;
+uint x;
+for i = [0:30] {
+        w[i] = input1();
 }
-output((j > temp) ? 1 : 0);
+b = input1();
+for i = [0:30] {
+    x[i] = input2();
+}
+uint acc = 0;
 
+for i = [0:30] {
+  acc =  acc + (w[i] * x[i]);
+}
+output((acc > b) ? 1 : 0);
 \end{verbatim}
 \caption{Code in \tool}
+\label{fig:ex-sml}
 \end{figure}
+
