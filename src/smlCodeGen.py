@@ -169,6 +169,8 @@ class smlCodeGen:
     def convertExpr(self, expr, circ):
         if isinstance(expr, Ident):
             tmpvar = expr.name
+            if tmpvar in self.publicSet:
+                return
             i = self.getIndex(circ)
             varShares = self.dict[tmpvar]
             if varShares[i] != None and varShares[i] != -1:
@@ -244,6 +246,8 @@ class smlCodeGen:
                 varShares[i] = varname
         else:
             name = lhs.name
+            if name in self.publicSet:
+                return
             varShares = self.dict[name]
             i = self.getIndex(circ)
             if varShares[i] is None:
@@ -257,7 +261,9 @@ class smlCodeGen:
                 self.convertExpr(x.rhs, circ)
                 self.declareLhs(x.lhs, circ)
             elif isinstance(x, ForLoop):
+                self.publicSet.add(x.idname.name)
                 self.convertAll(x.block, circ, lhsSet)
+                self.publicSet.remove(x.idname.name)
             elif isinstance(x, IfElse):
                 self.convertAll(x.expr1, circ, lhsSet)
                 if x.arity == 3:
@@ -294,9 +300,12 @@ class smlCodeGen:
                 circ = self.circ
             if isinstance(node.idname, Ident):
                 name = node.idname.name
+                print(' '*offset + node.data_type.idtype, name + ';', file=self.file)
+                if node.isPublic:
+                    self.publicSet.add(name)
+                    return
                 sname = shareName(name, circ)
                 self.putInDict(name, sname, circ)
-                print(' '*offset + node.data_type.idtype, name + ';', file=self.file)
                 print(' '*offset + 'share *' + sname + ';', file=self.file)
             else:
                 name = node.idname.idname.name + node.idname.ref
@@ -308,6 +317,14 @@ class smlCodeGen:
                 self.makeVec('s_'+circ[0]+'_'+arrname, 'share*', refctx)
 
         elif isinstance(node, Ident): # should always get a circ
+            if node.name in self.publicSet:
+                tmpvar = '_tmp_'+str(self.counter)
+                varname = shareName(tmpvar, circ)
+                self.counter += 1
+                print(' '*offset+'uint32_t', tmpvar, '=', node.name,';', file=self.file)
+                print(' '*offset+'share *',varname,'=',circ+'->PutCONSGate(',tmpvar,',bitlen);', file=self.file)
+                self.putInDict(tmpvar, varname, circ)
+                return varname
             shareList = self.dict[node.name]
             existing = next((item for item in shareList if item is not None and item != -1), 'No shares exist for '+node.name)
             i = self.getIndex(circ)
@@ -335,8 +352,10 @@ class smlCodeGen:
                         circ = self.muxckt
                 else:
                     circ = 'acirc'
-            self.convertAll(node.block, circ)
             name = node.idname.name
+            self.publicSet.add(name)
+            self.convertAll(node.block, circ)
+            self.publicSet.remove(name)
             if name in self.dict:
                 print(name, 'is a private value')
                 exit()
@@ -514,26 +533,42 @@ class smlCodeGen:
                 lhsArr = True
                 tmpvar = node.lhs.idname.name
             rhs = node.rhs
+            if tmpvar in self.publicSet:
+                valid = self.checkExprForPublic(rhs)
+                if not valid:
+                    print('rhs has variables which are private or not declared')
+                    exit()
+                print(' '*offset+tmpvar,'=',node.rhsText + ';', file=self.file)
+                return
             varShares = self.dict[tmpvar]
             if isinstance(rhs, Ident):
                 if not insideFor or circ is None:
                     circ = self.circ
                 varref = varname = shareName(tmpvar, circ)
                 i = self.getIndex(circ)
+                tmpvar1 = tmpvar
                 if lhsArr:
                     if varShares[i] is None:
                         self.makeVec(varname, 'share*', self.arrDict[tmpvar])
                         # print(' '*offset + 'share *' + varname + self.arrDict[tmpvar].getText(),';', file=self.file)
                         varShares[i] = varname
                     varref += node.lhs.ref
-                rhsShareList = self.dict[rhs.name]
-                existing = next((item for item in rhsShareList if item is not None and item != -1), 'No shares exist for '+rhs.name)
-                if rhsShareList[i] is None or rhsShareList[i] == -1:
-                    self.convertIdent(existing, circ)
-                if varShares[i] is None:
-                    print(' '*offset+'share *'+varref,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
+                    tmpvar1 += node.lhs.ref
+                if rhs.name not in self.publicSet:
+                    rhsShareList = self.dict[rhs.name]
+                    existing = next((item for item in rhsShareList if item is not None and item != -1), 'No shares exist for '+rhs.name)
+                    if rhsShareList[i] is None or rhsShareList[i] == -1:
+                        self.convertIdent(existing, circ)
+                    if varShares[i] is None:
+                        print(' '*offset+'share *'+varref,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
+                    else:
+                        print(' '*offset+varref,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
                 else:
-                    print(' '*offset+varref,'= create_new_share('+rhsShareList[i]+'->get_wires(),',circ,');', file=self.file)
+                    print(' '*offset+tmpvar1,'=',rhs.name,';', file=self.file)
+                    if varShares[i] is None:
+                        print(' '*offset+'share *'+varref,'=',circ+'->PutCONSGate(',tmpvar1,',bitlen);', file=self.file)
+                    else:
+                        print(' '*offset+varref,'=',circ+'->PutCONSGate(',tmpvar1,',bitlen);', file=self.file)
                 self.putInDict(tmpvar, varname, circ)
             elif isinstance(rhs, ArrayPub):
                 if not insideFor or circ is None:
