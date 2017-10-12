@@ -30,7 +30,8 @@ argument if the first argument is true (false).
 The \tool compiler is fully automatic and compiles the code described in Figure~\ref{fig:ex-sml} to the C++ code that makes calls to the ABY library  in
 Figure~\ref{fig:ex-aby}. An alternative to using \tool is to directly write this C++ code.
 However, this code is much more complex than the implementation written in \tool.
-Unlike \tool implementations, the ``secret" variables containing private data ({\tt w,x,b,acc}) need to be handled differently compared to public variables such as loop counters ({\tt i}). In particular, the former are manipulated by the ABY library and the latter are manipulated like standard  C++ variables.
+Therefore, it is difficult for Alice and bob to verify its correctness and security.
+Unlike \tool implementations, the ``secret" variables containing private data ({\tt w,x,b,acc}) need to be handled differently compared to ``public" variables such as loop counters ({\tt i}). In particular, the former are manipulated by the ABY library and the latter are manipulated like standard  C++ variables.
 Additionally, the C++ code branches on  the special variable
 {\tt role}  to decide whether the enclosing code is executed by the {\tt SERVER} Bob or by
 the {\tt CLIENT} Alice. In Figure~\ref{fig:ex-sml}, the developer does not need to
@@ -55,9 +56,12 @@ developer effort can quickly become significant.
 
 Moreover, it is difficult to maintain the code in Figure~\ref{fig:ex-aby}.
 For example, if the multiplication is changed to a bitwise-or then,
-in the absence of \tool, an efficiency-conscious developer would need to  use boolean circuits everywhere and would be tasked with removing all arithmetic circuits and the interconversion gates. 
+in the absence of \tool, an efficiency-conscious developer would need to  use boolean circuits everywhere and would be tasked with removing all arithmetic circuits and the interconversion gates (the cost of  conversion overweighs the gains of performing an arithmetic addition instead of a boolean addition). 
  With \tool, the developer needs to change only a single character (replace {\tt *} in Figure~\ref{fig:ex-sml} with {\tt |}) to achieve the same effect. 
-On this example and other small examples, we have found that the compiler generated C++ code from a \tool implementation is as efficient as manually written C++ code. In particular, for $w^Tx>b$, the compiler automatically generates code that uses arithmetic circuits for dot product and inserts appropriate conversion gates. Finally, although this paper uses ABY for evaluation, the  compiler can be easily retargeted to generate code for other cryptography backends.
+On this example and other small examples, we have found that the compiler generated C++ code from a \tool implementation is as efficient as manually written C++ code. In particular, for $w^Tx>b$, the compiler automatically generates code that uses arithmetic circuits for dot product and inserts appropriate conversion gates. Finally, although this paper uses ABY for evaluation, the  compiler can be easily retargeted to generate code for other cryptography backends. In particular,
+ABY implements two party computation (2PC), i.e., SMC between two parties
+and this paper focuses on this setting.
+
 
 The \tool compiler provides strong static guarantees. For example, a well typed
 \tool program is guaranteed to execute to termination without errors. A \tool program cannot go into non-termination or dereference illegal memory, i.e., no buffer overflows or underflows can happen at run time. This guarantees are
