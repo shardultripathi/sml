@@ -82,7 +82,7 @@ As is standard, we port the classifers to integer manipulating programs by scali
 
 \subsection{Standard models}
 \label{sec:shallow}
-We consider three types of classifiers: linear, Naive Bayes, and decision trees. 
+We consider three types of classifiers: linear, Na\"{i}ve Bayes, and decision trees. 
 These classifiers are trained on the followinng data sets from the UCI  machine learning repository~\cite{uci}:
  the Wisconsin Breast Cancer data set, 
 Credit Approval data set, Audiology (Standardized) data set, Nursery data set, and
@@ -92,8 +92,8 @@ The results for linear classification are in Table~\ref{tab:lc}. The input and m
 The execution time is dominated by multiplications and boolean-ands.
 The number of boolean-and gates (\#And) remains constant for both the benchmarks as they reflect the number of and gates required for a single 32-bit integer comparison with zero. The number of multiplication gates (\#Mul) is the same as the model size $d$. The last column shows the lines of code of \tool program, which is also independent of the model size.
 
-The results for Na\"{i}ve Bayes are in Table~\ref{tab:nb}. As before, $n$ denotes the length of the input feature vector $x=(x_1,\ldots,x_n)$ and $F$ is the number of possible values of each $x_i$.
-Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons that result in many boolean-and gates (13k/750k denote 13000/75000). 
+The results for Na\"{i}ve Bayes are in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input feature vector $x$ and $F$ is the number of possible values of $x_i$ for each $i \in [d]$.
+Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons (due to secret look-up) that result in many boolean-and gates (13k/750k denote 13000/75000). 
 Here, again columns 4 and 5 show the results reported in~\cite{shafindss}. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Naive Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
 
 This claim is further validated by Table~\ref{tab:dt}.
@@ -117,7 +117,7 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
 
 \begin{table*}
 \begin{tabular}{c|c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $n$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates  & LOC\\
+Dataset & $d$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates  & LOC\\
 \hline
 Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6 & 13k & 0 & 73k & 50\\
 \hline
@@ -125,7 +125,7 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37 & 750k & 0 & 4219k & 50\\
 \hline
 \end{tabular}
 
- \caption{Naive Bayes results}
+ \caption{Na\"{i}ve Bayes results}
  \label{tab:nb} 
 \end{table*}
 
