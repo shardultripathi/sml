@@ -46,7 +46,7 @@ In this work, we develop and implement our framework \tool \nc{I still like Easy
 %Write high level overview of programming language and tool.. \divya{have some preamble}
 \divya{I can add paragraph headings..}
 
-\textbf{Programmability.} \tool is a programmer-friendly framework to express the function to be computed and uses a mix of arithmetic and boolean SMC back-ends. We illustrate the above toy example of $w^Tx >b$ in our language in \figureref{ex-sml}. As is clear from the code, the programmer is not required to write keywords such as {\em secret} or {\em public} and can remain completely oblivious of the cryptographic back-end. In contrast, \figureref{ex-aby} illustrates the same example using the framework in ABY \cite{aby}. Here, as already mentioned, the programmer needs to write the low level gates like $\mathrm{MULT, ADD, CONS, GT}$, etc. The programmer is also required to use the appropriate share conversion gates such as A2Y that converts Arithmetic shares to Yao shares. 
+\textbf{Programmability.} \tool is a programmer-friendly framework to express the function to be computed and uses a mix of arithmetic and boolean SMC back-ends. We illustrate the above toy example of $w^Tx >b$ in our language in \figureref{ex-sml}. As is clear from the code, the programmer is not required to write keywords such as {\em secret} or {\em public} and can remain completely oblivious of the cryptographic back-end. In contrast, \figureref{ex-aby} illustrates the same example using the framework in ABY \cite{aby}. Here, as already mentioned, the programmer needs to write the low level gates like {\tt MULT, ADD, CONS, GT}, etc. The programmer is also required to use the appropriate share conversion gates such as {\tt A2Y} that converts Arithmetic shares to Yao shares. Moreover, it is easy to maintain code in \tool and small change to the functionality requires only a small change in the code. In contrast, working with ABY, even for a small change a developer might have to re-work the whole circuit for efficiency reasons. We describe these examples in detail in \sectionref{ex}.
 
 \textbf{Performance.} Our compiler is aware of cryptographic costs of different representations and inter-conversions.  Based on these costs, our compiler, given a program in \tool, automatically picks Arithmetic and Boolean representations for different sub-parts of the program and inserts the required inter-conversions as well. 
 Our experiments show that automatically generated protocols using \tool match the performance of tailor-made protocols in \cite{minionn,shafindss} (see \sectionref{eval}). This shows that  \tool achieves generality, performance and programmer productivity. These features allow us to evaluate our system on a variety of benchmarks, especially, state-of-the-art ML prediction algorithms with \emph{real} data and models. 
@@ -96,10 +96,12 @@ Prior to our work, garbled circuit based two-party computation is cited as the m
 
 \vspace{10pt}
 
-\noindent\textbf{Related Work} \divya{I think we should say a few words here about the following: minionn, verilog paper, tasty, 
-\cite{lambdaps,wysteria}
-
-}
-
-
-\newpage
+\noindent\textbf{Other Related Work} 
+Before ABY \cite{aby}, to improve efficiency, several works proposed
+to mix secure computation protocols based on homomorphic
+encryption with Yao’s garbled circuits protocol, e.g., \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,shropfer11}
+  and developed tools that allowed writing a mixed SMC protocol, e.g., \cite{bogdanov,lone,tasty}. The assignment can
+even be done automatically as was shown in \cite{autoS}. 
+However, as noted by ABY, due to high conversion cost between homomorphic encryption and Yao's garbled circuit, these mixed protocols do not gain much over single protocol. Also, none of these works give a high-level developer-friendly language support.
+No prior work has given a formal type system and operational semantics for mixed arithmetic and boolean back-ends.
+In our evaluation, we use benchmarks for the problem of secure prediction where the cloud holds the secret model and the client holds the secret input. For this problem various works have considered tailor-made protocols depending on the model considered \cite{shafindss,wu,secureml,minionn}. In our evaluation, we compare our performance with these specialized protocols and give competitive run-times. We provide a detailed survey of related work in \sectionref{related}.

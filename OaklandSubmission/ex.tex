@@ -1,6 +1,8 @@
 \section{Motivating example}
 \label{sec:ex}
 %$w^Tx>0$, mnist logistic regression
+\divya{add reference to before and later... as mentioned we would run evaluations on secure prediction of different models. Here we describe scenario in detail..}
+
 Consider a  cloud service provider Bob that wants to provide a service to diagnose
 whether a patient has breast cancer or not. Bob trains a machine learning classification model
 that results in a vector $w$ (say of length 30) and a scalar $b$.
@@ -59,7 +61,7 @@ For example, if the multiplication is changed to a bitwise-or then,
 in the absence of \tool, an efficiency-conscious developer would need to  use boolean circuits everywhere and would be tasked with removing all arithmetic circuits and the interconversion gates (the cost of  conversion overweighs the gains of performing an arithmetic addition instead of a boolean addition). 
  With \tool, the developer needs to change only a single character (replace {\tt *} in Figure~\ref{fig:ex-sml} with {\tt |}) to achieve the same effect. 
 On this example and other small examples, we have found that the compiler generated C++ code from a \tool implementation is as efficient as manually written C++ code. In particular, for $w^Tx>b$, the compiler automatically generates code that uses arithmetic circuits for dot product and inserts appropriate conversion gates. Finally, although this paper uses ABY for evaluation, the  compiler can be easily retargeted to generate code for other cryptography backends.
-\nc{I like the above point. Perhaps we can mention something like this earlier in the intro itself?}
+
 
 The \tool compiler provides strong static guarantees. For example, a well typed
 \tool program is guaranteed to execute to termination without errors. A \tool program cannot go into non-termination or dereference illegal memory, i.e., no buffer overflows or underflows can happen at run time. These guarantees are
