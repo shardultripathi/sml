@@ -30,6 +30,33 @@
 
 \usepackage[pdftex,bookmarks=true,pdfstartview=FitH,colorlinks,linkcolor=blue,filecolor=blue,citecolor=blue,urlcolor=blue,pagebackref=true]{hyperref}
     \urlstyle{sf}
+    
+\newlength{\saveparindent}
+\setlength{\saveparindent}{\parindent}
+\newlength{\saveparskip}
+\setlength{\saveparskip}{\parskip}
+ 
+ 
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{0pt} }}{\end{list}}
+ 
+\newenvironment{enum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr}\labelwidth=17pt%
+\labelsep=6pt \leftmargin=23pt \topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+ 
+\newenvironment{newenum}{%
+\begin{list}{{\rm \arabic{ctr}.}\hfill}{\usecounter{ctr}\labelwidth=17pt%
+\labelsep=6pt \leftmargin=23pt \topsep=.5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{5pt} }}{\end{list}}
 
 \newcommand{\tool}{{\textsc{pC}}\xspace}
 \newcommand{\minion}{{\textsc{MiniONN}}\xspace}
