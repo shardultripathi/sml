@@ -11,7 +11,11 @@ Our results are in two settings, a LAN setting and a cross-continent WAN setting
 The round trip time for two machines in a LAN setting is 1ms and in WAN setting is 40ms.
 Each machine has a Intel(R) Xeon(R) CPU E5-2673 v3 processor running at 2.40GHz with
 28 GBs of RAM. The \tool compiler is written in Python and compiles each of our benchmarks
-in under a second to C++ code that makes calls to the ABY library~\cite{aby}. Since most of our benchmarks are related to machine learning, we set up some notation standard to machine learning and describe our benchmarks next. 
+in under a second to C++ code that makes calls to the ABY library~\cite{aby}.
+We use an off-the-shelf solver (SeaHorn~\cite{seahorn}) to check the verification conditions
+required to prove that the array indices remain in bound.
+The solver takes less than a minute on our largest benchmark.
+Since most of our benchmarks are related to machine learning, we set up some notation standard to machine learning and describe our benchmarks next. 
 
 \subsection{Benchmarks}
 \divya{notation can be moved somewhere... } \\
