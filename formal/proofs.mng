@@ -154,6 +154,7 @@
 \end{proof}
 
 \begin{lemma}[Target semantics correspondence]
+\label{lem:tgtsemcorres}
 If:
 
 \begin{enumerate}
@@ -173,6 +174,7 @@ then:
 \end{lemma}
 
 \begin{lemma}[Soundness of source semantics]
+\label{lem:srcsemsound}
 If:
 
 \begin{enumerate}
@@ -187,21 +189,25 @@ then, $[[srho |- sc !! srho'; sobs]]$
 \begin{theorem}[Soundness]
 If:
 
-\begin{itemize}
+\begin{enumerate}
 \item $[[G |- sc ~> c | G']]$
 \item $[[G ~ srho]]$
 \item $[[G |- srho ~> rho; crho1, crho2]]$
-\end{itemize}
+\end{enumerate}
 
 then:
 
-\begin{itemize}
+\begin{enumerate}[(a)]
 \item $[[srho |- sc !! srho'; sobs]]$
 \item $[[rho |- c !! rho' ; ckt]]$
 \item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
-\end{itemize}
+\end{enumerate}
 
 \end{theorem}
+
+\begin{proof}
+  Follows from Lemma~\ref{lem:tgtsemcorres} and~\ref{lem:srcsemsound}.
+\end{proof}
 
 
 
