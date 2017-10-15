@@ -3,7 +3,7 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{balance}
-\usepackage{color}
+\usepackage{xcolor}
 \usepackage{nicefrac}
 \usepackage{amsmath}
 \usepackage{braket}
@@ -28,9 +28,40 @@
 \usepackage{MnSymbol}
 \usepackage{xspace}
 
+\usepackage[pdftex,bookmarks=true,pdfstartview=FitH,colorlinks,linkcolor=blue,filecolor=blue,citecolor=blue,urlcolor=blue,pagebackref=true]{hyperref}
+    \urlstyle{sf}
+    
+\newlength{\saveparindent}
+\setlength{\saveparindent}{\parindent}
+\newlength{\saveparskip}
+\setlength{\saveparskip}{\parskip}
+ 
+ 
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{0pt} }}{\end{list}}
+ 
+\newenvironment{enum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr}\labelwidth=17pt%
+\labelsep=6pt \leftmargin=23pt \topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+ 
+\newenvironment{newenum}{%
+\begin{list}{{\rm \arabic{ctr}.}\hfill}{\usecounter{ctr}\labelwidth=17pt%
+\labelsep=6pt \leftmargin=23pt \topsep=.5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{5pt} }}{\end{list}}
 
-\newcommand{\tool}{{\textsc{SecureC}}\xspace}
-
+\newcommand{\tool}{{\textsc{pC}}\xspace}
+\newcommand{\minion}{{\textsc{MiniONN}}\xspace}
+\newcommand{\bonsai}{{\textsc{Bonsai}}\xspace}
+\newcommand{\R}{{\mathbb{R}}\xspace}
 
 \newtheorem{problem}{Problem}
 \newtheorem{theorem}{Theorem}
@@ -44,3 +75,31 @@
 \newtheorem{remk}[theorem]{Remark}
 \newtheorem{apdxlemma}{Lemma}
 
+\newcommand{\namedref}[2]{\hyperref[#2]{#1~\ref*{#2}}\xspace}
+\newcommand{\lemmaref}[1]{\namedref{Lemma}{lem:#1}}
+\newcommand{\propref}[1]{\namedref{Proposition}{prop:#1}}
+\newcommand{\theoremref}[1]{\namedref{Theorem}{thm:#1}}
+\newcommand{\claimref}[1]{\namedref{Claim}{clm:#1}}
+\newcommand{\corolref}[1]{\namedref{Corollary}{corol:#1}}
+\newcommand{\figureref}[1]{\namedref{Figure}{fig:#1}}
+\newcommand{\tableref}[1]{\namedref{Table}{tbl:#1}}
+\newcommand{\equationref}[1]{\namedref{Equation}{eq:#1}}
+\newcommand{\defref}[1]{\namedref{Definition}{def:#1}}
+\newcommand{\observationref}[1]{\namedref{Observation}{obs:#1}}
+\newcommand{\procedureref}[1]{\namedref{Procedure}{proc:#1}}
+\newcommand{\importedtheoremref}[1]{\namedref{Imported Theorem}{impthm:#1}}
+\newcommand{\informaltheoremref}[1]{\namedref{Informal Theorem}{infthm:#1}}
+
+\newcommand{\sectionref}[1]{\namedref{Section}{sec:#1}}
+\newcommand{\appendixref}[1]{\namedref{Appendix}{app:#1}}
+\newcommand{\propertyref}[1]{\namedref{Property}{prop:#1}}
+
+\newcommand{\algoref}[1]{\namedref{Algorithm}{algo:#1}}
+
+
+
+\newcommand{\TODO}[1]{{{\color{red} TODO: #1}}}
+\newcommand{\divya}[1]{{{\color{blue} dg: #1}}}
+\newcommand{\cmmt}[1]{{{\color{red} check: #1}}}
+\newcommand{\nc}[1]{{{\color{magenta} nc: #1}}}
+\newcommand{\rs}[1]{{{\color{magenta} rs: #1}}}

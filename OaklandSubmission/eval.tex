@@ -1,31 +1,307 @@
 \section{Evaluation}
 \label{sec:eval}
-
-We first implement benchmarks of ~\cite{shafindss} and~\cite{minionn} in \tool.
-Next, we show the generality of \tool by implementing state-of-the-art machine learning models.
+We evaluate \tool for the problem of {\it secure prediction}, where a server has a machine learning model, a client has an input, and after the protocol execution the client learns a label on his input.
+From the protocol execution, the server learns nothing about the client's input and the client learns nothing about the server's model beyond what is revealed from the computed label.
+This setting has been previously studied in~\cite{shafindss,minionn}
+We first implement benchmarks of ~\cite{shafindss} and~\cite{minionn} in \tool to compare against 
+previous work.
+Next, we demonstrate the generality of \tool by implementing state-of-the-art machine learning models.
 Finally, we discuss a model that requires pipelinig.
 Our results are in two settings, a LAN setting and a cross-continent WAN setting.
 The round trip time for two machines in a LAN setting is 1ms and in WAN setting is 40ms.
+Each machine has a Intel(R) Xeon(R) CPU E5-2673 v3 processor running at 2.40GHz with
+28 GBs of RAM. The \tool compiler is written in Python and compiles each of our benchmarks
+in under a second to C++ code that makes calls to the ABY library~\cite{aby}.
+We use an off-the-shelf solver (SeaHorn~\cite{seahorn}) to check the verification conditions
+required to prove that the array indices remain in bound.
+The solver takes less than a minute on our largest benchmark.
+Since most of our benchmarks are related to machine learning, we set up some notation standard to machine learning and describe our benchmarks next. 
+
+\subsection{Benchmarks}
+\divya{notation can be moved somewhere... } \\
+
+\noindent\textbf{Notation.} We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. \rs{Define $\mathsf{argmax}$.}
+
+In this paper, we focus on machine learning models for {\it classification}.
+A {\it classifier} $C$ uses a trained {\it model} to {\it predict} a {\it label} $\ell$ for an input data point $x$. For example, given a data point which is a tuple of height and weight of an individual,
+a classifier can predict a label ``male'' or ``female''. The {\it accuracy} of a classifier
+refers to the fraction of data points that the classifier labels correctly from a given set of {\it test} data points.
+
+A binary linear classifier is one of the simplest classifiers. Here, the input data point $x\in\R^d$
+and the model is a vector $w\in\R^d$. The possible labels are $\ell\in\{\mathit{true},\mathit{false}\}$
+and the classifier is $C_w\equiv w^Tx>0$, where $\cdot^T$ denotes the matrix transpose operator.
+This classifier requires $d$ multiplications, $d-1$ additions, and a comparison.
+
+A more interesting classifier is Na\"{i}ve Bayes that predicts labels from the set $[n]$.
+Here, the input data point is a {\it feature}
+vector $x=(x_0,x_2,\ldots,x_{d-1})^T$ where each $x_j\in [F]$.
+The model has two matrices: a vector $P$ of length $n$ and for each $i \in [n]$, $P(i)$ is the log-probability that the output label is $i$.
+%$P(i) \equiv \log p(\ell=i)$, where $p(\ell=i)$ is the likelihood that the output label is $i$ for $i\in[n]$.
+The other matrix $T$ has size $n\times d\times F$ and for each $i\in [n], j\in [d], k\in [F]$, $T(i)(j)(k)$ is
+%\equiv\log p(x_j|\ell=i)$, i.e., 
+the log-probability that  the $j^{th}$ input feature is $k$  conditioned on  the output label being $i$.
+The classifier $C_{P,T}(x)$ outputs
+\[
+{\sf argmax}_i P(i)+\sum_{j=0}^{d-1} T(i)(j)(x_j)
+\]
+This classifier requires $ndF$ comparisons and additions. \divya{Note that computing $T(i)(j)(x_j)$ requires a secret look-up in matrix $T$  based on secret input $x_j$ resulting in $F$ comparisons (see \sectionref{}).} \cmmt{Is there a +1 etc missing or is this exact?}
+
+A decision tree of size $N$ takes as input $x\in\R^d$ and the model consists of a binary tree of depth $d$ with a boolean predicate
+assigned to each internal node. The root note is the $0^{th}$ node and for an internal node $j \in [N]$, the children nodes are $2j+1$ and $2j+2$. Each internal node $j\in[N]$ at depth $i$ has a predicate $b_{j}^i\equiv x_i\leq w_i$. We start evaluating the tree from the root and if the predicate at the current node $b_j^i$ is false (resp., true) then $x$ is passed to the left (resp., right) child with predicate $b_{2j+1}^{i+1}$ (resp., $b_{2j+2}^{i+1}$). This process is repeated till we reach a leaf. The leaves of the tree are labels and the output label is the leaf visited by this traversal.
+Such a (binary) decision tree can be encoded as a polynomial (of degree linear in depth of the tree) and then the prediction task
+reduces to polynomial evaluation. E.g., a binary tree with depth one and size $N=3$ can be encoded as the polynomial
+$(1-b(x))\ell_0 + b(x)\ell_1$ where $b(x)$ is the predicate at the root, $\ell_0$ is the label of the left leaf and $\ell_1$ is the label of the right leaf.
+
+The next class of classifiers that we discuss are deep neural nets or DNNs. 
+A DNN has multiple layers such that each layer computes a matrix multiplication followed by an {\it activation} function $f$. The most common activation functions are square $f(x)=x^2$ and rectifier linear unit (ReLU) $f(x)=\mathsf{max}(x,0)$. 
+If $A$ is a matrix then the output of $f(A)$ is also a matrix that is obtained by applying $f$ to each entry of $A$ pointwise.
+Given an input vector $x$, the predicted label of a DNN is
+\[
+ \mathsf{argmax}\ W_N\cdot f_{N-1}(\ldots f_1(W_1\cdot x)\ldots)
+\]
+Here, $f_i$'s are the \divya{public} activation functions and the model consists of matrices $W_i$. The input vector is $x \in \R^d$.
+The operator $\cdot$ denotes a matrix multiplication.
+Neural nets usually have one or more fully connected layers.
+These layers multiply a matrix with a vector.
+Some neural nets have convolution layers and such DNNs are also called convolutional neural nets or CNNs.
+For the purpose of this paper, a convolution can be considered as a (heavy) matrix-matrix multiplication. The size of matrices manipulated by a convolution layer grows linearly with {\it window size} (typically 9 or 25), the number of {\it output channels} (typically 16, 32, or 64), and the size of the matrix input to this layer. 
+Therefore, fully connected layers are lighter computation-wise compared
+to convolution layers. However, the model size of fully connected layers is larger than those of convolution layers.
+In general, DNNs are computationaly heavy but provide
+much better accuracies on computer vision tasks than the classifiers discussed above. 
+
+Finally, there are a class of machine learning classifiers that are much more efficient than
+DNNs and provide reasonably good accuracies on standard learning tasks. One such classifier
+is \bonsai~\cite{bonsai} that takes as input $x \in \R^d$ and model consists of a binary tree with $N$ nodes. Each node $j$ contains matrices $W_j$ and $V_j$. The internal node $j$  evaluates a predicate $\theta_j^TZx > 0$ to decide whether
+to pass $x$ to the left child $2j+1$ or the right child $2j+2$ (where $\theta_j$ is a vector and $Z$ is a matrix).
+The predicted value is
+\[
+{\sf argmax} \sum_{j\in [N]} I_j(x)W_j^TZx\circ f(V_j^TZx) 
+\]
+Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
+and is zero otherwise. 
+The operation $\circ$ is a point-wise dot product, $W_j$'s and $V_j$'s are matrices. The activation function $f$ is given by $f(y) = y$ if $-1 < y < 1$ and $\mathrm{sign}(x)$ otherwise. The model consists of the matrices $W_j$, $V_j$, $Z$ and vectors $\theta_j$. \bonsai can be seen as a variant of decision trees where the prediction is a function of the path traversed from root to the leaf and not just the leaf itself.
+
+In the following, we implement these classifiers in \tool and report the time taken for making predictions securely. Ideally, the machine learning classifiers are mathematical expressions over Reals that are usually approximated by floating-point operations.
+As is standard, we port the classifers to integer manipulating programs by scaling the models and rounding~\cite{minionn}. These ported classifiers are then implemented in \tool.
 
 \subsection{Standard models}
 \label{sec:shallow}
-We consider three types of classifiers: linear, Naive Bayes, and decision trees. 
-These classifiers are trained on the followinng data sets from the UCI  machine learning repository:
+We consider three types of classifiers: linear, Na\"{i}ve Bayes, and decision trees. 
+These classifiers are trained on the followinng data sets from the UCI  machine learning repository~\cite{uci}:
  the Wisconsin Breast Cancer data set, 
 Credit Approval data set, Audiology (Standardized) data set, Nursery data set, and
 ECG (electrocardiogram) classification data from~\cite{barni}.
 
-%dataset  | size | gates | and | mul | depth
+The results for linear classification are in Table~\ref{tab:lc}. The input and model are both vectors of length $d$. The time in columns ``Prev. time'' and communication ``Prev.Comm'' is the time and total network communication reported in~\cite{shafindss}. They remark that these times are obtained by simulating a network with 40ms round trip time, which is the same as our WAN setting. The total execution time of \tool generated code in the LAN and the WAN setting is reported next followed by the total communication.
+We observe that \tool generated code has performance competitive to~\cite{shafindss}.
+The execution time is dominated by multiplications and boolean-ands.
+The number of boolean-and gates (\#And) remains constant for both the benchmarks as they reflect the number of and gates required for a single 32-bit integer comparison with zero. The number of multiplication gates (\#Mul) is the same as the model size $d$. The last column shows the lines of code of \tool program, which is also independent of the model size.
 
-%dataset | time | comm | timeL | commL | timeW | commW
+The results for Na\"{i}ve Bayes are in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input feature vector $x$ and $F$ is the number of possible values of $x_i$ for each $i \in [d]$.
+Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons (due to secret look-up) that result in many boolean-and gates (13k/750k denote 13000/75000). 
+Here, again columns 4 and 5 show the results reported in~\cite{shafindss}. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Naive Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
 
-lin
-nb
-tree\\
-minion-cnn
-secureml
-cryptonet\\
-logistic
-cnn
-bonsai\\
-cifar
+This claim is further validated by Table~\ref{tab:dt}.
+In~\cite{wu}, Wu et al. describe specialized protocols for trees and forests (that perform better than~\cite{shafindss}) and we report their performance in columns 3 and 4 of Table~\ref{tab:dt}.
+Similar to~\cite{shafindss},~\cite{wu} remarks that these computations are infeasible with Yao-based 2PC.
+Again, we observe that the performance of \tool generated generic 2PC code is competitive with specialized protocols. Therefore, we believe that \tool generated code can be a better baseline than Yao-based 2PC when comparing against generic 2PC-based implementations for secure prediction tasks.
+
+\begin{table*}
+\begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
+Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
+\hline
+Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25 & 95 & 30 & 727 & 20\\
+\hline
+Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
+\hline
+\end{tabular}
+
+ \caption{Linear classification results. We compare our results (columns 5, 6, 7) with~\cite{shafindss} (columns 3 and 4)}
+ \label{tab:lc} 
+\end{table*}
+
+\begin{table*}
+\begin{tabular}{c|c|c|c|c|c |c|c|c|c|c|c}
+Dataset & $d$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates  & LOC\\
+\hline
+Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6 & 13k & 0 & 73k & 50\\
+\hline
+Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37 & 750k & 0 & 4219k & 50\\
+\hline
+\end{tabular}
+
+ \caption{Na\"{i}ve Bayes results. We compare our results (columns 6 , 7, 8) with~\cite{shafindss} (columns 4 and 5)}
+ \label{tab:nb} 
+\end{table*}
+
+\begin{table*}
+\begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
+Dataset  & $N$ & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
+\hline
+Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 504 & 3 & 3324 & 20\\
+\hline
+ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
+\hline
+\end{tabular}
+
+ \caption{Decision tree benchmarks. We compare our results (columns 5 , 6, 7) with~\cite{wu} (columns 3 and 4)}
+ \label{tab:dt} 
+\end{table*}
+
+
+%dataset  | size | gates | and | mul | depth | length
+
+%dataset | time | comm | timeL | timeW | comm
+\subsection{Deep neural nets}
+We evaluate \tool on the DNNs described in \minion~\cite{minionn} and the results are reported in Table~\ref{tab:nn}\footnote{\minion does not report the network round-trip time~\cite{minionn}.}.
+Our goal here is to demonstrate that \tool
+can provide performance competitive to specialized protocols for DNNs described in~\cite{secureml,cryptonets,minionn}. 
+The first benchmark  is the DNN described in SecureML~\cite{secureml}.
+It has three fully connected layers with square as the activation function.
+This DNN is light-weight as it requires only arithmetic computations (additions and multiplications)
+except for the {\it argmax} at the end.
+Next, we implement the DNN described in Cryptonets~\cite{cryptonets} in \tool.
+This DNN also uses square as the activation function and has one convolution (with 5 output channels) and one fully connected layer.
+Finally, we compare against \minion on a CNN
+with two convolutions (with 16 output channels each) and two fully connected layers.
+In contrast to the previous two DNNs, this DNN uses ReLU for activation and
+has significantly higher number of boolean-and gates.
+Recall, that square activation can be implemented entirely using arithmetic gates but ReLU requires boolean-and gates.  For a complete description of these benchmarks and their accuracies,  the reader is referred to the original references.
+
+For the benchmarks in Table~\ref{tab:nn}, \minion
+outperforms SecureML and Cryptonets and columns 2 and 3 show the time taken by \minion. 
+The column ``Model size'' is the number of 32 bit integers in the trained model.
+We observe that our performance is competitive with \minion in the LAN and the WAN settings and the lines of code required are still small.
+We note that \minion and \tool implementations are both based on ABY.
+These results are surprising as \minion has a much more efficient preprocessing phase and has SIMD
+(single instruction multiple data) capabilities that allow \minion to perform
+matrix operations efficiently. Our language and compiler are generic and we have none of these.
+Although we could have used the SIMD capabilities of ABY to improve our performance---our preliminary evaluation suggests that SIMD could lead to a 2X performance improvement---we decided against it to avoid being closely tied to ABY and keeping \tool general, i.e., oblivious to the 2PC backend.
+However, \minion also reports performance results on a bigger DNN with 7 convolution layers.
+This benchmark requires pipelining and we discuss it in Section~\ref{sec:pipeeval}.
+%net | minionT | minionC | timeL | timeW | comm | gates | and | mul | length 
+
+\begin{table*}
+\begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
+Name  & Prev. time (s) & Prev. Comm (Mb) & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model Size & LOC\\
+\hline
+SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &  2k   & 119k & 366k   & 119k & 78\\
+\hline
+Cryptonets &  1.3 & 47.6 & 0.6 & 1.6  & 7    & 2k    & 108k & 316k & 86k & 88\\
+\hline
+CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 1640k & 667k & 9480k & 35k & 154\\
+\hline
+\end{tabular}
+
+ \caption{DNN benchmarks. We compare our results (columns 4 , 5, 6) with~\cite{minionn} (columns 2 and 3)}
+ \label{tab:nn} 
+\end{table*}
+
+
+\subsection{Practical models}
+Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
+Its introductory tutorial describes two prediction models for handwritten digit recognition
+using the MNIST dataset~\cite{mnist}.
+Each image in this dataset is a greyscale $28\times 28$ image of digits 0 to 9.
+The first model that the tutorial describes is softmax regression
+that provides an accuracy of 92\%. The classifier here evaluates
+\[
+ \mathsf{argmax}_{i} w_i^Tx+b_i
+\]
+Here, $i\in [10]$, $x$ is a 784 length vector obtained from the input image,
+each $w_i$ is a 784 length vector, and each $b_i$ is a scalar. 
+We implement this classifer in \tool and the results are shown in the first row of Table~\ref{tab:tf}.
+Since, we are not familiar with any other tools that have used this model as a benchmark,
+we only report execution time of \tool generated code.
+
+
+The next classifer in the Tensorflow tutorial is a convolution neural net with two convolutions
+(with 32 output channels) and two fully connected layers with ReLU as the activation function.
+This DNN is both bigger and more accurate than the DNNs presented in the previous section.
+In particular, it has an accuracy of 99.2\%\footnote{The accuracy of the integer model is 0.04\% higher than the floating-point model.}.
+We observe that this DNN can take a minute per prediction in the WAN setting and is the largest
+benchmark that we have evaluated without pipelining.
+
+
+% benchmark | size | gates | and | mul | depth  | length | comm | timeL | timeW
+
+\begin{table*}
+\begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
+Name       & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model size & LOC\\
+\hline
+Regression &  0.1         & 0.7         & 5            & 2k    & 8k    &  35k    & 8k   & 38\\
+\hline
+CNN        &  30.5        & 60.3        & 2955         & 6082k & 4163k &  42104k & 3226k& 172\\
+\hline
+\end{tabular}
+
+ \caption{Tensorflow tutorial benchmarks}
+ \label{tab:tf} 
+\end{table*}
+
+
+Before discussing pipelining, we show \bonsai results on three standard datasets: character recognition (Chars4k~\cite{campos}, accuracy 74.71\%), text recognition (USPS~\cite{hull}, accuracy 94.4\%), and object categorization (WARD~\cite{yang}, accuracy 95.7\%). 
+The \bonsai models are already over integers and no port from floating-point is required.
+We implement the trained classifiers in \tool for all benchmarks in~\cite{bonsai}
+and show the represenative results in Table~\ref{tab:bonsai}.
+Out of all benchmarks in~\cite{bonsai}, the dataset WARD requires the largest model.
+The column ``depth'' in Table~\ref{tab:bonsai} shows the depth of the tree used by \bonsai. The size of \tool
+program grows with the depth of the tree as the straightforward \tool implementation requires a 
+loop for each layer of the tree.
+
+To summarize, we have demonstrated that \tool is expressive enough to implement various
+state-of-the-art classifiers. We discuss scalability next. 
+%dataset | size | gates | and | mul | depth | length | comm | timeL | timeW
+
+
+\begin{table*}
+\begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
+Name       & LAN time (s) & WAN time (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & depth & LOC\\
+\hline
+Chars4k    &  0.1         & 0.7         & 2            & 18k    & 3k    &  85k     & 1   & 89\\
+\hline
+USPS       &  0.2         & 0.9         & 4            & 62k    & 2k    &  285k    & 2   & 156\\
+\hline
+WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k    & 3   & 283\\
+\hline
+\end{tabular}
+
+ \caption{Bonsai benchmarks}
+ \label{tab:bonsai} 
+\end{table*}
+
+\subsection{Pipelining}
+\label{sec:pipeeval}
+The largest benchmark of \minion~\cite{minionn} is a DNN for CIFAR-10 dataset~\cite{cifar}.
+The classifier's task is to categorize colored ($32\times 32$) images into 10 classes. A secure evaluation of this DNN needs more memory than what is available
+on our machines. Therefore, we use pipelining and divide the computation into seven stages.
+The first step does a convolution with 64 output channels and a ReLU activation.
+The next four stages together perform a convolution that involves multiplying a $64\times 576$ matrix with a
+$576\times 1024$ matrix. The sixth stage performs a ReLU and a convolution.
+The final stage has four convolutions, five ReLUs, and a fully connected layer.
+The total number of lines of \tool code for this benchamrk is 336 lines.
+
+
+The results in Table~\ref{tab:cifar} show the end-to-end results as well as the statistics for the sixth stage (the heaviest stage). 
+The number of gates are in millions, hence the suffix `m' in the last three columns.
+For this DNN, \minion takes 544 seconds and communicates 9272 Mb. 
+Like the results in Table~\ref{tab:nn}, \tool generated implementations are competitive with \minion here as well. Therefore, we believe that (with pipelining) \tool generated generic 2PC implementations can scale to arbitrary sized computations  while maintaining performance
+competitive with existing specialized protocols for secure prediction.
+In particular, for a large enough DNN, \minion would run out of memory
+but a pipelined \tool implementation would still succeed.
+\begin{table}
+\begin{tabular}{c|c|c|c |c|c|c}
+           &  LAN (s) & WAN (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates \\
+\hline
+Total      &  265.6       & 647.5        & 40683       & 21m    & 61m    &  337m  \\
+\hline
+Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  \\
+\hline
+\end{tabular}
+
+ \caption{Pipelining results}
+ \label{tab:cifar} 
+\end{table}
+
+%stage | time | comm | gates | mul | add | depth

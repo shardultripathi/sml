@@ -27,7 +27,7 @@ blockComm
 
 declaration
     : varType arrDecl ';'
-    | (varType Ident)? ';'
+    | ('public'? varType Ident)? ';'
 ;
 
 varType

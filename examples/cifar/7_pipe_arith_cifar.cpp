@@ -54,13 +54,13 @@ while(!fin.eof()){
 }
 fin.close();
 }
-if(role == SERVER){
+if(role == CLIENT){
 ifstream fin("c4in");
 while(!fin.eof()){
 	uint32_t i, j, val;
 	fin >> i >> j >> val;
 	c4in[i][j] = val;
-	s_a_c4in[i][j]= acirc->PutINGate(c4in[i][j] ,bitlen,SERVER);
+	s_a_c4in[i][j]= acirc->PutINGate(c4in[i][j] ,bitlen,CLIENT);
 	
 }
 fin.close();

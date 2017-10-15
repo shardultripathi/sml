@@ -5,6 +5,8 @@
 // uint16_t x[100];
 uint32_t a1;
 uint32_t a2;
+public uint32_t x;
+x = 5;
 // a1 = -a2;
 // a1 = ~a2;
 
@@ -12,53 +14,13 @@ a1 = 92;
 a1 = a1 @> 3;
 for uint32_t i = [0:100] {
     for uint32_t j = [0:10] {
+        x = i + j;
+        a1 = x;
+        a1 = a1 + x;
         if (i > j) {
             a1 = a1 + 1;
         }
     }
 }
-// if (10 > i) {
-//     a1 = a1 + 1;
-// }
-// for uint32_t i = [0:100] {
-//     b[i] = input2(2);
-// }
-// for uint32_t i = [0:100] {
-//     a[i] = b[i] & a[i];
-// }
-// uint32_t c[100];
-// for uint32_t i = [0:100] {
-//     c[i] = 2;
-// }
-// for uint32_t i = [0:100] {
-//     a[i] = b[i] + c[i];
-// }
-
-
-// uint32_t a1;
-// a1 = input1(2);
-// uint32_t a2;
-// a2 = input1(2);
-// uint32_t a3;
-// a3 = input2(2);
-
-// a1 = (a2 & a3) + a3;
-
-// for uint32_t i = [0:100] {
-//     a[i] = input1(50);
-//     b[i] = input2(60);
-// }
-
-// for uint32_t i = [0:100] {
-//     c[i] = a[i] & b[i];
-// }
-
-// for uint32_t i = [0:100] {
-//     a[i] = a[i] & b[i];
-// }
-
-// for uint32_t i = [0:100] {
-//     d[i] = a[i] + b[i];
-// }
 
 output(a1);

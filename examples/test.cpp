@@ -1,4 +1,4 @@
-ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 100000000);
+ABYParty *party = new ABYParty(role, address, port, seclvl, bitlen, nthreads, mt_alg, 120000000);
 vector<Sharing*>& sharings = party->GetSharings();
 Circuit* ycirc = sharings[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = sharings[S_ARITH]->GetCircuitBuildRoutine();
@@ -7,6 +7,8 @@ uint32_t a1;
 share *s_a_a1;
 uint32_t a2;
 share *s_a_a2;
+uint32_t x;
+x = 5;
 a1 = 92 ;
 s_a_a1 = acirc->PutCONSGate( a1 ,bitlen);
 share *s_y_a1 = ycirc->PutA2YGate( s_a_a1 );
@@ -22,14 +24,20 @@ for (uint32_t i = 0; i < 100; i++)
 {
     for (uint32_t j = 0; j < 10; j++)
     {
+        x = i+j;
+        a1 = x ;
+        s_a_a1 = acirc->PutCONSGate( a1 ,bitlen);
+        uint32_t _tmp_3 = x ;
+        share * s_a__tmp_3 = acirc->PutCONSGate( _tmp_3 ,bitlen);
+        s_a_a1 = acirc->PutADDGate( s_a_a1 , s_a__tmp_3 );
         if ( i>j )
             {
-                uint32_t _tmp_3 = 1 ;
-                share * s_a__tmp_3 = acirc->PutCONSGate( _tmp_3 ,bitlen);
-                s_a_a1 = acirc->PutADDGate( s_a_a1 , s_a__tmp_3 );
+                uint32_t _tmp_4 = 1 ;
+                share * s_a__tmp_4 = acirc->PutCONSGate( _tmp_4 ,bitlen);
+                s_a_a1 = acirc->PutADDGate( s_a_a1 , s_a__tmp_4 );
             }
     }
 }
-share * s_a_tmp_4 = acirc->PutOUTGate( s_a_a1 , ALL);
+share * s_a_tmp_5 = acirc->PutOUTGate( s_a_a1 , ALL);
 party->ExecCircuit();
-uint32_t _output5 = s_a_tmp_4->get_clear_value<uint32_t>();
+uint32_t _output6 = s_a_tmp_5->get_clear_value<uint32_t>();

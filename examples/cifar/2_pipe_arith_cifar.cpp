@@ -26,13 +26,13 @@ while(!fin.eof()){
 }
 fin.close();
 }
-if(role == SERVER){
+if(role == CLIENT){
 ifstream fin("c2in");
 while(!fin.eof()){
 	uint32_t i, j, val;
 	fin >> i >> j >> val;
 	c2in[i][j] = val;
-	s_a_c2in[i][j]= acirc->PutINGate(c2in[i][j] ,bitlen,SERVER);
+	s_a_c2in[i][j]= acirc->PutINGate(c2in[i][j] ,bitlen,CLIENT);
 	
 }
 fin.close();
@@ -110,11 +110,11 @@ share * s_a_tmp_2 = acirc->PutOUTGate( s_a__tmp_3 , ALL);
 auto s_a_c2out_o = make_vector<share*>(64, 1024);
 for(int i = 0; i < 16; i++) {
 	for(int j = 0; j < 1024; j++) {
-		s_a_c2out_o[i][j] = acirc->PutOUTGate(s_a_c2out[i][j], SERVER);
+		s_a_c2out_o[i][j] = acirc->PutOUTGate(s_a_c2out[i][j], CLIENT);
 	}
 }
 party->ExecCircuit();
-if(role == SERVER) {
+if(role == CLIENT) {
 	ofstream fout("c2out", std::ofstream::out | std::ofstream::app);
 	for(int i = 0; i < 16; i++) {
 		for(int j = 0; j < 1024; j++) {
