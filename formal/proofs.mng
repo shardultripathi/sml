@@ -101,25 +101,15 @@
 
 \section{Formal Development}
 
-Correctness theorem that we will aim at:
-\begin{theorem}[Soundness]
-If:
-
-\begin{itemize}
-\item $[[G |- sc ~> c | G']]$
-\item $[[G ~ srho]]$
-\item $[[G |- srho ~> rho; crho1, crho2]]$
-\end{itemize}
-
-Then:
-
-\begin{itemize}
-\item $[[srho |- sc !! srho'; sobs]]$
-\item $[[rho |- c !! rho' ; ckt]]$
-\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
-\end{itemize}
-
-\end{theorem}
+\begin{lemma}[Value inversion]
+  Inversion lemma for values:
+  
+  \begin{enumerate}
+  \item If $[[sv : uint]]$, then $[[sv = n]]$
+  \item If $[[sv : bool]]$, then $[[sv = true]]$ or $[[sv = false]]$
+  \item If $[[sv : array bt n]]$, then $[[sv = [consi] n]]$ and $[[consi : bt]]$
+  \end{enumerate}
+\end{lemma}
 
 \begin{lemma}[Soundness of scalar expressions]
   If
@@ -162,5 +152,57 @@ Then:
 \begin{proof}
   Proof by Induction on (1).
 \end{proof}
+
+\begin{lemma}[Target semantics correspondence]
+If:
+
+\begin{enumerate}
+\item $[[G |- sc ~> c | G']]$
+\item $[[G ~ srho]]$
+\item $[[G |- srho ~> rho; crho1, crho2]]$
+\item $[[srho |- sc !! srho'; sobs]]$
+\end{enumerate}
+
+then:
+
+\begin{enumerate}[(a)]
+\item $[[rho |- c !! rho' ; ckt]]$
+\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
+\end{enumerate}
+
+\end{lemma}
+
+\begin{lemma}[Soundness of source semantics]
+If:
+
+\begin{enumerate}
+\item $[[G |- sc ~> c | G']]$
+\item $[[G ~ srho]]$
+\end{enumerate}
+
+then, $[[srho |- sc !! srho'; sobs]]$
+
+\end{lemma}
+  
+\begin{theorem}[Soundness]
+If:
+
+\begin{itemize}
+\item $[[G |- sc ~> c | G']]$
+\item $[[G ~ srho]]$
+\item $[[G |- srho ~> rho; crho1, crho2]]$
+\end{itemize}
+
+then:
+
+\begin{itemize}
+\item $[[srho |- sc !! srho'; sobs]]$
+\item $[[rho |- c !! rho' ; ckt]]$
+\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
+\end{itemize}
+
+\end{theorem}
+
+
 
 \end{document}
