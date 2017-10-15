@@ -6,14 +6,16 @@ OTT_INCLUDED_FILE=calc_included.tex
 OTT_OVERRIDE_FILE=calc_override.tex
 
 FORMAL=formal.tex
+PROOFS=proofs.tex
 
 all:
-	$(OTT) $(OTT_FLAGS) -merge true $(OTT_FILE) -o $(OTT_INCLUDED_FILE) -tex_filter formal.mng formal.tex
+	$(OTT) $(OTT_FLAGS) -merge true $(OTT_FILE) -o $(OTT_INCLUDED_FILE) -tex_filter formal.mng formal.tex -tex_filter proofs.mng proofs.tex
 	#hack: can't figure out why it doesn't work for me without this
 	perl -pe 's|(\\mathit\{.*?\})|\\ensuremath{\1}|g' $(OTT_INCLUDED_FILE) &> __tmp.tex
 	cp __tmp.tex $(OTT_INCLUDED_FILE)
 	#$(OTT) $(OTT_FLAGS)  empty.ott
 	pdflatex -interaction=nonstopmode $(FORMAL)
+	pdflatex -interaction=nonstopmode $(PROOFS)
 
 clean:
 	rm -f *.aux *.log __tmp.tex $(OTT_INCLUDED_FILE) $(OTT_OVERRIDE_FILE)

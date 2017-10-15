@@ -99,83 +99,68 @@
 
 \begin{document}
 
-\begin{figure}
-\grammartabularSTY{\ottbt\\\ottst\\\ottcons\\\ottse\\\ottsc}
-\caption{Source language}
-\end{figure}
+\section{Formal Development}
 
-\begin{figure}
-\grammartabularSTY{\ottsv\\\ottsrho\\\ottsobs}
-\caption{Source runtime}
-\end{figure}
+Correctness theorem that we will aim at:
+\begin{theorem}[Soundness]
+If:
 
-\begin{figure}
-  \ottdefnsJEvalSE
-  \caption{Source expression evaluation}
-\end{figure}
+\begin{itemize}
+\item $[[G |- sc ~> c | G']]$
+\item $[[G ~ srho]]$
+\item $[[G |- srho ~> rho; crho1, crho2]]$
+\end{itemize}
 
-\begin{figure}
-  \ottdefnsJEvalSC
-  \caption{Source command evaluation}
-\end{figure}
+Then:
 
-\begin{figure}
-  \ottdefnsJSVTyping
-  \caption{Value typing}
-\end{figure}
+\begin{itemize}
+\item $[[srho |- sc !! srho'; sobs]]$
+\item $[[rho |- c !! rho' ; ckt]]$
+\item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
+\end{itemize}
 
-\begin{figure}
-  \grammartabularSTY{\otts\\\ottl\\\ottt\\\otte\\\ottc\\\ottG}
-  \caption{Target language}
-\end{figure}
+\end{theorem}
 
-\begin{figure}
-  \ottdefnsJCompileE
-  \caption{Expression compilation}
-\end{figure}
+\begin{lemma}[Soundness of scalar expressions]
+  If
+  \begin{enumerate}
+  \item $[[G |- se : l bt ~> e]]$
+  \item $[[G ~ srho]]$
+  \item $[[G |- srho ~> rho; crho1, crho2]]$
+  \end{enumerate}
+  Then
+  \begin{enumerate}[(a)]
+  \item $[[srho |- se !! sv]]$
+  \item $[[sv : bt]]$
+  \item $[[rho |- e !! v; ckt]]$
+  \end{enumerate}
+  where either $[[l = public]]$, $[[v eq sv]]$, and $[[ckt = emp]]$
 
-\begin{figure}
-  \ottdefnsJCompileC
-  \caption{Command compilation}
-\end{figure}
+  $\;\;\;\;\;$or $\exists$$[[r]], [[s]].$ $[[l = s]]$, $[[v = r]]$, $[[crho1, crho2 |- ckt !! crho1', crho2' ; emp]]$, and $[[combine s crho1'[r] crho2'[r] = sv]]$.
+\end{lemma}
+\begin{proof}
+  Proof by Induction on (1).
+\end{proof}
 
-\begin{figure}
-  \grammartabularSTY{\ottr\\\ottw\\\ottv\\\ottckt\\\ottrho}
-  \caption{Target runtime}
-\end{figure}
+\begin{lemma}[Soundness of array expressions]
+  If
+  \begin{enumerate}
+  \item $[[G |- se : l bt array n ~> e]]$
+  \item $[[G ~ srho]]$
+  \item $[[G |- srho ~> rho; crho1, crho2]]$
+  \end{enumerate}
+  Then
+  \begin{enumerate}[(a)]
+  \item $[[srho |- se !! [consi] n]]$
+  \item $[[ [consi] n : array bt n]]$
+  \item $[[rho |- e !! v; ckt]]$
+  \end{enumerate}
+  where either $[[v eq [consi] n]]$ and $[[ckt = emp]]$
 
-\begin{figure}
-  \ottdefnsJEvalE
-  \caption{Target expression evaluation}
-\end{figure}
-
-\begin{figure}
-  \ottdefnsJEvalC
-  \caption{Target command evaluation}
-\end{figure}
-
-\begin{figure}
-  \grammartabularSTY{\ottb\\\ottcrho}
-  \caption{Circuit runtime}
-\end{figure}
-
-\begin{figure}
-  \ottdefnsJEvalCirc
-  \caption{Circuit evaluation}
-\end{figure}
-
-\begin{figure}
-  \ottdefnsJSEnvGammaEquiv
-  \caption{Source environment and type environment consistency}
-\end{figure}
-
-\begin{figure}
-  \ottdefnsJTEnvCompile
-  \caption{Source environment to target environment compilation}
-\end{figure}
-
-%% \begin{figure}
-%% \ottdefnreduce{}
-%% \end{figure}
+  $\;\;\;\;\;$or $\exists$$[[ri]], [[s]].$ $[[v = [ri] n]]$, $[[crho1, crho2 |- ckt !! crho1', crho2' ; emp]]$, and $\forall i$. $[[combine s crho1'[ri] crho2'[ri] = consi]]$.
+\end{lemma}
+\begin{proof}
+  Proof by Induction on (1).
+\end{proof}
 
 \end{document}

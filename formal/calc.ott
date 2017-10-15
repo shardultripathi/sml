@@ -67,7 +67,7 @@ sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
   | cons n                            :: M :: NthArr     {{ tex [[cons]]_{[[n]]} }}
   | sv [ n mapsto cons ]              :: M :: ArrUpd     {{ tex [[sv]][ [[n]] \mapsto [[cons]] ] }}
   | whateversv                        :: M :: WhatEv     {{ tex \_ }}
-  | combine s b1 b2                   :: M :: CombSh     {{ tex \mathcal{D}_{[[s]]}([[b1]], [[b2]] }}
+  | combine s b1 b2                   :: M :: CombSh     {{ tex \mathcal{D}_{[[s]]}([[b1]], [[b2]]) }}
   | sv + 1                            :: M :: Incr
 
 srho {{ tex \rho }} :: 'srho_' ::= {{ com Source runtime environment }}
@@ -141,6 +141,8 @@ formula :: formula_ ::=
    | formula1 or formula2  :: :: for        {{ tex [[formula1]] \vee [[formula2]] }}
    | ( formula1 )          :: :: paren      {{ tex [[formula1]] }}
    | default st = sv       :: :: sdefaultt  {{ tex \mathsf{default}([[st]]) = [[sv]] }}
+   | v eq sv               :: :: sveqv      {{ tex [[v]] = [[sv]] }}
+   | ckt1 = ckt2           :: :: ckteq
 
 defns
 JEvalSC :: '' ::=
