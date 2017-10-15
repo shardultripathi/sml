@@ -4,10 +4,15 @@
 \usepackage{amsmath}
 
 % required by LJ's LaTeX
-\usepackage{amssymb}
+\usepackage{amssymb,amsmath,amsfonts}
+\usepackage{amsthm}
+
+\usepackage{stmaryrd}
 
 % the package that allows customized layout described in this document
 \usepackage{ottlayout}
+
+%\ottstyledefaults{premiselayout=justify}
 
 % the automatically generated file (with our Makefile) to link the generated
 % LaTeX with the ottlayout package
@@ -22,6 +27,74 @@
 \newcommand{\comm}[3]{\color{#1}[#2: #3]}
 \newcommand{\aseem}[1]{\comm{magenta}{Aseem}{#1}}
 
+\usepackage{aliascnt}
+
+
+\newtheorem{propositionI}{Proposition}
+\def\propositionIautorefname{Proposition}
+
+\newaliascnt{theoremI}{propositionI}
+\newtheorem{theoremI}[theoremI]{Theorem}
+\aliascntresetthe{theoremI}
+\def\theoremIautorefname{Theorem}
+
+\newaliascnt{lemmaI}{propositionI}
+\newtheorem{lemmaI}[lemmaI]{Lemma}
+\aliascntresetthe{lemmaI}
+\def\lemmaIautorefname{Lemma}
+
+\newaliascnt{definitionI}{propositionI}
+\newtheorem{definitionI}[definitionI]{Definition}
+\aliascntresetthe{definitionI}
+\def\definitionIautorefname{Definition}
+
+\newaliascnt{corollary}{propositionI}
+\newtheorem{corollary}[corollary]{Corollary}
+\aliascntresetthe{corollary}
+\def\corollaryautorefname{Corollary}
+
+\newtheorem{requirement}{Requirement}
+\newtheorem{conjecture}{Conjecture}
+
+
+\newenvironment{proposition}[1][]{%
+  \propositionI[#1]%
+  \ifx\relax#1\relax\else
+%    \addToLabel{ (#1)}
+  \fi
+}{%
+  \endpropositionI
+}
+
+\newenvironment{lemma}[1][]{%
+  \lemmaI[#1]%
+  \ifx\relax#1\relax\else
+%    \addToLabel{ (#1)}
+  \fi
+}{%
+  \endlemmaI
+}
+
+\newenvironment{theorem}[1][]{%
+  \theoremI[#1]%
+  \ifx\relax#1\relax\else
+%    \addToLabel{ (#1)}
+  \fi
+}{%
+  \endtheoremI
+}
+
+\newenvironment{definition}[1][]{%
+  \definitionI[#1]%
+  \ifx\relax#1\relax\else
+%    \addToLabel{ (#1)}
+  \fi
+}{%
+  \enddefinitionI
+}
+
+
+
 \begin{document}
 
 \section{Formal Development}
@@ -34,23 +107,23 @@ If:
 \item $[[G |- sc ~> c | G']]$
 \item $[[G ~ srho]]$
 \item $[[G |- srho ~> rho; crho1, crho2]]$
+\item $[[srho |- sc !! srho'; sobs]]$
 \end{itemize}
 
 Then:
 
 \begin{itemize}
-\item $[[srho |- sc !! srho'; sobs]]$
 \item $[[rho |- c !! rho' ; ckt]]$
 \item $[[crho1, crho2 |- ckt !! crho1', crho2'; sobs]]$
 \end{itemize}
 
 \begin{figure}
-\ottgrammartabular{\otts\ottinterrule\ottl\ottinterrule\ottbt\ottinterrule\ottt\ottinterrule\ottcons\ottinterrule\ottse\ottinterrule\ottsc\ottinterrule}
+\grammartabularSTY{\otts\\\ottl\\\ottbt\\\ottst\\\ottt\\\ottcons\\\ottse\\\ottsc}
 \caption{Source language}
 \end{figure}
 
 \begin{figure}
-\ottgrammartabular{\ottsv\ottinterrule\ottsrho\ottinterrule\ottsobs\ottinterrule}
+\grammartabularSTY{\ottsv\\\ottsrho\\\ottsobs}
 \caption{Source runtime}
 \end{figure}
 
@@ -70,7 +143,7 @@ Then:
 \end{figure}
 
 \begin{figure}
-  \ottgrammartabular{\otte\ottinterrule\ottc\ottafterlastrule\ottG\ottafterlastrule}
+  \ottgrammartabular{\otte\\\ottc\\\ottG}
   \caption{Target language}
 \end{figure}
 
@@ -85,7 +158,7 @@ Then:
 \end{figure}
 
 \begin{figure}
-  \ottgrammartabular{\ottr\ottinterrule\ottw\ottinterrule\ottv\ottinterrule\ottckt\ottinterrule\ottrho\ottinterrule}
+  \ottgrammartabular{\ottr\\\ottw\\\ottv\\\ottckt\\\ottrho}
   \caption{Target runtime}
 \end{figure}
 
@@ -100,7 +173,7 @@ Then:
 \end{figure}
 
 \begin{figure}
-  \ottgrammartabular{\ottb\ottinterrule\ottcrho\ottinterrule}
+  \ottgrammartabular{\ottb\\\ottcrho}
   \caption{Circuit runtime}
 \end{figure}
 
