@@ -118,7 +118,7 @@ Then:
 \end{itemize}
 
 \begin{figure}
-\grammartabularSTY{\otts\\\ottl\\\ottbt\\\ottst\\\ottt\\\ottcons\\\ottse\\\ottsc}
+\grammartabularSTY{\ottbt\\\ottst\\\ottcons\\\ottse\\\ottsc}
 \caption{Source language}
 \end{figure}
 
@@ -143,7 +143,7 @@ Then:
 \end{figure}
 
 \begin{figure}
-  \ottgrammartabular{\otte\\\ottc\\\ottG}
+  \ottgrammartabular{\otts\\\ottl\\\ottt\\\otte\\\ottc\\\ottG}
   \caption{Target language}
 \end{figure}
 
