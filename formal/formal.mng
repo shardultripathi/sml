@@ -165,6 +165,11 @@
 \end{figure}
 
 \begin{figure}
+  \ottdefnsJSTypeTypeEquiv
+  \caption{Source type and target type consistency}
+\end{figure}
+
+\begin{figure}
   \ottdefnsJSEnvGammaEquiv
   \caption{Source environment and type environment consistency}
 \end{figure}

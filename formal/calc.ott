@@ -125,6 +125,7 @@ srho |- input bt i !! cons
 grammar
 formula :: formula_ ::=  
    | judgement             :: :: judgement
+   | se1 = se2             :: :: seeq
    | sv1 gt sv2            :: :: ngt        {{ tex [[sv1]] > [[sv2]] }}
    | sv1 lt sv2            :: :: nlt        {{ tex [[sv1]] < [[sv2]] }}
    | sv1 geq sv2           :: :: ngeq       {{ tex [[sv1]] \geq [[sv2]] }}
@@ -257,7 +258,6 @@ formula :: formula_ ::=
    | G1 = G2               :: :: gammaeq
    | sv1 = sv2             :: :: sveq
    | b1 b2 = share s cons  :: :: share      {{ tex ([[b1]], [[b2]]) = \mathcal{E}_{[[s]]}([[cons]]) }}
-   | st eqv t              :: :: stt        {{ tex [[st]] \sim [[t]] }}
 
 
 defns
@@ -377,10 +377,10 @@ w {{ tex \widetilde{w} }} :: 'w_' ::= {{ com Compiled base value }}
 
 v {{ tex \widetilde{v} }} :: 'v_' ::= {{ com Compiled value }}
   | w                                 ::   :: BaseValue
-  | [ wi ] n                          ::   :: Array  {{ tex [ [[wi]] ]_{[[n]]} }}
-  | rho [ x ]                         :: M :: EnvLookup
-  | w n                               :: M :: NthArr {{ tex [[w]]_{[[n]]} }}
-  | v [ n mapsto w ]                  :: M :: ArrUpd {{ tex [[v]][ [[n]] \mapsto [[w]] ] }}
+  | [ wi ] n                          ::   :: Array      {{ tex [ [[wi]] ]_{[[n]]} }}
+  | rho [ x ]                         :: M :: EnvLookup  {{ tex [[rho]]([[x]]) }}
+  | w n                               :: M :: NthArr     {{ tex [[w]]_{[[n]]} }}
+  | v [ n mapsto w ]                  :: M :: ArrUpd     {{ tex [[v]][ [[n]] \mapsto [[w]] ] }}
   | v + 1                             :: M :: Incr
 
 ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
@@ -581,6 +581,18 @@ crho1', crho2' |- ckt2 !! crho1'', crho2''; sobs2
 -------------------------------------------------------------- :: seq
 crho1, crho2 |- ckt1, ckt2 !! crho1'', crho2''; sobs1, sobs2
 
+defns
+JSTypeTypeEquiv :: '' ::=
+
+defn
+st eqv t :: :: sttequiv :: 'st_' {{ tex [[st]] \sim [[t]] }}
+by
+
+------------ :: bt
+bt eqv l bt
+
+---------------------------- :: arr
+array bt n eqv l bt array n
 
 defns
 JSEnvGammaEquiv :: '' ::=
