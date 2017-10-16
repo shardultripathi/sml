@@ -151,7 +151,20 @@
   $\;\;\;\;\;$or $\exists$$[[r]], [[s]].$ $[[l = s]]$, $[[v = r]]$, $[[crho1, crho2 |- ckt !! crho1', crho2' ; emp]]$, and $[[combine s crho1'[r] crho2'[r] = sv]]$.
 \end{lemma}
 \begin{proof}
-  Proof by Induction on (1).
+Proof by induction on the derivation (1), case analysis on the last rule.
+
+\noindent Case {\sc{s\_cons}}: $[[se = cons]]$, $[[bt = typeof cons]]$, $[[l = public]]$, $[[e = cons]]$.
+
+(a) follows from {\sc{se\_const}}.
+
+(b) follows from {\sc{v\_cons}}.
+
+(c) follows from {\sc{ee\_const}} with $[[ckt = emp]]$.
+
+And first case of either holds.
+
+\noindent Case {\sc{s\_var}}: $[[se = x]]$, $[[l bt = t]]$, $[[e = x]]$.
+
 \end{proof}
 
 \begin{lemma}[Soundness of array expressions]

@@ -125,6 +125,7 @@ srho |- input bt i !! cons
 grammar
 formula :: formula_ ::=  
    | judgement             :: :: judgement
+   | se1 = se2             :: :: seeq
    | sv1 gt sv2            :: :: ngt        {{ tex [[sv1]] > [[sv2]] }}
    | sv1 lt sv2            :: :: nlt        {{ tex [[sv1]] < [[sv2]] }}
    | sv1 geq sv2           :: :: ngeq       {{ tex [[sv1]] \geq [[sv2]] }}
