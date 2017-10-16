@@ -111,6 +111,28 @@
   \end{enumerate}
 \end{lemma}
 
+\begin{lemma}[Consistency of source type and target type]
+  If $[[st eqv t]]$, then one of the following holds:
+  \begin{enumerate}
+  \item $[[st = bt]]$ and $[[t = l bt]]$.
+  \item $[[st = array bt n]]$ and $[[t = l bt array n]]$.
+  \end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Consistency of type environment and source runtime environment]
+  If $[[G ~ srho]]$ and $[[G(x) = t]]$, then $[[srho[x] = sv]]$ s.t. $[[sv : st]]$ and $[[st eqv t]]$.
+\end{lemma}
+
+\begin{lemma}[Compilation of source environment]
+  If $[[G |- srho ~> rho; crho1, crho2]]$ and $[[G(x) = t]]$, then one of the following holds:
+  \begin{enumerate}
+  \item $[[t = public bt]]$, $[[srho[x] = cons]]$, and $[[rho[x] = cons]]$.
+  \item $[[t = s bt]]$, $[[srho[x] = cons]]$, $[[rho[x] = r]]$, and $[[crho1[r] crho2[r] = share s cons]]$.
+  \item $[[t = public bt array n]]$, $[[srho[x] = [consi] n]]$, and $[[rho[x] = [consi] n]]$.
+  \item $[[t = s bt array n]]$, $[[srho[x] = [consi] n]]$, $[[rho[x] = [ri] n]]$, $[[crho1[ri] crho2[ri] = share s consi]]$
+  \end{enumerate}
+\end{lemma}
+
 \begin{lemma}[Soundness of scalar expressions]
   If
   \begin{enumerate}
