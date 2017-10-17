@@ -1,46 +1,38 @@
-\section{Introduction}
-\label{sec:intro}
 \aseem{Is the title too general :). May be we want something more
   specific on the lines of A compiler for mixed efficient MPC
   protocols, or something?}
+
+\section{Introduction}
+\label{sec:intro}
+
 Today it is hard for developers to create secure implementations using cryptographic techniques.
 Typical developers lack an understanding of cryptography protocols
-and cannot be expected to implement them correctly without tool
-support.\aseem{We might want to bring in efficiency in the first
-  couple of sentences. Else, we are contradicting the previous two
-  sentences below when we say ``He can code up the functionality in a
-  programmer friendly DSL''.}
+and cannot be expected to implement them correctly and efficiently without tool
+support.
 In an ideal world, a developer declares the functionality to be implemented
 in a general purpose programming language and an automatic tool takes care
 of all the cryptography and generates a secure and efficient implementation  of the functionality. 
 This paper provides a language-based solution to make
-secure multiparty computation (SMC) accessible to the software developer community. 
+secure  computation  accessible to the software developer community. 
 
 %Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
 
 %Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
 
-\aseem{May be it is in transition still ... but the paragraph below
-  should be the first paragraph of the paper, else it seems strange to
-  introduce SMC after using SMC in the first paragraph? Also, SMC or MPC?}
-Secure multi-party computation \cite{yao,gmw} (SMC) is a powerful
+Secure multi-party computation (\mpc) \cite{yao,gmw} is a powerful
 cryptographic tool that allows a set of mutually distrusting parties
 to compute a joint function of their secret inputs. Examples of these
-include various machine learning prediction algorithm where one party
-holds the secret input such as a medical report and the other party
-holds the ML model for disease prediction. Since the introduction of
-SMC in 1980's, there has been a large body of work \cite{..} that has
-transformed SMC from a mere theoretical tool to something practically
-efficient and usable. Hence, there have been efforts to make SMC
+include {\em secure prediction} \cite{shafindss,wu,barni,minionn,secureml}. Here,  one party holds the propriety classifier for disease, genomics or spam detection and the other party  
+holds the private input and the second party learns the classification label. Since the introduction of
+\mpc in 1980's, there has been a long sequence of work that has
+transformed \mpc from a mere theoretical tool to something practically
+efficient and usable. Hence, there have been efforts to make \mpc
 accessible to non-specialist programmers. To understand the
-state-of-the-art, let us consider the following toy
-example.\aseem{Could we not call it a toy example, and say that this
-  computation is part (sub-computation) of some real ML application or
-  something?}
+state-of-the-art, let us consider the following 
+example that is the sub-computation in many classification tasks.
 
 Suppose a developer wants to compute $w^Tx >b$ securely using
-SMC. With the current techniques, he has two options.\aseem{Nice
-  first example.} \aseem{We should
+\mpc. With the current techniques, he has three options. \aseem{We should
   use she for the programmer instead of he?}
 \begin{tiret}
 \item He can code up the functionality in a programmer friendly
@@ -48,29 +40,27 @@ SMC. With the current techniques, he has two options.\aseem{Nice
   \cite{lambdaps,wysteria,oblivm,smcl} that would automatically
   compile it to an SMC protocol. The downside is that all of these
   works build on a cryptographic back-end that is either entirely
-  boolean \cite{yao,gmw} or entirely arithmetic \cite{homo}\aseem{This
-    homo citation is broken.}. The efficiency of the generated SMC protocol is hence, bounded by the possibility of efficiently representing the function in a form that is compatible with the cryptographic back-end used. For instance, over $\ell$-bit integers, multiplication requires a boolean circuit of size  $O(\ell^2)$. 
-For better efficiency, we would like to evaluate $w^Tx$ using an Arithmetic circuit and the comparison using a boolean circuit.
-In fact, most interesting functions require a mix of arithmetic and boolean computations.
-\item To address this issue, recently Demmler et al. \cite{aby} gave a cryptographic protocol for SMC where the parties can mix arithmetic and boolean computations. \footnote{Need to note somewhere that many works combined HE and Yao. Look at ABY for references.}
+  boolean \cite{yao,gmw} or entirely arithmetic \cite{homo}. The efficiency of the generated \mpc protocol is hence, bounded by the possibility of efficiently representing the function in a form that is compatible with the cryptographic back-end used. For instance, over $\ell$-bit integers, multiplication requires a boolean circuit of size  $O(\ell^2)$. 
+For better efficiency, we would like to evaluate $w^Tx$ using an arithmetic circuit and the comparison using a boolean circuit.
+In fact, most interesting functions require a mix of arithmetic and boolean computations for efficiency.
+
+\item To address this issue of efficient representation, recently Demmler et al. \cite{aby} gave a cryptographic protocol for \mpc where the parties can mix arithmetic and boolean computations.
 Hence, the second option is to write the functionality in the system developed in \cite{aby}.
 However, using their system requires the programmer to be aware of
-complex trade-offs between arithmetic and boolean cryptographic
-schemes and split the functionality into such parts accordingly. In
+trade-offs between arithmetic and boolean cryptographic
+schemes as well as the complex inter-conversion costs, and manually split the functionality into such parts accordingly. In
 their framework, the programmer is required to write circuits
 consisting of  arithmetic and boolean gates along with appropriate
-conversion gates. In short, the current system of ABY is not suitable
-to be used by non-specialist programmers.\aseem{Doesn't their paper
-  itself say that the framework is not programmable and we need
-  a high-level language and a compiler for mixed protocols?}
+conversion gates. In short, as is also mentioned by the authors, the current system of ABY is not suitable
+to be used by non-specialist programmers. \divya{since they say in future they want to automate the splitting.}
 
-\item Now the third option is to hire a cryptographer to design specialised protocols for the functionalities. 
+\item Finally, the third option is to hire a cryptographer to design a specialized efficient protocol for this functionality such as \cite{shafindss,wu,minionn}. 
 \end{tiret}
-In our work, we achieve the best of all options. 
+In our work, we achieve the best of all the above options. 
 
 
 
-%Unfortunately, implementing functionalities using SMC protocols requires thorough understanding of cryptography. To allow for widespread use of SMC, it is critical that SMC protocols are programmable by non-cryptographic experts. To cater to this, there have been several efforts developing domain-specific languages that are programmer friendly and compile to a SMC protocol. Most notable of these domain specific languages and systems include \cite{...}. All of these works build on a cryptographic back-end that is either entirely boolean \cite{yao,gmw} or arithmetic \cite{homo}. In fact, most of these works use boolean circuits based scheme for completeness\footnote{Note that comparisons cannot be expressed in arithmetic circuits}. However, most interesting functions require a mix of arithmetic and boolean computations.  Examples include ......... As one can expect, compiling these programs to boolean circuits is one of the biggest efficiency bottlenecks. \divya{Our work addresses this performance bottleneck.}
+%Unfortunately, implementing functionalities using \mpc protocols requires thorough understanding of cryptography. To allow for widespread use of \mpc, it is critical that \mpc protocols are programmable by non-cryptographic experts. To cater to this, there have been several efforts developing domain-specific languages that are programmer friendly and compile to a SMC protocol. Most notable of these domain specific languages and systems include \cite{...}. All of these works build on a cryptographic back-end that is either entirely boolean \cite{yao,gmw} or arithmetic \cite{homo}. In fact, most of these works use boolean circuits based scheme for completeness\footnote{Note that comparisons cannot be expressed in arithmetic circuits}. However, most interesting functions require a mix of arithmetic and boolean computations.  Examples include ......... As one can expect, compiling these programs to boolean circuits is one of the biggest efficiency bottlenecks. \divya{Our work addresses this performance bottleneck.}
 
 %To address this issue \divya{on the cryptographic side}, recently Demmler et al. \cite{aby} gave a cryptographic protocol for SMC where the parties can mix arithmetic and boolean computations and claimed potentially great performance benefits. However, using their system requires the programmer to be aware of trade-offs of arithmetic and boolean cryptographic schemes. In their framework, the programmer is required to write circuits consisting of a mix of arithmetic and boolean gates along with appropriate conversion gates. In short, as is also mentioned by the authors themselves, the current system is not suitable to be used by non-specialist programmers.
 
@@ -81,7 +71,7 @@ In this work, we develop and implement our framework \tool\footnote{\tool, read 
 computation that achieves generality, performance and programmer
 productivity. The programmer writes a high level \divya{C-like}
 program (instead of a circuit) to describe the function to be
-computed. Our compiler automatically generates an SMC protocol using a
+computed. Our compiler automatically generates an \mpc protocol using a
 mix of Arithmetic and Boolean compute. Our compiler is general and can
 work with any secure implementation of a mix of arithmetic and boolean
 computations. In our work, we focus on semi-honest secure two-party
@@ -96,7 +86,7 @@ the performance or outperform hand-crafted protocols in most cases (see
 \sectionref{eval}). Below, we will  give an overview of \tool and
 describe our contributions in more detail.
 
-%The programmer is oblivious of the cryptographic back-end being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. \divya{Say something about what kind of backend we want. provides SMC for a mix of arithmetic and boolean circuit with appropriate secure conversion between two types and ABY provides such a framework for semi-honest 2pc.} Our work is compatible with malicious, multiparty as well... etc We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
+%The programmer is oblivious of the cryptographic back-end being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. \divya{Say something about what kind of backend we want. provides \mpc for a mix of arithmetic and boolean circuit with appropriate secure conversion between two types and ABY provides such a framework for semi-honest 2pc.} Our work is compatible with malicious, multiparty as well... etc We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
 
 \subsection{\tool: Overview and Contributions} 
 \label{sec:contrib}
@@ -104,10 +94,8 @@ describe our contributions in more detail.
 
 \textbf{Programmability.} \tool is a programmer-friendly framework to
 express the function to be computed and uses a mix of arithmetic and
-boolean SMC back-ends. We illustrate the above toy example of $w^Tx
->b$ in our language in \figureref{ex-sml}.\aseem{Some questions on the
-  example, related to initialization, will discuss in tomorrow's
-  meeting.} As is clear from the code,
+boolean \mpc back-ends. We illustrate the above toy example of $w^Tx
+>b$ in our language in \figureref{ex-sml}. As is clear from the code,
 the programmer is not required to write keywords such as {\em secret}
 or {\em public} and can remain completely oblivious of the
 cryptographic back-end. In contrast, \figureref{ex-aby} illustrates
@@ -128,12 +116,12 @@ Our experiments show that automatically generated protocols using \tool match th
 \textbf{Type system.} We give a formal {\em type system} for our language and prove useful properties. We prove that if a program type checks in our language then it would run correctly, e.g., there would not be any array index out of bounds error. The programmer writes a single code describing the inputs from each party and the function to be computed. Our compiler automatically generates separate executables for the server and the client that can be executed in the distributed setting. We prove the {\em correctness} for this compilation, i.e., the outputs obtained in the distributed execution are identical to the stand-alone execution by a trusted third party. We formally reduce the {\em security} of our system to the security of the cryptographic back-end. For details on formal language, correctness and security theorems see \sectionref{ld}.
 
 
-\textbf{Pipelining.} Another issue in adoption of SMC is difficulty in scaling to large programs. 
-%In general, SMC implementations struggle in scaling to large programssize of memory on a system limits the largest compute inside the SMC and hence,. 
-The reason being all SMC implementations use a circuit-like representation as an intermediate representation. Hence, the largest compute that can be done securely is upper-bounded by the largest circuit that can fit in memory on a machine. \nc{Should we point out here that ABY itself has an explicit limit on circuit size and also give an example of a program that easily surpasses this bound? Also, hadnt ABY also said something about this? If so, we can mention this.}
-To address this issue, we develop a technique called \emph{pipelining} that allows us to run aribitrarily large programs. At a high level, we break the original program into a sequence of small sub-programs and mask the intermediate outputs using secure secret sharing between the two parties. We appropriately append the share-reconstruction function to the beginning of the subsequent sub-program. Now, we execute each of these sub-programs sequentially in our framework. We provide details of pipelining and prove the correctness and security of this transformation in \sectionref{pipe}.
+\textbf{Pipelining.} Another issue in adoption of \mpc is difficulty in scaling to large programs. 
+%In general, \mpc implementations struggle in scaling to large programssize of memory on a system limits the largest compute inside the SMC and hence,. 
+The reason being all \mpc implementations use a circuit-like representation as an intermediate representation. Hence, the largest compute that can be done securely is upper-bounded by the largest circuit that can fit in memory on a machine. \nc{Should we point out here that ABY itself has an explicit limit on circuit size and also give an example of a program that easily surpasses this bound? Also, hadnt ABY also said something about this? If so, we can mention this.}
+To address this issue, we develop a technique called \emph{pipelining} that allows us to run arbitrarily large programs. At a high level, we break the original program into a sequence of small sub-programs and mask the intermediate outputs using secure secret sharing between the two parties. We appropriately append the share-reconstruction function to the beginning of the subsequent sub-program. Now, we execute each of these sub-programs sequentially in our framework. We provide details of pipelining and prove the correctness and security of this transformation in \sectionref{pipe}.
 
-\textbf{Baseline.} Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted SMC protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
+\textbf{Baseline.} Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted \mpc protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
 Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline for comparison of performance. But, it has been observed multiple times this approach does not even scale on realistic examples.
 
 
@@ -174,7 +162,7 @@ Prior to our work, garbled circuit based two-party computation is cited as the m
 Before ABY \cite{aby}, to improve efficiency, several works proposed
 to mix secure computation protocols based on homomorphic
 encryption with Yao’s garbled circuits protocol, e.g., \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,schropferK11}
-  and developed tools that allowed writing a mixed SMC protocol, e.g., \cite{bogdanov,lone,tasty}. The assignment can
+  and developed tools that allowed writing a mixed \mpc protocol, e.g., \cite{bogdanov,lone,tasty}. The assignment can
 even be done automatically as was shown in \cite{autoS}. 
 However, as noted by ABY, due to high conversion cost between homomorphic encryption and Yao's garbled circuit, these mixed protocols do not gain much over single protocol. Also, none of these works give a high-level developer-friendly language support.
 No prior work has given a formal type system and operational semantics for mixed arithmetic and boolean back-ends.

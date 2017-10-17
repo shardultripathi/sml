@@ -12,7 +12,7 @@ the classifer predicts that the patient has breast cancer if $w^Tx>b$.
 However, for this task Bob needs access to $x$, which is private data of a customer.
 
 A potential customer Alice might not want to reveal $x$ to Bob because of privacy concerns.
-And Bob does not want to reveal $w$ and $b$ because then Alice can steal the model.
+And Bob does not want to reveal $w$ and $b$ because then Alice can steal the model. \divya{Use HIPAA compliance; as it can leak information of patients that was used in training; more compelling argument. See Shafi intro.}
 SMC can help Alice and Bob compute $w^Tx>b$ securely, such that Alice receives the classifier's
 prediction and Bob learns nothing about $x$. Moreover, Alice does not learn anything more about $w$
 and $b$ than what is revealed by the prediction. 
