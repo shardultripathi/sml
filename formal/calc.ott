@@ -304,6 +304,10 @@ l = public or l = bsecret
 ----------------------------------------------- :: gt
 G |- se1 > se2 : l bool ~> e1 > l e2
 
+i in 0 n G |- sei : l bt ~> ei
+-------------------------------------- :: arr
+G |- [sei] n : l bt array n ~> [ei] n
+
 G |- x : l bt array n ~> x
 G |- se : public uint ~> e
 G |= se lt n
