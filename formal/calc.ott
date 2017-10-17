@@ -144,6 +144,7 @@ formula :: formula_ ::=
    | default st = sv       :: :: sdefaultt  {{ tex \mathsf{default}([[st]]) = [[sv]] }}
    | v eq sv               :: :: sveqv      {{ tex [[v]] = [[sv]] }}
    | ckt1 = ckt2           :: :: ckteq
+   | crho1 = crho2         :: :: crhoeq
 
 defns
 JEvalSC :: '' ::=

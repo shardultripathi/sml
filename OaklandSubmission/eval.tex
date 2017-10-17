@@ -208,10 +208,10 @@ Each image in this dataset is a greyscale $28\times 28$ image of digits 0 to 9.
 The first model that the tutorial describes is softmax regression
 that provides an accuracy of 92\%. The classifier here evaluates
 \[
- \mathsf{argmax}_{i} w_i^Tx+b_i
+ \mathsf{argmax}\ Wx+b
 \]
 Here, $i\in [10]$, $x$ is a 784 length vector obtained from the input image,
-each $w_i$ is a 784 length vector, and each $b_i$ is a scalar. 
+each $W$ is a $10\times 784$ matrix, and each $b$ is a $784$ length vector. 
 We implement this classifer in \tool and the results are shown in the first row of Table~\ref{tab:tf}.
 Since, we are not familiar with any other tools that have used this model as a benchmark,
 we only report execution time of \tool generated code.
