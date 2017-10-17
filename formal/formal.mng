@@ -140,7 +140,7 @@
 \end{figure}
 
 \begin{figure}
-  \grammartabularSTY{\ottr\\\ottw\\\ottv\\\ottckt\\\ottrho}
+  \grammartabularSTY{\ottr\\\ottckte\\\ottw\\\ottv\\\ottrho\\\ottcktc}
   \caption{Target runtime}
 \end{figure}
 
@@ -160,8 +160,13 @@
 \end{figure}
 
 \begin{figure}
-  \ottdefnsJEvalCirc
-  \caption{Circuit evaluation}
+  \ottdefnsJEvalCircE
+  \caption{Circuit expression evaluation}
+\end{figure}
+
+\begin{figure}
+  \ottdefnsJEvalCircC
+  \caption{Circuit command evaluation}
 \end{figure}
 
 \begin{figure}
@@ -169,10 +174,10 @@
   \caption{Source type and target type consistency}
 \end{figure}
 
-\begin{figure}
-  \ottdefnsJSEnvGammaEquiv
-  \caption{Source environment and type environment consistency}
-\end{figure}
+%% \begin{figure}
+%%   \ottdefnsJSEnvGammaEquiv
+%%   \caption{Source environment and type environment consistency}
+%% \end{figure}
 
 \begin{figure}
   \ottdefnsJTEnvCompile
