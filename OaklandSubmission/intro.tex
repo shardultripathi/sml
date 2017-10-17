@@ -77,9 +77,7 @@ In our work, we achieve the best of all options.
 
 %%%%%%%Recent works \cite{aby,secureml,minion} have shown that great performance benefit can be obtained by mixing arithmetic and boolean computations in the back-end. Certain computations such as integer multiplication are efficient when implemented using arithmetic SMC \cite{gmw} whereas max(x,0) needs to be computed using a boolean back-end \cite{yao}. More details later.. ABY \cite{aby} requires programmer to be aware of arithmetic and boolean trade-offs and  write high-level circuits consisting of both arithmetic and boolean gates and share-conversion gates. Other works such as \cite{secureml,minion} build on ideas from \cite{aby} and develop tailor made algorithms for neural network training and prediction \cite{ml} and claim huge improvements over only boolean implementations. As is already mentioned in these works, their systems are mere proofs-of-concept and far from being implementable.
 
-In this work, we develop and implement our framework \tool \nc{I still
-  like EasyPC :)} \divya{I agree that \tool is bad. What would be the
-  full form for EasyPC? Shouldn't it be EasySC?} for secure
+In this work, we develop and implement our framework \tool\footnote{\tool, read as ``easy peasy'', stands for Easy 2 Party Computation} for secure
 computation that achieves generality, performance and programmer
 productivity. The programmer writes a high level \divya{C-like}
 program (instead of a circuit) to describe the function to be

@@ -64,8 +64,8 @@ On this example and other small examples, we have found that the compiler genera
 
 
 The \tool compiler provides strong static guarantees. For example, a well typed
-\tool program is guaranteed to execute to termination without errors. A \tool program cannot go into non-termination or dereference illegal memory, i.e., no buffer overflows or underflows can happen at run time. These guarantees are
-much stronger than what are offered by production compilers such as {\tt gcc}.
+\tool program is guaranteed to execute to termination without errors. A \tool program cannot go into non-termination or dereference illegal memory, i.e., no buffer overflows or underflows can happen at run time. Production compilers such as {\tt gcc} provide no such guarantees
+for the code in Figure~\ref{fig:ex-aby}.
 The primary reason that we are able to achieve these guarantees is because
 \tool has been designed to be verifiable and is backed by formal semantics. 
 Furthermore, the compiler output is guaranteed to be a cryptographically secure
