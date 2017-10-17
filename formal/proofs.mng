@@ -205,7 +205,7 @@ then:
 \begin{enumerate}[(a)]
 \item $[[rho |- c !! rho' ; cktc]]$
 \item $[[crho1, crho2 |- cktc !! crho1', crho2'; sobs]]$
-\item $[[G |- srho' ~> rho'; crho1', crho2']]$
+\item $[[G' |- srho' ~> rho'; crho1', crho2']]$
 \end{enumerate}
 
 \end{lemma}
@@ -223,7 +223,7 @@ then:
 
 \begin{enumerate}[(a)]
 \item $[[srho |- sc !! srho'; sobs]]$
-\item $[[G |- srho' ~> rho'; crho1', crho2']]$
+\item $[[G' |- srho' ~> rho'; crho1', crho2']]$
 \end{enumerate}
 
 \end{lemma}
@@ -242,7 +242,7 @@ then:
 \item $[[srho |- sc !! srho'; sobs]]$
 \item $[[rho |- c !! rho' ; cktc]]$
 \item $[[crho1, crho2 |- cktc !! crho1', crho2'; sobs]]$
-\item $[[G |- srho' ~> rho'; crho1', crho2']]$
+\item $[[G' |- srho' ~> rho'; crho1', crho2']]$
 \end{enumerate}
 
 \end{theorem}
