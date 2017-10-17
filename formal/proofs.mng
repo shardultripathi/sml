@@ -102,6 +102,7 @@
 \section{Formal Development}
 
 \begin{lemma}[Value inversion]
+  \label{lem:valinv}
   Inversion lemma for values:
   
   \begin{enumerate}
@@ -120,10 +121,12 @@
 \end{lemma}
 
 \begin{lemma}[Consistency of type environment and source runtime environment]
+  \label{lem:srvtenvrenvconsis}
   If $[[G ~ srho]]$ and $[[G(x) = t]]$, then $[[srho[x] = sv]]$ s.t. $[[sv : st]]$ and $[[st eqv t]]$.
 \end{lemma}
 
 \begin{lemma}[Compilation of source environment]
+  \label{lem:srcenvcompile}
   If $[[G |- srho ~> rho; crho1, crho2]]$ and $[[G(x) = t]]$, then one of the following holds:
   \begin{enumerate}
   \item $[[t = public bt]]$, $[[srho[x] = cons]]$, and $[[rho[x] = cons]]$.
@@ -153,7 +156,7 @@
 \begin{proof}
 Proof by induction on the derivation (1), case analysis on the last rule.
 
-\noindent Case {\sc{s\_cons}}: $[[se = cons]]$, $[[bt = typeof cons]]$, $[[l = public]]$, $[[e = cons]]$.
+\noindent Case {\sc{s\_cons}}: $[[se = cons]]$, $[[bt = typeof cons]]$, $[[l = public]]$, and $[[e = cons]]$.
 
 (a) follows from {\sc{se\_const}}.
 
@@ -163,7 +166,103 @@ Proof by induction on the derivation (1), case analysis on the last rule.
 
 And first case of either holds.
 
-\noindent Case {\sc{s\_var}}: $[[se = x]]$, $[[l bt = t]]$, $[[e = x]]$.
+\noindent Case {\sc{s\_var}}: $[[se = x]]$, $[[l bt = t]]$, $[[G(x) = t]]$, and $[[e = x]]$.
+
+We consider two subcases. First when $[[l = public]]$.
+
+Using Lemma~\ref{lem:srcenvcompile}, we get:
+
+(4) $[[srho[x] = cons]]$
+
+(5) $[[rho[x] = cons]]$
+
+(a) follows from {\sc{se\_var}}.
+
+(b) follows from Lemma~\ref{lem:srvtenvrenvconsis}.
+
+(c) follows from {\sc{ee\_var}}.
+
+And first case of either holds.
+
+Second subcase when $[[l = s]]$.
+
+(a) and (b) follow from Lemma~\ref{lem:srcenvcompile} and Lemma~\ref{lem:srvtenvrenvconsis} as above.
+
+(c) follows choosing $[[v = r]]$, where $[[r]]$ is from Lemma~\ref{lem:srcenvcompile} (2).
+
+And second case of either holds, with $[[ckt = emp]]$, $[[crho1' = crho1]]$, $[[crho2' = crho2]]$, and inverse of encryption and decryption.
+
+\noindent Case {\sc{s\_padd}}: $[[se = se1 + se2]]$, $[[bt = uint]]$, $[[l = public]]$, $[[e = e1 + public e2]]$.
+
+Applying I.H. on the two premises of {\sc{s\_padd}}, we get:
+
+(4) $[[srho |- se1 !! sv1]]$
+
+(5) $[[sv1 : uint]]$
+
+(6) $[[rho |- e !! v; ckt1]]$, where $[[ckt1 = emp]]$ and $[[v1 eq sv1]]$
+
+(7) $[[srho |- se2 !! sv2]]$
+
+(8) $[[sv2 : uint]]$
+
+(9) $[[rho |- e !! v; ckt2]]$, where $[[ckt2 = emp]]$ and $[[v2 eq sv2]]$
+
+Using Lemma~\ref{lem:valinv} on (5) and (8):
+
+(10) $[[sv1 = n1]]$
+
+(11) $[[sv2 = n2]]$
+
+(a) follows from {\sc{se\_add}} with premises (4) and (7), and (10) and (11).
+
+(b) follows from {\sc{v\_cons}}.
+
+(c) follows from {\sc{ee\_padd}} with premises (6) and (9), and (10) and (11).
+
+And first case of either holds.
+
+\noindent Case {\sc{s\_sadd}}: $[[se = se1 + se2]]$, $[[bt = uint]]$, $[[l = asecret]]$, $[[e = e1 + asecret e2]]$.
+
+Applying I.H. on the two premises of {\sc{s\_sadd}}, we get:
+
+(4) $[[srho |- se1 !! sv1]]$
+
+(5) $[[sv1 : uint]]$
+
+(6) $[[rho |- e1 !! v1; ckt1]]$
+
+(7) $[[v1 = r1]]$
+
+(8) $[[crho1, crho2 |- ckt1 !! crho1', crho2'; emp]]$
+
+(9) $[[combine asecret crho1'[r1] crho2'[r1] = sv1]]$
+
+(10) $[[srho |- se2 !! sv2]]$
+
+(11) $[[sv2 : uint]]$
+
+(12) $[[rho |- e2 !! v2; ckt2]]$
+
+(13) $[[v2 = r2]]$
+
+(14) $[[crho1, crho2 |- ckt2 !! crho1'', crho2''; emp]]$
+
+(15) $[[combine asecret crho1''[r2] crho2''[r2] = sv2]]$
+
+Using Lemma~\ref{lem:valinv} on (5) and (11):
+
+(16) $[[sv1 = n1]]$
+
+(17) $[[sv2 = n2]]$
+
+(a) follows from {\sc{se\_add}} with premises (4) and (12), and (16) and (17).
+
+(b) follows from {\sc{v\_cons}}.
+
+(c) follows with $[[v = r3]]$, and $[[ckt = ckt1, ckt2, add r1 r2 r3]]$.
+
+We now need to prove the second case of either.
 
 \end{proof}
 
