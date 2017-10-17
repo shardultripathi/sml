@@ -20,7 +20,7 @@ l {{ tex \ell }} :: 'l_' ::= {{ com Label }}
 bt {{ tex \sigma }} :: 'bt_' ::= {{ com Base type }}
   | uint         ::   :: UInt  {{ tex \mathsf{uint} }}
   | bool         ::   :: Bool  {{ tex \mathsf{bool} }}
-  | typeof cons  :: M :: Cons  {{ tex \delta([[cons]]) }}
+  | typeof cons  :: M :: Cons  {{ tex \mathsf{typeof}([[cons]]) }}
 
 st {{ tex \psi }} :: 'st_' ::= {{ com Source type }}
   | bt          ::   :: UInt  {{ tex [[bt]] }}
@@ -47,18 +47,19 @@ se {{ tex e }} :: 'se_' ::= {{ com Source expression }}
   | se1 + se2                     ::  :: SAdd   {{ tex [[se1]] + [[se2]] }}
   | cond se se1 se2               ::  :: CondE  {{ tex [[cond]]([[se]], [[se1]], [[se2]]) }}
   | se1 > se2                     ::  :: Relop  {{ tex [[se1]] > [[se2]] }}
+  | [ sei ] n                     ::  :: Arr    {{ tex [ [[sei]] ]_{[[n]]} }}
   | x [ se ]                      ::  :: ArrayRead
-  | input bt i                    ::  :: Inp1   {{ tex [[input]]_{[[i]]}^{[[bt]]} }} %\;\;([[i]] \in \{1, 2\}) }}
+  | input j                       ::  :: Inp1   {{ tex [[in]]_{[[j]]} }} %\;\;([[i]] \in \{1, 2\}) }}
 
 sc {{ tex s }} :: 'sc_' ::= {{ com Source statement }}
-  | st x                               ::   :: Decl
+  | st x = se                          ::   :: Decl
   | x := se                            ::   :: Assignment
-  | for x in n1 to n2 do sc            ::   :: For  {{ tex [[for]]\;[[x]]\;[[in]]\;[[n1]]\dots[[n2]]\;\{ [[sc]] \} }}
+  | for x in n1 to n2 do sc            ::   :: For  {{ tex [[for]]\;[[x]]\;[[in]]\;[[n1]]\dots[[n2]]\;[[do]]\;[[sc]] }}
   | x [ se1 ] := se2                   ::   :: ArrayWrite
   | if se sc1 sc2                      ::   :: If   {{ tex [[if]]([[se]], [[sc1]], [[sc2]]) }}
   | out se                             ::   :: Output
   | sc1 ; sc2                          ::   :: Sequence
-  | loop x until n2 do sc              :: M :: ForI {{ tex [[loop]]\;[[x]]\;[[until]]\;[[n2]]\;\{ [[sc]] \} }}
+  | loop x until n2 do sc              :: M :: ForI {{ tex [[loop]]\;[[x]]\;[[until]]\;[[n2]]\;[[do]]\; [[sc]] }}
 
 sv {{ tex v }} :: 'sv_' ::= {{ com Source value }}
   | cons                              ::   :: BaseValue
@@ -79,14 +80,14 @@ srho {{ tex \rho }} :: 'srho_' ::= {{ com Source runtime environment }}
 
 sobs {{ tex O }} :: 'sobs_' ::= {{ com Source observation }}
   | emp              ::   :: Emp    {{ tex \cdot }}
-  | sv , sobs        ::   :: Value
+  | cons , sobs      ::   :: Value
   | sobs1 , sobs2    :: M :: Seq
 
 defns
 JEvalSE :: '' ::=
 
 defn
-srho |- se !! sv :: :: seeval :: 'se_' {{ tex [[srho]] \vdash [[se]] \downarrow [[sv]] }}
+srho |- se !! sv :: :: seeval :: 'se_' {{ tex [[srho]] \vdash [[se]] \Downarrow [[sv]] }}
 by
 
 ------------------------- :: const
@@ -95,7 +96,7 @@ srho |- cons !! cons
 --------------------------- ::var
 srho |- x !! srho[x]
 
-srho |- sei !! ni
+i in 1 2 srho |- sei !! ni
 ----------------------------- :: add
 srho |- se1 + se2 !! n1 + n2
 
@@ -106,25 +107,28 @@ srho |- sei !! sv
 ------------------------------ :: cond
 srho |- cond se se1 se2 !! sv
 
-srho |- sei !! ni
+i in 1 2 srho |- sei !! ni
 ----------------------------- :: gt
 srho |- se1 > se2 !! n1 > n2
 
-srho |- se !! n1
-srho |- x !! [ consi ] n2
-n1 lt n2
+i in 0 n srho |- sei !! consi
+------------------------------  :: arr
+srho |- [sei] n !! [consi] n
+
+srho |- x !! [ consi ] n'
+srho |- se !! n
+n lt n'
 -------------------------------------------- :: aread
 srho |- x[se] !! cons n
 
-bt = bool ==> (cons = true or cons = false)
-bt = uint ==> cons = n
------------------------------------------------- :: inp
-srho |- input bt i !! cons
-
+------------------------ :: inp
+srho |- input j !! cons
 
 grammar
 formula :: formula_ ::=  
    | judgement             :: :: judgement
+   | i in 1 2 formula1     :: :: foralli    {{ tex \forall [[i]] \in \{1, 2\}.\;[[formula1]] }}
+   | i in 0 n formula1     :: :: foralln    {{ tex \forall [[i]] \in \{0, [[n]] - 1\}.\;[[formula1]] }}
    | se1 = se2             :: :: seeq
    | sv1 gt sv2            :: :: ngt        {{ tex [[sv1]] > [[sv2]] }}
    | sv1 lt sv2            :: :: nlt        {{ tex [[sv1]] < [[sv2]] }}
@@ -140,21 +144,23 @@ formula :: formula_ ::=
    | formula1 ==> formula2 :: :: fimp       {{ tex [[formula1]] \Rightarrow [[formula2]] }}
    | cons1 = cons2         :: :: conseq
    | formula1 or formula2  :: :: for        {{ tex [[formula1]] \vee [[formula2]] }}
-   | ( formula1 )          :: :: paren      {{ tex [[formula1]] }}
+   | formula1 and formula2 :: :: fand       {{ tex [[formula1]] \wedge [[formula2]] }}
+   | ( formula1 )          :: :: paren      {{ tex ( [[formula1]] ) }}
    | default st = sv       :: :: sdefaultt  {{ tex \mathsf{default}([[st]]) = [[sv]] }}
    | v eq sv               :: :: sveqv      {{ tex [[v]] = [[sv]] }}
    | ckt1 = ckt2           :: :: ckteq
+   | crho1 = crho2         :: :: crhoeq
 
 defns
 JEvalSC :: '' ::=
 
 defn
-srho |- sc !! srho' ; sobs :: :: sceval :: 'sc_' {{ tex [[srho]] \vdash [[sc]] \downarrow [[srho']]; [[sobs]] }}
+srho |- sc !! srho' ; sobs :: :: sceval :: 'sc_' {{ tex [[srho]] \vdash [[sc]] \Downarrow [[srho']]; [[sobs]] }}
 by
 
-default st = sv
------------------------------------ :: decl
-srho |- st x !! srho, x |-> sv; emp
+srho |- se !! sv
+----------------------------------------- :: decl
+srho |- st x = se !! srho, x |-> sv; emp
 
 srho |- se !! sv
 --------------------------------------- :: assgn
@@ -174,12 +180,12 @@ srho |- sc !! srho1 ; sobs1
 ------------------------------------------------------------------------------------- :: loopi
 srho |- loop x until n2 do sc !! srho2 ; sobs1 , sobs2
 
-srho |- x !! [ consi ] n2
-srho |- se1 !! n1
+srho |- x !! [ consi ] n'
+srho |- se1 !! n
 srho |- se2 !! cons
-n1 lt n2
+n lt n'
 ----------------------------------------------------------------------- :: awrite
-srho |- x[se1] := se2 !! srho, x |-> [ consi ] n2 [n1 mapsto cons]; emp
+srho |- x[se1] := se2 !! srho, x |-> [ consi ] n' [n mapsto cons]; emp
 
 srho |- se !! cons
 cons = true ==> i = 1
@@ -188,9 +194,9 @@ srho |- sci !! srho'; sobs
 -------------------------------------- :: if
 srho |- if se sc1 sc2 !! srho'; sobs
 
-srho |- se !! sv
+srho |- se !! cons
 -------------------------------- :: out
-srho |- out se !! srho; sv, emp
+srho |- out se !! srho; cons, emp
 
 srho  |- sc1 !! srho1; sobs1
 srho1 |- sc2 !! srho2; sobs2
@@ -208,7 +214,7 @@ by
 -------------------- :: cons
 cons : typeof cons
 
-consi : bt
+i in 0 n consi : bt
 ------------------------- :: arr
 [ consi ] n : array bt n
 
@@ -220,10 +226,10 @@ e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
   | e1 + l e2                     ::   :: SAdd    {{ tex [[e1]] +_{[[l]]} [[e2]] }}
   | cond l e e1 e2                ::   :: CondE   {{ tex [[cond]]_{[[l]]}([[e]], [[e1]], [[e2]]) }}
   | e1 > l e2                     ::   :: Relop   {{ tex [[e1]] >_{[[l]]} [[e2]] }}
-  | x [ e ]                       ::   :: ArrayRead
-  | input bt m i                  ::   :: Input   {{ tex [[input]]_{[[i]]}^{([[bt]]^{[[m]]})} }} %\;\;([[i]] \in \{1, 2\}) }}
-  | e |> s                        ::   :: Coerce  {{ tex [[e]] \rhd [[s]] }}
   | [ ei ] n                      ::   :: Array   {{ tex [ [[ei]] ]_{[[n]]} }}
+  | x [ e ]                       ::   :: ArrayRead
+  | input m j                     ::   :: Input   {{ tex [[input]]_{[[j]]}^{[[m]]} }} %\;\;([[i]] \in \{1, 2\}) }}
+  | e |> s                        ::   :: Coerce  {{ tex [[e]] \rhd [[s]] }}
   | default t                     :: M :: Default {{ tex \mathsf{default}([[t]]) }}
 
 c {{ tex \widetilde{s} }} :: 'c_' ::= {{ com Target statement }}
@@ -235,7 +241,7 @@ c {{ tex \widetilde{s} }} :: 'c_' ::= {{ com Target statement }}
   | out e                              ::   :: Output
   | c1 ; c2                            ::   :: Sequence
   | { c }                              :: M :: Paren
-  | loop x until n2 do c               :: M :: ForI {{ tex [[loop]]\;[[x]]\;[[until]]\;[[n2]]\;\{ [[c]] \} }}
+  | loop x until n2 do c               :: M :: ForI {{ tex [[loop]]\;[[x]]\;[[until]]\;[[n2]]\;[[do]]\;[[c]] }}
 
 G {{ tex \Gamma }} :: 'G_' ::= {{ com Type environment }}
   | emp        ::   :: Empty    {{ tex \cdot }}
@@ -282,365 +288,355 @@ G(x) = t
 ---------------- :: var
 G |- x : t ~> x
 
-G |- sei : public uint ~> ei
------------------------------------------------ :: padd
-G |- se1 + se2 : public uint ~> e1 + public e2
-
-G |- sei : asecret uint ~> ei
-------------------------------------------------- :: sadd
-G |- se1 + se2 : asecret uint ~> e1 + asecret e2
-
-G |- se : public bool ~> e
-G |- sei : l bt ~> ei
----------------------------------------------------- :: pcond
-G |- cond se se1 se2 : l bt ~> cond public e e1 e2
-
-G |- se : bsecret bool ~> e
-G |- sei : bsecret bt ~> ei
------------------------------------------------------------ :: scond
-G |- cond se se1 se2 : bsecret bt ~> cond bsecret e e1 e2
-
-G |- sei : public uint ~> ei
------------------------------------------------ :: pgt
-G |- se1 > se2 : public bool ~> e1 > public e2
-
-G |- sei : bsecret uint ~> ei
--------------------------------------------------- :: sgt
-G |- se1 > se2 : bsecret bool ~> e1 > bsecret e2
-
-G |- x : l bt array n ~> x
-G |- se : public uint ~> e
-G |= se lt n
---------------------------- :: aread
-G |- x[se] : l bt ~> x[e]
-
---------------------------------------- :: inp
-G |- input bt i : s bt ~> input bt m i
-
-G |- se : l bt ~> e
--------------------------  :: sub
-G |- se : s bt ~> e |> s
-
-
-defns
-JCompileC :: '' ::=
-
-defn
-G |- sc ~> c | G' :: :: ccompile :: 'c_' {{ tex [[G]] \vdash [[sc]] \leadsto [[c]] \mid [[G']]}}
-by
-
-st = bt ==> t = l bt
-st = array bt n ==> t = l bt array n
-e = default t
-------------------------------------- :: decl
-G |- st x ~> t x = e | G, x:t
-
-G (x) = l bt
-G |- se : l bt ~> e
---------------------------- :: vassgn
-G |- x := se ~> x := e | G
-
-G, x:public uint |- sc ~> c | whateverG
-x notin modifies sc
------------------------------------------------------------- :: for
-G |- for x in n1 to n2 do sc ~> for x in n1 to n2 do c | G
-
-G |- x : l bt array n ~> x
-G |- se1 : public uint ~> e1
-G |- se2 : l bt ~> e2
-G |= se1 lt n
---------------------------------------- :: awrite
-G |- x [se1] := se2 ~> x[e1] := e2 | G
-
-G |- se : public bool ~> e
-G |- sci ~> ci | whateverG
---------------------------------------- :: if
-G |- if se sc1 sc2 ~> if e c1 c2 | G
-
-G |- se : s bt ~> e
--------------------------- :: out
-G |- out se ~> out e | G
-
-G |- sc1 ~> c1 | G1
-G1 |- sc2 ~> c2 | G2
------------------------------ :: seq
-G |- sc1; sc2 ~> c1; c2 | G2
-
-grammar
-
-r :: 'r_' ::= {{ com Wire id range }}
-  | next_range ( )        :: M :: Next  {{ tex \mathsf{next\_range}() }}
-
-w {{ tex \widetilde{w} }} :: 'w_' ::= {{ com Compiled base value }}
-  | cons                          ::  :: Constant
-  | r                             ::  :: Range
-
-v {{ tex \widetilde{v} }} :: 'v_' ::= {{ com Compiled value }}
-  | w                                 ::   :: BaseValue
-  | [ wi ] n                          ::   :: Array      {{ tex [ [[wi]] ]_{[[n]]} }}
-  | rho [ x ]                         :: M :: EnvLookup  {{ tex [[rho]]([[x]]) }}
-  | w n                               :: M :: NthArr     {{ tex [[w]]_{[[n]]} }}
-  | v [ n mapsto w ]                  :: M :: ArrUpd     {{ tex [[v]][ [[n]] \mapsto [[w]] ] }}
-  | v + 1                             :: M :: Incr
-
-ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
-  | emp                   :: :: Emp  {{ tex \cdot }}
-  | add  r1 r2 r3         :: :: Add  {{ tex \oplus([[r1]], [[r2]], [[r3]]) }}
-  | mux  r1 r2 r3 r4      :: :: Mux  {{ tex \mathsf{Mux}([[r1]], [[r2]], [[r3]], [[r4]]) }}
-  | gt   r1 r2 r3         :: :: Gt   {{ tex \mathsf{Gt}([[r1]], [[r2]], [[r3]]) }}
-  | w |> s r              :: :: Conv {{ tex [[w]] \rhd_{[[s]]} [[r]] }}
-  | input i |> s r        :: :: Inp  {{ tex \mathsf{Inp}_{[[i]]} \rhd_{[[s]]} [[r]] }}      
-  | out r                 :: :: Out  {{ tex \mathsf{Out}([[r]]) }}
-  | ckt1 , ckt2           :: :: Seq
-
-rho {{ tex \widetilde{\rho} }} :: 'rho_' ::= {{ com Runtime environment }}
-  | emp                 ::   :: Empty {{ tex \cdot }}
-  | rho , x |-> v       ::   :: Map   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
-  | rho - x             :: M :: Minus {{ tex [[rho]] \setminus [[x]] }}
-  | rho1 restrict rho2  :: M :: Restr {{ tex [ [[rho1]] ]_{\mathsf{dom}([[rho2]])} }}
-  | ( rho1 )            :: M :: Paren
-
-defns
-JEvalE :: '' ::=
-
-defn
-rho |- e !! v ; ckt :: :: eeval :: 'ee_' {{ tex [[rho]] \vdash [[e]] \Downarrow [[v]]; [[ckt]] }}
-by
-
-------------------------- :: const
-rho |- cons !! cons; emp
-
------------------------- ::var
-rho |- x !! rho[x]; emp
-
-rho |- ei !! ni; ckti
----------------------------------------------- :: padd
-rho |- e1 + public e2 !! n1 + n2; ckt1, ckt2
-
-rho |- ei !! ri; ckti
-r3 = next_range ()
--------------------------------------------------------- :: sadd
-rho |- e1 + asecret e2 !! r3; ckt1, ckt2, add r1 r2 r3
-
-rho |- e !! cons; ckt
-cons = true ==> i = 1
-cons = false ==> i = 2
-rho |- ei !! v; ckt1
-------------------------------------------- :: pcond
-rho |- cond public e e1 e2 !! v; ckt,ckt1
-
-rho |- e !! r; ckt
-rho |- ei !! ri; ckti
-r3 = next_range ()
--------------------------------------------------------------------- :: scond
-rho |- cond bsecret e e1 e2 !! r3; ckt, ckt1, ckt2, mux r r1 r2 r3
-
-rho |- ei !! ni; ckti
----------------------------------------------- :: pgt
-rho |- e1 > public e2 !! n1 > n2; ckt1, ckt2
-
-rho |- ei !! ri; ckti
-r3 = next_range ()
------------------------------------------------------- :: sgt
-rho |- e1 > bsecret e2 !! r3; ckt1, ckt2, gt r1 r2 r3
-
-rho |- e !! n1; ckt1
-rho |- x !! [ wi ] n2; ckt2
-n1 lt n2
--------------------------------- :: aread
-rho |- x[e] !! w n; ckt1, ckt2
-
-r = next_range ()
------------------------------------------ :: inp
-rho |- input bt m i !! r; input i |> s r
-
-rho |- e !! r; ckt
-r' = next_range ()
-------------------------------------- :: coerce
-rho |- e |> s !! r'; ckt, r |> s r'
-
-rho |- ei !! wi; ckti
------------------------------- :: arr
-rho |- [ei] n !! [wi] n; ckti
-
-defns
-JEvalC :: '' ::=
-
-defn
-rho |- c !! rho' ; ckt :: :: ceval :: 'ec_' {{ tex [[rho]] \vdash [[c]] \Longrightarrow [[rho']]; [[ckt]] }}
-by
-
-rho |- e !! v; ckt
------------------------------------- :: decl
-rho |- t x = e !! rho, x |-> v; ckt
-
-rho |- e !! v; ckt
------------------------------------ :: assgn
-rho |- x := e !! rho, x |-> v; ckt
-
-rho, x |-> n1 |- loop x until n2 do c !! rho1; ckt
----------------------------------------------------- :: fort
-rho |- for x in n1 to n2 do c !! rho1 - x ; ckt
-
-rho[x] gt n2
------------------------------------------ :: loopt
-rho |- loop x until n2 do c !! rho ; emp
-
-rho[x] leq n2
-rho |- c !! rho1 ; ckt1
-(rho1 restrict rho) , x |-> rho [x] + 1 |- loop x until n2 do c !! rho2 ; ckt2
---------------------------------------------------------------------------------- :: loopi
-rho |- loop x until n2 do c !! rho2 ; ckt1, ckt2
-
-rho |- x !! [ wi ] n2; emp
-rho |- e1 !! n1; ckt1
-rho |- e2 !! w; ckt2
-n1 lt n2
----------------------------------------------------------------------- :: awrite
-rho |- x[e1] := e2 !! rho, x |-> [ wi ] n2 [n1 mapsto w]; ckt1, ckt2
-
-rho |- e !! cons; ckt1
-cons = true ==> i = 1
-cons = false ==> i = 2
-rho |- ci !! rho'; ckt2
--------------------------------------- :: if
-rho |- if e c1 c2 !! rho'; ckt1, ckt2
-
-rho |- e !! r; ckt
---------------------------------- :: out
-rho |- out e !! rho; ckt, out r
-
-rho  |- c1 !! rho1; ckt1
-rho1 |- c2 !! rho2; ckt2
----------------------------------- :: seq
-rho |- c1; c2 !! rho2; ckt1, ckt2
-
-grammar
-
-b :: 'cv_' ::= {{ com Share (byte string) }}
-  | crho [ r ]       :: M ::  Lookup
-
-crho {{ tex \widehat{\rho} }} :: 'crho_' ::= {{ com Circuit environment }}
-  | emp                ::   :: Empty {{ tex \cdot }}
-  | crho , r |-> b     ::   :: Map   {{ tex [[crho]][ [[r]] \mapsto [[b]] ] }}
-
-defns
-JEvalCirc :: '' ::=
-
-defn
-crho1 , crho2 |- ckt !! crho1' , crho2' ; sobs :: :: circeval :: 'ckt_' {{ tex [[crho1]], [[crho2]] \vdash [[ckt]] \longmapsto [[crho1']], [[crho2']]; [[sobs]] }}
-by
-
-------------------------------------------  :: emp
-crho1, crho2 |- emp !! crho1, crho2; emp
-
-
-n1 = combine asecret crho1[r1] crho2[r1]
-n2 = combine asecret crho1[r2] crho2[r2]
-b1 b2 = share asecret n1 + n2
------------------------------------------------------------------------ :: add
-crho1, crho2 |- add r1 r2 r3 !! crho1, r3 |-> b1, crho2, r3 |-> b2; emp
-
-true = combine bsecret crho1[r1] crho2[r1]
-cons = combine bsecret crho1[r2] crho2[r2]
-b1 b2 = share bsecret cons
---------------------------------------------------------------------------- :: muxt
-crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> b1 , crho2, r4 |-> b2; emp
-
-false = combine bsecret crho1[r1] crho2[r1]
-cons = combine bsecret crho1[r3] crho2[r3]
-b1 b2 = share bsecret cons
---------------------------------------------------------------------------- :: muxf
-crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> b1 , crho2, r4 |-> b2; emp
-
-n1 = combine bsecret crho1[r1] crho2[r1]
-n2 = combine bsecret crho1[r2] crho2[r2]
-b1 b2 = share bsecret n1 > n2
------------------------------------------------------------------------- :: gt
-crho1, crho2 |- gt r1 r2 r3 !! crho1, r3 |-> b1 , crho2, r3 |-> b2; emp
-
-b1 b2 = share s cons
------------------------------------------------------------------------- :: coercec
-crho1, crho2 |- cons |> s r2 !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
-
-cons = combine s1 crho1[r1] crho2[r1]
-b1 b2 = share s cons
------------------------------------------------------------------------- :: coercer
-crho1, crho2 |- r1 |> s r2 !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
-
-b1 b2 = share s get_input i
--------------------------------------------------------------------------- :: inp
-crho1, crho2 |- input i |> s r !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
-
-cons = combine s crho1[r] crho2[r]
-------------------------------------------------- :: out
-crho1, crho2 |- out r !! crho1, crho2; cons, emp
-
-crho1, crho2 |- ckt1 !! crho1', crho2'; sobs1
-crho1', crho2' |- ckt2 !! crho1'', crho2''; sobs2
--------------------------------------------------------------- :: seq
-crho1, crho2 |- ckt1, ckt2 !! crho1'', crho2''; sobs1, sobs2
-
-defns
-JSTypeTypeEquiv :: '' ::=
-
-defn
-st eqv t :: :: sttequiv :: 'st_' {{ tex [[st]] \sim [[t]] }}
-by
-
------------- :: bt
-bt eqv l bt
-
----------------------------- :: arr
-array bt n eqv l bt array n
-
-defns
-JSEnvGammaEquiv :: '' ::=
-
-defn
-G ~ srho :: :: senvgammaequiv :: 'sen_' {{ tex [[G]] \sim [[srho]] }}
-by
-
----------- :: emp
-emp ~ emp
-
-sv : st
-st eqv t
-G ~ srho
------------------------ :: bnd
-G, x:t ~ srho, x |-> sv
-
-
-defns
-JTEnvCompile :: '' ::=
-
-defn
-G |- srho ~> rho ; crho1 , crho2 :: :: envcompile :: 'en_' {{ tex [[G]] \vdash [[srho]] \hookrightarrow [[rho]]; [[crho1]], [[crho2]] }}
-by
-
--------------------------- :: emp
-G |- emp ~> emp; emp, emp
-
-G(x) = public bt
-G |- srho ~> rho; crho1, crho2
-------------------------------------------------------- :: pbt
-G |- srho, x |-> cons ~> rho, x |-> cons; crho1, crho2
-
-G(x) = s bt
-r = next_range ()
-b1 b2 = share s cons
-G |- srho ~> rho; crho1, crho2
------------------------------------------------------------------------- :: sbt
-G |- srho, x |-> cons ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
-
-G(x) = public bt array n
-G |- srho ~> rho; crho1, crho2
---------------------------------------------------------------------------------------- :: parr
-G |- srho, x |-> [ consi ] n ~> rho, x |-> [ consi ] n; crho1, crho2
-
-G(x) = s bt array n
-ri = next_range ()
-b1i b2i = share s consi
-G |- srho ~> rho; crho1, crho2
--------------------------------------------------------------------------------------------------------- :: sarr
-G |- srho, x |-> [ consi ] n ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
+i in 1 2 G |- sei : l uint ~> ei
+l = public or l = asecret
+------------------------------------------- :: add
+G |- se1 + se2 : l uint ~> e1 + l e2
+
+G |- se : l bool ~> e
+i in 1 2 G |- sei : l' bt ~> ei
+l = public or (l = bsecret and l' = bsecret)
+---------------------------------------------------- :: cond
+G |- cond se se1 se2 : l' bt ~> cond l e e1 e2
+
+i in 1 2 G |- sei : l uint ~> ei
+l = public or l = bsecret
+----------------------------------------------- :: gt
+G |- se1 > se2 : l bool ~> e1 > l e2
+
+% G |- x : l bt array n ~> x
+% G |- se : public uint ~> e
+% G |= se lt n
+% --------------------------- :: aread
+% G |- x[se] : l bt ~> x[e]
+
+% --------------------------------------- :: inp
+% G |- input bt i : s bt ~> input bt m i
+
+% G |- se : l bt ~> e
+% -------------------------  :: sub
+% G |- se : s bt ~> e |> s
+
+
+% defns
+% JCompileC :: '' ::=
+
+% defn
+% G |- sc ~> c | G' :: :: ccompile :: 'c_' {{ tex [[G]] \vdash [[sc]] \leadsto [[c]] \mid [[G']]}}
+% by
+
+% st = bt ==> t = l bt
+% st = array bt n ==> t = l bt array n
+% e = default t
+% ------------------------------------- :: decl
+% G |- st x ~> t x = e | G, x:t
+
+% G (x) = l bt
+% G |- se : l bt ~> e
+% --------------------------- :: vassgn
+% G |- x := se ~> x := e | G
+
+% G, x:public uint |- sc ~> c | whateverG
+% x notin modifies sc
+% ------------------------------------------------------------ :: for
+% G |- for x in n1 to n2 do sc ~> for x in n1 to n2 do c | G
+
+% G |- x : l bt array n ~> x
+% G |- se1 : public uint ~> e1
+% G |- se2 : l bt ~> e2
+% G |= se1 lt n
+% --------------------------------------- :: awrite
+% G |- x [se1] := se2 ~> x[e1] := e2 | G
+
+% G |- se : public bool ~> e
+% G |- sci ~> ci | whateverG
+% --------------------------------------- :: if
+% G |- if se sc1 sc2 ~> if e c1 c2 | G
+
+% G |- se : s bt ~> e
+% -------------------------- :: out
+% G |- out se ~> out e | G
+
+% G |- sc1 ~> c1 | G1
+% G1 |- sc2 ~> c2 | G2
+% ----------------------------- :: seq
+% G |- sc1; sc2 ~> c1; c2 | G2
+
+% grammar
+
+% r :: 'r_' ::= {{ com Wire id range }}
+%   | next_range ( )        :: M :: Next  {{ tex \mathsf{next\_range}() }}
+
+% w {{ tex \widetilde{w} }} :: 'w_' ::= {{ com Compiled base value }}
+%   | cons                          ::  :: Constant
+%   | r                             ::  :: Range
+
+% v {{ tex \widetilde{v} }} :: 'v_' ::= {{ com Compiled value }}
+%   | w                                 ::   :: BaseValue
+%   | [ wi ] n                          ::   :: Array      {{ tex [ [[wi]] ]_{[[n]]} }}
+%   | rho [ x ]                         :: M :: EnvLookup  {{ tex [[rho]]([[x]]) }}
+%   | w n                               :: M :: NthArr     {{ tex [[w]]_{[[n]]} }}
+%   | v [ n mapsto w ]                  :: M :: ArrUpd     {{ tex [[v]][ [[n]] \mapsto [[w]] ] }}
+%   | v + 1                             :: M :: Incr
+
+% ckt {{ tex \kappa }} :: 'ckt_' ::= {{ com Circuit }}
+%   | emp                   :: :: Emp  {{ tex \cdot }}
+%   | add  r1 r2 r3         :: :: Add  {{ tex \oplus([[r1]], [[r2]], [[r3]]) }}
+%   | mux  r1 r2 r3 r4      :: :: Mux  {{ tex \mathsf{Mux}([[r1]], [[r2]], [[r3]], [[r4]]) }}
+%   | gt   r1 r2 r3         :: :: Gt   {{ tex \mathsf{Gt}([[r1]], [[r2]], [[r3]]) }}
+%   | w |> s r              :: :: Conv {{ tex [[w]] \rhd_{[[s]]} [[r]] }}
+%   | input i |> s r        :: :: Inp  {{ tex \mathsf{Inp}_{[[i]]} \rhd_{[[s]]} [[r]] }}      
+%   | out r                 :: :: Out  {{ tex \mathsf{Out}([[r]]) }}
+%   | ckt1 , ckt2           :: :: Seq
+
+% rho {{ tex \widetilde{\rho} }} :: 'rho_' ::= {{ com Runtime environment }}
+%   | emp                 ::   :: Empty {{ tex \cdot }}
+%   | rho , x |-> v       ::   :: Map   {{ tex [[rho]][ [[x]] \mapsto [[v]] ] }}
+%   | rho - x             :: M :: Minus {{ tex [[rho]] \setminus [[x]] }}
+%   | rho1 restrict rho2  :: M :: Restr {{ tex [ [[rho1]] ]_{\mathsf{dom}([[rho2]])} }}
+%   | ( rho1 )            :: M :: Paren
+
+% defns
+% JEvalE :: '' ::=
+
+% defn
+% rho |- e !! v ; ckt :: :: eeval :: 'ee_' {{ tex [[rho]] \vdash [[e]] \Downarrow [[v]]; [[ckt]] }}
+% by
+
+% ------------------------- :: const
+% rho |- cons !! cons; emp
+
+% ------------------------ ::var
+% rho |- x !! rho[x]; emp
+
+% rho |- ei !! ni; ckti
+% ---------------------------------------------- :: padd
+% rho |- e1 + public e2 !! n1 + n2; ckt1, ckt2
+
+% rho |- ei !! ri; ckti
+% r3 = next_range ()
+% -------------------------------------------------------- :: sadd
+% rho |- e1 + asecret e2 !! r3; ckt1, ckt2, add r1 r2 r3
+
+% rho |- e !! cons; ckt
+% cons = true ==> i = 1
+% cons = false ==> i = 2
+% rho |- ei !! v; ckt1
+% ------------------------------------------- :: pcond
+% rho |- cond public e e1 e2 !! v; ckt,ckt1
+
+% rho |- e !! r; ckt
+% rho |- ei !! ri; ckti
+% r3 = next_range ()
+% -------------------------------------------------------------------- :: scond
+% rho |- cond bsecret e e1 e2 !! r3; ckt, ckt1, ckt2, mux r r1 r2 r3
+
+% rho |- ei !! ni; ckti
+% ---------------------------------------------- :: pgt
+% rho |- e1 > public e2 !! n1 > n2; ckt1, ckt2
+
+% rho |- ei !! ri; ckti
+% r3 = next_range ()
+% ------------------------------------------------------ :: sgt
+% rho |- e1 > bsecret e2 !! r3; ckt1, ckt2, gt r1 r2 r3
+
+% rho |- e !! n1; ckt1
+% rho |- x !! [ wi ] n2; ckt2
+% n1 lt n2
+% -------------------------------- :: aread
+% rho |- x[e] !! w n; ckt1, ckt2
+
+% r = next_range ()
+% ----------------------------------------- :: inp
+% rho |- input bt m i !! r; input i |> s r
+
+% rho |- e !! r; ckt
+% r' = next_range ()
+% ------------------------------------- :: coerce
+% rho |- e |> s !! r'; ckt, r |> s r'
+
+% rho |- ei !! wi; ckti
+% ------------------------------ :: arr
+% rho |- [ei] n !! [wi] n; ckti
+
+% defns
+% JEvalC :: '' ::=
+
+% defn
+% rho |- c !! rho' ; ckt :: :: ceval :: 'ec_' {{ tex [[rho]] \vdash [[c]] \Longrightarrow [[rho']]; [[ckt]] }}
+% by
+
+% rho |- e !! v; ckt
+% ------------------------------------ :: decl
+% rho |- t x = e !! rho, x |-> v; ckt
+
+% rho |- e !! v; ckt
+% ----------------------------------- :: assgn
+% rho |- x := e !! rho, x |-> v; ckt
+
+% rho, x |-> n1 |- loop x until n2 do c !! rho1; ckt
+% ---------------------------------------------------- :: fort
+% rho |- for x in n1 to n2 do c !! rho1 - x ; ckt
+
+% rho[x] gt n2
+% ----------------------------------------- :: loopt
+% rho |- loop x until n2 do c !! rho ; emp
+
+% rho[x] leq n2
+% rho |- c !! rho1 ; ckt1
+% (rho1 restrict rho) , x |-> rho [x] + 1 |- loop x until n2 do c !! rho2 ; ckt2
+% --------------------------------------------------------------------------------- :: loopi
+% rho |- loop x until n2 do c !! rho2 ; ckt1, ckt2
+
+% rho |- x !! [ wi ] n2; emp
+% rho |- e1 !! n1; ckt1
+% rho |- e2 !! w; ckt2
+% n1 lt n2
+% ---------------------------------------------------------------------- :: awrite
+% rho |- x[e1] := e2 !! rho, x |-> [ wi ] n2 [n1 mapsto w]; ckt1, ckt2
+
+% rho |- e !! cons; ckt1
+% cons = true ==> i = 1
+% cons = false ==> i = 2
+% rho |- ci !! rho'; ckt2
+% -------------------------------------- :: if
+% rho |- if e c1 c2 !! rho'; ckt1, ckt2
+
+% rho |- e !! r; ckt
+% --------------------------------- :: out
+% rho |- out e !! rho; ckt, out r
+
+% rho  |- c1 !! rho1; ckt1
+% rho1 |- c2 !! rho2; ckt2
+% ---------------------------------- :: seq
+% rho |- c1; c2 !! rho2; ckt1, ckt2
+
+% grammar
+
+% b :: 'cv_' ::= {{ com Share (byte string) }}
+%   | crho [ r ]       :: M ::  Lookup
+
+% crho {{ tex \widehat{\rho} }} :: 'crho_' ::= {{ com Circuit environment }}
+%   | emp                ::   :: Empty {{ tex \cdot }}
+%   | crho , r |-> b     ::   :: Map   {{ tex [[crho]][ [[r]] \mapsto [[b]] ] }}
+
+% defns
+% JEvalCirc :: '' ::=
+
+% defn
+% crho1 , crho2 |- ckt !! crho1' , crho2' ; sobs :: :: circeval :: 'ckt_' {{ tex [[crho1]], [[crho2]] \vdash [[ckt]] \longmapsto [[crho1']], [[crho2']]; [[sobs]] }}
+% by
+
+% ------------------------------------------  :: emp
+% crho1, crho2 |- emp !! crho1, crho2; emp
+
+
+% n1 = combine asecret crho1[r1] crho2[r1]
+% n2 = combine asecret crho1[r2] crho2[r2]
+% b1 b2 = share asecret n1 + n2
+% ----------------------------------------------------------------------- :: add
+% crho1, crho2 |- add r1 r2 r3 !! crho1, r3 |-> b1, crho2, r3 |-> b2; emp
+
+% true = combine bsecret crho1[r1] crho2[r1]
+% cons = combine bsecret crho1[r2] crho2[r2]
+% b1 b2 = share bsecret cons
+% --------------------------------------------------------------------------- :: muxt
+% crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> b1 , crho2, r4 |-> b2; emp
+
+% false = combine bsecret crho1[r1] crho2[r1]
+% cons = combine bsecret crho1[r3] crho2[r3]
+% b1 b2 = share bsecret cons
+% --------------------------------------------------------------------------- :: muxf
+% crho1, crho2 |- mux r1 r2 r3 r4 !! crho1, r4 |-> b1 , crho2, r4 |-> b2; emp
+
+% n1 = combine bsecret crho1[r1] crho2[r1]
+% n2 = combine bsecret crho1[r2] crho2[r2]
+% b1 b2 = share bsecret n1 > n2
+% ------------------------------------------------------------------------ :: gt
+% crho1, crho2 |- gt r1 r2 r3 !! crho1, r3 |-> b1 , crho2, r3 |-> b2; emp
+
+% b1 b2 = share s cons
+% ------------------------------------------------------------------------ :: coercec
+% crho1, crho2 |- cons |> s r2 !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
+
+% cons = combine s1 crho1[r1] crho2[r1]
+% b1 b2 = share s cons
+% ------------------------------------------------------------------------ :: coercer
+% crho1, crho2 |- r1 |> s r2 !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
+
+% b1 b2 = share s get_input i
+% -------------------------------------------------------------------------- :: inp
+% crho1, crho2 |- input i |> s r !! crho1, r2 |-> b1, crho2, r2 |-> b2; emp
+
+% cons = combine s crho1[r] crho2[r]
+% ------------------------------------------------- :: out
+% crho1, crho2 |- out r !! crho1, crho2; cons, emp
+
+% crho1, crho2 |- ckt1 !! crho1', crho2'; sobs1
+% crho1', crho2' |- ckt2 !! crho1'', crho2''; sobs2
+% -------------------------------------------------------------- :: seq
+% crho1, crho2 |- ckt1, ckt2 !! crho1'', crho2''; sobs1, sobs2
+
+% defns
+% JSTypeTypeEquiv :: '' ::=
+
+% defn
+% st eqv t :: :: sttequiv :: 'st_' {{ tex [[st]] \sim [[t]] }}
+% by
+
+% ------------ :: bt
+% bt eqv l bt
+
+% ---------------------------- :: arr
+% array bt n eqv l bt array n
+
+% defns
+% JSEnvGammaEquiv :: '' ::=
+
+% defn
+% G ~ srho :: :: senvgammaequiv :: 'sen_' {{ tex [[G]] \sim [[srho]] }}
+% by
+
+% ---------- :: emp
+% emp ~ emp
+
+% sv : st
+% st eqv t
+% G ~ srho
+% ----------------------- :: bnd
+% G, x:t ~ srho, x |-> sv
+
+
+% defns
+% JTEnvCompile :: '' ::=
+
+% defn
+% G |- srho ~> rho ; crho1 , crho2 :: :: envcompile :: 'en_' {{ tex [[G]] \vdash [[srho]] \hookrightarrow [[rho]]; [[crho1]], [[crho2]] }}
+% by
+
+% -------------------------- :: emp
+% G |- emp ~> emp; emp, emp
+
+% G(x) = public bt
+% G |- srho ~> rho; crho1, crho2
+% ------------------------------------------------------- :: pbt
+% G |- srho, x |-> cons ~> rho, x |-> cons; crho1, crho2
+
+% G(x) = s bt
+% r = next_range ()
+% b1 b2 = share s cons
+% G |- srho ~> rho; crho1, crho2
+% ------------------------------------------------------------------------ :: sbt
+% G |- srho, x |-> cons ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
+
+% G(x) = public bt array n
+% G |- srho ~> rho; crho1, crho2
+% --------------------------------------------------------------------------------------- :: parr
+% G |- srho, x |-> [ consi ] n ~> rho, x |-> [ consi ] n; crho1, crho2
+
+% G(x) = s bt array n
+% ri = next_range ()
+% b1i b2i = share s consi
+% G |- srho ~> rho; crho1, crho2
+% -------------------------------------------------------------------------------------------------------- :: sarr
+% G |- srho, x |-> [ consi ] n ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
