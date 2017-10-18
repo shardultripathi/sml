@@ -247,6 +247,7 @@ G {{ tex \Gamma }} :: 'G_' ::= {{ com Type environment }}
   | emp        ::   :: Empty    {{ tex \cdot }}
   | G , x : t  ::   :: Binding
   | whateverG  :: M :: Whatever {{ tex \_ }}
+  | G - x      :: M :: MinusX   {{ tex [[G]] \setminus [[x]] }}
 
 formula :: formula_ ::=  
    | t1 = t2               :: :: teq
@@ -660,30 +661,34 @@ G |- srho ~> rho ; crho1 , crho2 :: :: envcompile :: 'en_' {{ tex [[G]] \vdash [
 by
 
 -------------------------- :: emp
-G |- emp ~> emp; emp, emp
+emp |- emp ~> emp; emp, emp
 
 G(x) = public bt
+srho[x] = cons
 cons : bt
-G |- srho ~> rho; crho1, crho2
+G - x |- srho - x ~> rho; crho1, crho2
 ------------------------------------------------------- :: pbt
-G |- srho, x |-> cons ~> rho, x |-> cons; crho1, crho2
+G |- srho ~> rho, x |-> cons; crho1, crho2
 
 G(x) = s bt
+srho[x] = cons
 cons : bt
 r = next_range ()
 b1 b2 = share s cons
-G |- srho ~> rho; crho1, crho2
+G - x |- srho - x ~> rho; crho1, crho2
 ------------------------------------------------------------------------ :: sbt
-G |- srho, x |-> cons ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
+G |- srho ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
 
 G(x) = public bt array n
+srho[x] = [consi] n
 i in 0 n consi : bt
-G |- srho ~> rho; crho1, crho2
+G - x |- srho - x ~> rho; crho1, crho2
 --------------------------------------------------------------------------------------- :: parr
-G |- srho, x |-> [ consi ] n ~> rho, x |-> [ consi ] n; crho1, crho2
+G |- srho ~> rho, x |-> [ consi ] n; crho1, crho2
 
 G(x) = s bt array n
+srho[x] = [consi] n
 i in 0 n (consi : bt and (ri = next_range () and b1i b2i = share s consi))
-G |- srho ~> rho; crho1, crho2
+G - x |- srho - x ~> rho; crho1, crho2
 -------------------------------------------------------------------------------------------------------- :: sarr
-G |- srho, x |-> [ consi ] n ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
+G |- srho ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
