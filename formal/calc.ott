@@ -265,6 +265,7 @@ formula :: formula_ ::=
    | G1 = G2               :: :: gammaeq
    | sv1 = sv2             :: :: sveq
    | b1 b2 = share s cons  :: :: share      {{ tex ([[b1]], [[b2]]) = \mathcal{E}_{[[s]]}([[cons]]) }}
+   | r notin rho           :: :: rfresh     {{ tex [[r]] \notin [[rho]] }}
 
 
 defns
@@ -367,10 +368,13 @@ G1 |- sc2 ~> c2 | G2
 ----------------------------- :: seq
 G |- sc1; sc2 ~> c1; c2 | G2
 
+G |- sc ~> c | G1
+-------------------------------------------------------- :: loop
+G |- loop x until n2 do sc ~> loop x until n2 do c | G1
+
 grammar
 
 r :: 'r_' ::= {{ com Wire id range }}
-  | next_range ( )        :: M :: Next  {{ tex \mathsf{next\_range}() }}
 
 ckte {{ tex \kappa^{e} }} :: 'ckte_' ::= {{ com Circuit expression }}
   | r                      :: :: Range
@@ -476,12 +480,12 @@ v = cons or v = [consi] n
 rho |- t x = e !! rho, x |-> v; emp
 
 rho |- e !! ckte
-r = next_range ()
+r notin rho
 -------------------------------------------- :: declckt
 rho |- t x = e !! rho, x |-> r; bind ckte r
 
 rho |- e !! [cktei] n
-i in 0 n ri = next_range ()
+i in 0 n ri notin rho
 --------------------------------------------------- :: declcktarr
 rho |- t x = e !! rho, x |-> [ri] n; bind cktei ri
 
@@ -673,7 +677,7 @@ G |- srho ~> rho, x |-> cons; crho1, crho2
 G(x) = s bt
 srho[x] = cons
 cons : bt
-r = next_range ()
+r notin rho
 b1 b2 = share s cons
 G - x |- srho - x ~> rho; crho1, crho2
 ------------------------------------------------------------------------ :: sbt
@@ -688,7 +692,7 @@ G |- srho ~> rho, x |-> [ consi ] n; crho1, crho2
 
 G(x) = s bt array n
 srho[x] = [consi] n
-i in 0 n (consi : bt and (ri = next_range () and b1i b2i = share s consi))
+i in 0 n (consi : bt and (ri notin rho and b1i b2i = share s consi))
 G - x |- srho - x ~> rho; crho1, crho2
 -------------------------------------------------------------------------------------------------------- :: sarr
 G |- srho ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
