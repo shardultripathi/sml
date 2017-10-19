@@ -217,6 +217,7 @@ If:
 \begin{enumerate}
 \item $[[G |- sc ~> c | G']]$
 \item $[[G |- srho ~> rho; crho1, crho2]]$
+\item $[[sc]]$ is not a loop statement
 \end{enumerate}
 
 then:
