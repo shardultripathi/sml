@@ -227,6 +227,24 @@ then:
 \end{enumerate}
 
 \end{lemma}
+
+\begin{lemma}[Termination of loop]
+If
+
+\begin{enumerate}
+\item $[[G |- loop x until n2 do sc  ~> loop x until n2 do c | G]]$
+\item $[[G |- srho ~> rho; crho1, crho2]]$
+\end{enumerate}
+
+then:
+
+\begin{enumerate}[(a)]
+\item $[[srho |- loop x until n2 do sc !! srho'; sobs]]$
+\item $[[G |- srho' ~> rho'; crho1', crho2']]$
+\end{enumerate}
+
+\end{lemma}
+
   
 \begin{theorem}[Soundness]
 If:
