@@ -176,8 +176,8 @@ srho |- loop x until n2 do sc !! srho ; sobs
 
 srho[x] leq n2
 srho |- sc !! srho1 ; sobs1
-(srho1 restrict srho) , x |-> srho [x] + 1 |- loop x until n2 do sc !! srho2 ; sobs2
-------------------------------------------------------------------------------------- :: loopi
+(srho1 restrict srho) , x |-> srho1 [x] + 1 |- loop x until n2 do sc !! srho2 ; sobs2
+-------------------------------------------------------------------------------------- :: loopi
 srho |- loop x until n2 do sc !! srho2 ; sobs1 , sobs2
 
 srho |- x !! [ consi ] n'
@@ -235,7 +235,7 @@ e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
 c {{ tex \widetilde{s} }} :: 'c_' ::= {{ com Target statement }}
   | t x = e                            ::   :: Decl
   | x := e                             ::   :: Assignment
-  | for x in n1 to n2 do c             ::   :: For  {{ tex [[for]]([[x]] := [[n1]]; [[x]] \leq [[n2]]; x := x + 1)\;[[c]] }}
+  | for x in n1 to n2 do c             ::   :: For  {{ tex [[for]]\;[[x]]\;[[in]]\;[[n1]]\dots[[n2]]\;[[do]]\;[[c]] }}
   | x [ e1 ] := e2                     ::   :: ArrayWrite
   | if e c1 c2                         ::   :: If   {{ tex [[if]]([[e]], [[c1]], [[c2]]) }}
   | out e                              ::   :: Output
@@ -342,9 +342,8 @@ G |- se : l bt ~> e
 --------------------------- :: vassgn
 G |- x := se ~> x := e | G
 
-G, x:public uint |- sc ~> c | whateverG
-x notin modifies sc
------------------------------------------------------------- :: for
+G, x:public uint |- loop x until n2 do sc ~> loop x until n2 do c | G, x:public uint
+------------------------------------------------------------------------------------- :: for
 G |- for x in n1 to n2 do sc ~> for x in n1 to n2 do c | G
 
 G |- x : l bt array n ~> x
@@ -368,9 +367,11 @@ G1 |- sc2 ~> c2 | G2
 ----------------------------- :: seq
 G |- sc1; sc2 ~> c1; c2 | G2
 
-G |- sc ~> c | G1
--------------------------------------------------------- :: loop
-G |- loop x until n2 do sc ~> loop x until n2 do c | G1
+G(x) = public uint
+x notin modifies sc
+G |- sc ~> c | whateverG
+------------------------------------------------------- :: loop
+G |- loop x until n2 do sc ~> loop x until n2 do c | G
 
 grammar
 
@@ -514,8 +515,8 @@ rho |- loop x until n2 do c !! rho ; emp
 
 rho[x] leq n2
 rho |- c !! rho1 ; cktc1
-(rho1 restrict rho) , x |-> rho [x] + 1 |- loop x until n2 do c !! rho2 ; cktc2
--------------------------------------------------------------------------------- :: loopi
+(rho1 restrict rho) , x |-> rho1 [x] + 1 |- loop x until n2 do c !! rho2 ; cktc2
+--------------------------------------------------------------------------------- :: loopi
 rho |- loop x until n2 do c !! rho2 ; cktc1, cktc2
 
 rho |- x !! [ wi ] n'
@@ -664,8 +665,8 @@ defn
 G |- srho ~> rho ; crho1 , crho2 :: :: envcompile :: 'en_' {{ tex [[G]] \vdash [[srho]] \hookrightarrow [[rho]]; [[crho1]], [[crho2]] }}
 by
 
--------------------------- :: emp
-emp |- emp ~> emp; emp, emp
+-------------------------------- :: emp
+emp |- emp ~> emp; crho1, crho2
 
 G(x) = public bt
 srho[x] = cons
@@ -678,10 +679,10 @@ G(x) = s bt
 srho[x] = cons
 cons : bt
 r notin rho
-b1 b2 = share s cons
+crho1[r] crho2[r] = share s cons
 G - x |- srho - x ~> rho; crho1, crho2
------------------------------------------------------------------------- :: sbt
-G |- srho ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
+---------------------------------------- :: sbt
+G |- srho ~> rho, x |-> r; crho1, crho2
 
 G(x) = public bt array n
 srho[x] = [consi] n
@@ -692,7 +693,7 @@ G |- srho ~> rho, x |-> [ consi ] n; crho1, crho2
 
 G(x) = s bt array n
 srho[x] = [consi] n
-i in 0 n (consi : bt and (ri notin rho and b1i b2i = share s consi))
+i in 0 n (consi : bt and (ri notin rho and crho1[ri] crho2[ri] = share s consi))
 G - x |- srho - x ~> rho; crho1, crho2
--------------------------------------------------------------------------------------------------------- :: sarr
-G |- srho ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
+----------------------------------------------------------------------------------- :: sarr
+G |- srho ~> rho, x |-> [ ri ] n; crho1, crho2
