@@ -265,7 +265,7 @@ formula :: formula_ ::=
    | G1 = G2               :: :: gammaeq
    | sv1 = sv2             :: :: sveq
    | b1 b2 = share s cons  :: :: share      {{ tex ([[b1]], [[b2]]) = \mathcal{E}_{[[s]]}([[cons]]) }}
-   | r notin rho           :: :: rfresh     {{ tex [[r]] \notin [[rho]] }}
+   | r fresh               :: :: rfresh     {{ tex \mathsf{fresh}\;[[r]] }}
 
 
 defns
@@ -481,12 +481,12 @@ v = cons or v = [consi] n
 rho |- t x = e !! rho, x |-> v; emp
 
 rho |- e !! ckte
-r notin rho
+r fresh
 -------------------------------------------- :: declckt
 rho |- t x = e !! rho, x |-> r; bind ckte r
 
 rho |- e !! [cktei] n
-i in 0 n ri notin rho
+i in 0 n ri fresh
 --------------------------------------------------- :: declcktarr
 rho |- t x = e !! rho, x |-> [ri] n; bind cktei ri
 
@@ -668,32 +668,28 @@ by
 -------------------------------- :: emp
 emp |- emp ~> emp; crho1, crho2
 
-G(x) = public bt
+G |- srho - x ~> rho; crho1, crho2
 srho[x] = cons
 cons : bt
-G - x |- srho - x ~> rho; crho1, crho2
-------------------------------------------------------- :: pbt
-G |- srho ~> rho, x |-> cons; crho1, crho2
+---------------------------------------------------------- :: pbt
+G , x:public bt |- srho ~> rho, x |-> cons; crho1, crho2
 
-G(x) = s bt
+G |- srho - x ~> rho; crho1, crho2
 srho[x] = cons
 cons : bt
-r notin rho
+r fresh
 b1 b2 = share s cons
-G - x |- srho - x ~> rho; crho1, crho2
------------------------------------------------------------- :: sbt
-G |- srho ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
+--------------------------------------------------------------------- :: sbt
+G , x:s bt |- srho ~> rho, x |-> r; crho1, r |-> b1, crho2, r |-> b2
 
-G(x) = public bt array n
+G |- srho - x ~> rho; crho1, crho2
 srho[x] = [consi] n
 i in 0 n consi : bt
-G - x |- srho - x ~> rho; crho1, crho2
---------------------------------------------------------------------------------------- :: parr
-G |- srho ~> rho, x |-> [ consi ] n; crho1, crho2
+----------------------------------------------------------------------- :: parr
+G, x:public bt array n |- srho ~> rho, x |-> [ consi ] n; crho1, crho2
 
-G(x) = s bt array n
+G |- srho - x ~> rho; crho1, crho2
 srho[x] = [consi] n
-i in 0 n (consi : bt and (ri notin rho and b1i b2i = share s consi))
-G - x |- srho - x ~> rho; crho1, crho2
------------------------------------------------------------------------ :: sarr
-G |- srho ~> rho, x |-> [ ri ] n; crho1, r |-> b1i, crho2, r |-> b2i
+i in 0 n (consi : bt and (ri fresh and b1i b2i = share s consi))
+---------------------------------------------------------------------------------------- :: sarr
+G , x:s bt array n |- srho ~> rho, x |-> [ ri ] n; crho1, ri |-> b1i, crho2, ri |-> b2i
