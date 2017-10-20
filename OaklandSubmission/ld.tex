@@ -582,7 +582,8 @@ In this section we prove the correctness and security of our compiler.
 
      \inferrule*[lab={\footnotesize{T-Assgn}}]
                {
-                 \Gamma \vdash e : \Gamma(x) \leadsto \widetilde{e}
+                 \Gamma(x) = \sigma^{\ell}\\\\
+                 \Gamma \vdash e : \sigma^{\ell} \leadsto \widetilde{e}
                }
                {
                  \Gamma \vdash x := e \leadsto x = \widetilde{e} \mid \Gamma
