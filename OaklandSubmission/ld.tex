@@ -424,8 +424,8 @@ In this section we prove the correctness and security of our compiler.
                {
                  \forall i \in \{1, 2, 3\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa_{i} \Downarrow b_{1i}, b_{2i}\quad
                  c_{i} = \mathcal{D}_{\mathcal{B}}(b_{1i}, b_{2i})\\\\
-                 c_{1} = \top \Rightarrow b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(c_{1})\quad
-                 c_{1} = \bot \Rightarrow b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(c_{2})
+                 c_{1} = \top \Rightarrow b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(c_{2})\quad
+                 c_{1} = \bot \Rightarrow b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(c_{3})
                }
                {
                  \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{mux}\:\kappa_{1}\:\kappa_{2}\:\kappa_{3} \Downarrow b_{1}, b_{2}
