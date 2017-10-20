@@ -82,6 +82,7 @@ sobs {{ tex O }} :: 'sobs_' ::= {{ com Source observation }}
   | emp              ::   :: Emp    {{ tex \cdot }}
   | cons , sobs      ::   :: Value
   | sobs1 , sobs2    :: M :: Seq
+  | whateversobs     :: M :: Eh     {{ tex \_ }}
 
 defns
 JEvalSE :: '' ::=
@@ -150,6 +151,9 @@ formula :: formula_ ::=
    | v eq sv               :: :: sveqv      {{ tex [[v]] = [[sv]] }}
    | ckt1 = ckt2           :: :: ckteq
    | crho1 = crho2         :: :: crhoeq
+   | G1 sup G2             :: :: gsup       {{ tex [[G1]] \supseteq [[G2]] }}
+   | dom G = srho          :: :: domg       {{ tex \mathsf{dom}([[G]]) = \mathsf{dom}([[srho]]) }}
+   | dom G sup rho         :: :: domgrho    {{ tex \mathsf{dom}([[G]]) \supseteq \mathsf{dom}([[rho]]) }}
 
 defns
 JEvalSC :: '' ::=
@@ -231,6 +235,7 @@ e {{ tex \widetilde{e} }} :: 'e_' ::=  {{ com Target expression }}
   | in s j                        ::   :: In   {{ tex [[in]]_{[[j]]}^{[[s]]} }} %\;\;([[i]] \in \{1, 2\}) }}
   | e |> s                        ::   :: Coerce  {{ tex [[e]] \rhd [[s]] }}
   | default t                     :: M :: Default {{ tex \mathsf{default}([[t]]) }}
+  | whatevere                     :: M :: Eh      {{ tex \_ }}
 
 c {{ tex \widetilde{s} }} :: 'c_' ::= {{ com Target statement }}
   | t x = e                            ::   :: Decl
@@ -257,6 +262,7 @@ formula :: formula_ ::=
    | v1 = v2               :: :: veq
    | v1 = v2 = v3          :: :: veq3
    | x notin modifies sc   :: :: modifesmem {{ tex [[x]] \not\in \mathsf{modifies}([[sc]]) }}
+   | x in srho             :: :: xinsrho    {{ tex [[x]] \in \mathsf{dom}([[srho]]) }}
    | mapsto                :: :: mapsto     {{ tex \mapsto }}
    | l1 ne l2              :: :: labne      {{ tex [[l1]] \neq [[l2]] }}
    | l1 = l2               :: :: labeq
@@ -403,6 +409,7 @@ rho {{ tex \widetilde{\rho} }} :: 'rho_' ::= {{ com Runtime environment }}
   | rho - x             :: M :: Minus {{ tex [[rho]] \setminus [[x]] }}
   | rho1 restrict rho2  :: M :: Restr {{ tex [ [[rho1]] ]_{\mathsf{dom}([[rho2]])} }}
   | ( rho1 )            :: M :: Paren
+  | whateverrho         :: M :: Eh    {{ tex \_ }}
 
 cktc {{ tex \kappa^{s} }} :: 'cktc_' ::= {{ com Circuit command }}
   | emp                    :: :: Emp    {{ tex \cdot }}
@@ -550,6 +557,7 @@ b :: 'cv_' ::= {{ com Share (byte string) }}
 crho {{ tex \widehat{\rho} }} :: 'crho_' ::= {{ com Circuit environment }}
   | emp                ::   :: Empty {{ tex \cdot }}
   | crho , r |-> b     ::   :: Map   {{ tex [[crho]][ [[r]] \mapsto [[b]] ] }}
+  | whatevercrho       :: M :: Eh    {{ tex \_ }}
 
 defns
 JEvalCircE :: '' ::=

@@ -101,6 +101,24 @@
 
 \section{Formal Development}
 
+\begin{requirement}[Soundess of bounds checking]
+  If:
+
+  \begin{enumerate}
+  \item $[[G |- se : public uint ~> whatevere]]$
+  \item $[[G |= se lt n]]$
+  \item $[[G |- srho ~> whateverrho; whatevercrho, whatevercrho]]$
+  \item $[[srho |- se !! n1]]$
+  \end{enumerate}
+  
+  then $[[n1 lt n]]$.
+  
+\end{requirement}
+
+\begin{requirement}
+  $\forall$ $[[s]]$, $[[cons]]$. If $[[b1 b2 = share s cons]]$, then $[[combine s b1 b2 = cons]]$.
+\end{requirement}
+
 \begin{lemma}[Value inversion]
   \label{lem:valinv}
   Inversion lemma for values:
@@ -131,13 +149,32 @@
   \end{enumerate}
 \end{lemma}
 
+\begin{lemma}[More environment related lemmas]
+\begin{enumerate}
+
+\item If $[[G |- sc ~> c | G']]$, then $[[G' sup G]]$.
+\item If $[[G |- srho ~> rho; whatevercrho, whatevercrho]]$, then $[[dom G = srho]]$ and $[[dom G sup rho]]$.
+\item If $[[G |- srho ~> rho; crho1, crho2]]$, $[[r fresh]]$, then If $[[G |- srho ~> rho; crho1, r |-> b1, crho2, r |-> b2]]$.
+\item If $[[G |- srho ~> rho; crho1, crho2]]$, $[[G1 |- srho1 ~> rho1; crho1', crho2']]$, $[[G1 sup G]]$, then $[[G |- srho1 restrict srho ~> rho1 restrict rho; crho1', crho2']]$.
+  
+\end{enumerate}
+
+\end{lemma}
+
+\begin{lemma}[Modifies] If $[[srho |- sc !! srho'; whateversobs]]$, $[[x in srho]]$, $[[x notin modifies sc]]$, then $[[srho[x] = srho'[x] ]]$.
+\end{lemma}
+
+
 \begin{lemma}[Soundness of public, scalar expressions]
-  If
+  If:
+  
   \begin{enumerate}
   \item $[[G |- se : public bt ~> e]]$
   \item $[[G |- srho ~> rho; crho1, crho2]]$
   \end{enumerate}
-  Then
+
+  then:
+  
   \begin{enumerate}[(a)]
   \item $[[srho |- se !! cons]]$
   \item $[[cons : bt]]$
@@ -160,12 +197,15 @@
 \end{lemma}
 
 \begin{lemma}[Soundness of secret, scalar expressions]
-  If
+  If:
+  
   \begin{enumerate}
   \item $[[G |- se : s bt ~> e]]$
   \item $[[G |- srho ~> rho; crho1, crho2]]$
   \end{enumerate}
-  Then
+
+  then:
+  
   \begin{enumerate}[(a)]
   \item $[[srho |- se !! cons]]$
   \item $[[cons : bt]]$
@@ -176,12 +216,15 @@
 \end{lemma}
 
 \begin{lemma}[Soundness of secret, array expressions]
-  If
+  If:
+  
   \begin{enumerate}
   \item $[[G |- se : s bt array n ~> e]]$
   \item $[[G |- srho ~> rho; crho1, crho2]]$
   \end{enumerate}
-  Then
+
+  then:
+
   \begin{enumerate}[(a)]
   \item $[[srho |- se !! [consi] n]]$
   \item $[[i in 0 n consi : bt]]$
@@ -230,7 +273,7 @@ then:
 \end{lemma}
 
 \begin{lemma}[Termination of loop]
-If
+If:
 
 \begin{enumerate}
 \item $[[G |- loop x until n2 do sc  ~> loop x until n2 do c | G]]$
