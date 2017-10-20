@@ -292,11 +292,11 @@ In this section we prove the correctness and security of our compiler.
                  \widetilde{\rho} \vdash \tau\:x = \widetilde{e} \Downarrow \widetilde{\rho'}; \cdot
                }
                
-               \hspace{0.3cm}
+               \hspace{0.5cm}
 
     \inferrule*[lab={\footnotesize{S-DeclCkt}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \kappa\\\\
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \kappa\quad
                  \mathsf{fresh}\:r\\\\
                  \widetilde{\rho'} = \widetilde{\rho}, x \mapsto r\quad
                  \chi = \kw{bind}\:\kappa\:r
@@ -339,13 +339,13 @@ In this section we prove the correctness and security of our compiler.
                  \widetilde{\rho} \vdash \ite{\widetilde{e}}{\widetilde{s_{1}}}{\widetilde{s_{2}}} \Downarrow \widetilde{\rho'}; \chi
                }
 
-               \hspace{0.3cm}
+               \hspace{0.5cm}
                
     \inferrule*[lab={\footnotesize{S-Write}}]
                {
-                 \widetilde{\rho} \vdash x \Downarrow [\overline{\widetilde{w_{i}}}]_{n}\\\\
-                 \widetilde{\rho} \vdash \widetilde{e_{1}} \Downarrow n_{1}\quad
-                 n_{1} < n\\\\
+                 \widetilde{\rho} \vdash x \Downarrow [\overline{\widetilde{w_{i}}}]_{n}\quad
+                 \widetilde{\rho} \vdash \widetilde{e_{1}} \Downarrow n_{1}\\\\
+                 n_{1} < n\quad\quad
                  \widetilde{\rho} \vdash \widetilde{e_{2}} \Downarrow \widetilde{w}\\\\
                  \widetilde{\rho'} = \widetilde{\rho}[x \mapsto [\overline{\widetilde{w_{i}}}]_{n}[n_{1} \mapsto \widetilde{w}]]
                }
