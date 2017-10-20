@@ -1,47 +1,36 @@
 \begin{figure}
-\begin{verbatim}
+\begin{lstlisting}[language=C]
 //fin is an input filestream
 if(role == SERVER) {
   for(uint32_t i = 0; i < 30; i++) {
-     fin >> w[i];
-     s_a_w[i] = acirc->
-    		PutINGate( w[i] ,bitlen,SERVER);
+    fin >> w[i];
+    a_w[i] = acirc->PutINGate(w[i], bitlen, SERVER);
   }
   fin >> b;
-  s_a_b[i] = acirc->
-    		PutINGate( b[i] ,bitlen,SERVER); 
+  a_b[i] = acirc->PutINGate(b[i], bitlen, SERVER); 
   ...
   }
 } else { //role == CLIENT
 ...
 }
-for (uint32_t i = 0; i < 30; i++)
-{
-    share * s_a_tmp_0 = acirc->
-    					PutMULGate( s_a_w[i] , s_a_x[i] );
-    s_a_acc = acirc->
-    		PutADDGate( s_a_acc , s_a_tmp_0 );
+for(uint32_t i = 0; i < 30; i++) {
+  share * a_t_0 = acirc->PutMULGate(a_w[i], a_x[i]);
+  a_acc = acirc-> PutADDGate(a_acc, a_t_0 );
 }
 
-share *s_y_acc = ycirc->PutA2YGate( s_a_acc );
-share * s_y_pred = ycirc->PutGTGate
-					( s_y_acc , s_y_b );
+share *y_acc = ycirc->PutA2YGate(a_acc);
+share *y_pred = ycirc->PutGTGate (y_acc, y_b);
 uint32_t one = 1 ;
-share * s_y_one = ycirc->PutCONSGate
-					( one ,bitlen);
+share *y_1 = ycirc->PutCONSGate(one, bitlen);
 uint32_t zero = 0 ;
-share * s_y_zero = ycirc->PutCONSGate
-					( zero ,bitlen);
-share * s_y_t = ycirc->PutMUXGate
-					( s_y_pred , s_y_one , s_y_zero );
-share * s_y_out = ycirc->PutOUTGate
-					( s_y_t , CLIENT);
+share *y_0 = ycirc->PutCONSGate(zero, bitlen);
+share *y_t = ycirc->PutMUXGate(y_pred, y_1, y_0);
+share *y_out = ycirc->PutOUTGate(y_t, CLIENT);
 party->ExecCircuit();
 if(role==CLIENT) {
-  uint32_t _output = s_y_out->
-			    get_clear_value<uint32_t>();
+  uint32_t _o = y_out->get_clear_value<uint32_t>();
 }
-\end{verbatim}
-\caption{Code in ABY}
+\end{lstlisting}
+\caption{Partial ABY code for \ls{w}$^{\text{\ls{T}}}$\ls{x > b}}
 \label{fig:ex-aby}
 \end{figure}

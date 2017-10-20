@@ -108,3 +108,36 @@
 \newcommand{\nc}[1]{{{\color{purple} nc: #1}}}
 \newcommand{\rs}[1]{{{\color{magenta} rs: #1}}}
 \newcommand{\aseem}[1]{{{\color{purple} Aseem: #1}}}
+
+\lstset{ % 
+    language=C,
+    backgroundcolor=\color{white},   
+    basicstyle=\footnotesize\ttfamily\bfseries,
+    breakatwhitespace=false,
+    breaklines=false,
+    belowskip=-0.3cm,
+    captionpos=b,                    
+    commentstyle=\color{red},
+    deletekeywords={...}, 
+    escapeinside={\%*}{*)}, 
+    extendedchars=true, 
+    %% frame=single,
+    keepspaces=true,
+    keywordstyle=\color{blue},
+    keywordstyle=[2]\color{blue},
+    otherkeywords={*,...,in,uint,input1,input2,output},
+    keywords=[2]{private},
+    numbers=left,
+    numbersep=5pt, 
+    numberstyle=\tiny\color{gray}\bfseries, 
+    rulecolor=\color{black},
+    showspaces=false,
+    showstringspaces=false, 
+    showtabs=false, 
+    stepnumber=2, 
+    stringstyle=\color{mymauve},
+    tabsize=2, 
+    title=\lstname
+}
+
+\let\ls\lstinline

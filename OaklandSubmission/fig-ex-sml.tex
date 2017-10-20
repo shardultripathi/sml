@@ -1,15 +1,15 @@
 \begin{figure}
-\begin{verbatim}
+\begin{lstlisting}[language=C]
 uint w[30] = input1();
 uint b = input1();
 uint x = input2();
 uint acc = 0;
-for i = [0:30] {
+for i in [0:30] {
   acc =  acc + (w[i] * x[i]);
 }
 output((acc > b) ? 1 : 0);
-\end{verbatim}
-\caption{Code in \tool for $w^Tx >b$}
+\end{lstlisting}
+\caption{Complete \tool code for \ls{w}$^{\text{\ls{T}}}$\ls{x > b}}
 \label{fig:ex-sml}
 \end{figure}
 
