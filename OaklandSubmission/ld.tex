@@ -15,6 +15,7 @@ In this section we prove the correctness and security of our compiler.
 \end{theorem}
 
 \begin{figure}
+  \small
   \[
   \begin{array}{rrcl}
     \ftext{Base type} & \sigma &::=& \kw{uint} \mid \kw{bool}\\
@@ -32,6 +33,7 @@ In this section we prove the correctness and security of our compiler.
 \end{figure}
 
 \begin{figure}
+  \small
   \fbox{$\rho \vdash e \Downarrow v$}
   \[
   \\
@@ -162,6 +164,7 @@ In this section we prove the correctness and security of our compiler.
 %\newcommand{\loops}[3]{\ensuremath{\kw{while}\:{#1} \leq {#2}\:\kw{do}\:{#3}}}
 
 \begin{figure}
+  \small
   \[
   \begin{array}{rrcl}
     \ftext{Secret label} & m &::=& \mathcal{A} \mid \mathcal{B}\\
@@ -177,6 +180,7 @@ In this section we prove the correctness and security of our compiler.
 \end{figure}
 
 \begin{figure}
+  \small
   \[
   \begin{array}{rrcl}
     \ftext{Wire id} & r &&\\
@@ -193,6 +197,7 @@ In this section we prove the correctness and security of our compiler.
 
 
 \begin{figure}
+  \small
   \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \widetilde{v}$}
   \[
   \\
@@ -364,6 +369,7 @@ In this section we prove the correctness and security of our compiler.
 \end{figure}
 
 \begin{figure}
+  \small
   \fbox{$\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa \Downarrow b_{1}, b_{2}$}
   \[
   \\
@@ -462,6 +468,194 @@ In this section we prove the correctness and security of our compiler.
   \]
 \label{fig:cktsem}
 \caption{Circuit semantics (selected rules)}
+\end{figure}
+
+\begin{figure}
+  \small
+  \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}
+  \[
+  \begin{array}{c}
+     \inferrule*[lab={\footnotesize{T-Cons}}]
+               {
+                 \tau = \mathsf{typeof}(c)^{\mathcal{P}}
+               }
+               {
+                 \Gamma \vdash c : \tau \leadsto c 
+               }
+
+     \inferrule*[lab={\footnotesize{T-Add}}]
+               {
+                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e_{i}}\\\\
+                 \ell = \mathcal{P} \vee \ell = \mathcal{A}
+               }
+               {
+                 \Gamma \vdash e_{1} + e_{2} : \kw{uint}^{\ell} \leadsto \widetilde{e_{1}} +_{\ell} \widetilde{e_{2}}
+               }
+
+    %% \inferrule*[lab={\footnotesize{T-Cons}}]
+    %%            {
+    %%              \tau = \mathsf{typeof}(c)^{\mathcal{P}}
+    %%            }
+    %%            {
+    %%              \Gamma \vdash c : \tau \leadsto c
+    %%            }
+
+    %%  \inferrule*[lab={\footnotesize{T-Var}}]
+    %%            {
+    %%            }
+    %%            {
+    %%              \Gamma \vdash x : \Gamma(x) \leadsto x
+    %%            }
+\\\\
+     \inferrule*[lab={\footnotesize{T-Gt}}]
+               {
+                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e_{i}}\\\\
+                 \ell = \mathcal{P} \vee \ell = \mathcal{B}
+               }
+               {
+                 \Gamma \vdash e_{1} > e_{2} : \kw{bool}^{\ell} \leadsto \widetilde{e_{1}} >_{\ell} \widetilde{e_{2}}
+               }
+
+     \inferrule*[lab={\footnotesize{T-Read}}]
+               {
+                 \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
+                 \Gamma \vdash e : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e}\\\\
+                 \Gamma \models e < n
+               }
+               {
+                 \Gamma \vdash x[e] : \sigma^{\ell} \leadsto x[\widetilde{e}]
+               }
+
+\\\\               
+
+     \inferrule*[lab={\footnotesize{T-Cond}}]
+               {
+                 \Gamma \vdash e : \kw{bool}^{\ell} \leadsto \widetilde{e}\\\\
+                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \sigma^{\ell'} \leadsto \widetilde{e_{i}}\\\\
+                 \ell = \mathcal{P} \vee (\ell = \mathcal{B} \wedge \ell' =\mathcal{B})
+               }
+               {
+                 \Gamma \vdash \cond{e}{e_{1}}{e_{2}} : \sigma^{\ell'} \leadsto \lcond{\ell}{\widetilde{e}}{\widetilde{e_{1}}}{\widetilde{e_{2}}}
+               }
+
+     \inferrule*[lab={\footnotesize{T-Inp}}]
+               {
+               }
+               {
+                 \Gamma \vdash \kw{in}_{j} : \sigma^{m} \leadsto \kw{in}^{\sigma}_{j}
+               }
+               
+\\\\               
+
+     \inferrule*[lab={\footnotesize{T-Arr}}]
+               {
+                 \forall i \in \{0 \dots n - 1\}.\:\Gamma \vdash e_{i} : \sigma^{\ell} \leadsto \widetilde{e_{i}}
+               }
+               {
+                 \Gamma \vdash [\overline{e_{i}}]_{n} : \sigma^{\ell}[n] \leadsto [\overline{\widetilde{e_{i}}}]_{n}
+               }
+
+     \inferrule*[lab={\footnotesize{T-Sub}}]
+               {
+                 \Gamma \vdash e : \sigma^{\ell} \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash e : \sigma^{m} \leadsto \widetilde{e} \rhd m
+               }
+
+  \end{array}
+  \]
+  \\\\
+    \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma'$}
+  \[
+  \\
+  \begin{array}{c}
+     \inferrule*[lab={\footnotesize{T-Decl}}]
+               {
+                 \psi = \sigma \Rightarrow \tau = \sigma^{\ell}\\\\
+                 \psi = \sigma[n] \Rightarrow \tau = \sigma^{\ell}[n]\\\\
+                 \Gamma \vdash e : \tau \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash \psi\:x = e \leadsto \tau\:x = \widetilde{e} \mid \Gamma, x:\tau
+               }
+
+     \inferrule*[lab={\footnotesize{T-Assgn}}]
+               {
+                 \Gamma \vdash e : \Gamma(x) \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash x := e \leadsto x = \widetilde{e} \mid \Gamma
+               }
+
+\\\\
+
+     \inferrule*[lab={\footnotesize{T-For}}]
+               {
+                 \Gamma' = \Gamma, x::\kw{uint}^{\mathcal{P}}\\\\
+                 \Gamma' \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \Gamma'
+               }
+               {
+                 \Gamma \vdash \for{x}{n_{1}}{n_{2}}{s} \leadsto \for{x}{n_{1}}{n_{2}}{\widetilde{s}} \mid \Gamma
+               }
+
+               \\\\
+
+     \inferrule*[lab={\footnotesize{T-Write}}]
+               {
+                 \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
+                 \Gamma \vdash e_{1} : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e_{1}}\\\\
+                 \Gamma \vdash e_{2} : \sigma^{\ell} \leadsto \widetilde{e_{2}}\\\\
+                 \Gamma \models e_{1} < n
+               }
+               {
+                 \Gamma \vdash x[e_{1}] := e_{2} \leadsto x[\widetilde{e_{1}}] := \widetilde{e_{2}} \mid \Gamma
+               }
+
+     \inferrule*[lab={\footnotesize{T-Out}}]
+               {
+                 \Gamma \vdash e : \sigma^{m} \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash \kw{out}\:e \leadsto \kw{out}\:\widetilde{e} \mid \Gamma
+               }
+
+\\\\
+
+     \inferrule*[lab={\footnotesize{T-If}}]
+               {
+                 \Gamma \vdash e : \kw{bool}^{\mathcal{P}} \leadsto \widetilde{e}\\\\
+                 \forall i \in \{1, 2\}.\:\Gamma \vdash s_{i} \leadsto \widetilde{s_{i}} \mid \_
+               }
+               {
+                 \Gamma \vdash \ite{e}{s_{1}}{s_{2}} \leadsto \ite{\widetilde{e}}{\widetilde{s_{1}}}{\widetilde{s_{2}}}  \mid \Gamma
+               }
+
+     \inferrule*[lab={\footnotesize{T-Seq}}]
+               {
+                 \Gamma \vdash s_{1} \leadsto \widetilde{s_{1}} \mid \Gamma_{1}\\\\
+                 \Gamma_{1} \vdash s_{2} \leadsto \widetilde{s_{2}} \mid \Gamma_{2}
+               }
+               {
+                 \Gamma \vdash s_{1}; s_{2} \leadsto \widetilde{s_{1}}; \widetilde{s_{2}} \mid \Gamma_{2}
+               }
+
+\\\\
+
+     \inferrule*[lab={\footnotesize{T-While}}]
+               {                 
+                 \Gamma(x) = \kw{uint}^{\mathcal{P}}\quad
+                 \Gamma \vdash s \leadsto \widetilde{s} \mid \_\quad
+                 x \notin \mathsf{modifies}(s)
+               }
+               {
+                 \Gamma \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \Gamma
+               }
+
+  \end{array}
+  \]
+\label{fig:compile}
+\caption{Compilation judgments (selected rules)}
 \end{figure}
 
   %% \\
