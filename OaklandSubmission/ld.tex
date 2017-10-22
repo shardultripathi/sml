@@ -253,13 +253,6 @@ added by $s$, increments the value if $x$, and evaluates the
 when $\rho(x) > n$. Finally, the rule ({\sc{E-Out}}) evaluates the
 expression, and adds it value to the observations.
 
-\subsubsection{Target language}
-
-\begin{theorem}[Correctness of the compiler]
-  
-\end{theorem}
-
-
 \newcommand{\lcond}[4]{\ensuremath{{{#2}\:?_{{#1}}\:{#3}\::{#4}}}}
 %\newcommand{\for}[4]{\ensuremath{\kw{for}\:{#1}\:\kw{in}\:[{#2}, {#3}]\:\kw{do}\:{#4}}}
 %\newcommand{\ite}[3]{\ensuremath{\kw{if}({#1}, {#2}, {#3})}}
@@ -277,8 +270,8 @@ expression, and adds it value to the observations.
     \ftext{Statement} & \widetilde{s} &::=& \tau\:x = \widetilde{e} \mid x := \widetilde{e} \mid \dots \mid \widetilde{s_{1}}; \widetilde{s_{2}} \mid \dots\\
   \end{array}
   \]
-\label{fig:tgtlang}
 \caption{Target language}
+\label{fig:tgtlang}
 \end{figure}
 
 \begin{figure}
@@ -288,13 +281,14 @@ expression, and adds it value to the observations.
     \ftext{Wire id} & r &&\\
     \ftext{Circuit gate} & \kappa & ::= & r \mid \kw{in}^{m}_{j} \mid \kw{add}\:\kappa_{1}\:\kappa_{2} \mid \kw{gt}\:\kappa_{1}\:\kappa_{2}\\
     & & \mid & \kw{mux}\:\kappa\:\kappa_{1}\:\kappa_{2} \mid \widetilde{w} \rhd m\\
-    \ftext{Base value} & \widetilde{w} & ::= & c \mid \kappa\\
-    \ftext{Value} & \widetilde{v} & ::= & \widetilde{w} \mid [\overline{\widetilde{w}_{i}}]_{n}\\
+    \ftext{Base value} & \widetilde{w} & ::= & c \mid r\\
+    \ftext{Value} & \widetilde{v} & ::= & \widetilde{w} \mid \kappa \mid [\overline{\widetilde{w}_{i}}]_{n}\\
+    \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho}[x \mapsto \widetilde{v}]\\
     \ftext{Circuit} & \chi & ::= & \cdot \mid \kw{bind}\:\kappa\:r \mid \kw{out}\:\kappa \mid \kappa_{1}; \kappa_{2}
   \end{array}
   \]
-\label{fig:tgtruntime}
 \caption{Target runtime}
+\label{fig:tgtruntime}
 \end{figure}
 
 
@@ -467,9 +461,65 @@ expression, and adds it value to the observations.
 
 \end{array}
   \]
-\label{fig:tgtsem}
 \caption{Target semantics (selected rules)}
+\label{fig:tgtsem}
 \end{figure}
+
+\subsubsection*{Target language} Figure~\ref{fig:tgtlang} shows the
+target language of our compiler. The syntax follows that of the source
+languag, except that the types and operators are \emph{labeled}. Below
+we mainly focus on the bits that are different from the source
+language.
+
+Labels $\ell$ consist of secret labels $\mathcal{A}$ and
+$\mathcal{B}$, denoting the arithmetic and boolean shared secrets
+resp., and the public label $\mathcal{P}$. Types $\tau$ are then
+labeled base types $\sigma^{\ell}$ and arrays of labeled base types
+$\sigma^{\ell}[n]$.
+
+Most of the expression forms $\widetilde{e}$ are same as $e$, except
+that the binary operators, and the conditional forms
+are annotated with label $\ell$, denoting how the operators should be
+evaluated ($\mathcal{P}$ for in-clear, and $\mathcal{A}$ and
+$\mathcal{B}$ for using arithmetic or boolean circuits resp.). The
+form $\widetilde{e} \rhd m$ denotes coercing $\widetilde{e}$ to be
+$m$-secret shared. The statements $\widetilde{s}$ are analogous to
+$s$.
+
+The target semantics models the semantics of the code output by
+our compiler (C++ code in our implementation). It computes over the
+public parts of the program, emitting a circuit that can later be
+evaluated using a cryptographic MPC protocol. Crucially, this phase of
+the semantics does not have access to the secrets.
+
+Figure~\ref{fig:tgtruntime} shows the runtime syntax. A wire id range
+$r$ denotes a set of circuit wires that carry the value of a secret
+shared variable in the output circuit. Circuit gates $\kappa$ are
+$r$, input gates, \kw{add}, \kw{gt}, and \kw{mux} gates, and coerce
+gates $\widetilde{w} \rhd m$. Target values $\widetilde{v}$ then
+consist of base values $c$ and $r$, circuit gates $\kappa$, and arrays
+of base values.
+
+Figure~\ref{fig:tgtsem} shows the judgments for the target
+semantics. We first focus on the expression evaluation judgment
+$\widetilde{\rho} \vdash \widetilde{e} \Downarrow
+\widetilde{v}$. Rules ({\sc{S-PAdd}}) and ({\sc{S-SAdd}}) illustrate
+the significance of the operator labels. In particular, the rule
+({\sc{S-PAdd}}) evaluates a public addition $\widetilde{e_{1}}
++_{\mathcal{P}} \widetilde{e_{2}}$ to $n_{1} + n_{2}$, similar to the
+source language. In contrast, the rule
+({\sc{S-SAdd}}) evaluates a secret addition $\widetilde{e_{1}}
++_{\mathcal{A}} \widetilde{e_{2}}$, using an arithmetic add
+gate, to $\kw{add}\:\kappa_{1}\:\kappa_{2}$. Since our compiler
+compiles secret add operations to arithmetic gates, the target
+expressions from our compiler never have $\widetilde{e_{1}}
++_{\mathcal{B}} \widetilde{e_{2}}$ (we present the compilation rules
+later in the section).
+
+\begin{theorem}[Correctness of the compiler]
+  
+\end{theorem}
+
 
 \begin{figure}
   \small
