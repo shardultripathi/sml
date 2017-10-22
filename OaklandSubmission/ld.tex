@@ -924,15 +924,15 @@ $\Gamma$ at type $\kw{uint}^{\mathcal{P}}$, and that $x \notin
 \mathsf{modifies}(s)$--this helps us prove the termination.
 
 \subsubsection*{Correctness theorem} We first define a judgment for
-translation of type environments, $\Gamma \vdash \rho \leadsto
+translation of environments, $\Gamma \vdash \rho \leadsto
 \widetilde{\rho}; \widehat{\rho_{1}}, \widehat{\rho_{2}}$. The
-judgment is defined inductively on $\Gamma$, and establishes that the
+judgment is defined inductively on $\Gamma$, and establishes that
 the static environment $\Gamma$ is consistent with the runtime
 environments $\rho$, $\widetilde{\rho}$, and $\widehat{\rho_{1}}$ and
 $\widehat{\rho_{2}}$. As an example, if $x:\kw{uint}^{\mathcal{P}} \in
 \Gamma$, the judgment checks that $\rho(x) = \widetilde{\rho}(x) =
-n$. We elide the judgment, but it is defined in the supplementary
-material.
+n$, for some $n$. We elide the judgment, but it is defined in the
+supplementary material.
 
 With this judgment in hand, the correctness theorem is as follows:
 
@@ -944,13 +944,13 @@ With this judgment in hand, the correctness theorem is as follows:
   \item $\Gamma \vdash \rho \leadsto \widetilde{\rho}; \widehat{\rho_{1}}, \widehat{\rho_{2}}$
   \end{enumerate}
 
-  then $\exists \rho', O_{1}, \widetilde{\rho'}, \chi, \widehat{\rho_{1}'}, \widehat{\rho_{1}'}, O_{2}$, s.t.
+  then $\exists \rho', O_{1}, \widetilde{\rho}', \chi, \widehat{\rho_{1}}', \widehat{\rho_{1}}', O_{2}$, s.t.
 
   \begin{enumerate}
   \item $\rho \vdash s \Downarrow \rho'; O_{1}$
-  \item $\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho'}; \chi$
-  \item $\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \chi \Downarrow \widehat{\rho_{1}'}, \widehat{\rho_{2}'}; O_{2}$
-  \item $\Gamma' \vdash \rho' \leadsto \widetilde{\rho'}; \widehat{\rho_{1}'}, \widehat{\rho_{2}'}$
+  \item $\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}'; \chi$
+  \item $\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \chi \Downarrow \widehat{\rho_{1}}', \widehat{\rho_{2}}'; O_{2}$
+  \item $\Gamma' \vdash \rho' \leadsto \widetilde{\rho}'; \widehat{\rho_{1}}', \widehat{\rho_{2}}'$
   \item $O_{1} = O_{2}$
   \end{enumerate}
   
