@@ -281,10 +281,10 @@ expression, and adds it value to the observations.
     \ftext{Wire id} & r &&\\
     \ftext{Circuit gate} & \kappa & ::= & r \mid \kw{in}^{m}_{j} \mid \kw{add}\:\kappa_{1}\:\kappa_{2} \mid \kw{gt}\:\kappa_{1}\:\kappa_{2}\\
     & & \mid & \kw{mux}\:\kappa\:\kappa_{1}\:\kappa_{2} \mid \widetilde{w} \rhd m\\
-    \ftext{Base value} & \widetilde{w} & ::= & c \mid r\\
-    \ftext{Value} & \widetilde{v} & ::= & \widetilde{w} \mid \kappa \mid [\overline{\widetilde{w}_{i}}]_{n}\\
+    \ftext{Base value} & \widetilde{w} & ::= & c \mid \kappa\\
+    \ftext{Value} & \widetilde{v} & ::= & \widetilde{w} \mid [\overline{\widetilde{w}_{i}}]_{n}\\
     \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho}[x \mapsto \widetilde{v}]\\
-    \ftext{Circuit} & \chi & ::= & \cdot \mid \kw{bind}\:\kappa\:r \mid \kw{out}\:\kappa \mid \kappa_{1}; \kappa_{2}
+    \ftext{Circuit} & \chi & ::= & \cdot \mid \kw{bind}\:\kappa\:r \mid \kw{out}\:\kappa \mid \chi_{1}; \chi_{2}
   \end{array}
   \]
 \caption{Target runtime}
@@ -348,10 +348,10 @@ expression, and adds it value to the observations.
                \hspace{0.2cm}
     \inferrule*[lab={\footnotesize{S-Coerce}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \widetilde{w}
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \widetilde{v}
                }
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \rhd m \Downarrow \widetilde{w} \rhd m
+                 \widetilde{\rho} \vdash \widetilde{e} \rhd m \Downarrow \widetilde{v} \rhd m
                }
                \\\\
                %% \inferrule*[lab={\footnotesize{S-Arr}}]
@@ -497,8 +497,7 @@ $r$ denotes a set of circuit wires that carry the value of a secret
 shared variable in the output circuit. Circuit gates $\kappa$ are
 $r$, input gates, \kw{add}, \kw{gt}, and \kw{mux} gates, and coerce
 gates $\widetilde{w} \rhd m$. Target values $\widetilde{v}$ then
-consist of base values $c$ and $r$, circuit gates $\kappa$, and arrays
-of base values.
+consist of base values $c$ and $\kappa$, and arrays of base values.
 
 Figure~\ref{fig:tgtsem} shows the judgments for the target
 semantics. We first focus on the expression evaluation judgment
@@ -514,12 +513,34 @@ gate, to $\kw{add}\:\kappa_{1}\:\kappa_{2}$. Since our compiler
 compiles secret add operations to arithmetic gates, the target
 expressions from our compiler never have $\widetilde{e_{1}}
 +_{\mathcal{B}} \widetilde{e_{2}}$ (we present the compilation rules
-later in the section).
+later in the section). Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
+are along the similar lines. Rule ({\sc{S-PCond}}) evaluates a public
+conditional to the values from one of the branches, while the rule
+({\sc{S-SCond}}) evaluates to a \kw{mux} gate that takes input
+circuits from the conditional ($\kappa_{1}$) and both the branches
+($\kappa_{2}$ and $\kappa_{3}$). Rules {\sc{S-Coerce}} and
+{\sc{S-Inp}} evaluate to the coerce and input gates respectively.
 
-\begin{theorem}[Correctness of the compiler]
-  
-\end{theorem}
-
+Statement evaluation $\widetilde{\rho} \vdash \widetilde{s} \Downarrow
+\widetilde{\rho'}; \chi$ evaluates a target statement to produce a new
+environment $\widetilde{\rho'}$, and a circuit $\chi$. $\chi$ (shown
+in Figure~\ref{fig:tgtlang}) is either empty, \kw{bind}-ing of a
+circuit gate $\kappa$ to range $r$, \kw{out} gate, or a sequence of
+circuits. Rules ({\sc{S-DeclC}}), ({\sc{S-DeclCkt}}), and
+({\sc{S-DeclCktArr}}) show the variable declaration cases. Rule
+({\sc{S-DeclC}}) shows the case when $\widetilde{e}$ evaluates to
+$\widetilde{v}$, where $\widetilde{v}$ is a constant or an array of
+constants. In this case, the mapping $x \mapsto \widetilde{v}$ is
+added to the environment, and the resulting circuit is empty. When
+$\widetilde{e}$ evaluates to a circuit $\kappa$, rule
+({\sc{S-DeclCkt}}) picks a fresh $r$, adds the mapping $x \mapsto r$
+to the environment, and outputs the circuit
+$\kw{bind}\:\kappa\:r$. Rule ({\sc{S-DeclCktA}}) is analogous for
+$\widetilde{e}$ evaluating to an array of circuits. The variable
+assignment rules (not shown in the figure) are similar. Rule
+({\sc{S-WriteCkt}}) shows the case for writing to an array, where the
+array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
+\kw{out} circuit.
 
 \begin{figure}
   \small
@@ -619,9 +640,53 @@ later in the section).
                }
 \end{array}
   \]
-\label{fig:cktsem}
 \caption{Circuit semantics (selected rules)}
+\label{fig:cktsem}
 \end{figure}
+
+
+\subsubsection*{Circuit semantics} The target semantics produces a
+circuit to compute over the secret data using an MPC protocol. With
+our circuit semantics, we model the \emph{functional} aspect of the
+protocol, parametrized by the sharing functions.
+
+During the circuit evaluation, the wire ranges $r$ are
+mapped to (opaque) strings $b$. The semantics of these strings is
+given by pairs of encryption-decryption functions, written as
+$\mathcal{E}_{m}$ and $\mathcal{D}_{m}$ (where $m$ is either
+$\mathcal{A}$ or $\mathcal{B}$). More concretely,
+$\mathcal{E}_{m}(c)$ returns a pair of two string $b_{1}$ and $b_{2}$
+(shares of the two parties), with the property that
+$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. We assume that the underlying MPC
+protocol instantiates $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$
+appropriately.
+
+The circuit semantics is shown in Figure~\ref{fig:cktsem} using the
+judgments $\widehat{\rho_{1}}, \widehat{\rho_{1}} \vdash \kappa
+\Downarrow b_{1}, b_{2}$, and $\widehat{\rho_{1}}, \widehat{\rho_{2}}
+\vdash \chi \Downarrow \widehat{\rho_{1}'}, \widehat{\rho_{2}'}; O$,
+where $\widehat{\rho_{1}}$ and $\widehat{\rho_{2}}$ are the circuit
+environments of the two parties, mapping wire ranges $r$ to strings
+$b$. Rule {\sc{C-Add}} evinces the pattern for evaluating circuit
+gates $\kappa$. To evaluate $\kw{add}\:\kappa_{1}\:\kappa_{2}$, the
+rule first evaluates $\kappa_{1}$ to $(b_{11}, b_{21})$ and
+$\kappa_{2}$ to $(b_{12}, b_{22})$. Shares $(b_{11}, b_{21})$ are then
+combined using $\mathcal{D_{\mathcal{A}}}$ to $n_{1}$, and similarly
+$(b_{12}, b_{22})$ are combined to $n_{2}$. The final output of the
+\kw{add} gate is then $\mathcal{E}_{\mathcal{A}}(n_{1} + n_{2})$. Note
+that this is a functional description of how the \kw{add} gate
+evaluates, of course, concretely $n_{1}$ and $n_{2}$ are not observed
+by the parties. Rule {\sc{C-Coerce}} re-encrypts the shares using the
+scheme for $m$. Coming to the evaluation of circuits, the evaluation
+of \kw{bind} updates the mapping of $r$ in the input environments, and
+the rule {\sc{C-Out}} outputs the clear value $c$ to the observations.
+
+\subsubsection*{Compilation judgments}
+
+\begin{theorem}[Correctness of the compiler]
+  
+\end{theorem}
+
 
 \begin{figure}
   \small
