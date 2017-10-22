@@ -350,16 +350,17 @@ In this section we prove the correctness and security of our compiler.
 
                \hspace{0.5cm}
                
-    \inferrule*[lab={\footnotesize{S-Write}}]
+    \inferrule*[lab={\footnotesize{S-WriteCkt}}]
                {
-                 \widetilde{\rho} \vdash x \Downarrow [\overline{\widetilde{w_{i}}}]_{n}\quad
+                 \widetilde{\rho} \vdash x \Downarrow [\overline{r_{i}}]_{n}\quad
                  \widetilde{\rho} \vdash \widetilde{e_{1}} \Downarrow n_{1}\\\\
-                 n_{1} < n\quad\quad
-                 \widetilde{\rho} \vdash \widetilde{e_{2}} \Downarrow \widetilde{w}\\\\
-                 \widetilde{\rho'} = \widetilde{\rho}[x \mapsto [\overline{\widetilde{w_{i}}}]_{n}[n_{1} \mapsto \widetilde{w}]]
+                 n_{1} < n\quad
+                 \mathsf{fresh}\:r\quad
+                 \widetilde{\rho} \vdash \widetilde{e_{2}} \Downarrow \kappa\\\\
+                 \widetilde{\rho'} = \widetilde{\rho}[x \mapsto [\overline{r_{i}}]_{n}[n_{1} \mapsto r]]
                }
                {
-                 \widetilde{\rho} \vdash x[\widetilde{e_{1}}] := \widetilde{e_{2}} \Downarrow \widetilde{\rho'}; \cdot
+                 \widetilde{\rho} \vdash x[\widetilde{e_{1}}] := \widetilde{e_{2}} \Downarrow \widetilde{\rho'}; \kw{bind}\:\kappa\:r
                }
 
 \end{array}

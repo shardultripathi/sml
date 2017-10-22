@@ -526,12 +526,13 @@ rho |- c !! rho1 ; cktc1
 --------------------------------------------------------------------------------- :: loopi
 rho |- loop x until n2 do c !! rho2 ; cktc1, cktc2
 
-rho |- x !! [ wi ] n'
+rho |- x !! [ ri ] n'
 rho |- e1 !! n
-rho |- e2 !! w
+rho |- e2 !! ckte
+r fresh
 n lt n'
-------------------------------------------------------------- :: awrite
-rho |- x[e1] := e2 !! rho, x |-> [ wi ] n' [n mapsto w]; emp
+--------------------------------------------------------------------- :: awriteckt
+rho |- x[e1] := e2 !! rho, x |-> [ ri ] n' [n mapsto r]; bind ckte r
 
 rho |- e !! cons
 cons = true ==> i = 1
