@@ -9,6 +9,8 @@ dvi: *.tex
 pdf: *.tex
 	bibtex -min-crossrefs=10 main
 	pdflatex main.tex main.pdf
+	pdflatex main.tex main.pdf
+	pdflatex main.tex main.pdf
 
 bib:
 	bibtex -min-crossrefs=10 main
