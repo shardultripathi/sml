@@ -8,7 +8,7 @@
 \label{sec:intro}
 
 Today it is hard for developers to create secure implementations using cryptographic techniques.
-Typical developers lack an understanding of cryptography protocols
+Typical developers lack an understanding of cryptographic protocols
 and cannot be expected to implement them correctly and efficiently without tool
 support.
 In an ideal world, a developer declares the functionality to be implemented
@@ -21,11 +21,10 @@ secure  computation  accessible to the software developer community.
 
 %Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
 
-Secure multi-party computation (\mpc) \cite{yao,gmw} is a powerful
-cryptographic tool that allows a set of mutually distrusting parties
-to compute a joint function of their secret inputs. Examples of these
-include {\em secure prediction} \cite{shafindss,wu,barni,minionn,secureml}. Here,  one party holds the propriety classifier for disease, genomics or spam detection and the other party  
-holds the private input and the second party learns the classification label. Since the introduction of
+Secure two-party computation (\mpc) \cite{yao,gmw} is a powerful
+cryptographic tool that allows two mutually distrusting parties
+to compute a joint function of their secret inputs such as {\em secure prediction} \cite{shafindss,wu,barni,minionn,secureml}. Here,  one party holds the propriety classifier for disease, genomics or spam detection and the other party  
+holds the private input and the second party learns the classification label such as the presence of the disease. Since its introduction
 \mpc in 1980's, there has been a long sequence of work that has
 transformed \mpc from a mere theoretical tool to something practically
 efficient and usable. Hence, there have been efforts to make \mpc
@@ -34,27 +33,27 @@ state-of-the-art, let us consider the following
 example that is the sub-computation in many classification tasks.
 
 Suppose a developer wants to compute $w^Tx >b$ securely using
-\mpc. With the current techniques, he has three options. \aseem{We should
+\mpc, where $w$ and $x$ are two vectors, $b$ is a scalar, and $w^Tx$ denotes the inner product of $w$ and $x$.  With the current techniques, he has three options. \aseem{We should
   use she for the programmer instead of he?}
 \begin{tiret}
 \item He can code up the functionality in a programmer friendly
   domain-specific language such as
-  \cite{lambdaps,wysteria,oblivm,smcl} that would automatically
-  compile it to an SMC protocol. The downside is that all of these
-  works build on a cryptographic back-end that is either entirely
-  boolean \cite{yao,gmw} or entirely arithmetic \cite{homo}. The efficiency of the generated \mpc protocol is hence, bounded by the possibility of efficiently representing the function in a form that is compatible with the cryptographic back-end used. For instance, over $\ell$-bit integers, multiplication requires a boolean circuit of size  $O(\ell^2)$. 
-For better efficiency, we would like to evaluate $w^Tx$ using an arithmetic circuit and the comparison using a boolean circuit.
+  \cite{lambdaps,wysteria,oblivm,smcl,cbmcgc} that would automatically
+  compile it to a \mpc protocol. The downside is that all of these
+  works build on a cryptographic back-end that takes as input a functionality expressed as either a boolean circuit \cite{yao,gmw} or an arithmetic circuit \cite{homo}.
+  The efficiency of the generated \mpc protocol is hence, bounded by the possibility of efficiently representing the functionality in one of these circuit representations. For instance, multiplication of two $\ell$-bit integers can be expressed as a boolean circuit of size  $O(\ell^2)$ or an arithmetic circuit with 1 multiplication gate. 
+Hence, for better efficiency, we would like to securely compute $w^Tx$ using an arithmetic circuit and the comparison with $b$ using a boolean circuit. \divya{that is not supported by above systems.}
 In fact, most interesting functions require a mix of arithmetic and boolean computations for efficiency.
 
-\item To address this issue of efficient representation, recently Demmler et al. \cite{aby} gave a cryptographic protocol for \mpc where the parties can mix arithmetic and boolean computations.
+\item To address this issue of efficient representation, recently Demmler et al. \cite{aby} gave a cryptographic protocol for \mpc where the functionality can be expressed as a circuit with a mix of both arithmetic and boolean parts.
 Hence, the second option is to write the functionality in the system developed in \cite{aby}.
-However, using their system requires the programmer to be aware of
+However, in their framework, the programmer is required to write circuits consisting of  arithmetic and boolean gates along with appropriate
+inter-conversion gates.
+This requires the programmer to be aware of
 trade-offs between arithmetic and boolean cryptographic
-schemes as well as the complex inter-conversion costs, and manually split the functionality into such parts accordingly. In
-their framework, the programmer is required to write circuits
-consisting of  arithmetic and boolean gates along with appropriate
-conversion gates. In short, as is also mentioned by the authors, the current system of ABY is not suitable
-to be used by non-specialist programmers. \divya{since they say in future they want to automate the splitting.}
+schemes as well as the complex inter-conversion costs between arithmetic and boolean, and manually split the functionality into such parts accordingly.  
+In short, as is also mentioned by Demmler et al., the current system  is not suitable
+to be used by non-specialist programmers without security expertise.
 
 \item Finally, the third option is to hire a cryptographer to design a specialized efficient protocol for this functionality such as \cite{shafindss,wu,minionn}. 
 \end{tiret}
@@ -98,14 +97,14 @@ In our work, we achieve the best of all the above options.
 
 In this work, we develop and implement our framework \tool\footnote{\tool, read as ``easy peasy'', stands for Easy 2 Party Computation} for secure
 computation. We provide the first compiler where the developer writes a high-level program and the compiler automatically generates an efficient \mpc protocol that uses a
-mix of Arithmetic and Boolean compute. 
-It is compatible with any implementation of \mpc that allows a mix of arithmetic and boolean computations. 
+mix of arithmetic and boolean circuits. 
+It is compatible with any implementation of \mpc that allows a mix of arithmetic and boolean circuits. 
 We focus on semi-honest secure two-party computation and use ABY \cite{aby} as the suitable cryptographic back-end.
 We provide a formal type system and operational semantics for our language and prove correctness and security of our compiler.
-We evaluate our system on wide range of benchmarks \cite{shafindss,wu,minionn,valeriaMatrix} computing linear classifier, decision trees, deep neural networks, and matrix factorization. Our evaluations show that protocols generated by our compiler match
+We evaluate our system on wide range of benchmarks for secure prediction \cite{shafindss,wu,barni,secureml,minionn,bonsai} using linear classifier, decision trees and deep neural networks, matrix factorization \cite{valeriaMatrix} and training of deep neural network \cite{secureml}. Our evaluations show that protocols generated by our compiler match
 the performance or outperform hand-crafted protocols in most cases (see
-\sectionref{eval}). \divya{Moreover, unlike previous systems, our system can scale to arbitrarily large computations using {\em pipelining} (see below). What do we say about Yao pipelining?}
-Hence, we show that our framework achieves all four properties of generality, performance, programmer productivity and scalability. 
+\sectionref{eval}). \TODO{Add some text to increase enthusiasm about results.} Moreover, unlike previous systems such as \cite{wysteria,aby}, our system can scale to arbitrarily large computations using {\em secure code partitioning} (see below). \divya{I think we can skip Yao pipelining here, right?}
+Hence, we show that our framework achieves all four properties of programmability, generality, performance, and scalability. 
 
 Prior to our work, there have been systems that provide only a subset of the above properties and lack in remaining properties. For instance, using the framework of CBMC-GC \cite{cbmcgc}, one can write functionalities in high-level language like C but it gives poor performance due to its usage of boolean circuits as underlying representation. Similarly, ABY framework can potentially give good performance but is not programmable. Technique of pipelining Yao garbled circuits \cite{yao-pipe} allowed scaling to lage circuits but gives poor performance. \divya{what about programming?} To summarize, none of the prior frameworks could be used to evaluate the benchmarks such as linear regression, deep neural network prediction etc. In fact, it was widely believed that generic 2PC would not scale to the secure prediction and hence, various protocols were hand-crafted for this task \cite{shafindss,wu,secureml,minionn}. Our framework contradicts this belief.
 
