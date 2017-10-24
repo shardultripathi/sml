@@ -817,8 +817,7 @@ observations.
 
      \inferrule*[lab={\footnotesize{T-For}}]
                {
-                 \Gamma_{1} = \Gamma, x:\kw{uint}^{\mathcal{P}}\\\\
-                 \Gamma_{1} \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \Gamma_{1}
+                 \Gamma, x:\kw{uint}^{\mathcal{P}} \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \_
                }
                {
                  \Gamma \vdash \for{x}{n_{1}}{n_{2}}{s} \leadsto \for{x}{n_{1}}{n_{2}}{\widetilde{s}} \mid \Gamma
