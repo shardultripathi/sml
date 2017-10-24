@@ -187,7 +187,8 @@ Credit Approval data set, Audiology (Standardized) data set, Nursery
 data set, and ECG (electrocardiogram) classification data
 from~\cite{barni}.
 
-The results for linear classification are in Table~\ref{tab:lc}. The
+\subsubsection*{Linear classifier}The results for linear
+classification are in Table~\ref{tab:lc}. The
 input and model are both vectors of length $d$. The time in columns
 ``Prev. time'' and communication ``Prev. comm'' is the time and total
 network communication reported by Bost et al.~\cite{shafindss}. They
@@ -196,17 +197,24 @@ round trip
 time, which is same as our WAN setting. The total execution time
 of \tool generated code in the LAN and the WAN setting is reported
 next, followed by the total communication.
-We observe that \tool generated code has performance competitive
-to~\cite{shafindss}.
-The execution time is dominated by multiplications and boolean-ands.
+We observe that the \tool code performance matches that of Bost
+et al. On the other hand, the programmer effort in \tool is just 20
+lines (last column in the table) of code in the source language, as
+opposed to writing low-level circuits. \aseem{They write circuits,
+  right?} The execution time is dominated by multiplications and
+boolean-ands.
 The number of boolean-and gates (\#And) remains constant for both the
 benchmarks as they reflect the number of and gates required for a
-single 32-bit integer comparison with zero. The number of
-multiplication gates (\#Mul) is the same as the model size $d$. The
-last column shows the lines of code of \tool program, which is also
-independent of the model size.
+single 32-bit integer comparison with zero, while the number of
+multiplication gates (\#Mul) is the same as the model size $d$.
+%% The
+%% last column shows the lines of code of \tool program, which is also
+%% independent of the model size.
 
-The results for Na\"{i}ve Bayes are in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input feature vector $x$ and $F$ is the number of possible values of $x_i$ for each $i \in [d]$.
+\subsubsection*{Na\"{i}ve Bayes} The results for Na\"{i}ve Bayes are
+in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input
+feature vector $x$ and $F$ is the number of possible values of $x_i$
+for each $i \in [d]$.
 Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons (due to secret look-up) that result in many boolean-and gates (13k/750k denote 13000/75000). 
 Here, again columns 4 and 5 show the results reported in~\cite{shafindss}. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Na\"{i}ve Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
 
