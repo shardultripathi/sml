@@ -1,8 +1,4 @@
-\aseem{Is the title too general :). May be we want something more
-  specific on the lines of A compiler for mixed efficient MPC
-  protocols, or something?}
   
-  \divya{Do we write the intro for \mpc or 2PC?}
   
   \TODO{While taking a pass on intro, check citation correctness or if we are missing any citation.}
 
@@ -115,10 +111,10 @@ To summarize, none of the prior frameworks have been used to evaluate the benchm
 In this work, we solve the design problem to provide a user friendly language that is expressive and can be compiled to efficient secure 2PC protocols.
 Programmability in \tool and performance of generated protocols has enabled us to write large programs whose circuits  exhaust the memory of the system (~32 GB). To combat this issue, we give a technique called secure code partitioning (see below) that allows scaling of \tool to arbitrary size computations.
 
-Below, we describe the salient features of \tool in more detail.
+Below, we describe the salient features of \tool in more detail. \\
 
 
-\textbf{Programmability.} \tool is a programmer-friendly framework to
+\noindent\textbf{Programmability.} \tool is a programmer-friendly framework to
 express the function to be computed and uses a mix of arithmetic and
 boolean \mpc back-ends. We illustrate the above example of $w^Tx
 >b$ in our language in \figureref{ex-sml}. 
@@ -136,63 +132,41 @@ maintain code in \tool and a small change to the functionality requires
 only a small change in the code. In contrast, working with ABY, even
 for a small change a developer might have to re-work the whole circuit
 for efficiency reasons. We elaborate on these examples  in
-\sectionref{ex}.
+\sectionref{ex}. \\
 
-\textbf{Generality and Performance.} Our compiler is aware of cryptographic costs of different representations and corresponding inter-conversions.  Based on these costs, our compiler, given a program in \tool, automatically picks arithmetic and boolean representations for different sub-parts of the program and inserts the required inter-conversions as well. 
+\noindent\textbf{Generality and Performance.} Our compiler is aware of cryptographic costs of different representations and corresponding inter-conversions.  Based on these costs, our compiler, given a program in \tool, automatically picks arithmetic and boolean representations for different sub-parts of the program and inserts the required inter-conversions as well. 
 We demonstrate the generality of our framework by writing a wide range of functionalities in \tool such as linear regression, deep neural networks, decision trees and matrix factorization.
-Our evaluations show that automatically generated protocols using \tool are competitive with tailor-made protocols in \cite{shafindss,wu,barni,minionn,secureml,valeriaMatrix} (see \sectionref{eval}). These features allow us to evaluate our system state-of-the-art ML prediction algorithms, e.g., \sectionref{eval} describes evaluation on ML models from a recent ICML paper \cite{bonsai} and Tensorflow \cite{tensorflow}.
+Our evaluations show that automatically generated protocols using \tool are competitive with tailor-made protocols in \cite{shafindss,wu,barni,minionn,secureml,valeriaMatrix} (see \sectionref{eval}). These features allow us to evaluate our system state-of-the-art ML prediction algorithms, e.g., \sectionref{eval} describes evaluation on ML models from a recent ICML paper \cite{bonsai} and Tensorflow \cite{tensorflow}. \\
 
-\textbf{Type system.} We give a formal {\em type system} for our language and prove useful properties. We prove that if a program type checks in our language then it would run correctly, e.g., there would not be any array index out of bounds error. The programmer writes a single code describing the inputs from each party and the function to be computed. Our compiler automatically generates separate executables for the server and the client that can be executed in the distributed setting. We prove the {\em correctness} for this compilation, i.e., the outputs obtained in the distributed execution are identical to the stand-alone execution by a trusted third party. We formally reduce the {\em security} of our system to the security of the cryptographic back-end. For details on formal language, correctness and security theorems see \sectionref{ld}.
+\noindent\textbf{Performance Baseline.} Most works cite garbled circuit based two-party computation as the most practical approach so far and use it as the baseline for comparison of performance. But, it has been shown multiple times that the garbled circuits based approach does not scale for realistic examples. Even for small benchmarks (e.g., Na\"{i}ve Bayes) the size of garbled circuit can be huge. Hence, comparisons are often done on artificial data sizes and garbled circuits are shown to be 500x slower than hand-crafted protocols \cite{shafindss}. This is cited as the motivation for need for specialized protocols for different ML algorithms in secure prediction such as linear regression \cite{shafindss}, decision trees \cite{wu}, deep neural networks \cite{minionn} and matrix factorization \cite{valeriaMatrix}. Our work is based on generic \mpc and we show competitive performance with the specialized protocols contrary to the popular belief. Hence, we believe \tool based implementations can serve as the performance baseline for future works on specialized protocols. \\
+
+%Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted \mpc protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
+%Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline for comparison of performance. But, it has been observed multiple times this approach does not even scale on realistic examples.
 
 
-\textbf{Secure Code Partitioning (or Partitioning in short).} Another issue in adoption of \mpc is difficulty in scaling to large programs. 
+\noindent\textbf{Static Guarantees.} We give a formal {\em type system} for our language and prove useful properties. We prove that if a program type checks in our language then it would run correctly, e.g., there would not be any array index out of bounds error. The programmer writes a single code describing the inputs from each party and the function to be computed. Our compiler automatically generates separate executables for the server and the client that can be executed in the distributed setting. We prove the {\em correctness} for this compilation, i.e., the outputs obtained in the distributed execution are identical to the stand-alone execution by a trusted third party. We formally reduce the {\em security} of our system to the security of the cryptographic back-end. For details on formal language, correctness and security theorems see \sectionref{ld}. \\
+
+
+\noindent\textbf{Secure Code Partitioning (or Partitioning in short).} Another issue in adoption of \mpc is difficulty in scaling to large programs. 
 %In general, \mpc implementations struggle in scaling to large programssize of memory on a system limits the largest compute inside the SMC and hence,. 
-The reason being most \mpc implementations use a circuit-like representation as an intermediate representation. Hence, the largest compute that can be done securely is upper-bounded by the largest circuit that can fit in memory on a machine. \nc{Should we point out here that ABY itself has an explicit limit on circuit size and also give an example of a program that easily surpasses this bound? Also, hadnt ABY also said something about this? If so, we can mention this.}
-To address this issue, we develop a technique called partitioning that allows us to run arbitrarily large programs. At a high level, we break the original program into a sequence of small sub-programs and mask the intermediate outputs using a secure secret sharing between the two parties. We appropriately append the share-reconstruction function to the beginning of the subsequent sub-program. Now, we execute each of these sub-programs sequentially in our framework. We provide details of partitioning and prove the correctness and security of this transformation in \sectionref{pipe}.
-
-\textbf{Baseline.} Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted \mpc protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
-Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline for comparison of performance. But, it has been observed multiple times this approach does not even scale on realistic examples.
-
-
-
-%\newpage
-%\divya{ideally have small paragraphs about key features}
-%1. ease to programming.. refer to section with example in our language; contrast to verilog paper; programmer is completely oblivious of security; looks like a normal/vanilla/ regular C program;
-%Moreover, the developer does not write keywords such as secret and public; 
-%
-%
-%2. first programmable system that supports a mix of arithmetic and boolean for efficiency give example of multiplication of integers; linear algebra; logistic regression and evaluate on state of the art ML prediction tasks
-%
-%3. prove correctness, type system guarantees correct termination, progress etc..; 
-%
-%%In contrast with most systems that require a programmer to label variables as public secret, we automatically infer them. leads to more efficiency compared to default secret
-%
-%If program type-checks then runs correctly for example no array out of bound errors
-%code runs correctly in distributed env
-%programmer writes one code; compiles to server code and client code
-%we prove and outputs identical to stand-alone output
-%distributed code produces same output as if the code were run by distributed third party
-%
-%
-%4. Scaling to large programs. Describe pipeling here... Like all MPC implementations use an intermediate rep as a circuit and largest compute that can run is given by largest circuit that can fit in memory are restricted by memory of machines. This in turn limits the size of functions 
-%We implement/give/design a generic technique called pipelining that allow us to run arbitrarily large computations without affecting security.
-%
-%
-%5. Previous papers when comparing with generic 2pc compare with Yao; does not scale etc...
-%can serve as a baseline for future works on hand-crafted algorithms for specific applications cite minion etc here...
-%
+The reason being most \mpc implementations use a circuit-like representation as an intermediate representation. Hence, the largest compute that can be done securely is upper-bounded by the largest circuit that can fit in memory on a machine\footnote{Using swap and disk space is feasible but it causes huge slowdown.}.
+To address this issue, we develop a technique called partitioning.  At a high level, we break the original program into a sequence of small sub-programs and mask the intermediate outputs using a secure secret sharing between the two parties. We appropriately append the share-reconstruction function to the beginning of the subsequent sub-program. Now, we execute each of these sub-programs sequentially in our framework. This allows us to run arbitrarily large programs. We provide details of partitioning and prove the correctness and security of this transformation in \sectionref{pipe}. \\
 
 
 
 
-\vspace{10pt}
 
-\noindent\textbf{Other Related Work} 
+
+
+\noindent\textbf{Other Related Work.} 
 Before ABY \cite{aby}, to improve efficiency, several works proposed
 to mix secure computation protocols based on homomorphic
-encryption with Yao’s garbled circuits protocol, e.g., \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,schropferK11}
-  and developed tools that allowed writing a mixed \mpc protocol, e.g., \cite{bogdanov,lone,tasty}. The assignment can
+encryption and Yao's garbled circuits protocol, e.g., \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,schropferK11}
+  and developed tools that allowed writing a mixed \mpc protocol, e.g., \cite{bogdanov,lone,tasty}. The breaking up of the function into homomorphic encryption and garbled circuits can
 even be done automatically as was shown in \cite{autoS}. 
-However, as noted by ABY, due to high conversion cost between homomorphic encryption and Yao's garbled circuit, these mixed protocols do not gain much over single protocol. Also, none of these works give a high-level developer-friendly language support.
+However, as was noted by ABY, due to high conversion cost between homomorphic encryption and Yao's garbled circuit, these mixed protocols do not gain much performance over a single protocol. Also, none of these works give a high-level developer-friendly language support.
 No prior work has given a formal type system and operational semantics for mixed arithmetic and boolean back-ends.
-In our evaluation, we use benchmarks for the problem of secure prediction where the cloud holds the secret model and the client holds the secret input. For this problem various works have considered tailor-made protocols depending on the model considered \cite{shafindss,wu,secureml,minionn}. In our evaluation, we compare our performance with these specialized protocols and give competitive run-times. We provide a detailed survey of related work in \sectionref{related}.
+We provide a detailed survey of related work in \sectionref{related}.
+
+
+
