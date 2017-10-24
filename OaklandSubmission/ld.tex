@@ -30,7 +30,7 @@ of our compiler, we prove that it preserves the observations. For
 security of our compiler, we reduce the security argument to the
 security of the cryptographic protocol used to compute the secure
 computation circuit.
-
+\nc{Should we also say that security relies on correctness? (they go together)}
 We present only selected parts of our formalization for space
 reasons. Full definitions and proofs can be found in the supplementary
 material submitted along with the paper.
@@ -234,7 +234,7 @@ the inputs to be base constants, an array input can be written in the
 language as $[\kw{in}_{j}]_{n}$, which can then evaluate using the
 rule ({\sc{E-Arr}}). The remaining rules are straightforward, and are
 elided for space reasons.
-
+\nc{fancy PL folks language :)}
 The judgment $\rho \vdash s \Downarrow \rho_{1}; O$ represents the
 big-step evaluation of a statement $s$ under environment $\rho$
 producing a new environment $\rho_{1}$ and observations $O$. Rule
@@ -658,13 +658,13 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 
 
 \subsubsection*{Circuit semantics} The target semantics produces a
-circuit to compute over the secret data using an MPC protocol. With
+circuit to compute over the secret data using an MPC protocol. \nc{We use 2PC and MPC interchangeably. I guess its fine?}With
 our circuit semantics, we model the \emph{functional} aspect of the
 protocol, parametrized by the sharing functions.
 
 During the circuit evaluation, the wire ranges $r$ are
 mapped to (random) strings $b$. The semantics of these strings is
-given by pairs of encryption-decryption functions, written as
+given by pairs of encryption-decryption functions\nc{perhaps call this encode-decode functions since its technically not encryption-decryption? In fact more appropriate might be share-reconstruct, but that would require changing notation so lets not do that.}, written as
 $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$ (where $m$ is either
 $\mathcal{A}$ or $\mathcal{B}$). More concretely,
 $\mathcal{E}_{m}(c)$ returns a pair of two string $b_{1}$ and $b_{2}$
@@ -976,7 +976,7 @@ circuit semantics with observations $O_{2}$, where $O_{1} = O_{2}$
 Furthermore, the final environments are also in the compilation
 relation.
 
-\nc{Super high level security theorem}
+\nc{Should we point out that the proof of Theorem 1 is provided elsewhere?}
 \subsubsection*{Security theorem} The protocols we generate provide
 simulation-based security against a semi-honest adversary, in the
 framework of ~\cite{gmw,can00,can01}. At a very high level, in this
@@ -1003,18 +1003,15 @@ an adversary $\simu$ in the ideal interaction, such that no
 environment $\env$, on any input, can tell the real interaction apart
 from the ideal interaction, except with negligible probability (in the
 security parameter $\secparam$). More precisely, if the two binary
-distribution ensembles above are computationally indistinguishable.
-\nc{I'm not happy with the theorem statement.}
-\begin{theorem}[Security]\label{theorem:security}
-Let $\F$ be a functionality in our source language with outputs (or observations) $O_1$, that is compiled into a protocol $\prot$ in our target language with outputs $O_2$, then $\prot$ securely realizes $\F$.  
-\end{theorem}
-\nc{We should probably connect things to earlier? Theorem 1 and 2 have very different languages.}
-\noindent {\em Proof.} From Theorem \ref{theorem:correctness}, we have
-that the observations in $\prot$ and $\F$ are the same (i.e. $O_2 =
-O_1$). Now, from the simulation security of our backend (\cite{aby}),
-the proof of the above theorem follows. \nc{I dont know how to say
-  more.}
+distribution ensembles above are computationally indistinguishable. 
 
+We shall assume a cryptographic MPC backend that securely implements any circuit $\chi$ that is output by our compiler. In more detail, this means that for every source program $s$, let $\chi$ be the circuit output by our compiler (as in Theorem \ref{theorem:correctness}). We assume that there exists a two-party secure computation protocol $\prot$ that securely realizes the functionality $\chi$ and we will call the corresponding simulator for the protocol as $\simu_{\tiny{2pc}}$ (that runs on input $\chi$ and the output produced by $\chi$ on the parties inputs). We note that the work of \cite{aby} provides such a protocol $\prot$ and simulator $\simu_{\tiny{2pc}}$ for all circuits $\chi$ output by our compiler. We are now ready to state and prove our security theorem.
+ 
+\begin{theorem}[Security]\label{theorem:security}
+Let $s$ be any functionality or program in our source language with outputs (or observations) $O_1$, that is compiled into a circuit $\chi$ (as defined in Theorem \ref{theorem:correctness}). Let protocol $\prot$ be the two-party secure computation protocol that securely realizes $\chi$ (as defined above). Then, $\prot$ securely realizes $s$.  
+\end{theorem}
+
+\noindent {\em Proof.} Our simulator $\simu$ simply runs our compiler on program $s$ to obtain $\chi$ and upon receiving output $O_1$, executes $\simu_{\tiny{2pc}}$ on $\chi$ and $O_1$. Let $O_2$ be the outputs (or observations) of $\chi$. First, from Theorem \ref{theorem:correctness}, we have that the observations in $s$ and $\chi$ are the same (i.e. $O_2 = O_1$). Now, from the security of $\prot$, we have that the simulated view output by $\simu_{\tiny{2pc}}$ (with circuit $\chi$ and output $O_2$) is indistinguishable from the real view of the $\prot$ (when executed on circuit $\chi$ and when the output is $O_2$). Combining these two statements, the proof of the theorem follows. 
 \aseem{Can we give a construction of the simulator S in the ideal
   semantics? The simulator S whenever it receives an observable event,
   outputs it to Z, and whenever A receives a string in the real
@@ -1031,6 +1028,7 @@ the proof of the above theorem follows. \nc{I dont know how to say
   there are no observations there.
 }
 
+\nc{OK now?}
   %% \\
   %% \[
   %% \begin{array}{rrcl}
