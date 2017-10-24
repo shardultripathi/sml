@@ -177,18 +177,34 @@ As is standard, we port the classifers to integer manipulating
 programs by scaling the models and rounding~\cite{minionn}. These
 ported classifiers are then implemented in \tool.
 
-\subsection{Standard models}
+\subsection{Standard classifiers}
 \label{sec:shallow}
-We consider three types of classifiers: linear, Na\"{i}ve Bayes, and decision trees. 
-These classifiers are trained on the followinng data sets from the UCI  machine learning repository~\cite{uci}:
+We train the three standard classifiers, linear, Na\"{i}ve Bayes, and
+decision trees, on the following data sets from the UCI
+machine learning repository~\cite{uci}:
  the Wisconsin Breast Cancer data set, 
-Credit Approval data set, Audiology (Standardized) data set, Nursery data set, and
-ECG (electrocardiogram) classification data from~\cite{barni}.
+Credit Approval data set, Audiology (Standardized) data set, Nursery
+data set, and ECG (electrocardiogram) classification data
+from~\cite{barni}.
 
-The results for linear classification are in Table~\ref{tab:lc}. The input and model are both vectors of length $d$. The time in columns ``Prev. time'' and communication ``Prev.Comm'' is the time and total network communication reported in~\cite{shafindss}. They remark that these times are obtained by simulating a network with 40ms round trip time, which is the same as our WAN setting. The total execution time of \tool generated code in the LAN and the WAN setting is reported next followed by the total communication.
-We observe that \tool generated code has performance competitive to~\cite{shafindss}.
+The results for linear classification are in Table~\ref{tab:lc}. The
+input and model are both vectors of length $d$. The time in columns
+``Prev. time'' and communication ``Prev. comm'' is the time and total
+network communication reported by Bost et al.~\cite{shafindss}. They
+report these numbers over a simulated network with 40ms
+round trip
+time, which is same as our WAN setting. The total execution time
+of \tool generated code in the LAN and the WAN setting is reported
+next, followed by the total communication.
+We observe that \tool generated code has performance competitive
+to~\cite{shafindss}.
 The execution time is dominated by multiplications and boolean-ands.
-The number of boolean-and gates (\#And) remains constant for both the benchmarks as they reflect the number of and gates required for a single 32-bit integer comparison with zero. The number of multiplication gates (\#Mul) is the same as the model size $d$. The last column shows the lines of code of \tool program, which is also independent of the model size.
+The number of boolean-and gates (\#And) remains constant for both the
+benchmarks as they reflect the number of and gates required for a
+single 32-bit integer comparison with zero. The number of
+multiplication gates (\#Mul) is the same as the model size $d$. The
+last column shows the lines of code of \tool program, which is also
+independent of the model size.
 
 The results for Na\"{i}ve Bayes are in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input feature vector $x$ and $F$ is the number of possible values of $x_i$ for each $i \in [d]$.
 Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons (due to secret look-up) that result in many boolean-and gates (13k/750k denote 13000/75000). 
@@ -201,7 +217,7 @@ Again, we observe that the performance of \tool generated generic 2PC code is co
 
 \begin{table*}
 \begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
+Dataset & $d$  & Prev. time (s) & Prev. comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
 \hline
 Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25 & 95 & 30 & 727 & 20\\
 \hline
