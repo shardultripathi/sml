@@ -149,9 +149,17 @@ matrices $W_j$ and $V_j$, and a vector $\theta_{j}$. The internal node
 $j$  evaluates a predicate $\theta_j^TZx > 0$ to decide whether
 to pass $x$ to the left child $2j+1$ or the right child $2j+2$.
 The predicted value is
+
+\aseem{I had a hard time parsing this. (1) Should we use $\cdot$ for
+  matrix multiplication as we did for DNNs? (2) Precedence of $\circ$
+  over scalar multiplication (or is it associative so doesn't matter?)
+(3) The argument to $f$ is a scalar (right?), and so is its output,
+so then is $\circ$ defined OR is it applying $f$ pointwise to a vector?}
+
 \[
 {\sf argmax} \sum_{j = 0}^{N - 1} I_j(x)W_j^TZx\circ f(V_j^TZx) 
 \]
+
 Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
 and is zero otherwise. 
 The operation $\circ$ is a pointwise dot product, $W_j$'s and $V_j$'s
