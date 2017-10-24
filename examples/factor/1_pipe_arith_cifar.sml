@@ -2,7 +2,7 @@ uint32_t S1[16384][24];
 uint32_t S2[16384][24];
 uint32_t S[16384][24];
 uint32_t outmat[16384][24];
-uint32_t boolarr[1000000];
+uint32_t boolarr[200000];
 uint32_t temp[10];
 uint32_t dots[15444];
 public uint32_t boolidx;
@@ -14,6 +14,7 @@ uint32_t IRoutmat[16384][24];
 uint32_t b;
 uint32_t b1;
 boolidx = 0;
+uint32_t cas;
 
 for uint32_t i = [0:16384] {
   for uint32_t j = [0:24] {
@@ -27,7 +28,7 @@ for uint32_t i = [0:16384] {
   }
 }
 
-for uint32_t i = [0:1000000] {
+for uint32_t i = [0:200000] {
   boolarr[i] = input1(1);
 }
 
@@ -61,15 +62,17 @@ for uint32_t i = [0:4096] {
     b1 = 1 - b;
     boolidx = boolidx + 1;
     for uint32_t j = [0:24] {
+      cas = outmat[4*i][j];
       outmat[4*i][j] = (b * outmat[4*i][j]) + (b1 * outmat[4*i+2][j]); 
-      outmat[4*i+2][j] = (b1 * outmat[4*i][j]) + (b * outmat[4*i+2][j]);
+      outmat[4*i+2][j] = (b1 *cas) + (b * outmat[4*i+2][j]);
     }  
     b = boolarr[boolidx];
     b1 = 1 - b;
     boolidx = boolidx + 1;
     for uint32_t j = [0:24] {
+      cas = outmat[4*i+1][j];
       outmat[4*i+1][j] = (b * outmat[4*i+1][j]) + (b1 * outmat[4*i+3][j]); 
-      outmat[4*i+3][j] = (b1 * outmat[4*i+1][j]) + (b * outmat[4*i+3][j]);      
+      outmat[4*i+3][j] = (b1 * cas) + (b * outmat[4*i+3][j]);      
     }  
 }
 
@@ -78,8 +81,9 @@ for uint32_t i = [0:4096] {
     b1 = 1 - b;
     boolidx = boolidx + 1;
     for uint32_t j = [0:24]  {
+      cas = outmat[4*i+2][j];
       outmat[4*i+2][j] = (b1 * outmat[4*i+1][j]) + (b * outmat[4*i+2][j]);
-      outmat[4*i+1][j] = (b * outmat[4*i+1][j]) + (b1 * outmat[4*i+2][j]); 
+      outmat[4*i+1][j] = (b * outmat[4*i+1][j]) + (b1 * cas); 
     }  
 }
 
@@ -89,8 +93,9 @@ for uint32_t i = [0:2048] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[8*i+2*k][j];
         outmat[8*i+2*k][j] = (b1 * outmat[8*i+2*k][j]) + (b * outmat[8*i+4+2*k][j]);
-        outmat[8*i+4+2*k][j] = (b * outmat[8*i+2*k][j]) + (b1 * outmat[8*i+4+2*k][j]); 
+        outmat[8*i+4+2*k][j] = (b * cas) + (b1 * outmat[8*i+4+2*k][j]); 
       }
     }
     for uint32_t k = [0:2]  {
@@ -98,8 +103,9 @@ for uint32_t i = [0:2048] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[8*i+2*k+1][j];
         outmat[8*i+2*k+1][j] = (b1 * outmat[8*i+2*k+1][j]) + (b * outmat[8*i+4+2*k+1][j]);
-        outmat[8*i+4+2*k+1][j] = (b * outmat[8*i+2*k+1][j]) + (b1 * outmat[8*i+4+2*k+1][j]); 
+        outmat[8*i+4+2*k+1][j] = (b * cas) + (b1 * outmat[8*i+4+2*k+1][j]); 
       }
     }  
 }
@@ -110,8 +116,9 @@ for uint32_t i = [0:2048] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[8*i+2+2*k][j];
         outmat[8*i+2+2*k][j] = (b1 * outmat[8*i+1+2*k][j]) + (b * outmat[8*i+2+2*k][j]);
-        outmat[8*i+1+2*k][j] = (b * outmat[8*i+1+2*k][j]) + (b1 * outmat[8*i+2+2*k][j]); 
+        outmat[8*i+1+2*k][j] = (b * outmat[8*i+1+2*k][j]) + (b1 * cas); 
       }  
     }
 }
@@ -122,8 +129,9 @@ for uint32_t i = [0:1024] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[16*i+2*k][j];
         outmat[16*i+2*k][j] = (b1 * outmat[16*i+2*k][j]) + (b * outmat[16*i+2*k+8][j]);
-        outmat[16*i+2*k+8][j] = (b * outmat[16*i+2*k][j]) + (b1 * outmat[16*i+2*k+8][j]); 
+        outmat[16*i+2*k+8][j] = (b * cas) + (b1 * outmat[16*i+2*k+8][j]); 
       }
     }
     for uint32_t k = [0:4] {
@@ -131,8 +139,9 @@ for uint32_t i = [0:1024] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[16*i+2*k+1][j];
         outmat[16*i+2*k+1][j] = (b1 * outmat[16*i+2*k+1][j]) + (b * outmat[16*i+2*k+8+1][j]);
-        outmat[16*i+2*k+8+1][j] = (b * outmat[16*i+2*k+1][j]) + (b1 * outmat[16*i+2*k+8+1][j]); 
+        outmat[16*i+2*k+8+1][j] = (b * cas) + (b1 * outmat[16*i+2*k+8+1][j]); 
       }
     }
 }
@@ -143,8 +152,9 @@ for uint32_t i = [0:1024] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas =  outmat[16*i+2*k+1][j];
         outmat[16*i+2*k+1][j] = (b * outmat[16*i+2*k+1][j]) + (b1 * outmat[16*i+2*k+2][j]); 
-        outmat[16*i+2*k+2][j] = (b1 * outmat[16*i+2*k+1][j]) + (b * outmat[16*i+2*k+2][j]);
+        outmat[16*i+2*k+2][j] = (b1 * cas) + (b * outmat[16*i+2*k+2][j]);
       }  
     }
 }
@@ -155,8 +165,9 @@ for uint32_t i = [0:512] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[32*i+2*k][j];
         outmat[32*i+2*k][j] = (b1 * outmat[32*i+2*k][j]) + (b * outmat[32*i+2*k+16][j]);
-        outmat[32*i+2*k+16][j] = (b * outmat[32*i+2*k][j]) + (b1 * outmat[32*i+2*k+16][j]); 
+        outmat[32*i+2*k+16][j] = (b * cas) + (b1 * outmat[32*i+2*k+16][j]); 
       }
     }
     for uint32_t k = [0:8] {
@@ -164,8 +175,9 @@ for uint32_t i = [0:512] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[32*i+2*k+1][j];
         outmat[32*i+2*k+1][j] = (b1 * outmat[32*i+2*k+1][j]) + (b * outmat[32*i+2*k+16+1][j]);
-        outmat[32*i+2*k+16+1][j] = (b * outmat[32*i+2*k+1][j]) + (b1 * outmat[32*i+2*k+16+1][j]); 
+        outmat[32*i+2*k+16+1][j] = (b * cas) + (b1 * outmat[32*i+2*k+16+1][j]); 
       }
     }
 }
@@ -176,8 +188,9 @@ for uint32_t i = [0:512] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[32*i+2*k+1][j];
         outmat[32*i+2*k+1][j] = (b * outmat[32*i+2*k+1][j]) + (b1 * outmat[32*i+2*k+2][j]); 
-        outmat[32*i+2*k+2][j] = (b1 * outmat[32*i+2*k+1][j]) + (b * outmat[32*i+2*k+2][j]);
+        outmat[32*i+2*k+2][j] = (b1 * cas) + (b * outmat[32*i+2*k+2][j]);
       }  
     }
 }
@@ -188,8 +201,9 @@ for uint32_t i = [0:256] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[64*i+2*k][j];
         outmat[64*i+2*k][j] = (b1 * outmat[64*i+2*k][j]) + (b * outmat[64*i+2*k+32][j]);
-        outmat[64*i+2*k+32][j] = (b * outmat[64*i+2*k][j]) + (b1 * outmat[64*i+2*k+32][j]); 
+        outmat[64*i+2*k+32][j] = (b * cas) + (b1 * outmat[64*i+2*k+32][j]); 
       }
     }
     for uint32_t k = [0:16] {
@@ -197,8 +211,9 @@ for uint32_t i = [0:256] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[64*i+2*k+1][j];
         outmat[64*i+2*k+1][j] = (b1 * outmat[64*i+2*k+1][j]) + (b * outmat[64*i+2*k+32+1][j]);
-        outmat[64*i+2*k+32+1][j] = (b * outmat[64*i+2*k+1][j]) + (b1 * outmat[64*i+2*k+32+1][j]); 
+        outmat[64*i+2*k+32+1][j] = (b * cas) + (b1 * outmat[64*i+2*k+32+1][j]); 
       }
     }
 }
@@ -209,8 +224,9 @@ for uint32_t i = [0:256] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[64*i+2*k+1][j];
         outmat[64*i+2*k+1][j] = (b * outmat[64*i+2*k+1][j]) + (b1 * outmat[64*i+2*k+2][j]); 
-        outmat[64*i+2*k+2][j] = (b1 * outmat[64*i+2*k+1][j]) + (b * outmat[64*i+2*k+2][j]);
+        outmat[64*i+2*k+2][j] = (b1 * cas) + (b * outmat[64*i+2*k+2][j]);
       }  
     }
 }
@@ -221,8 +237,9 @@ for uint32_t i = [0:128] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[128*i+2*k][j];
         outmat[128*i+2*k][j] = (b1 * outmat[128*i+2*k][j]) + (b * outmat[128*i+2*k+64][j]);
-        outmat[128*i+2*k+64][j] = (b * outmat[128*i+2*k][j]) + (b1 * outmat[128*i+2*k+64][j]); 
+        outmat[128*i+2*k+64][j] = (b * cas) + (b1 * outmat[128*i+2*k+64][j]); 
       }
     }
     for uint32_t k = [0:32] {
@@ -230,8 +247,9 @@ for uint32_t i = [0:128] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[128*i+2*k+1][j];
         outmat[128*i+2*k+1][j] = (b1 * outmat[128*i+2*k+1][j]) + (b * outmat[128*i+2*k+64+1][j]);
-        outmat[128*i+2*k+64+1][j] = (b * outmat[128*i+2*k+1][j]) + (b1 * outmat[128*i+2*k+64+1][j]); 
+        outmat[128*i+2*k+64+1][j] = (b * cas) + (b1 * outmat[128*i+2*k+64+1][j]); 
       }
     }
 }
@@ -242,8 +260,9 @@ for uint32_t i = [0:128] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[128*i+2*k+1][j];
         outmat[128*i+2*k+1][j] = (b * outmat[128*i+2*k+1][j]) + (b1 * outmat[128*i+2*k+2][j]); 
-        outmat[128*i+2*k+2][j] = (b1 * outmat[128*i+2*k+1][j]) + (b * outmat[128*i+2*k+2][j]);
+        outmat[128*i+2*k+2][j] = (b1 *cas) + (b * outmat[128*i+2*k+2][j]);
       }  
     }
 }
@@ -254,8 +273,9 @@ for uint32_t i = [0:64] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas =  outmat[256*i+2*k][j];
         outmat[256*i+2*k][j] = (b1 * outmat[256*i+2*k][j]) + (b * outmat[256*i+2*k+128][j]);
-        outmat[256*i+2*k+128][j] = (b * outmat[256*i+2*k][j]) + (b1 * outmat[256*i+2*k+128][j]); 
+        outmat[256*i+2*k+128][j] = (b *cas) + (b1 * outmat[256*i+2*k+128][j]); 
       }
     }
     for uint32_t k = [0:64] {
@@ -263,8 +283,9 @@ for uint32_t i = [0:64] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[256*i+2*k+1][j];
         outmat[256*i+2*k+1][j] = (b1 * outmat[256*i+2*k+1][j]) + (b * outmat[256*i+2*k+128+1][j]);
-        outmat[256*i+2*k+128+1][j] = (b * outmat[256*i+2*k+1][j]) + (b1 * outmat[256*i+2*k+128+1][j]); 
+        outmat[256*i+2*k+128+1][j] = (b * cas) + (b1 * outmat[256*i+2*k+128+1][j]); 
       }
     }
 }
@@ -275,8 +296,9 @@ for uint32_t i = [0:64] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[256*i+2*k+1][j];
         outmat[256*i+2*k+1][j] = (b * outmat[256*i+2*k+1][j]) + (b1 * outmat[256*i+2*k+2][j]); 
-        outmat[256*i+2*k+2][j] = (b1 * outmat[256*i+2*k+1][j]) + (b * outmat[256*i+2*k+2][j]);
+        outmat[256*i+2*k+2][j] = (b1 * cas) + (b * outmat[256*i+2*k+2][j]);
       }  
     }
 }
@@ -288,8 +310,9 @@ for uint32_t i = [0:32] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[512*i+2*k][j];
         outmat[512*i+2*k][j] = (b1 * outmat[512*i+2*k][j]) + (b * outmat[512*i+2*k+256][j]);
-        outmat[512*i+2*k+256][j] = (b * outmat[512*i+2*k][j]) + (b1 * outmat[512*i+2*k+256][j]); 
+        outmat[512*i+2*k+256][j] = (b * cas) + (b1 * outmat[512*i+2*k+256][j]); 
       }
     }
     for uint32_t k = [0:128] {
@@ -297,8 +320,9 @@ for uint32_t i = [0:32] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[512*i+2*k+1][j];
         outmat[512*i+2*k+1][j] = (b1 * outmat[512*i+2*k+1][j]) + (b * outmat[512*i+2*k+256+1][j]);
-        outmat[512*i+2*k+256+1][j] = (b * outmat[512*i+2*k+1][j]) + (b1 * outmat[512*i+2*k+256+1][j]); 
+        outmat[512*i+2*k+256+1][j] = (b * cas) + (b1 * outmat[512*i+2*k+256+1][j]); 
       }
     }
 }
@@ -309,8 +333,9 @@ for uint32_t i = [0:32] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[512*i+2*k+1][j];
         outmat[512*i+2*k+1][j] = (b * outmat[512*i+2*k+1][j]) + (b1 * outmat[512*i+2*k+2][j]); 
-        outmat[512*i+2*k+2][j] = (b1 * outmat[512*i+2*k+1][j]) + (b * outmat[512*i+2*k+2][j]);
+        outmat[512*i+2*k+2][j] = (b1 * cas) + (b * outmat[512*i+2*k+2][j]);
       }  
     }
 }
@@ -321,8 +346,9 @@ for uint32_t i = [0:16] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[1024*i+2*k][j];
         outmat[1024*i+2*k][j] = (b1 * outmat[1024*i+2*k][j]) + (b * outmat[1024*i+2*k+512][j]);
-        outmat[1024*i+2*k+512][j] = (b * outmat[1024*i+2*k][j]) + (b1 * outmat[1024*i+2*k+512][j]); 
+        outmat[1024*i+2*k+512][j] = (b * cas) + (b1 * outmat[1024*i+2*k+512][j]); 
       }
     }
     for uint32_t k = [0:256] {
@@ -330,8 +356,9 @@ for uint32_t i = [0:16] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[1024*i+2*k+1][j];
         outmat[1024*i+2*k+1][j] = (b1 * outmat[1024*i+2*k+1][j]) + (b * outmat[1024*i+2*k+512+1][j]);
-        outmat[1024*i+2*k+512+1][j] = (b * outmat[1024*i+2*k+1][j]) + (b1 * outmat[1024*i+2*k+512+1][j]); 
+        outmat[1024*i+2*k+512+1][j] = (b * cas) + (b1 * outmat[1024*i+2*k+512+1][j]); 
       }
     }
 }
@@ -342,8 +369,9 @@ for uint32_t i = [0:16] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[1024*i+2*k+1][j];
         outmat[1024*i+2*k+1][j] = (b * outmat[1024*i+2*k+1][j]) + (b1 * outmat[1024*i+2*k+2][j]); 
-        outmat[1024*i+2*k+2][j] = (b1 * outmat[1024*i+2*k+1][j]) + (b * outmat[1024*i+2*k+2][j]);
+        outmat[1024*i+2*k+2][j] = (b1 * cas) + (b * outmat[1024*i+2*k+2][j]);
       }  
     }
 }
@@ -354,8 +382,9 @@ for uint32_t i = [0:8] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas =  outmat[2048*i+2*k][j];
         outmat[2048*i+2*k][j] = (b1 * outmat[2048*i+2*k][j]) + (b * outmat[2048*i+2*k+1024][j]);
-        outmat[2048*i+2*k+1024][j] = (b * outmat[2048*i+2*k][j]) + (b1 * outmat[2048*i+2*k+1024][j]); 
+        outmat[2048*i+2*k+1024][j] = (b * cas) + (b1 * outmat[2048*i+2*k+1024][j]); 
       }
     }
     for uint32_t k = [0:512] {
@@ -363,8 +392,9 @@ for uint32_t i = [0:8] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24]  {
+        cas = outmat[2048*i+2*k+1][j];
         outmat[2048*i+2*k+1][j] = (b1 * outmat[2048*i+2*k+1][j]) + (b * outmat[2048*i+2*k+1024+1][j]);
-        outmat[2048*i+2*k+1024+1][j] = (b * outmat[2048*i+2*k+1][j]) + (b1 * outmat[2048*i+2*k+1024+1][j]); 
+        outmat[2048*i+2*k+1024+1][j] = (b * cas) + (b1 * outmat[2048*i+2*k+1024+1][j]); 
       }
     }
 }
@@ -375,8 +405,9 @@ for uint32_t i = [0:8] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[2048*i+2*k+1][j];
         outmat[2048*i+2*k+1][j] = (b * outmat[2048*i+2*k+1][j]) + (b1 * outmat[2048*i+2*k+2][j]); 
-        outmat[2048*i+2*k+2][j] = (b1 * outmat[2048*i+2*k+1][j]) + (b * outmat[2048*i+2*k+2][j]);
+        outmat[2048*i+2*k+2][j] = (b1 * cas) + (b * outmat[2048*i+2*k+2][j]);
       }  
     }
 }
@@ -387,8 +418,9 @@ for uint32_t i = [0:4] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[4096*i+2*k][j];
         outmat[4096*i+2*k][j] = (b1 * outmat[4096*i+2*k][j]) + (b * outmat[4096*i+2*k+2048][j]);
-        outmat[4096*i+2*k+2048][j] = (b * outmat[4096*i+2*k][j]) + (b1 * outmat[4096*i+2*k+2048][j]); 
+        outmat[4096*i+2*k+2048][j] = (b * cas) + (b1 * outmat[4096*i+2*k+2048][j]); 
       }
     }
     for uint32_t k = [0:1024] {
@@ -396,8 +428,9 @@ for uint32_t i = [0:4] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[4096*i+2*k+1][j];
         outmat[4096*i+2*k+1][j] = (b1 * outmat[4096*i+2*k+1][j]) + (b * outmat[4096*i+2*k+2048+1][j]);
-        outmat[4096*i+2*k+2048+1][j] = (b * outmat[4096*i+2*k+1][j]) + (b1 * outmat[4096*i+2*k+2048+1][j]); 
+        outmat[4096*i+2*k+2048+1][j] = (b * cas) + (b1 * outmat[4096*i+2*k+2048+1][j]); 
       }
     }
 }
@@ -408,8 +441,9 @@ for uint32_t i = [0:4] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[4096*i+2*k+1][j];
         outmat[4096*i+2*k+1][j] = (b * outmat[4096*i+2*k+1][j]) + (b1 * outmat[4096*i+2*k+2][j]); 
-        outmat[4096*i+2*k+2][j] = (b1 * outmat[4096*i+2*k+1][j]) + (b * outmat[4096*i+2*k+2][j]);
+        outmat[4096*i+2*k+2][j] = (b1 * cas) + (b * outmat[4096*i+2*k+2][j]);
       }  
     }
 }
@@ -421,8 +455,9 @@ for uint32_t i = [0:2] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[8192*i+2*k][j];
         outmat[8192*i+2*k][j] = (b1 * outmat[8192*i+2*k][j]) + (b * outmat[8192*i+2*k+4096][j]);
-        outmat[8192*i+2*k+4096][j] = (b * outmat[8192*i+2*k][j]) + (b1 * outmat[8192*i+2*k+4096][j]); 
+        outmat[8192*i+2*k+4096][j] = (b * cas) + (b1 * outmat[8192*i+2*k+4096][j]); 
       }
     }
     for uint32_t k = [0:2048] {
@@ -430,8 +465,9 @@ for uint32_t i = [0:2] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[8192*i+2*k+1][j];
         outmat[8192*i+2*k+1][j] = (b1 * outmat[8192*i+2*k+1][j]) + (b * outmat[8192*i+2*k+4096+1][j]);
-        outmat[8192*i+2*k+4096+1][j] = (b * outmat[8192*i+2*k+1][j]) + (b1 * outmat[8192*i+2*k+4096+1][j]); 
+        outmat[8192*i+2*k+4096+1][j] = (b * cas) + (b1 * outmat[8192*i+2*k+4096+1][j]); 
       }
     }
 }
@@ -442,15 +478,16 @@ for uint32_t i = [0:2] {
       b1 = 1 - b;
       boolidx = boolidx + 1;
       for uint32_t j = [0:24] {
+        cas = outmat[8192*i+2*k+1][j];
         outmat[8192*i+2*k+1][j] = (b * outmat[8192*i+2*k+1][j]) + (b1 * outmat[8192*i+2*k+2][j]); 
-        outmat[8192*i+2*k+2][j] = (b1 * outmat[8192*i+2*k+1][j]) + (b * outmat[8192*i+2*k+2][j]);
+        outmat[8192*i+2*k+2][j] = (b1 * cas) + (b * outmat[8192*i+2*k+2][j]);
       }  
     }
 }
 
 for uint32_t i = [1:16344] {
   for uint32_t j = [4:14] {
-    outmat[i][j] = outmat[i][2]*outmat[i-1][j] + ((1-outmat[i][2]) *outmat[i][j]); 
+    outmat[i][j] = (outmat[i][2]*outmat[i-1][j] + ((1-outmat[i][2]) *outmat[i][j]); 
   }
 }
 
