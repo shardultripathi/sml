@@ -978,13 +978,60 @@ Furthermore, the final environments are also in the compilation
 relation.
 
 \nc{Super high level security theorem}
-\subsubsection*{Security theorem} The protocols we generate provide simulation-based security against a semi-honest adversary, in the framework of ~\cite{gmw,can00,can01}. At a very high level, in this framework, parties are modeled as non-uniform interactive turing machines (ITMs), with inputs provided by an environment $\env$. An adversary $\adv$, selects and ``corrupts'' one of the parties - however, $\adv$ still follows the protocol specification. $\adv$ interacts with the $\env$, which observes the view of the corrupted party. At the end of the interaction, $\env$ outputs a single bit. Two different interactions are defined: the {\em real world} and an {\em ideal world}. In the real interaction, the parties run the protocol $\prot$ in the presence of $\adv$ and $\env$. Let $\real_{\prot,\adv,\env}$ denote the binary distribution ensemble describing $\env$'s output in this interaction. In the ideal interaction, parties send their inputs to an additional entity, a trusted functionality machine $\F$ that carries the desired computation truthfully. Let $\simu$ (the simulator) denote the adversary in this idealized execution, and $\ideal_{\F,\simu,\env}$ the binary distribution ensemble describing $\env$'s output after interacting with adversary $\simu$ and ideal functionality $\F$. A protocol $\prot$ is said to {\em securely realize} a functionality $\F$ if for every adversary $\adv$ in the real interaction, there is an adversary $\simu$ in the ideal interaction, such that no environment $\env$, on any input, can tell the real interaction apart from the ideal interaction, except with negligible probability (in the security parameter $\secparam$). More precisely, if the two binary distribution ensembles above are computationally indistinguishable.
+\subsubsection*{Security theorem} The protocols we generate provide
+simulation-based security against a semi-honest adversary, in the
+framework of ~\cite{gmw,can00,can01}. At a very high level, in this
+framework, parties are modeled as non-uniform interactive turing
+machines (ITMs), with inputs provided by an environment $\env$. An
+adversary $\adv$, selects and ``corrupts'' one of the parties -
+however, $\adv$ still follows the protocol specification. $\adv$
+interacts with the $\env$, which observes the view of the corrupted
+party. At the end of the interaction, $\env$ outputs a single bit. Two
+different interactions are defined: the {\em real world} and an {\em
+  ideal world}. In the real interaction, the parties run the protocol
+$\prot$ in the presence of $\adv$ and $\env$. Let
+$\real_{\prot,\adv,\env}$ denote the binary distribution ensemble
+describing $\env$'s output in this interaction. In the ideal
+interaction, parties send their inputs to an additional entity, a
+trusted functionality machine $\F$ that carries the desired
+computation truthfully. Let $\simu$ (the simulator) denote the
+adversary in this idealized execution, and $\ideal_{\F,\simu,\env}$
+the binary distribution ensemble describing $\env$'s output after
+interacting with adversary $\simu$ and ideal functionality $\F$. A
+protocol $\prot$ is said to {\em securely realize} a functionality
+$\F$ if for every adversary $\adv$ in the real interaction, there is
+an adversary $\simu$ in the ideal interaction, such that no
+environment $\env$, on any input, can tell the real interaction apart
+from the ideal interaction, except with negligible probability (in the
+security parameter $\secparam$). More precisely, if the two binary
+distribution ensembles above are computationally indistinguishable.
 \nc{I'm not happy with the theorem statement.}
 \begin{theorem}[Security]\label{theorem:security}
 Let $\F$ be a functionality in our source language with outputs (or observations) $O_1$, that is compiled into a protocol $\prot$ in our target language with outputs $O_2$, then $\prot$ securely realizes $\F$.  
 \end{theorem}
 \nc{We should probably connect things to earlier? Theorem 1 and 2 have very different languages.}
-\noindent {\em Proof.} From Theorem \ref{theorem:correctness}, we have that the observations in $\prot$ and $\F$ are the same (i.e. $O_2 = O_1$). Now, from the simulation security of our backend (\cite{aby}), the proof of the above theorem follows. \nc{I dont know how to say more.}
+\noindent {\em Proof.} From Theorem \ref{theorem:correctness}, we have
+that the observations in $\prot$ and $\F$ are the same (i.e. $O_2 =
+O_1$). Now, from the simulation security of our backend (\cite{aby}),
+the proof of the above theorem follows. \nc{I dont know how to say
+  more.}
+
+\aseem{Can we give a construction of the simulator S in the ideal
+  semantics? The simulator S whenever it receives an observable event,
+  outputs it to Z, and whenever A receives a string in the real
+  semantics, S outputs a random string to Z. Now, with theorem 1,
+  observable events are same in the ideal and real semantics, and with
+  the security of the crypto backend, the random strings and the
+  strings in the protocol are indistinguishable. Is it
+  incorrect/naive?
+
+  Also, we should emaphasize here that the ideal semantics is the
+  source semantics from Figure x and the real semantics is the circuit
+  semantics from Figure y. For the target language semantics, we
+  should emphasize that it does not have access to the secrets, so
+  there are no observations there.
+}
+
   %% \\
   %% \[
   %% \begin{array}{rrcl}
