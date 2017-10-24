@@ -1,29 +1,51 @@
 \section{Evaluation}
 \label{sec:eval}
-We evaluate \tool for the problem of {\it secure prediction}, where a server has a machine learning model, a client has an input, and after the protocol execution the client learns a label on his input.
-From the protocol execution, the server learns nothing about the client's input and the client learns nothing about the server's model beyond what is revealed from the computed label.
-This setting has been previously studied in~\cite{shafindss,minionn}
-We first implement benchmarks of ~\cite{shafindss} and~\cite{minionn} in \tool to compare against 
-previous work.
-Next, we demonstrate the generality of \tool by implementing state-of-the-art machine learning models.
-Finally, we discuss a model that requires pipelinig.
-Our results are in two settings, a LAN setting and a cross-continent WAN setting.
-The round trip time for two machines in a LAN setting is 1ms and in WAN setting is 40ms.
-Each machine has a Intel(R) Xeon(R) CPU E5-2673 v3 processor running at 2.40GHz with
-28 GBs of RAM. The \tool compiler is written in Python and compiles each of our benchmarks
-in under a second to C++ code that makes calls to the ABY library~\cite{aby}.
-We use an off-the-shelf solver (SeaHorn~\cite{seahorn}) to check the verification conditions
-required to prove that the array indices remain in bound.
-The solver takes less than a minute on our largest benchmark.
-Since most of our benchmarks are related to machine learning, we set up some notation standard to machine learning and describe our benchmarks next. 
+We evaluate \tool on the problem of {\it secure prediction}, where one
+party (the server) has a machine learning model, and the other party
+(the client) has an input. The goal is to compute the output of the
+model on client's input, with the guarantee that the server
+learns nothing about the input, and the client learns nothing
+about the model beyond what is revealed from the output.
+
+We first implement the benchmarks from Bost et al.~\cite{shafindss}
+and \minion~\cite{minionn} (both of which study the same setting),
+and show that the performance of the high-level code written in \tool
+is comparable to their hand-crafted circuits
+(Section~\ref{sec:shallow} and Section~\ref{sec:dnneval}).
+%
+Next, we demonstrate the generality and programmability aspects of
+\tool by implementing state-of-the-art machine learning models from
+Tensorflow~\cite{tensorflow} and \bonsai (\aseem{cite?}).
+%
+Finally, we
+implement a Deep Neural Network (DNN) for CIFAR-10
+dataset~\cite{cifar} from \minion~\cite{minionn} to illustrate the use
+of partitioning in \tool.
+
+We present the numbers for two network settings, a LAN setting and
+a cross-continent WAN setting. The round trip time between the server
+and the client machines in the two settings is 1ms and 40ms resp. Each
+machine has an Intel(R) Xeon(R) CPU E5-2673 v3 processor running at
+2.40GHz with 28 GBs of RAM.
+%
+%% The  \tool compiler is written in Python and
+%% compiles each of our benchmarks in under a second to C++ code that makes calls to the ABY
+%% library~\cite{aby}. We use an off-the-shelf solver
+%% (SeaHorn~\cite{seahorn}) to check the verification conditions required
+%% to prove that the array indices remain in bound. The solver takes less
+%% than a minute on our largest benchmark.
+Since most of our benchmarks
+are related to machine learning, we set up some notation (largely
+standard in machine learning) and describe our benchmarks next.
 
 \subsection{Benchmarks}
 \divya{notation can be moved somewhere... } \\
 
 \noindent\textbf{Notation.} We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. 
-Given a vector $x\in\R^d$, $\mathsf{argmax}\ x = i$ if $x(i) = \mathsf{max}\ \{x_1,\ldots,x_d\}$ 
+Given a vector $x\in\R^d$, $\mathsf{argmax}\ x = i$ if $x_i =
+\mathsf{max}\ \{x_1,\ldots,x_d\}$.
 
-In this paper, we focus on machine learning models for {\it classification}.
+We focus on the machine learning models for {\it classification}.
 A {\it classifier} $C$ uses a trained {\it model} to {\it predict} a {\it label} $\ell$ for an input data point $x$. For example, given a data point which is a tuple of height and weight of an individual,
 a classifier can predict a label ``male'' or ``female''. The {\it accuracy} of a classifier
 refers to the fraction of data points that the classifier labels correctly from a given set of {\it test} data points.
@@ -101,7 +123,7 @@ The number of boolean-and gates (\#And) remains constant for both the benchmarks
 
 The results for Na\"{i}ve Bayes are in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input feature vector $x$ and $F$ is the number of possible values of $x_i$ for each $i \in [d]$.
 Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons (due to secret look-up) that result in many boolean-and gates (13k/750k denote 13000/75000). 
-Here, again columns 4 and 5 show the results reported in~\cite{shafindss}. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Naive Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
+Here, again columns 4 and 5 show the results reported in~\cite{shafindss}. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Na\"{i}ve Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
 
 This claim is further validated by Table~\ref{tab:dt}.
 In~\cite{wu}, Wu et al. describe specialized protocols for trees and forests (that perform better than~\cite{shafindss}) and we report their performance in columns 3 and 4 of Table~\ref{tab:dt}.
@@ -155,6 +177,7 @@ ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
 
 %dataset | time | comm | timeL | timeW | comm
 \subsection{Deep neural nets}
+\label{sec:dnneval}
 We evaluate \tool on the DNNs described in \minion~\cite{minionn} and the results are reported in Table~\ref{tab:nn}\footnote{\minion does not report the network round-trip time~\cite{minionn}.}.
 Our goal here is to demonstrate that \tool
 can provide performance competitive to specialized protocols for DNNs described in~\cite{secureml,cryptonets,minionn}. 
