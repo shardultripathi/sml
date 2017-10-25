@@ -39,7 +39,7 @@ Since most of our benchmarks
 are related to machine learning, we set up some notation (largely
 standard in machine learning) and describe our benchmarks next.
 
-\subsection{Benchmarks}
+\subsection{Benchmarks description}
 %\divya{notation can be moved somewhere... } \\
 
 \noindent(We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. 
@@ -189,22 +189,23 @@ from~\cite{barni}.
 
 \subsubsection*{Linear classifier}The results for linear
 classification are in Table~\ref{tab:lc}. The
-input and model are both vectors of length $d$. The time in columns
-``Prev. time'' and communication ``Prev. comm'' is the time and total
-network communication reported by Bost et al.~\cite{shafindss}. They
-report these numbers over a simulated network with 40ms
-round trip
-time, which is same as our WAN setting. The total execution time
+input and the model are both vectors of length $d$. The columns
+``Prev. time'' and ``Prev. comm'' show the time and the total
+network communication reported by Bost et al.~\cite{shafindss} for a
+network setting with 40ms
+round trip time, which is same as our WAN setting. The total execution
+time
 of \tool generated code in the LAN and the WAN setting is reported
 next, followed by the total communication.
 We observe that the \tool code performance matches that of Bost
-et al. On the other hand, the programmer effort in \tool is just 20
-lines (last column in the table) of code in the source language, as
+et al., while the programmer effort in \tool is just 20
+lines (last column in the table) of high-level code in the \tool
+source language, as
 opposed to writing low-level circuits. \aseem{They write circuits,
-  right?} The execution time is dominated by multiplications and
+  right?} Our execution time is dominated by the multiplications and
 boolean-ands.
 The number of boolean-and gates (\#And) remains constant for both the
-benchmarks as they reflect the number of and gates required for a
+benchmarks as they reflect the number of gates required for a
 single 32-bit integer comparison with zero, while the number of
 multiplication gates (\#Mul) is the same as the model size $d$.
 %% The
@@ -215,13 +216,41 @@ multiplication gates (\#Mul) is the same as the model size $d$.
 in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input
 feature vector $x$ and $F$ is the number of possible values of $x_i$
 for each $i \in [d]$.
-Although, there are no multiplications in these benchmarks, these do have a significant number of comparisons (due to secret look-up) that result in many boolean-and gates (13k/750k denote 13000/75000). 
-Here, again columns 4 and 5 show the results reported in~\cite{shafindss}. We observe that \tool generated code has competitive performance on this task. This improvement is significant as~\cite{shafindss} uses custom designed protocols and we are executing a generic two party computation (2PC). Moreover,~\cite{shafindss} remarks that generic 2PC did not scale to the smallest of their Na\"{i}ve Bayes classifiers and they had to scale down the prediction task and there a Yao-based implementation was 500 times slower. We have shown that by using \tool, generic 2PC can scale to real prediction tasks and provide performance competitive with specialized protocols. 
+Although, there are no multiplications in these benchmarks, these do
+have a significant number of comparisons (due to array look-ups using
+secret indices) that
+result in many boolean-and gates. %(13k/750k denote 13000/75000). 
+As before columns ``Prev. time'' and ``Prev. comm.'' (columns 4 and 5)
+show the numbers reported
+by Bost et al.~\cite{shafindss}. We observe that \tool generated code
+has better performance, despite using a generic 2PC,
+as opposed to custom designed protocols developed by Bost et
+al. Moreover, they remark that in their setup, generic Yao-based 2PC
+did not scale to the smallest of their Na\"{i}ve Bayes classifiers, so
+they had to scale down the prediction task, and even then their
+implementation was 500x slower. Whereas, we show that by using a
+cryptographic-cost aware compiler, we can scale generic 2PC to real
+prediction tasks, and get performance competitive to or better than the
+specialized protocols. \aseem{This last claim is a bit
+  tricky. Their claim was specifically about Yao-based. Is our
+  output protocol also Yao-based? If not, then we are not comparing
+  apples to apples.}
 
-This claim is further validated by Table~\ref{tab:dt}.
-In~\cite{wu}, Wu et al. describe specialized protocols for trees and forests (that perform better than~\cite{shafindss}) and we report their performance in columns 3 and 4 of Table~\ref{tab:dt}.
-Similar to~\cite{shafindss},~\cite{wu} remarks that these computations are infeasible with Yao-based 2PC.
-Again, we observe that the performance of \tool generated generic 2PC code is competitive with specialized protocols. Therefore, we believe that \tool generated code can be a better baseline than Yao-based 2PC when comparing against generic 2PC-based implementations for secure prediction tasks.
+\subsubsection*{Decision trees}
+Our decision trees numbers in Table~\ref{tab:dt} further validate
+this claim. We compare with Wu et al.~\cite{wu} (columns 3 and 4) who
+describe specialized protocols for trees and forests (that perform
+better than~\cite{shafindss}).
+Similar to Bost et al.~\cite{shafindss}, they also remarks that these
+computations are infeasible with Yao-based 2PC.
+\aseem{Same comment as before, if our output protocols are not
+  Yao-based, then it is an unfair comparison.} Again, we observe that
+the performance of \tool generated generic 2PC
+code is competitive with specialized protocols. Therefore, we believe
+that \tool generated code can be a better baseline than Yao-based 2PC
+when comparing against generic 2PC-based implementations for secure
+prediction tasks. \aseem{I don't understand this last sentence. Why is
+  ours a better baseline?}
 
 \begin{table*}
 \begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
