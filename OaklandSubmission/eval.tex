@@ -231,10 +231,7 @@ they had to scale down the prediction task, and even then their
 implementation was 500x slower. Whereas, we show that by using a
 cryptographic-cost aware compiler, we can scale generic 2PC to real
 prediction tasks, and get performance competitive to or better than the
-specialized protocols. \aseem{This last claim is a bit
-  tricky. Their claim was specifically about Yao-based. Is our
-  output protocol also Yao-based? If not, then we are not comparing
-  apples to apples.}
+specialized protocols.
 
 \subsubsection*{Decision trees}
 Our decision trees numbers in Table~\ref{tab:dt} further validate
@@ -243,8 +240,7 @@ describe specialized protocols for trees and forests (that perform
 better than~\cite{shafindss}).
 Similar to Bost et al.~\cite{shafindss}, they also remarks that these
 computations are infeasible with Yao-based 2PC.
-\aseem{Same comment as before, if our output protocols are not
-  Yao-based, then it is an unfair comparison.} Again, we observe that
+Again, we observe that
 the performance of \tool generated generic 2PC
 code is competitive with specialized protocols. Therefore, we believe
 that \tool generated code can be a better baseline than Yao-based 2PC
