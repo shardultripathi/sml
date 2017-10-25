@@ -300,44 +300,51 @@ ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
 %dataset | time | comm | timeL | timeW | comm
 \subsection{Deep neural nets}
 \label{sec:dnneval}
-We evaluate \tool on the DNNs described in \minion~\cite{minionn} and
-report the results in Table~\ref{tab:nn}\footnote{\minion does
-  not report the network round-trip time.}.
-Our goal here is to demonstrate that \tool
-can provide performance competitive to specialized protocols for DNNs
-described in~\cite{secureml,cryptonets,minionn}.  
-The first benchmark  is the DNN described in SecureML~\cite{secureml}.
+We evaluate \tool on the DNNs described in SecureML~\cite{secureml},
+Cryptonets~\cite{cryptonets}, and CNN from \minion~\cite{minionn}. For
+comparison, we consider their implementations from
+\minion~\cite{minionn}, which outperforms their previous
+implementations. Table~\ref{tab:nn} shows the
+results\footnote{\minion does not report the network round-trip time.}.
+We note that for each of these DNNs, \minion provides a
+specialized protocol, while \tool uses a generic 2PC protocol
+(auto) generated from high-level code.
+
+The first benchmark  is the DNN described in
+SecureML~\cite{secureml}.
 It has three fully connected layers with square as the activation function.
 This DNN is light-weight as it requires only arithmetic computations
 (additions and multiplications) 
-except for the {\it argmax} at the end.
-Next, we implement the DNN described in Cryptonets~\cite{cryptonets} in \tool.
+except for the $\mathsf{argmax}$ at the end.
+Next, we implement the DNN described in Cryptonets~\cite{cryptonets}
+in \tool.
 This DNN also uses square as the activation function and has one
 convolution (with 5 output channels) and one fully connected layer. 
-Finally, we compare against \minion on a CNN
-with two convolutions (with 16 output channels each) and two fully
-connected layers. 
-In contrast to the previous two DNNs, this DNN uses ReLU for activation and
+Finally, we implement CNN from \minion, that has
+two convolutions (with 16 output channels each) and two fully
+connected layers.  In contrast to the previous two DNNs, it uses
+ReLU for activation and
 has significantly higher number of boolean-and gates.
 Recall, that square activation can be implemented entirely using
 arithmetic gates but ReLU requires boolean-and gates.  For a complete
-description of these benchmarks and their accuracies,  the reader is
-referred to the original references. 
+description of these benchmarks and their accuracies, we refer the
+reader to the original references. 
 
-For the benchmarks in Table~\ref{tab:nn}, \minion
-outperforms SecureML and Cryptonets and columns 2 and 3 show the time taken by \minion. 
-The column ``Model size'' is the number of 32 bit integers in the trained model.
-We observe that our performance is competitive with \minion in the LAN
-and the WAN settings and the lines of code required are still small. 
+In Table~\ref{tab:nn}, columns 2 and 3 show the time taken by \minion.
+The column ``Model size'' is the number of 32 bit integers in the
+trained model.
+We observe that our performance is competitive with specialized
+\minion protocols, for both LAN and the WAN settings. Further, lines
+of \tool source code required is still small. 
 We note that \minion and \tool implementations are both based on ABY.
 These results are surprising as \minion has a much more efficient
 preprocessing phase and has SIMD 
-(single instruction multiple data) capabilities that allow \minion to perform
-matrix operations efficiently. Our language and compiler 
-focus on generic 2PC and such optimizations are beyond the scope of this paper.
-However, \minion also reports performance results on a bigger DNN with
-7 convolution layers. 
-This benchmark requires pipelining and we discuss it in Section~\ref{sec:pipeeval}.
+(single instruction multiple data) capabilities that allow it to perform
+matrix operations efficiently. In contrast, \tool focuses on generic
+2PC, and such optimizations are part of our future work.
+\minion also reports performance results on a bigger DNN with 7
+convolution layers. In \tool, this benchmark requires partitioning and
+we discuss it in Section~\ref{sec:pipeeval}.
 %net | minionT | minionC | timeL | timeW | comm | gates | and | mul | length 
 
 \begin{table*}
@@ -426,7 +433,8 @@ tree used by \bonsai. The size of \tool
 program grows with the depth of the tree, as the straightforward \tool
 implementation requires a loop for each layer of the
 tree. \aseem{Should we remark here that once we have functions in the
-  language, LOC would come down, perhaps in the footnote?}
+  language, LOC would come down, perhaps in the footnote? Else a PL
+  reviewer might scoff at it :).}
 
 To summarize, by providing first 2PC implementations of
 state-of-the-art classifiers, we have demonstrated the expressiveness
@@ -457,7 +465,7 @@ dataset~\cite{cifar}.
 The classifier's task is to categorize colored ($32\times 32$) images
 into 10 classes. A secure evaluation of this DNN needs more memory
 than what is available
-on our machines \aseem{Is there limitation machine RAM or ABY
+on our machines \aseem{Is the limitation machine RAM or ABY
   limit?}. Therefore, we use partitioning and divide the
 computation into seven stages. 
 The first step does a convolution with 64 output channels and a ReLU
