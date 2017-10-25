@@ -54,6 +54,9 @@ corresponding to the values revealed to the parties.
 To prove the correctness of our compiler, we prove that it preserves the observations in source semantics and distributed circuit semantics (see \theoremref{correctness}). 
 For the security of our compiler, we rely on the correctness guarantee and  reduce the security to the
 security of the underlying cryptographic protocol used to compute the generated circuit (see \theoremref{security}).
+We present only selected parts of our formalization for space
+reasons. \TODO{Full definitions and proofs can be found in the supplementary
+material submitted along with the paper.}
 }
 
 \TODO{Do we want to write things in logical order or order in paper?}
@@ -102,8 +105,20 @@ security of the underlying cryptographic protocol used to compute the generated 
                }
 
                \hspace{0.1cm}
+               \inferrule*[lab={\footnotesize{E-Cond}}]
+               {
+                 \rho \vdash e \Downarrow c\\\\
+                 c = \top \Rightarrow e' = e_{1}\\\\
+                 c = \bot \Rightarrow e' = e_{2}\\\\
+                 \rho \vdash e \Downarrow c'
+               }
+               {
+                 \rho \vdash \cond{e}{e_{1}}{e_{2}} \Downarrow c'
+               }
                
-    \inferrule*[lab={\footnotesize{E-Read}}]
+   
+\\\\
+	 \inferrule*[lab={\footnotesize{E-Read}}]
                {
                  \rho \vdash x \Downarrow [\overline{c_{i}}]_{n_{1}} \\\\
                  \rho \vdash e \Downarrow n \quad n < n_{1}
@@ -111,10 +126,11 @@ security of the underlying cryptographic protocol used to compute the generated 
                {
                  \rho \vdash x[e] \Downarrow c_{n}
                }
-\\\\
+    
+               \hspace{0.1cm}
     \inferrule*[lab={\footnotesize{E-Arr}}]
                {
-                 \forall i \in \{0 \dots n - 1\}.\:\rho \vdash e_{i} \Downarrow c_{i}
+                 \forall i \in [n].\:\rho \vdash e_{i} \Downarrow c_{i}
                }
                {
                  \rho \vdash [\overline{e_{i}}]_{n} \Downarrow [\overline{c_{i}}]_{n}
@@ -205,7 +221,7 @@ security of the underlying cryptographic protocol used to compute the generated 
 \end{figure}
 
 \subsubsection*{Source language}Our source language
-(Figure~\ref{fig:srclang}) is a simple imperative language. Types
+(\figureref{srclang}) is a simple imperative language. Types
 $\psi$ consist of the base types $\sigma$, and arrays
 of base types $\sigma[n]$, where $n$ is the array length. Though we
 model only one dimensional arrays, our implementation supports higher
@@ -225,8 +241,8 @@ $\kw{out}\:e$ denotes revealing the value of $e$ to the
 parties. The \kw{while} statement is an internal syntax that is not
 exposed to the programmer.
 
-The runtime semantics for the source language is shown in
-Figure~\ref{fig:srcsem}. Values $v$, runtime environments $\rho$, and
+\noindent\textbf{Source Semantics.} The runtime semantics for the source language is shown in
+\figureref{srcsem}. \TODO{Add something about claer text stand alone exec.} Values $v$, runtime environments $\rho$, and
 observations $O$ are defined as follows:
 
 \vspace{0.2cm}
@@ -258,25 +274,23 @@ the inputs to be base constants, an array input can be written in the
 language as $[\kw{in}_{j}]_{n}$, which can then evaluate using the
 rule ({\sc{E-Arr}}). The remaining rules are straightforward, and are
 elided for space reasons.
-\divya{Does conditionals $\cond{e}{e_{1}}{e_{2}}$ have anything interesting? just checking!}
-\nc{fancy PL folks language :)}
 
 The judgment $\rho \vdash s \Downarrow \rho_{1}; O$ represents the
 big-step evaluation of a statement $s$ under environment $\rho$
 producing a new environment $\rho_{1}$ and observations $O$. Rule
 ({\sc{E-Decl}}) evaluates the expression $e$ to $v$, and returns the
-updated environment $\rho[x \mapsto v]$, with empty observations. Rule
+updated environment $\rho,x \mapsto v$, with empty observations. Rule
 ({\sc{E-If}}) evaluates the guard expression, and then evaluates
-either $s_{1}$ or $s_{2}$ accordingly. $\kw{for}$ statements evaluate
+either $s_{1}$ or $s_{2}$ accordingly. The $\kw{for}$ statements evaluate
 through the internal $\kw{while}$ syntax. Specifically, the rule
-({\sc{E-For}}) updates $\rho$ with the initial counter value $n_{1}$,
+({\sc{E-For}}) appends $\rho$ with $x\mapsto n_{1}$,
 evaluates $\loops{x}{n_{2}}{s}$ to $\rho_{1}; O$, and returns
 $\rho_{1} - \{x\}$ (removing $x$ from $\rho_{1}$) and $O$. Rule
 ({\sc{E-LoopI}}) shows the inductive case for \kw{while}
 statements, when $\rho(x) \leq n$. The rule evaluates $s$, producing
 $\rho_{1}; O_{1}$. It then restricts $\rho_{1}$ to the domain of
 $\rho$ ($[\rho_{1}]_{\mathsf{dom}(\rho)}$) to remove the variables
-added by $s$, increments the value if $x$, and evaluates the
+added by $s$, increments the value of $x$, and evaluates the
 \kw{while} statement under this updated environment. Rule
 ({\sc{E-LoopT}}) is the termination case for \kw{while} statements,
 when $\rho(x) > n$. Finally, the rule ({\sc{E-Out}}) evaluates the
@@ -299,26 +313,120 @@ expression, and adds its value to the observations.
     \ftext{Statement} & \widetilde{s} &::=& \tau\:x = \widetilde{e} \mid x := \widetilde{e} \mid \dots \mid \widetilde{s_{1}}; \widetilde{s_{2}} \mid \dots\\
   \end{array}
   \]
-\caption{Target language}
-\label{fig:tgtlang}
+\caption{Intermediate Language}
+\label{fig:interlang}
 \end{figure}
+
+
+
 
 \begin{figure}
   \small
   \[
   \begin{array}{rrcl}
-    \ftext{Wire id} & r &&\\
-    \ftext{Circuit gate} & \kappa & ::= & r \mid \kw{in}^{m}_{j} \mid \kw{add}\:\kappa_{1}\:\kappa_{2} \mid \kw{gt}\:\kappa_{1}\:\kappa_{2}\\
-    & & \mid & \kw{mux}\:\kappa\:\kappa_{1}\:\kappa_{2} \mid \widetilde{w} \rhd m\\
-    \ftext{Base value} & \widetilde{w} & ::= & c \mid \kappa\\
-    \ftext{Value} & \widetilde{v} & ::= & \widetilde{w} \mid [\overline{\widetilde{w}_{i}}]_{n}\\
-    \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho}[x \mapsto \widetilde{v}]\\
-    \ftext{Circuit} & \chi & ::= & \cdot \mid \kw{bind}\:\kappa\:r \mid \kw{out}\:\kappa \mid \chi_{1}; \chi_{2}
+    \ftext{Wire id} & \wire &&\\
+    \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{add}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
+    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \widetilde{w} \rhd m\\
+    \ftext{Base value} & \bval & ::= & c \mid \gate\\
+    \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
+    \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
+    \ftext{Circuit} & \crct & ::= & \cdot \mid \kw{bind}\:\gate\:\wire \mid \kw{out}\:\gate \mid \crct_{1}; \crct_{2}
   \end{array}
   \]
-\caption{Target runtime}
-\label{fig:tgtruntime}
+\caption{Circuits   \divya{Is environ misplaced?}}
+\label{fig:circuits}
 \end{figure}
+
+
+
+
+\subsubsection*{Intermediate language} \figureref{interlang} shows the
+intermediate language of our compiler. The syntax follows that of the source
+language, except that the types and operators are \emph{labeled}. Below
+we mainly focus on the bits that are different from the source
+language.
+
+Labels $\ell$ consist of secret labels $\mathcal{A}$ and
+$\mathcal{B}$, denoting the arithmetic and boolean shared secrets
+resp., and the public label $\mathcal{P}$. Types $\tau$ are then
+labeled base types $\sigma^{\ell}$ and arrays of labeled base types
+$\sigma^{\ell}[n]$.
+
+Most of the expression forms $\widetilde{e}$ are same as $e$, except
+that the binary operators, and the conditional forms
+are annotated with label $\ell$, denoting how the operators should be
+evaluated ($\mathcal{P}$ for in-clear, and $\mathcal{A}$ and
+$\mathcal{B}$ for using arithmetic or boolean circuits resp.). The
+form $\widetilde{e} \rhd m$ denotes coercing \divya{the value of} $\widetilde{e}$ to be
+$m$-secret shared. The statements $\widetilde{s}$ are analogous to
+$s$.
+
+\aseem{The target semantics models the semantics of the code output by
+our compiler (C++ code in our implementation).}
+A program in the intermediate language is evaluated to a circuit that can be executed in the distributed setting later. The evaluation to a circuit computes over the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
+Crucially, this phase of the semantics does not have access to the secrets.
+Below, we first provide the language for the circuits used followed by our evaluation rules.
+
+\subsubsection*{Circuits}
+\figureref{circuits} shows the circuits syntax. A wire id range
+$\wire$ denotes a set of circuit wires that carry the value of a secret
+shared variable in the output circuit (we will concretely define these
+values later as part of the circuit semantics). Circuit gates $\gate$
+are $\wire$, input gates, \kw{add}, \kw{gt}, and \kw{mux} gates, and
+coerce gates $\bval \rhd m$. \divya{Gates are not just gates but a circuit?} Target values $\val$
+then consist of base values $c$ and $\gate$, and arrays of base
+values. \\
+
+\divya{Start here....}
+\noindent\textbf{Evaluation to Circuit.} \figureref{eval-inter-circ} shows the judgments for the evaluation of the intermediate language to a circuit. We first focus on the expression evaluation judgment
+$\widetilde{\rho} \vdash \widetilde{e} \Downarrow
+\val$. 
+%
+Rules ({\sc{S-PAdd}}) and ({\sc{S-SAdd}}) illustrate
+the significance of the operator labels. In particular, the rule
+({\sc{S-PAdd}}) evaluates a public addition $\widetilde{e_{1}}
++_{\mathcal{P}} \widetilde{e_{2}}$ to $n_{1} + n_{2}$, similar to the
+source language. In contrast, the rule
+({\sc{S-SAdd}}) evaluates a secret addition $\widetilde{e_{1}}
++_{\mathcal{A}} \widetilde{e_{2}}$ to an arithmetic add
+gate $\kw{add}\:\kappa_{1}\:\kappa_{2}$. Foreshadowing on the
+compilation rules to be presented later, the target
+expressions from our compiler never have $\widetilde{e_{1}}
++_{\mathcal{B}} \widetilde{e_{2}}$, as our compiler is aware that $+$
+is more performant using arithmetic circuit, rather than a boolean
+one. Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
+are along the similar lines. Rule ({\sc{S-PCond}}) evaluates a public
+conditional to the value from one of the branches, while the rule
+({\sc{S-SCond}}) evaluates to a \kw{mux} gate that takes input
+circuits from the conditional ($\kappa_{1}$) and both the branches
+($\kappa_{2}$ and $\kappa_{3}$). Once again for performance reasons,
+the target expressions from our compiler do not have
+$\lcond{\mathcal{A}}{e_{1}}{e_{2}}{e_{3}}$. Rules
+({\sc{S-Coerce}}) and ({\sc{S-Inp}}) evaluate to the coerce and input
+gates respectively.
+
+Statement evaluation $\widetilde{\rho} \vdash \widetilde{s} \Downarrow
+\widetilde{\rho}_{1}; \chi$ evaluates a target statement to produce a new
+environment $\widetilde{\rho}_{1}$, and a circuit $\chi$. $\chi$ (shown
+in Figure~\ref{fig:tgtlang}) is either empty, \kw{bind}-ing of a
+circuit gate $\kappa$ to range $r$, \kw{out} gate, or a sequence of
+circuits. Rules ({\sc{S-DeclC}}), ({\sc{S-DeclCkt}}), and
+({\sc{S-DeclCktA}}) show the variable declaration cases. Rule
+({\sc{S-DeclC}}) shows the case when $\widetilde{e}$ evaluates to
+$\widetilde{v}$, where $\widetilde{v}$ is either a constant or an
+array of constants. In this case, the mapping $x \mapsto
+\widetilde{v}$ is added to the environment, and the resulting circuit
+is empty. When 
+$\widetilde{e}$ evaluates to a circuit $\kappa$, rule
+({\sc{S-DeclCkt}}) picks a fresh $r$, adds the mapping $x \mapsto r$
+to the environment, and outputs the circuit
+$\kw{bind}\:\kappa\:r$. Rule ({\sc{S-DeclCktA}}) is analogous for
+$\widetilde{e}$ evaluating to an array of circuits. The variable
+assignment rules (not shown in the figure) are similar. Rule
+({\sc{S-WriteCkt}}) shows the case for writing to an array, where the
+array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
+\kw{out} circuit.
+
 
 
 \begin{figure}
@@ -344,11 +452,11 @@ expression, and adds its value to the observations.
                
     \inferrule*[lab={\footnotesize{S-Read}}]
                {
-                 \widetilde{\rho} \vdash x \Downarrow [\overline{\widetilde{w_{i}}}]_{n_{1}} \\\\
+                 \widetilde{\rho} \vdash x \Downarrow [\overline{\bval_i}]_{n_{1}} \\\\
                  \widetilde{\rho} \vdash \widetilde{e} \Downarrow n \quad n < n_{1}
                }
                {
-                 \widetilde{\rho} \vdash x[\widetilde{e}] \Downarrow \widetilde{w_{n}}
+                 \widetilde{\rho} \vdash x[\widetilde{e}] \Downarrow \bval_n
                }\\\\
     \inferrule*[lab={\footnotesize{S-SAdd}}]
                {
@@ -412,7 +520,7 @@ expression, and adds its value to the observations.
   \end{array}
   \]
   \\\\
-    \fbox{$\widetilde{\rho} \vdash \widetilde{c} \Downarrow \widetilde{\rho'}; \chi$}
+    \fbox{$\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho'}; \chi$}
   \[
   \\
   \begin{array}{c}
@@ -490,95 +598,10 @@ expression, and adds its value to the observations.
 
 \end{array}
   \]
-\caption{Target semantics (selected rules)}
-\label{fig:tgtsem}
+\caption{Evaluation of Intermediate Language to Circuit (selected rules)}
+\label{fig:eval-inter-circ}
 \end{figure}
 
-\subsubsection*{Target language} Figure~\ref{fig:tgtlang} shows the
-target language of our compiler. The syntax follows that of the source
-language, except that the types and operators are \emph{labeled}. Below
-we mainly focus on the bits that are different from the source
-language.
-
-Labels $\ell$ consist of secret labels $\mathcal{A}$ and
-$\mathcal{B}$, denoting the arithmetic and boolean shared secrets
-resp., and the public label $\mathcal{P}$. Types $\tau$ are then
-labeled base types $\sigma^{\ell}$ and arrays of labeled base types
-$\sigma^{\ell}[n]$.
-
-Most of the expression forms $\widetilde{e}$ are same as $e$, except
-that the binary operators, and the conditional forms
-are annotated with label $\ell$, denoting how the operators should be
-evaluated ($\mathcal{P}$ for in-clear, and $\mathcal{A}$ and
-$\mathcal{B}$ for using arithmetic or boolean circuits resp.). The
-form $\widetilde{e} \rhd m$ denotes coercing $\widetilde{e}$ to be
-$m$-secret shared. The statements $\widetilde{s}$ are analogous to
-$s$.
-
-The target semantics models the semantics of the code output by
-our compiler (C++ code in our implementation). It computes over the
-public parts of the program, emitting a circuit that can later be
-evaluated using a cryptographic MPC protocol. The semantics also
-\emph{flattens} the arrays so that the circuits are unaware of the
-array structure. Crucially, this phase of the semantics does not have
-access to the secrets.
-
-Figure~\ref{fig:tgtruntime} shows the runtime syntax. A wire id range
-$r$ denotes a set of circuit wires that carry the value of a secret
-shared variable in the output circuit (we will concretely define these
-values later as part of the circuit semantics). Circuit gates $\kappa$
-are $r$, input gates, \kw{add}, \kw{gt}, and \kw{mux} gates, and
-coerce gates $\widetilde{w} \rhd m$. Target values $\widetilde{v}$
-then consist of base values $c$ and $\kappa$, and arrays of base
-values.
-
-Figure~\ref{fig:tgtsem} shows the judgments for the target
-semantics. We first focus on the expression evaluation judgment
-$\widetilde{\rho} \vdash \widetilde{e} \Downarrow
-\widetilde{v}$. Rules ({\sc{S-PAdd}}) and ({\sc{S-SAdd}}) illustrate
-the significance of the operator labels. In particular, the rule
-({\sc{S-PAdd}}) evaluates a public addition $\widetilde{e_{1}}
-+_{\mathcal{P}} \widetilde{e_{2}}$ to $n_{1} + n_{2}$, similar to the
-source language. In contrast, the rule
-({\sc{S-SAdd}}) evaluates a secret addition $\widetilde{e_{1}}
-+_{\mathcal{A}} \widetilde{e_{2}}$ to an arithmetic add
-gate $\kw{add}\:\kappa_{1}\:\kappa_{2}$. Foreshadowing on the
-compilation rules to be presented later, the target
-expressions from our compiler never have $\widetilde{e_{1}}
-+_{\mathcal{B}} \widetilde{e_{2}}$, as our compiler is aware that $+$
-is more performant using arithmetic circuit, rather than a boolean
-one. Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
-are along the similar lines. Rule ({\sc{S-PCond}}) evaluates a public
-conditional to the value from one of the branches, while the rule
-({\sc{S-SCond}}) evaluates to a \kw{mux} gate that takes input
-circuits from the conditional ($\kappa_{1}$) and both the branches
-($\kappa_{2}$ and $\kappa_{3}$). Once again for performance reasons,
-the target expressions from our compiler do not have
-$\lcond{\mathcal{A}}{e_{1}}{e_{2}}{e_{3}}$. Rules
-({\sc{S-Coerce}}) and ({\sc{S-Inp}}) evaluate to the coerce and input
-gates respectively.
-
-Statement evaluation $\widetilde{\rho} \vdash \widetilde{s} \Downarrow
-\widetilde{\rho}_{1}; \chi$ evaluates a target statement to produce a new
-environment $\widetilde{\rho}_{1}$, and a circuit $\chi$. $\chi$ (shown
-in Figure~\ref{fig:tgtlang}) is either empty, \kw{bind}-ing of a
-circuit gate $\kappa$ to range $r$, \kw{out} gate, or a sequence of
-circuits. Rules ({\sc{S-DeclC}}), ({\sc{S-DeclCkt}}), and
-({\sc{S-DeclCktA}}) show the variable declaration cases. Rule
-({\sc{S-DeclC}}) shows the case when $\widetilde{e}$ evaluates to
-$\widetilde{v}$, where $\widetilde{v}$ is either a constant or an
-array of constants. In this case, the mapping $x \mapsto
-\widetilde{v}$ is added to the environment, and the resulting circuit
-is empty. When 
-$\widetilde{e}$ evaluates to a circuit $\kappa$, rule
-({\sc{S-DeclCkt}}) picks a fresh $r$, adds the mapping $x \mapsto r$
-to the environment, and outputs the circuit
-$\kw{bind}\:\kappa\:r$. Rule ({\sc{S-DeclCktA}}) is analogous for
-$\widetilde{e}$ evaluating to an array of circuits. The variable
-assignment rules (not shown in the figure) are similar. Rule
-({\sc{S-WriteCkt}}) shows the case for writing to an array, where the
-array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
-\kw{out} circuit.
 
 \begin{figure}
   \small
