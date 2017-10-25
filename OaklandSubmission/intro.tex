@@ -5,57 +5,99 @@
 \section{Introduction}
 \label{sec:intro}
 
-Today it is hard for developers to create secure implementations using cryptographic techniques.
-Typical developers lack an understanding of cryptographic protocols
-and cannot be expected to implement them correctly and efficiently without tool
-support.
-In an ideal world, a developer declares the functionality to be implemented
-in a general purpose programming language and an automatic tool takes care
-of all the cryptography and generates a secure and efficient implementation  of the functionality. 
-This paper provides a language-based solution to make
-secure  computation  accessible to the software developer community. 
+Today it is hard for the developers to program secure applications
+using cryptographic techniques. Typical developers lack a deep
+understanding of the cryptographic protocols, and therefore cannot be
+expected to use them correctly and efficiently on their own.
+Ideally, a developer would declare the functionality in a general
+purpose, high-level programming language and a
+tool, e.g. a compiler, would generate an efficient protocol that
+implements the functionality securely, while hiding the cryptography
+behind-the-scenes. This paper presents such a framework for Secure
+Two-party Computation (\mpc).
 
 %Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
 
 %Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
 
-Secure two-party computation (\mpc) \cite{yao,gmw} is a powerful
-cryptographic tool that allows two mutually distrusting parties
-to compute a joint function of their secret inputs such as {\em secure prediction} \cite{shafindss,wu,barni,minionn,secureml}. Here,  one party holds the propriety classifier for disease, genomics or spam detection and the other party  
-holds the private input and the second party learns the classification label such as the presence of the disease. Since its introduction
-\mpc in 1980's, there has been a long sequence of work that has
-transformed \mpc from a mere theoretical tool to something practically
-efficient and usable. Hence, there have been efforts to make \mpc
-accessible to non-specialist programmers. To understand the
-state-of-the-art, let us consider the following 
-example that is the sub-computation in many classification tasks.
+\mpc~(\cite{yao,gmw}) is a powerful
+cryptographic technique that allows two mutually distrusting parties
+to compute a joint function of their secret inputs in a way that both
+the parties learn nothing about the inputs of each other beyond what
+is revealed by their (possibly different) outputs. For example, \mpc
+can be used for {\em secure
+prediction}~(\cite{shafindss,wu,barni,minionn,secureml}),
+where one party (the server) holds a proprietary classifier to predict
+a label (e.g. a disease, genomics, or spam detection), and the other
+party (the client) holds a private input that it wants to run the
+classifier on. Using \mpc guarantees that the server learns nothing
+about the client's input or output, and that the client learns nothing
+about the server model, beyond what is revelaed by the output
+label.
 
-Suppose a developer wants to compute $w^Tx >b$ securely using
-\mpc, where $w$ and $x$ are two vectors, $b$ is a scalar, and $w^Tx$ denotes the inner product of $w$ and $x$.  With the current techniques, he has three options. \aseem{We should
-  use she for the programmer instead of he?}
-\begin{tiret}
-\item He can code up the functionality in a programmer friendly
-  domain-specific language such as
-  \cite{lambdaps,wysteria,oblivm,smcl,cbmcgc} that would automatically
-  compile it to a \mpc protocol. The downside is that all of these
-  works build on a cryptographic back-end that takes as input a functionality expressed as either a boolean circuit \cite{yao,gmw} or an arithmetic circuit \cite{homo}.
-  The efficiency of the generated \mpc protocol is hence, bounded by the possibility of efficiently representing the functionality in one of these circuit representations. For instance, multiplication of two $\ell$-bit integers can be expressed as a boolean circuit of size  $O(\ell^2)$ or an arithmetic circuit with 1 multiplication gate. 
-Hence, for better efficiency, we would like to securely compute $w^Tx$ using an arithmetic circuit and the comparison with $b$ using a boolean circuit. \divya{that is not supported by above systems.}
-In fact, most interesting functions require a mix of arithmetic and boolean computations for efficiency.
+Since its introduction in 1980s, there has been a long sequence
+of work that has transformed \mpc from a mere theoretical concept to
+something practically efficient and usable. To understand the
+state-of-the-art, let us consider the following example used by many
+secure prediction algorithms. Suppose Alice wants to write
+a \mpc protocol to securely
+compute $w^Tx >b$. Here $w$ and $x$ are two vectors (inputs of the two
+parties), $b$ is a scalar, $\cdot^{T}$ is the matrix transpose
+operator, and $w^Tx$ denotes the inner product of
+$w^{T}$ and $x$.  With the current state-of-the-art, Alice has three
+options:
 
-\item To address this issue of efficient representation, recently Demmler et al. \cite{aby} gave a cryptographic protocol for \mpc where the functionality can be expressed as a circuit with a mix of both arithmetic and boolean parts.
-Hence, the second option is to write the functionality in the system developed in \cite{aby}.
-However, in their framework, the programmer is required to write circuits consisting of  arithmetic and boolean gates along with appropriate
-inter-conversion gates.
-This requires the programmer to be aware of
-trade-offs between arithmetic and boolean cryptographic
-schemes as well as the complex inter-conversion costs between arithmetic and boolean, and manually split the functionality into such parts accordingly.  
-In short, as is also mentioned by Demmler et al., the current system  is not suitable
-to be used by non-specialist programmers without security expertise.
+%\begin{tiret}
+%\item
 
-\item Finally, the third option is to hire a cryptographer to design a specialized efficient protocol for this functionality such as \cite{shafindss,wu,minionn}. 
-\end{tiret}
-In our work, we achieve the best of all the above options. 
+She can program the computation in one of the several programmer
+friendly, domain-specific languages (such
+as~\cite{lambdaps,wysteria,oblivm,smcl,cbmcgc}) that would
+automatically compile it to a \mpc protocol. However, all of these
+frameworks use cryptographic backends that take as input
+the computation expressed as either a boolean
+circuit~(\cite{yao,gmw}) or an arithmetic circuit~(\cite{gentry}).
+%
+The efficiency of the generated \mpc protocol is thus bounded by the
+efficiency of representing the computation in one of
+these representations. For instance, multiplication of two
+$\ell$-bit integers can be either expressed as a boolean circuit of
+size $O(\ell^2)$, or as an arithmetic circuit with 1 multiplication
+gate.
+%
+Hence, for better efficiency, Alice would ideally like to compute
+$w^Tx$ using an arithmetic circuit, and the comparison with $b$ using
+a boolean circuit.
+%
+Unfortunately, none of the above frameworks support combinations of
+arithmetic and boolean circuits, and using different tools for
+different parts of the computation is cumbersome and error-prone.
+
+%% In fact, most interesting functions require a mix of arithmetic and
+%% boolean computations for efficiency.
+
+%\item
+
+Alternatively, Alice can use a tool such as ABY (Demmlet et
+al.~\cite{aby}) that allows
+the computation to be expressed as a combination of arithmetic and
+boolean circuits. However, here the programming interface is quite
+low-level -- the programmer is required to first manually split the
+computation into arithmetic and boolean components, and then write the
+circuits for all the componenets manually, including the appropriate
+inter-conversion gates between them. Clearly, writing correct
+and efficient protocols in such a framework is beyond an average
+programmer who does not understand the various trade-offs between
+arithmetic and boolean circuits, and even for an expert cryptographer,
+writing large computations in such a framework can be tedious and
+error-prone (a sentiment also echoed by Demmler et al.~\cite{aby}).
+
+%\item
+The third option for Alice is to earn a PhD in cryptography and design
+specialized, efficient protocols (similar to
+~\cite{shafindss,wu,minionn}) for her tasks.
+%\end{tiret}
+%In our work, we achieve the best of all the above options. 
 
 
 
