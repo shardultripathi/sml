@@ -1,14 +1,40 @@
 \section{Implementation}
 \label{sec:impl}
-\divya{Some pointers by Divya}
-Describe the following
-\begin{enumerate}
-\item python compiler etc
-\item array index out of bounds static check implementation
-\item pipelining? automatic or manual?
-\item secret indexing in arrays; not supported directly but coded as a tree; future work automatic compilation may be
+The  \tool compiler is written in Python and
+compiles each of our benchmarks in under a second to C++ code that makes calls to the ABY
+library~\cite{aby}. We use the default options of ABY except 
+for the maximum number of gates. Our benchmarks require us to set this value to a
+hundred million. ABY provides facilities to use multiple threads\footnote{The protocol has an offline phase and an online phase. Although multiple threads can be used in the offline phase, the online phase is single threaded.}.
+We use at most four threads in our evaluation.
 
+We use an off-the-shelf solver
+(SeaHorn~\cite{seahorn}) to check the verification conditions required
+to prove that the array indices remain in bound ($\Gamma\vDash e < n$ in {\sc T-Read}, Figure~\ref{fig:compile}). The solver takes less
+than a minute on our largest benchmark.
+The type label is assigned conservatively in  {\sc T-Decl}.
+Only the variables that govern the control flow, i.e., variables
+in if-conditions and for-loops are assigned public labels.
+All other variables are assigned arithmetic labels.
+In the future, we would like to explore more intelligent strategies for label assignment.
 
-\end{enumerate}
+Some of our benchamrks require accessing arrays at secret location.
+For example, consider the expression $A[x]$ where $A$ is an array of size 2 and $x$ is shared.
+\tool enforces the array indices to be public. The developer expresses this functionality in \tool
+as $x > 0 ? A[1] : A[0]$. In general, for an array of size $2^n$, we need to write $2^{n-1}$ multiplexers
+in \tool. This design choice of making secret indexing inconvinient to implement was deliberate.
+Accessing arrays at secret locations is a powerful but expensive primitive
+and we want the developers to perform this operation sparingly. 
 
-Where do we mention about getting integer models; using unsigned ints for signed compute etc?
+The secure code partitioning is not fully automatic.
+in particular, the developer needs to decompose a program $P$ into $P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool generates $Q_1||\ldots||Q_k$ automatically.
+Automating the decomposition step requires an analysis that can 
+statically estimate the resource usage of a \tool program and we leave the construction of such
+an analysis as future work.
+
+The compilation rules of Figure~\ref{fig:compile} can introduce redundant coercions from arithmetic to
+bool and vice versa.
+The implemntation of \tool performs several optimizations to reduce these.
+For example, on each coercion, \tool memoizes the pair of arithmetic share and boolean share involved in the coercion.
+\tool invalidates such pairs when the variables corresponding to the shares are overwritten by assignments.
+In subsequent coercions, \tool can reuse valid pairs (if available) instead of recomputing them afresh. 
+ 
