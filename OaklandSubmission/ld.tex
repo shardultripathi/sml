@@ -330,7 +330,7 @@ expression, and adds its value to the observations.
   \begin{array}{rrcl}
     \ftext{Wire id} & \wire &&\\
     \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{add}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
-    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \widetilde{w} \rhd m\\
+    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \bval \rhd m\\
     \ftext{Base value} & \bval & ::= & c \mid \gate\\
     \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
     \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
