@@ -1,13 +1,13 @@
 \section{Evaluation}
 \label{sec:eval}
-We evaluate \tool on the problem of {\it secure prediction}, where one
+We evaluate \tool on a variety of problems that can be thought to fall under the umbrella of \nc{saying it like this so that it does not seem we are evaluating on one problem.} {\it secure prediction}, where one
 party (the server) has a machine learning model, and the other party
 (the client) has an input. The goal is to compute the output of the
 model on client's input, with the guarantee that the server
 learns nothing about the input, and the client learns nothing
 about the model beyond what is revealed from the output.
 
-We first implement the benchmarks from Bost et al.~\cite{shafindss}
+To begin, we first implement the benchmarks from Bost et al.~\cite{shafindss}
 and \minion~\cite{minionn} (both of which study the same setting),
 and show that the performance of the high-level code written in \tool
 is comparable to their hand-crafted circuits
@@ -44,27 +44,27 @@ standard in machine learning) and describe our benchmarks next.
 
 \noindent(We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. 
 Further, given a vector $x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if
-$x_i = \mathsf{max}\ \{x_1,\ldots,x_d\}$.)
+$x_i = \mathsf{max}\ \{x_1,\ldots,x_d\}$.) \nc{Why is notation in brackets?}
 
 We focus on the machine learning models for {\it classification}.
 A classifier $C$ uses a trained model to {\it predict} a
 label $\ell$ for an input data point $x$. For example, given a
 data point which is a tuple of height and weight of an individual,
-a classifier can predict a label ``male'' or ``female''. The {\it
+a classifier might be able to predict a label as ``male'' or ``female''\nc{Is this less sexist?}. The {\it
   accuracy} of a classifier refers to the fraction of data points that
 the classifier labels correctly from a given set of test data
 points.
 
 \subsubsection*{Standard classifiers}
-A binary linear classifier is one of the simplest classifiers. Here,
+A {\em binary linear classifier} is one of the simplest classifiers. Here,
 the input is a data point $x\in\R^d$,
 and the model is a vector $w\in\R^d$. The possible labels are
 $\ell\in\{\mathit{true},\mathit{false}\}$ and the classifier is
 $C_w\equiv w^Tx>0$, where $\cdot^T$ denotes the matrix transpose
-operator. This classifier requires $d$ multiplications, $d-1$
+operator. \nc{it might be obvious, but should we say $x > y$ returns 1 if $x>y$ and 0 otherwise?} This classifier requires $d$ multiplications, $d-1$
 additions, and a comparison.
 
-A more interesting classifier is Na\"{i}ve Bayes that predicts labels
+A more interesting classifier is {\em Na\"{i}ve Bayes} that predicts labels
 from the set $[n]$.
 Here, the input data point is a {\it feature}
 vector $x=(x_0,x_2,\ldots,x_{d-1})^T$ where each $x_j\in [F]$.
@@ -81,12 +81,10 @@ The classifier $C_{P,T}(x)$ outputs
 \[
 {\sf argmax}\ P+\sum_{j=0}^{d-1} T(j)(x_j)
 \]
-This classifier requires $ndF$ comparisons and additions. \divya{Note
-  that computing $T(i)(j)(x_j)$ requires a secret look-up in matrix
-  $T$  based on secret input $x_j$ resulting in $F$ comparisons (see
-  \sectionref{}).} \cmmt{Is there a +1 etc missing or is this exact?}
+This classifier requires $ndF$ comparisons and additions. Note here  that computing $T(i)(j)(x_j)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F$ comparisons using multiplexers (see
+  Section~\ref{sec:impl}). \nc{Made DG's comment as part of regular text - worth point out}. \cmmt{Is there a +1 etc missing or is this exact?} \nc{By our calculation in Sec 5, it seems that this should be $F/2$ multiplexers}
 
-A decision tree of size $N$ takes as input an $x\in\R^d$, and the
+A {\em decision tree} of size $N$ takes as input an $x\in\R^d$, and the
 model consists of a binary tree of depth $d$ with a boolean predicate
 assigned to each internal node. The root note is the $0^{th}$ node and
 for an internal node $j \in [N]$, the children nodes are $2j+1$ and
@@ -155,7 +153,7 @@ The predicted value is
   over scalar multiplication (or is it associative so doesn't matter?)
 (3) The argument to $f$ is a scalar (right?), and so is its output,
 so then is $\circ$ defined OR is it applying $f$ pointwise to a vector?}
-
+\nc{(1) I agree we should do that to be consistent with before. (2) I assumed $f()$ is computed to give a vector somehow and $I_j(x)W_j^TZx$ also gives a vector somehow and then we do $\circ$; I might be wrong. (3) Hmm.. I thought it was a vector, but I dont know how. (4) Can we specify somewhere the dimensions of these matrices?}
 \[
 {\sf argmax} \sum_{j = 0}^{N - 1} I_j(x)W_j^TZx\circ f(V_j^TZx) 
 \]
@@ -185,7 +183,7 @@ machine learning repository~\cite{uci}:
  the Wisconsin Breast Cancer data set, 
 Credit Approval data set, Audiology (Standardized) data set, Nursery
 data set, and ECG (electrocardiogram) classification data
-from~\cite{barni}.
+from~\cite{barni}. \nc{Say here that the training is done on cleartext data?}
 
 \subsubsection*{Linear classifier}The results for linear
 classification are in Table~\ref{tab:lc}. The
@@ -202,7 +200,7 @@ et al., while the programmer effort in \tool is just 20
 lines (last column in the table) of high-level code in the \tool
 source language, as
 opposed to writing low-level circuits. \aseem{They write circuits,
-  right?} Our execution time is dominated by the multiplications and
+  right?} \nc{Actually, they have a specific protocols for dot product and comparison and also say that their developer effort is minimal as they have to write two function calls to these protocols :).} Our execution time is dominated by the multiplications and
 boolean-ands.
 The number of boolean-and gates (\#And) remains constant for both the
 benchmarks as they reflect the number of gates required for a
@@ -234,8 +232,8 @@ prediction tasks, and get performance competitive to or better than the
 specialized protocols.
 
 \subsubsection*{Decision trees}
-Our decision trees numbers in Table~\ref{tab:dt} further validate
-this claim. We compare with Wu et al.~\cite{wu} (columns 3 and 4) who
+Our decision tree numbers in Table~\ref{tab:dt} further validate
+this claim. We compare with the recent work of Wu et al.~\cite{wu} (columns 3 and 4) who
 describe specialized protocols for trees and forests (that perform
 better than~\cite{shafindss}).
 Similar to Bost et al.~\cite{shafindss}, they also remarks that these
@@ -246,11 +244,11 @@ code is competitive with specialized protocols. Therefore, we believe
 that \tool generated code can be a better baseline than Yao-based 2PC
 when comparing against generic 2PC-based implementations for secure
 prediction tasks. \aseem{I don't understand this last sentence. Why is
-  ours a better baseline?}
+  ours a better baseline?} \nc{This last line is more a comment for a ``conclusion'' and is a bit out of place here. I guess we want to say that till recently if generic 2PC using Yao was not feasible, then people had to come up with specialized protocols and didnt have any benchmark or had a poor benchmark (of Yao) to compare their 2PC with. Moving forward, our language generated 2PC can be the baseline benchmark for all 2PC protocols.}
 
 \begin{table*}
 \begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $d$  & Prev. time (s) & Prev. comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
+Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
 \hline
 Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25 & 95 & 30 & 727 & 20\\
 \hline
