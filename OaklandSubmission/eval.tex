@@ -236,7 +236,7 @@ computations are infeasible with Yao-based 2PC.
 Again, we observe that
 the performance of \tool generated generic 2PC
 code is competitive with specialized protocols. 
-
+\setlength\tabcolsep{8pt}
 \begin{table*}
 \begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
 Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN (s) & WAN (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
@@ -250,7 +250,7 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
  \caption{Linear classification results. We compare our results (columns 5, 6, 7) with~\cite{shafindss} (columns 3 and 4)}
  \label{tab:lc} 
 \end{table*}
-
+\setlength\tabcolsep{7pt}
 \begin{table*}
 \begin{tabular}{c|c|c|c|c|c |c|c|c|c|c|c}
 Dataset & $d$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN (s) & WAN (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates  & LOC\\
@@ -331,7 +331,7 @@ matrix operations efficiently. In contrast, \tool focuses on generic
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in Section~\ref{sec:pipeeval}.
 %net | minionT | minionC | timeL | timeW | comm | gates | and | mul | length 
-
+\setlength\tabcolsep{6.5pt}
 \begin{table*}
 \begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
 DNN  & Prev. time (s) & Prev. Comm (Mb) & LAN (s) & WAN (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model Size & LOC\\
@@ -426,10 +426,10 @@ state-of-the-art classifiers, we have demonstrated the expressiveness
 of \tool. We discuss scalability next.
 %dataset | size | gates | and | mul | depth | length | comm | timeL | timeW
 
-\setlength\tabcolsep{4pt}
+\setlength\tabcolsep{3.5pt}
 \begin{table}
 \begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
-Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm. \\ (Mb)}  & \thead{\#\\And} & \thead{\#\\Mul} & \thead{\#\\Gates} & depth & LOC\\
+Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm. \\ (Mb)}  & \#And & \#Mul & \#Gates & depth & LOC\\
 \hline
 Chars4k    &  0.1         & 0.7         & 2            & 18k    & 3k    &  85k     & 1   & 89\\
 \hline
