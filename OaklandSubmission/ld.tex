@@ -692,7 +692,7 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 
 \begin{figure}
   \small
-  \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \widetilde{v}$}
+  \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \val$}
   \[
   \\
   \begin{array}{c}
@@ -703,53 +703,53 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
                  \widetilde{\rho} \vdash x \Downarrow \widetilde{\rho}(x)
                }
                
-    \inferrule*[lab={\footnotesize{S-PAdd}}]
+    \inferrule*[lab={\footnotesize{S-PMult}}]
                {
                  \forall i \in \{1, 2\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow n_{i}
                }
                {
-                 \widetilde{\rho} \vdash \widetilde{e_{1}} +_{\mathcal{P}} \widetilde{e_{2}} \Downarrow n_{1} + n_{2}
+                 \widetilde{\rho} \vdash \widetilde{e_{1}} \mulop_{\mathcal{P}} \widetilde{e_{2}} \Downarrow n_{1} \mulop n_{2}
                }
                
     \inferrule*[lab={\footnotesize{S-Read}}]
                {
-                 \widetilde{\rho} \vdash x \Downarrow [\overline{\bval_i}]_{n_{1}} \\\\
+                 \widetilde{\rho} \vdash x \Downarrow [\overline{\wire_i}]_{n_{1}} \\\\
                  \widetilde{\rho} \vdash \widetilde{e} \Downarrow n \quad n < n_{1}
                }
                {
                  \widetilde{\rho} \vdash x[\widetilde{e}] \Downarrow \bval_n
                }\\\\
-    \inferrule*[lab={\footnotesize{S-SAdd}}]
+    \inferrule*[lab={\footnotesize{S-SMult}}]
                {
-                 \forall i \in \{1, 2\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow \kappa_{i}
+                 \forall i \in \{1, 2\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow \gate_{i}
                }
                {
-                 \widetilde{\rho} \vdash \widetilde{e_{1}} +_{\mathcal{A}} \widetilde{e_{2}} \Downarrow \kw{add}\:\kappa_{1}\:\kappa_{2}
+                 \widetilde{\rho} \vdash \widetilde{e_{1}} \mulop_{\mathcal{A}} \widetilde{e_{2}} \Downarrow \kw{mult}\:\gate_{1}\:\gate_{2}
                }
 
                \hspace{0.3cm}
 
     \inferrule*[lab={\footnotesize{S-SGt}}]
                {
-                 \forall i \in \{1, 2\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow \kappa_{i}
+                 \forall i \in \{1, 2\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow \gate_{i}
                }
                {
-                 \widetilde{\rho} \vdash \widetilde{e_{1}} >_{\mathcal{B}} \widetilde{e_{2}} \Downarrow \kw{gt}\:\kappa_{1}\:\kappa_{2}
+                 \widetilde{\rho} \vdash \widetilde{e_{1}} >_{\mathcal{B}} \widetilde{e_{2}} \Downarrow \kw{gt}\:\gate_{1}\:\gate_{2}
                }\\\\
                \inferrule*[lab={\footnotesize{S-SCond}}]
                {
-                 \forall i \in \{1, 2, 3\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow \kappa_{i}
+                 \forall i \in \{1, 2, 3\}.\:\widetilde{\rho} \vdash \widetilde{e_{i}} \Downarrow \gate_{i}
                }
                {
-                 \widetilde{\rho} \vdash \lcond{\mathcal{B}}{\widetilde{e_{1}}}{\widetilde{e_{2}}}{\widetilde{e_{3}}} \Downarrow \kw{mux}\:\kappa_{1}\:\kappa_{2}\:\kappa_{3}
+                 \widetilde{\rho} \vdash \lcond{\mathcal{B}}{\widetilde{e_{1}}}{\widetilde{e_{2}}}{\widetilde{e_{3}}} \Downarrow \kw{mux}\:\gate_{1}\:\gate_{2}\:\gate_{3}
                }
                \hspace{0.2cm}
     \inferrule*[lab={\footnotesize{S-Coerce}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \widetilde{v}
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \val
                }
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \rhd m \Downarrow \widetilde{v} \rhd m
+                 \widetilde{\rho} \vdash \widetilde{e} \rhd m \Downarrow \val \rhd m
                }
                \\\\
                %% \inferrule*[lab={\footnotesize{S-Arr}}]
@@ -765,10 +765,10 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
                  \widetilde{\rho} \vdash \widetilde{e} \Downarrow c\\\\
                  c = \top \Rightarrow \widetilde{e'} = \widetilde{e_{1}}\\
                  c = \bot \Rightarrow \widetilde{e'} = \widetilde{e_{2}}\\\\
-                 \widetilde{\rho} \vdash \widetilde{e'} \Downarrow \widetilde{v}
+                 \widetilde{\rho} \vdash \widetilde{e'} \Downarrow \val
                }
                {
-                 \widetilde{\rho} \vdash \lcond{\mathcal{P}}{\widetilde{e}}{\widetilde{e_{1}}}{\widetilde{e_{2}}} \Downarrow \widetilde{v}
+                 \widetilde{\rho} \vdash \lcond{\mathcal{P}}{\widetilde{e}}{\widetilde{e_{1}}}{\widetilde{e_{2}}} \Downarrow \val
                }
                %\hspace{0.5cm}
                
@@ -781,15 +781,15 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
   \end{array}
   \]
   \\\\
-    \fbox{$\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho'}; \chi$}
+    \fbox{$\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho_1}; \crct$}
   \[
   \\
   \begin{array}{c}
     \inferrule*[lab={\footnotesize{S-DeclC}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \widetilde{v}\\\\
-                 \widetilde{v} = c \vee \widetilde{v} = [\overline{c_{i}}]_{n}\\\\
-                 \widetilde{\rho}_{1} = \widetilde{\rho}, x \mapsto \widetilde{v}
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \val\\\\
+                 \left(\val = c\right) \vee \left(\val = [\overline{c_{i}}]_{n}\right)\\\\
+                 \widetilde{\rho}_{1} = \widetilde{\rho}, x \mapsto \val
                }
                {
                  \widetilde{\rho} \vdash \tau\:x = \widetilde{e} \Downarrow \widetilde{\rho}_{1}; \cdot
@@ -799,22 +799,22 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 
     \inferrule*[lab={\footnotesize{S-DeclCkt}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \kappa\quad
-                 \mathsf{fresh}\:r\\\\
-                 \widetilde{\rho}_{1} = \widetilde{\rho}, x \mapsto r\quad
-                 \chi = \kw{bind}\:\kappa\:r
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \gate\quad
+                 \mathsf{fresh}\:\wire\\\\
+                 \widetilde{\rho}_{1} = \widetilde{\rho}, x \mapsto \wire\quad
+                 \crct = \kw{bind}\:\gate\:\wire
                }
                {
-                 \widetilde{\rho} \vdash \tau\:x = \widetilde{e} \Downarrow \widetilde{\rho}_{1}; \chi
+                 \widetilde{\rho} \vdash \tau\:x = \widetilde{e} \Downarrow \widetilde{\rho}_{1}; \crct
                }
 
 \\\\
     \inferrule*[lab={\footnotesize{S-DeclCktA}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow [\overline{\kappa_{i}}]_{n}\\\\
-                 \forall i \in \{0 \dots n - 1\}.\:\mathsf{fresh}\:r_{i}\\\\
-                 \widetilde{\rho}_{1} = \widetilde{\rho}, x \mapsto [r_{i}]_{n}\quad
-                 \chi = \overline{\kw{bind}\:\kappa_{i}\:r_{i}}
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow [\overline{\gate_{i}}]_{n}\\\\
+                 \forall i \in [n].\:\mathsf{fresh}\:\wire_{i}\\\\
+                 \widetilde{\rho}_{1} = \widetilde{\rho}, x \mapsto [\overline{\wire_{i}}]_{n}\quad
+                 \crct = \overline{\kw{bind}\:\gate_{i}\:\wire_{i}}
                }
                {
                  \widetilde{\rho} \vdash \tau\:x = \widetilde{e} \Downarrow \widetilde{\rho}_{1}; \chi
@@ -824,10 +824,10 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
                
     \inferrule*[lab={\footnotesize{S-Out}}]
                {
-                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \kappa
+                 \widetilde{\rho} \vdash \widetilde{e} \Downarrow \gate
                }
                {
-                 \widetilde{\rho} \vdash \kw{out}\:\widetilde{e} \Downarrow \widetilde{\rho}; \kw{out}\:\kappa
+                 \widetilde{\rho} \vdash \kw{out}\:\widetilde{e} \Downarrow \widetilde{\rho}; \kw{out}\:\gate
                }
 
                \\\\
@@ -836,25 +836,25 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
                  \widetilde{\rho} \vdash \widetilde{e} \Downarrow c\\\\
                  c = \top \Rightarrow \widetilde{s} = \widetilde{s_{1}}\\\\
                  c = \bot \Rightarrow \widetilde{s} = \widetilde{s_{2}}\\\\
-                 \widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}_{1}; \chi
+                 \widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}_{1}; \crct
                }
                {
-                 \widetilde{\rho} \vdash \ite{\widetilde{e}}{\widetilde{s_{1}}}{\widetilde{s_{2}}} \Downarrow \widetilde{\rho}_{1}; \chi
+                 \widetilde{\rho} \vdash \ite{\widetilde{e}}{\widetilde{s_{1}}}{\widetilde{s_{2}}} \Downarrow \widetilde{\rho}_{1}; \crct
                }
 
                \hspace{0.5cm}
                
     \inferrule*[lab={\footnotesize{S-WriteCkt}}]
                {
-                 \widetilde{\rho} \vdash x \Downarrow [\overline{r_{i}}]_{n}\quad
+                 \widetilde{\rho} \vdash x \Downarrow [\overline{\wire_{i}}]_{n}\quad
                  \widetilde{\rho} \vdash \widetilde{e_{1}} \Downarrow n_{1}\\\\
                  n_{1} < n\quad
-                 \mathsf{fresh}\:r\quad
-                 \widetilde{\rho} \vdash \widetilde{e_{2}} \Downarrow \kappa\\\\
-                 \widetilde{\rho}_{1} = \widetilde{\rho}[x \mapsto [\overline{r_{i}}]_{n}[n_{1} \mapsto r]]
+                 \mathsf{fresh}\:\wire\quad
+                 \widetilde{\rho} \vdash \widetilde{e_{2}} \Downarrow \gate\\\\
+                 \widetilde{\rho}_{1} = \widetilde{\rho}[x \mapsto ([\overline{\wire_{i}}]_{n}[n_{1} \mapsto \wire])]
                }
                {
-                 \widetilde{\rho} \vdash x[\widetilde{e_{1}}] := \widetilde{e_{2}} \Downarrow \widetilde{\rho}_{1}; \kw{bind}\:\kappa\:r
+                 \widetilde{\rho} \vdash x[\widetilde{e_{1}}] := \widetilde{e_{2}} \Downarrow \widetilde{\rho}_{1}; \kw{bind}\:\gate\:\wire
                }
 
 \end{array}
