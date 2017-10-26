@@ -7,8 +7,8 @@ makes calls to the ABY
 library~\cite{aby}. We use the default ABY configuration for our
 experiment \footnote{We set the security parameter to 128 and use OT
 extension-based arithmetic multiplication triples generation.}. ABY
-provides multi-threading support (for the offline phase of the
-protocol), we leverage the support and use at most four threads in our
+provides multi-threading support (for the offline phase of the \mpc
+protocol); we leverage the support and use at most four threads in our
 evaluation.
 
 Our current implementation supports the following operators:
@@ -33,14 +33,15 @@ this functionality in \tool as $\cond{x > 0}{A[1]}{A[0]}$. In general,
 a secret access to an array of
 size $2^n$ requires $2^{n}-1$ multiplexers in \tool.
 
-Secure code partitioning currently requires a manual step.
-In particular, the developer needs to decompose a program $P$ into
-$P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool
-generates $Q_1||\ldots||Q_k$ (the sub-programs with appropriate
-wrappers) automatically.
-Automating the decomposition step requires an analysis that can 
-statically estimate the resource usage of an \tool program. We leave
-the construction of such an analysis as future work.
+%Moved this to Section 4 since P_i and Q_i are ill defined here
+%Secure code partitioning currently requires a manual step.
+%In particular, the developer needs to decompose a program $P$ into
+%$P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool
+%generates $Q_1||\ldots||Q_k$ (the sub-programs with appropriate
+%wrappers) automatically.
+%Automating the decomposition step requires an analysis that can 
+%statically estimate the resource usage of an \tool program. We leave
+%the construction of such an analysis as future work.
 
 We use an off-the-shelf solver
 (SeaHorn~\cite{seahorn}) to bound check the array indices
@@ -62,11 +63,11 @@ We leave a more sophisticates type inference procedure for future work.
 The compilation rules of Figure~\ref{fig:compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.
-The \tool implementation performs several optimizations to reduce
-these coercions.
-For example, on each coercion, \tool memorizes the pair of arithmetic
+The \tool implementation performs  the standard ``common subexpression elimination"
+optimization to reduce these coercions.
+On each coercion, \tool memorizes the pair of arithmetic
 share and boolean share involved in the coercion. 
 \tool invalidates such pairs when the variables corresponding to the
 shares are overwritten by assignments. 
 In subsequent coercions, \tool  reuses valid pairs (if available)
-instead of recomputing them afresh.
+instead of inserting code to recompute them afresh. 
