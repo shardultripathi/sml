@@ -8,10 +8,7 @@
 
 \section{Formal development}
 \label{sec:ld}
-\TODO{Later, in implementation we can write that we use ABY for compiling intermediate to target also.}
 
-\TODO{Use mult op instead of add? arguments of using arithmetic are clearer there; though we also use arithmetic always for add also. Or write both in exp and write rule for mul; how about bit-wise And? shifts?
-Say that more exp written in implementation}
 
 
 %In this section we prove the correctness and security of our compiler.
@@ -876,10 +873,9 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 
 
 \divya{Start here...}
-\subsubsection*{Circuit semantics} The target semantics produces a
-circuit to compute over the secret data using an MPC protocol. \nc{We use 2PC and MPC interchangeably. I guess its fine?}With
-our circuit semantics, we model the \emph{functional} aspect of the
-protocol, parametrized by the sharing functions.
+\subsubsection*{Circuit semantics} Evaluating a program in the intermediate language produces a
+circuit over the secret data to be computed using an \mpc protocol in the distributed setting. With
+our circuit semantics, we model the \emph{functional} aspect of a \mpc protocol, parametrized by the sharing functions.
 
 During the circuit evaluation, the wire ranges $r$ are
 mapped to (random) strings $b$. The semantics of these strings is
