@@ -605,10 +605,8 @@ of our semantics.
 
 
 
-
-\aseem{The target semantics models the semantics of the code output by
-our compiler (C++ code in our implementation).}
-A program in the intermediate language is evaluated to a circuit that can be executed in the distributed setting later. The evaluation to a circuit computes over the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
+As mentioned earlier, the intermediate language models the code such as in \figureref{ex-aby} output by our compiler. 
+Next, a program in the intermediate language is evaluated to a circuit that can be executed in the distributed setting later. The evaluation to a circuit computes away the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
 Crucially, this phase of the semantics does not have access to the secrets.
 Below, we first provide the language for the circuits used followed by our evaluation rules.
 
@@ -618,7 +616,7 @@ Below, we first provide the language for the circuits used followed by our evalu
   \[
   \begin{array}{rrcl}
     \ftext{Wire id} & \wire &&\\
-    \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{add}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
+    \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{mult}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
     & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \bval \rhd m\\
     \ftext{Base value} & \bval & ::= & c \mid \gate\\
     \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
@@ -635,7 +633,7 @@ Below, we first provide the language for the circuits used followed by our evalu
 $\wire$ denotes a set of circuit wires that carry the value of a secret
 shared variable in the output circuit (we will concretely define these
 values later as part of the circuit semantics). Circuit gates $\gate$
-are $\wire$, input gates, \kw{add}, \kw{gt}, and \kw{mux} gates, and
+are $\wire$, input gates, \kw{mult}, \kw{gt}, and \kw{mux} gates, and
 coerce gates $\bval \rhd m$. \divya{Gates are not just gates but a circuit?} Target values $\val$
 then consist of base values $c$ and $\gate$, and arrays of base
 values. \\
