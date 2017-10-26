@@ -620,11 +620,11 @@ Below, we first provide the language for the circuits used followed by our evalu
     & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \bval \rhd m\\
     \ftext{Base value} & \bval & ::= & c \mid \gate\\
     \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
-    \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
+    %\ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
     \ftext{Circuit} & \crct & ::= & \cdot \mid \kw{bind}\:\gate\:\wire \mid \kw{out}\:\gate \mid \crct_{1}; \crct_{2}
   \end{array}
   \]
-\caption{Circuits   \divya{Is environ misplaced? Can we merge base value and circuit gate?}}
+\caption{Circuits   \divya{Can we merge base value and circuit gate?}}
 \label{fig:circuits}
 \end{figure}
 
@@ -638,59 +638,11 @@ coerce gates $\bval \rhd m$. \divya{Gates are not just gates but a circuit?} Tar
 then consist of base values $c$ and $\gate$, and arrays of base
 values. \\
 
-\divya{Start here....}
-\noindent\textbf{Evaluation to Circuit.} \figureref{eval-inter-circ} shows the judgments for the evaluation of the intermediate language to a circuit. We first focus on the expression evaluation judgment
-$\widetilde{\rho} \vdash \widetilde{e} \Downarrow
-\val$. 
-%
-Rules ({\sc{S-PAdd}}) and ({\sc{S-SAdd}}) illustrate
-the significance of the operator labels. In particular, the rule
-({\sc{S-PAdd}}) evaluates a public addition $\widetilde{e_{1}}
-+_{\mathcal{P}} \widetilde{e_{2}}$ to $n_{1} + n_{2}$, similar to the
-source language. In contrast, the rule
-({\sc{S-SAdd}}) evaluates a secret addition $\widetilde{e_{1}}
-+_{\mathcal{A}} \widetilde{e_{2}}$ to an arithmetic add
-gate $\kw{add}\:\kappa_{1}\:\kappa_{2}$. Foreshadowing on the
-compilation rules to be presented later, the target
-expressions from our compiler never have $\widetilde{e_{1}}
-+_{\mathcal{B}} \widetilde{e_{2}}$, as our compiler is aware that $+$
-is more performant using arithmetic circuit, rather than a boolean
-one. Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
-are along the similar lines. Rule ({\sc{S-PCond}}) evaluates a public
-conditional to the value from one of the branches, while the rule
-({\sc{S-SCond}}) evaluates to a \kw{mux} gate that takes input
-circuits from the conditional ($\kappa_{1}$) and both the branches
-($\kappa_{2}$ and $\kappa_{3}$). Once again for performance reasons,
-the target expressions from our compiler do not have
-$\lcond{\mathcal{A}}{e_{1}}{e_{2}}{e_{3}}$. Rules
-({\sc{S-Coerce}}) and ({\sc{S-Inp}}) evaluate to the coerce and input
-gates respectively.
-
-Statement evaluation $\widetilde{\rho} \vdash \widetilde{s} \Downarrow
-\widetilde{\rho}_{1}; \chi$ evaluates a target statement to produce a new
-environment $\widetilde{\rho}_{1}$, and a circuit $\chi$. $\chi$ (shown
-in Figure~\ref{fig:tgtlang}) is either empty, \kw{bind}-ing of a
-circuit gate $\kappa$ to range $r$, \kw{out} gate, or a sequence of
-circuits. Rules ({\sc{S-DeclC}}), ({\sc{S-DeclCkt}}), and
-({\sc{S-DeclCktA}}) show the variable declaration cases. Rule
-({\sc{S-DeclC}}) shows the case when $\widetilde{e}$ evaluates to
-$\widetilde{v}$, where $\widetilde{v}$ is either a constant or an
-array of constants. In this case, the mapping $x \mapsto
-\widetilde{v}$ is added to the environment, and the resulting circuit
-is empty. When 
-$\widetilde{e}$ evaluates to a circuit $\kappa$, rule
-({\sc{S-DeclCkt}}) picks a fresh $r$, adds the mapping $x \mapsto r$
-to the environment, and outputs the circuit
-$\kw{bind}\:\kappa\:r$. Rule ({\sc{S-DeclCktA}}) is analogous for
-$\widetilde{e}$ evaluating to an array of circuits. The variable
-assignment rules (not shown in the figure) are similar. Rule
-({\sc{S-WriteCkt}}) shows the case for writing to an array, where the
-array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
-\kw{out} circuit.
 
 
 
-\begin{figure}
+
+\begin{figure}[t]
   \small
   \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \val$}
   \[
@@ -863,6 +815,106 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 \label{fig:eval-inter-circ}
 \end{figure}
 
+\subsubsection*{Evaluation to Circuit} \figureref{eval-inter-circ} shows the judgments for the evaluation of the intermediate language to a circuit. 
+The runtime environment is defined as follows:
+
+\vspace{0.2cm}
+$
+\small
+\begin{array}{rrcl}
+    \ftext{Runtime environment} & \widetilde\rho &::=& \cdot \mid \rho,x \mapsto \val\\
+\end{array}
+$
+\vspace{0.2cm}
+
+We first focus on the expression evaluation judgment
+$\widetilde{\rho} \vdash \widetilde{e} \Downarrow\val$. 
+%
+Rules ({\sc{S-PMult}}) and ({\sc{S-SMult}}) illustrate
+the significance of the operator labels. In particular, the rule
+({\sc{S-PMult}}) evaluates a public multiplication $\widetilde{e_{1}}
+\mulop_{\mathcal{P}} \widetilde{e_{2}}$ to $n_{1} \mulop n_{2}$, similar to the
+source language. In contrast, the rule
+({\sc{S-SMult}}) evaluates a secret multiplication $\widetilde{e_{1}}
+\mulop_{\mathcal{A}} \widetilde{e_{2}}$ to an arithmetic multiplication
+gate $\kw{mult}\:\gate_{1}\:\gate_{2}$. As mentioned above, the intermediate language
+expressions generated by our compiler never have $\widetilde{e_{1}}
+\mulop_{\mathcal{B}} \widetilde{e_{2}}$, as our compiler is aware that $\mulop$
+is more performant using an arithmetic circuit compared to a boolean
+one. Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
+are along the similar lines. Rule ({\sc{S-PCond}}) evaluates a public
+conditional to the value from one of the branches, while the rule
+({\sc{S-SCond}}) evaluates to a \kw{mux} gate that takes input
+circuits from the guard ($\gate_{1}$) and both the branches
+($\gate_{2}$ and $\gate_{3}$). Once again for performance reasons,
+the target expressions from our compiler do not have
+$\lcond{\mathcal{A}}{e_{1}}{e_{2}}{e_{3}}$. Rules
+({\sc{S-Coerce}}) and ({\sc{S-Inp}}) evaluate to the coerce and input
+gates respectively.
+
+Statement evaluation $\widetilde{\rho} \vdash \widetilde{s} \Downarrow
+\widetilde{\rho}_{1}; \chi$ evaluates statements $\widetilde{s}$ to produce a new
+environment $\widetilde{\rho}_{1}$, and a circuit $\crct$. A circuit $\crct$ (shown
+in \figureref{circuits}) is either empty, \kw{bind}-ing of a
+circuit gate $\gate$ to wire $\wire$, \kw{out} gate, or a sequence of
+circuits. Rules ({\sc{S-DeclC}}), ({\sc{S-DeclCkt}}), and
+({\sc{S-DeclCktA}}) show the variable declaration cases. Rule
+({\sc{S-DeclC}}) shows the case when $\widetilde{e}$ evaluates to
+$\val$, where $\val$ is either a constant or an
+array of constants. In this case, the mapping $x \mapsto
+\val$ is added to the environment, and the resulting circuit
+is empty. When 
+$\widetilde{e}$ evaluates to a circuit $\gate$, rule
+({\sc{S-DeclCkt}}) picks a fresh wire $\wire$, adds the mapping $x \mapsto \wire$
+to the environment $\widetilde{\rho}$, and outputs the circuit
+$\kw{bind}\:\gate\:\wire$. Rule ({\sc{S-DeclCktA}}) is analogous for
+$\widetilde{e}$ evaluating to an array of circuits. The variable
+assignment rules (not shown in the figure) are similar. Rule
+({\sc{S-WriteCkt}}) shows the case for writing to an array, where the
+array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
+\kw{out} circuit.
+
+
+\divya{Start here...}
+\subsubsection*{Circuit semantics} The target semantics produces a
+circuit to compute over the secret data using an MPC protocol. \nc{We use 2PC and MPC interchangeably. I guess its fine?}With
+our circuit semantics, we model the \emph{functional} aspect of the
+protocol, parametrized by the sharing functions.
+
+During the circuit evaluation, the wire ranges $r$ are
+mapped to (random) strings $b$. The semantics of these strings is
+given by pairs of encryption-decryption functions\nc{perhaps call this encode-decode functions since its technically not encryption-decryption? In fact more appropriate might be share-reconstruct, but that would require changing notation so lets not do that.}, written as
+$\mathcal{E}_{m}$ and $\mathcal{D}_{m}$ (where $m$ is either
+$\mathcal{A}$ or $\mathcal{B}$). More concretely,
+$\mathcal{E}_{m}(c)$ returns a pair of two string $b_{1}$ and $b_{2}$
+(shares of the two parties), with the property that
+$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. We assume that the underlying MPC
+protocol instantiates $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$
+appropriately.
+
+The circuit semantics is shown in Figure~\ref{fig:cktsem} using the
+judgments $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \kappa
+\Downarrow b_{1}, b_{2}$, and $\widehat{\rho}_{1}, \widehat{\rho}_{2}
+\vdash \chi \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O$,
+where $\widehat{\rho}_{1}$ and $\widehat{\rho}_{2}$ are the circuit
+environments of the two parties, mapping wire ranges $r$ to strings
+$b$. Rule ({\sc{C-Add}}) evinces the pattern for evaluating circuit
+gates $\kappa$. To evaluate $\kw{add}\:\kappa_{1}\:\kappa_{2}$, the
+rule first evaluates $\kappa_{1}$ to $(b_{11}, b_{21})$ and
+$\kappa_{2}$ to $(b_{12}, b_{22})$. Shares $(b_{11}, b_{21})$ are then
+combined using $\mathcal{D_{\mathcal{A}}}$ to $n_{1}$, and similarly
+$(b_{12}, b_{22})$ are combined to $n_{2}$. The final output of the
+\kw{add} gate is then $\mathcal{E}_{\mathcal{A}}(n_{1} + n_{2})$. Note
+that this is a functional description of how the \kw{add} gate
+evaluates, of course, concretely $n_{1}$ and $n_{2}$ are not observed
+by the parties. Rule ({\sc{C-Coerce}}) re-encrypts the shares using the
+scheme for $m$. Coming to the evaluation of circuits, the evaluation
+of \kw{bind} updates the mapping of $r$ in the input environments, and
+the rule ({\sc{C-Out}}) outputs the clear value $c$ to the
+observations.
+
+
+
 
 \begin{figure}
   \small
@@ -966,43 +1018,6 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 \label{fig:cktsem}
 \end{figure}
 
-
-\subsubsection*{Circuit semantics} The target semantics produces a
-circuit to compute over the secret data using an MPC protocol. \nc{We use 2PC and MPC interchangeably. I guess its fine?}With
-our circuit semantics, we model the \emph{functional} aspect of the
-protocol, parametrized by the sharing functions.
-
-During the circuit evaluation, the wire ranges $r$ are
-mapped to (random) strings $b$. The semantics of these strings is
-given by pairs of encryption-decryption functions\nc{perhaps call this encode-decode functions since its technically not encryption-decryption? In fact more appropriate might be share-reconstruct, but that would require changing notation so lets not do that.}, written as
-$\mathcal{E}_{m}$ and $\mathcal{D}_{m}$ (where $m$ is either
-$\mathcal{A}$ or $\mathcal{B}$). More concretely,
-$\mathcal{E}_{m}(c)$ returns a pair of two string $b_{1}$ and $b_{2}$
-(shares of the two parties), with the property that
-$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. We assume that the underlying MPC
-protocol instantiates $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$
-appropriately.
-
-The circuit semantics is shown in Figure~\ref{fig:cktsem} using the
-judgments $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \kappa
-\Downarrow b_{1}, b_{2}$, and $\widehat{\rho}_{1}, \widehat{\rho}_{2}
-\vdash \chi \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O$,
-where $\widehat{\rho}_{1}$ and $\widehat{\rho}_{2}$ are the circuit
-environments of the two parties, mapping wire ranges $r$ to strings
-$b$. Rule ({\sc{C-Add}}) evinces the pattern for evaluating circuit
-gates $\kappa$. To evaluate $\kw{add}\:\kappa_{1}\:\kappa_{2}$, the
-rule first evaluates $\kappa_{1}$ to $(b_{11}, b_{21})$ and
-$\kappa_{2}$ to $(b_{12}, b_{22})$. Shares $(b_{11}, b_{21})$ are then
-combined using $\mathcal{D_{\mathcal{A}}}$ to $n_{1}$, and similarly
-$(b_{12}, b_{22})$ are combined to $n_{2}$. The final output of the
-\kw{add} gate is then $\mathcal{E}_{\mathcal{A}}(n_{1} + n_{2})$. Note
-that this is a functional description of how the \kw{add} gate
-evaluates, of course, concretely $n_{1}$ and $n_{2}$ are not observed
-by the parties. Rule ({\sc{C-Coerce}}) re-encrypts the shares using the
-scheme for $m$. Coming to the evaluation of circuits, the evaluation
-of \kw{bind} updates the mapping of $r$ in the input environments, and
-the rule ({\sc{C-Out}}) outputs the clear value $c$ to the
-observations.
 
 
 
