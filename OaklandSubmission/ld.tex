@@ -10,6 +10,9 @@
 \label{sec:ld}
 \TODO{Later, in implementation we can write that we use ABY for compiling intermediate to target also.}
 
+\TODO{Use mult op instead of add? arguments of using arithmetic are clearer there; though we also use arithmetic always for add also. Or write both in exp and write rule for mul; how about bit-wise And? shifts?
+Say that more exp written in implementation}
+
 
 %In this section we prove the correctness and security of our compiler.
 %%
@@ -63,7 +66,7 @@ We present only selected parts of our formalization for space
 reasons. Full definitions and proofs can be found \cite{anonymized}.
 
 
-\TODO{Do we want to write things in logical order or order in paper?}
+%\TODO{Do we want to write things in logical order or order in paper?}
 
 
 
@@ -74,7 +77,7 @@ reasons. Full definitions and proofs can be found \cite{anonymized}.
     \ftext{Base type} & \sigma &::=& \kw{uint} \mid \kw{bool}\\
     \ftext{Type} & \psi &::=& \sigma \mid \sigma[n]\\
     \ftext{Constant} & c &::=& n \mid \top \mid \bot\\
-    \ftext{Expression} & e &::=& c \mid x \mid e_{1} + e_{2} \mid e_{1} > e_{2} \mid \cond{e_{1}}{e_{2}}{e_{3}}\\
+    \ftext{Expression} & e &::=& c \mid x \mid e_{1} \mulop e_{2} \mid e_{1} > e_{2} \mid \cond{e_{1}}{e_{2}}{e_{3}}\\
     & &\mid& [\overline{e_{i}}]_{n} \mid x[e] \mid \kw{in}_{j}\\
     \ftext{Statement} & s &::=& \psi\:x = e \mid x := e \mid \for{x}{n_{1}}{n_{2}}{s}\\
     & & \mid& x[e_{1}] := e_{2} \mid \ite{e}{s_{1}}{s_{2}} \mid \kw{out}\:e \mid s_{1}; s_{2}\\
@@ -100,12 +103,12 @@ reasons. Full definitions and proofs can be found \cite{anonymized}.
                
                \hspace{0.1cm}
                
-    \inferrule*[lab={\footnotesize{E-Add}}]
+    \inferrule*[lab={\footnotesize{E-Mult}}]
                {
                  \forall i \in \{1, 2\}.\:\rho \vdash e_{i} \Downarrow n_{i}
                }
                {
-                 \rho \vdash e_{1} + e_{2} \Downarrow n_{1} + n_{2}
+                 \rho \vdash e_{1} \mulop e_{2} \Downarrow n_{1} \mulop n_{2}
                }
 
                \hspace{0.1cm}
@@ -224,14 +227,14 @@ reasons. Full definitions and proofs can be found \cite{anonymized}.
 \label{fig:srcsem}
 \end{figure}
 
-\subsubsection*{Source language}Our source language
-(\figureref{srclang}) is a simple imperative language. Types
+\subsubsection*{Source language} Our source language
+ is a simple imperative language. \divya{We present the core of our language in \figureref{srclang} but our implementation is more expressive (see \sectionref{impl}).} Types
 $\psi$ consist of the base types $\sigma$, and arrays
 of base types $\sigma[n]$, where $n$ is the array length. Though we
 model only one dimensional arrays, our implementation supports higher
 dimensional arrays as well. Expressions $e$ in the language include the
 integer constants $n$, \kw{bool} constants $\top$ and $\bot$,
-variables $x$, binary operations $e_{1} + e_{2}$ and $e_{1} > e_{2}$,
+variables $x$, binary operations $e_{1} \mulop e_{2}$ and $e_{1} > e_{2}$,
 conditionals $\cond{e}{e_{1}}{e_{2}}$, array literals 
 $[\overline{e_{i}}]_{n}$\footnote{We write $\overline{e}$ (and
   similarly for other symbols) to denote a sequence of expressions.
@@ -243,7 +246,7 @@ declarations and assignments ($\psi\:x = e$ and $x := e$ resp.),
 statements, and sequence of statements ($s_{1}; s_{2}$). The statement
 $\kw{out}\:e$ denotes revealing the value of $e$ to the
 parties. The \kw{while} statement is an internal syntax that is not
-exposed to the programmer.
+exposed to the programmer. \\
 
 \noindent\textbf{Source Semantics.} The runtime semantics for the source language is shown in
 \figureref{srcsem}. \TODO{Add something about claer text stand alone exec.} Values $v$, runtime environments $\rho$, and
@@ -267,8 +270,8 @@ constants.
 The judgment $\rho \vdash e \Downarrow v$ denotes the big-step
 evaluation of an expression~$e$ to a value~$v$ under the runtime
 environment~$\rho$. Rule ({\sc{E-Var}}) looks up the value of $x$ in
-the environment. Rule ({\sc{E-Add}}) inductively evaluates $e_{1}$ and
-$e_{2}$, and evaluates to their sum. Rule ({\sc{E-Read}})
+the environment. Rule ({\sc{E-Mult}}) inductively evaluates $e_{1}$ and
+$e_{2}$, and evaluates to their product. Rule ({\sc{E-Read}})
 evaluates an array read operation. It first evaluates $x$ to an array
 value $[\overline{c_{i}}]_{n_{1}}$, and $e$ to a \kw{uint} value
 $n$. It then returns $c_{n}$, the $n$-th index value in the array,
@@ -312,7 +315,7 @@ expression, and adds its value to the observations.
     \ftext{Secret label} & m &::=& \mathcal{A} \mid \mathcal{B}\\
     \ftext{Label} & \ell &::=& \mathcal{P} \mid m\\
     \ftext{Type} & \tau &::=& \sigma^{\ell} \mid \sigma^{\ell}[n]\\
-    \ftext{Expression} & \widetilde{e} &::=& c \mid x \mid \widetilde{e_{1}} +_{\ell} \widetilde{e_{2}} \mid \widetilde{e_{1}} >_{\ell} \widetilde{e_{2}} \\
+    \ftext{Expression} & \widetilde{e} &::=& c \mid x \mid \widetilde{e_{1}} \mulop_{\ell} \widetilde{e_{2}} \mid \widetilde{e_{1}} >_{\ell} \widetilde{e_{2}} \\
     & & \mid & \lcond{\ell}{{\widetilde{e}}}{{\widetilde{e_{1}}}}{{\widetilde{e_{2}}}} \mid x[\widetilde{e}] \mid [\overline{\widetilde{e_{i}}}]_{n} \mid \kw{in}^{m}_{j} \mid \widetilde{e} \rhd m\\
     \ftext{Statement} & \widetilde{s} &::=& \tau\:x = \widetilde{e} \mid x := \widetilde{e} \mid \dots \mid \widetilde{s_{1}}; \widetilde{s_{2}} \mid \dots\\
   \end{array}
@@ -324,22 +327,7 @@ expression, and adds its value to the observations.
 
 
 
-\begin{figure}
-  \small
-  \[
-  \begin{array}{rrcl}
-    \ftext{Wire id} & \wire &&\\
-    \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{add}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
-    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \bval \rhd m\\
-    \ftext{Base value} & \bval & ::= & c \mid \gate\\
-    \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
-    \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
-    \ftext{Circuit} & \crct & ::= & \cdot \mid \kw{bind}\:\gate\:\wire \mid \kw{out}\:\gate \mid \crct_{1}; \crct_{2}
-  \end{array}
-  \]
-\caption{Circuits   \divya{Is environ misplaced?}}
-\label{fig:circuits}
-\end{figure}
+
 
 
 
@@ -361,15 +349,286 @@ that the binary operators, and the conditional forms
 are annotated with label $\ell$, denoting how the operators should be
 evaluated ($\mathcal{P}$ for in-clear, and $\mathcal{A}$ and
 $\mathcal{B}$ for using arithmetic or boolean circuits resp.). The
-form $\widetilde{e} \rhd m$ denotes coercing \divya{the value of} $\widetilde{e}$ to be
+form $\widetilde{e} \rhd m$ denotes coercing the value of $\widetilde{e}$ to be
 $m$-secret shared. The statements $\widetilde{s}$ are analogous to
 $s$.
+
+
+
+\begin{figure}[t]
+  \small
+  \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}
+  \[
+  \begin{array}{c}
+     \inferrule*[lab={\footnotesize{T-Cons}}]
+               {
+                 \tau = \mathsf{typeof}(c)^{\mathcal{P}}
+               }
+               {
+                 \Gamma \vdash c : \tau \leadsto c 
+               }
+               
+                \inferrule*[lab={\footnotesize{T-Inp}}]
+               {
+               }
+               {
+                 \Gamma \vdash \kw{in}_{j} : \sigma^{m} \leadsto \kw{in}^{m}_{j}
+               }
+
+   
+
+    %% \inferrule*[lab={\footnotesize{T-Cons}}]
+    %%            {
+    %%              \tau = \mathsf{typeof}(c)^{\mathcal{P}}
+    %%            }
+    %%            {
+    %%              \Gamma \vdash c : \tau \leadsto c
+    %%            }
+
+    %%  \inferrule*[lab={\footnotesize{T-Var}}]
+    %%            {
+    %%            }
+    %%            {
+    %%              \Gamma \vdash x : \Gamma(x) \leadsto x
+    %%            }
+\\\\
+
+	  \inferrule*[lab={\footnotesize{T-Mult}}]
+               {
+                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e_{i}}\\\\
+                 \left(\ell = \mathcal{P}\right) \vee \left(\ell = \mathcal{A}\right)
+               }
+               {
+                 \Gamma \vdash e_{1} \mulop e_{2} : \kw{uint}^{\ell} \leadsto \widetilde{e_{1}} \mulop_{\ell} \widetilde{e_{2}}
+               }
+               
+     \inferrule*[lab={\footnotesize{T-Gt}}]
+               {
+                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e_{i}}\\\\
+                 \left(\ell = \mathcal{P}\right) \vee \left(\ell = \mathcal{B}\right)
+               }
+               {
+                 \Gamma \vdash e_{1} > e_{2} : \kw{bool}^{\ell} \leadsto \widetilde{e_{1}} >_{\ell} \widetilde{e_{2}}
+               }
+
+     
+\\\\               
+
+	\inferrule*[lab={\footnotesize{T-Read}}]
+               {
+                 \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
+                 \Gamma \vdash e : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e}\\\\
+                 \Gamma \models e < n
+               }
+               {
+                 \Gamma \vdash x[e] : \sigma^{\ell} \leadsto x[\widetilde{e}]
+               }
+
+
+     \inferrule*[lab={\footnotesize{T-Cond}}]
+               {
+                 \Gamma \vdash e : \kw{bool}^{\ell} \leadsto \widetilde{e}\\\\
+                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \sigma^{\ell'} \leadsto \widetilde{e_{i}}\\\\
+                 \ell = \mathcal{P} \vee (\ell = \mathcal{B} \wedge \ell' =\mathcal{B})
+               }
+               {
+                 \Gamma \vdash \cond{e}{e_{1}}{e_{2}} : \sigma^{\ell'} \leadsto \lcond{\ell}{\widetilde{e}}{\widetilde{e_{1}}}{\widetilde{e_{2}}}
+               }
+               
+\\\\               
+
+     \inferrule*[lab={\footnotesize{T-Arr}}]
+               {
+                 \forall i \in [n].\:\Gamma \vdash e_{i} : \sigma^{\ell} \leadsto \widetilde{e_{i}}
+               }
+               {
+                 \Gamma \vdash [\overline{e_{i}}]_{n} : \sigma^{\ell}[n] \leadsto [\overline{\widetilde{e_{i}}}]_{n}
+               }
+
+     \inferrule*[lab={\footnotesize{T-Sub}}]
+               {
+                 \Gamma \vdash e : \sigma^{\ell} \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash e : \sigma^{m} \leadsto \widetilde{e} \rhd m
+               }
+
+  \end{array}
+  \]
+  \\\\
+    \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$}
+  \[
+  \\
+  \begin{array}{c}
+     \inferrule*[lab={\footnotesize{T-Decl}}]
+               {
+                 \tau = \psi^\ell \\\\
+                 \Gamma \vdash e : \tau \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash \psi\:x = e \leadsto \tau\:x = \widetilde{e} \mid \Gamma, x:\tau
+               }
+
+     \inferrule*[lab={\footnotesize{T-Assgn}}]
+               {
+                 \Gamma(x) = \sigma^{\ell}\\\\
+                 \Gamma \vdash e : \sigma^{\ell} \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash x := e \leadsto x = \widetilde{e} \mid \Gamma
+               }
+
+\\\\
+
+     \inferrule*[lab={\footnotesize{T-For}}]
+               {
+                 \Gamma, x:\kw{uint}^{\mathcal{P}} \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \_
+               }
+               {
+                 \Gamma \vdash \for{x}{n_{1}}{n_{2}}{s} \leadsto \for{x}{n_{1}}{n_{2}}{\widetilde{s}} \mid \Gamma
+               }
+
+               \\\\
+
+     \inferrule*[lab={\footnotesize{T-Write}}]
+               {
+                 \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
+                 \Gamma \vdash e_{1} : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e_{1}}\\\\
+                 \Gamma \vdash e_{2} : \sigma^{\ell} \leadsto \widetilde{e_{2}}\\\\
+                 \Gamma \models e_{1} < n
+               }
+               {
+                 \Gamma \vdash x[e_{1}] := e_{2} \leadsto x[\widetilde{e_{1}}] := \widetilde{e_{2}} \mid \Gamma
+               }
+
+     \inferrule*[lab={\footnotesize{T-Out}}]
+               {
+                 \Gamma \vdash e : \sigma^{m} \leadsto \widetilde{e}
+               }
+               {
+                 \Gamma \vdash \kw{out}\:e \leadsto \kw{out}\:\widetilde{e} \mid \Gamma
+               }
+
+\\\\
+
+     \inferrule*[lab={\footnotesize{T-If}}]
+               {
+                 \Gamma \vdash e : \kw{bool}^{\mathcal{P}} \leadsto \widetilde{e}\\\\
+                 \forall i \in \{1, 2\}.\:\Gamma \vdash s_{i} \leadsto \widetilde{s_{i}} \mid \_
+               }
+               {
+                 \Gamma \vdash \ite{e}{s_{1}}{s_{2}} \leadsto \ite{\widetilde{e}}{\widetilde{s_{1}}}{\widetilde{s_{2}}}  \mid \Gamma
+               }
+
+     \inferrule*[lab={\footnotesize{T-Seq}}]
+               {
+                 \Gamma \vdash s_{1} \leadsto \widetilde{s_{1}} \mid \Gamma_{1}\\\\
+                 \Gamma_{1} \vdash s_{2} \leadsto \widetilde{s_{2}} \mid \Gamma_{2}
+               }
+               {
+                 \Gamma \vdash s_{1}; s_{2} \leadsto \widetilde{s_{1}}; \widetilde{s_{2}} \mid \Gamma_{2}
+               }
+
+\\\\
+
+     \inferrule*[lab={\footnotesize{T-While}}]
+               {                 
+                 \Gamma(x) = \kw{uint}^{\mathcal{P}}\quad
+                 \Gamma \vdash s \leadsto \widetilde{s} \mid \_\quad
+                 x \notin \mathsf{modifies}(s)
+               }
+               {
+                 \Gamma \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \Gamma
+               }
+
+  \end{array}
+  \]
+\caption{Compilation judgments (selected rules)}
+\label{fig:compile}
+\end{figure}
+
+\subsubsection*{Source to Intermediate Compilation judgments} We provide the compilation
+rules in \figureref{compile}. \divya{PL jargon?} We present the rules in a
+declarative style, where the rules are non-syntax
+directed, and the labels $\ell$ are chosen
+non-deterministically. \sectionref{impl} describes the label  inference
+scheme in our implementation.
+
+Judgment $\Gamma \vdash e : \tau \leadsto \widetilde{e}$, where
+$\Gamma$ maps variables $x$ to types $\tau$, says that
+under $\Gamma$, $e$ (in source language) compiles to $\widetilde{e}$ (in intermediate language) with type $\tau$.
+
+The rule ({\sc{T-Cons}}) assigns the label $\mathcal{P}$ to the
+constants, as the constants are always public. Rule ({\sc{T-Mult}})
+compiles a multiplication to either a public multiplication  ($\mulop_{\mathcal{P}}$), or a
+secret arithmetic multiplication ($\mulop_{\mathcal{A}}$). As
+our compiler is cryptographic cost aware, it never compiles the
+multiplication to boolean multiplication $\mulop_{\mathcal{B}}$. In a similar manner,
+rule ({\sc{T-Gt}}) compiles $e_{1} > e_{2}$ to either public comparison,
+or secret boolean comparison. The rule for conditional
+({\sc{T-Cond}}) has two cases: when the conditional expression $e$ is of
+type $\kw{bool}^{\mathcal{P}}$, both the branches have a base type
+$\sigma^{\ell'}$, for an arbitrary $\ell'$, and the conditional is
+compiled to a public conditional, whereas when the conditional
+expression has type $\kw{bool}^{\mathcal{B}}$, $\ell'$ is also
+$\mathcal{B}$, and the conditional is compiled to a secret conditional
+using a boolean circuit. Note that we restrict the type of the branches
+to be of base type. 
+Rule ({\sc{T-Read}}) type checks an array read. It checks
+that the array index $e$ is public, and uses a static bounds checking
+judgment $\Gamma \models e < n$ to prove that the array index is in
+bounds. Section~\ref{sec:impl} discusses our implementation of bounds
+checking. Rule ({\sc{T-Inp}}) picks a label $m$ for the input. Finally,
+rule ({\sc{T-Sub}}) is the subsumption rule that coerces an expression of
+type $\sigma^{\ell}$ to an expression of type $\sigma^{m}$ using the
+coerce expression. It is important for security that the secrets cannot be coerced to public
+values.
+
+Judgment $\Gamma \vdash s : \tau \leadsto \widetilde{s} \mid \Gamma_{1}$
+compiles a statement $s$ resulting in the statement $\widetilde{s}$
+and type environment $\Gamma_{1}$. Rule ({\sc{T-Decl}}) picks a label
+$\ell$, and adds the binding for $x$ to the environment. If $\psi = \sigma$, $\psi^\ell = \sigma^\ell$, else if $\psi = \sigma[n]$, $\psi^\ell = \sigma^\ell[n]$. 
+Rule ({\sc{T-Assign}}) looks up the type of $x$ in $\Gamma$ and compiles $e$ to $\tilde{e}$ of same type.
+Note that in this rule we restrict the type of variable $x$ to be of base type.
+Rule ({\sc{T-For}}) adds the loop counter $x$ to $\Gamma$ at type
+$\kw{uint}^{\mathcal{P}}$, and delegates type checking to the
+\kw{while} form. The rule ({\sc{T-Write}}), similar to ({\sc{T-Read}}),
+checks that the index has type $\kw{uint}^{\mathcal{P}}$, and is in
+bounds. Rule ({\sc{T-Out}})
+types the expression $e$ at some secret label $m$. Rule ({\sc{T-If}})
+checks that the conditional expression is public, and rule
+({\sc{T-Seq}}) sequences the type environments. Finally, the typing
+rule for the (internal) \kw{while} form ensures that $x$ is mapped in
+$\Gamma$ at type $\kw{uint}^{\mathcal{P}}$, and that $x \notin
+\mathsf{modifies}(s)$--this is necessary for ensuring the termination
+of our semantics.
+
+
+
 
 \aseem{The target semantics models the semantics of the code output by
 our compiler (C++ code in our implementation).}
 A program in the intermediate language is evaluated to a circuit that can be executed in the distributed setting later. The evaluation to a circuit computes over the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
 Crucially, this phase of the semantics does not have access to the secrets.
 Below, we first provide the language for the circuits used followed by our evaluation rules.
+
+
+\begin{figure}
+  \small
+  \[
+  \begin{array}{rrcl}
+    \ftext{Wire id} & \wire &&\\
+    \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{add}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
+    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \bval \rhd m\\
+    \ftext{Base value} & \bval & ::= & c \mid \gate\\
+    \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
+    \ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
+    \ftext{Circuit} & \crct & ::= & \cdot \mid \kw{bind}\:\gate\:\wire \mid \kw{out}\:\gate \mid \crct_{1}; \crct_{2}
+  \end{array}
+  \]
+\caption{Circuits   \divya{Is environ misplaced? Can we merge base value and circuit gate?}}
+\label{fig:circuits}
+\end{figure}
 
 \subsubsection*{Circuits}
 \figureref{circuits} shows the circuits syntax. A wire id range
@@ -747,246 +1006,7 @@ of \kw{bind} updates the mapping of $r$ in the input environments, and
 the rule ({\sc{C-Out}}) outputs the clear value $c$ to the
 observations.
 
-\begin{figure}
-  \small
-  \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}
-  \[
-  \begin{array}{c}
-     \inferrule*[lab={\footnotesize{T-Cons}}]
-               {
-                 \tau = \mathsf{typeof}(c)^{\mathcal{P}}
-               }
-               {
-                 \Gamma \vdash c : \tau \leadsto c 
-               }
 
-     \inferrule*[lab={\footnotesize{T-Add}}]
-               {
-                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e_{i}}\\\\
-                 \ell = \mathcal{P} \vee \ell = \mathcal{A}
-               }
-               {
-                 \Gamma \vdash e_{1} + e_{2} : \kw{uint}^{\ell} \leadsto \widetilde{e_{1}} +_{\ell} \widetilde{e_{2}}
-               }
-
-    %% \inferrule*[lab={\footnotesize{T-Cons}}]
-    %%            {
-    %%              \tau = \mathsf{typeof}(c)^{\mathcal{P}}
-    %%            }
-    %%            {
-    %%              \Gamma \vdash c : \tau \leadsto c
-    %%            }
-
-    %%  \inferrule*[lab={\footnotesize{T-Var}}]
-    %%            {
-    %%            }
-    %%            {
-    %%              \Gamma \vdash x : \Gamma(x) \leadsto x
-    %%            }
-\\\\
-     \inferrule*[lab={\footnotesize{T-Gt}}]
-               {
-                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e_{i}}\\\\
-                 \ell = \mathcal{P} \vee \ell = \mathcal{B}
-               }
-               {
-                 \Gamma \vdash e_{1} > e_{2} : \kw{bool}^{\ell} \leadsto \widetilde{e_{1}} >_{\ell} \widetilde{e_{2}}
-               }
-
-     \inferrule*[lab={\footnotesize{T-Read}}]
-               {
-                 \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
-                 \Gamma \vdash e : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e}\\\\
-                 \Gamma \models e < n
-               }
-               {
-                 \Gamma \vdash x[e] : \sigma^{\ell} \leadsto x[\widetilde{e}]
-               }
-
-\\\\               
-
-     \inferrule*[lab={\footnotesize{T-Cond}}]
-               {
-                 \Gamma \vdash e : \kw{bool}^{\ell} \leadsto \widetilde{e}\\\\
-                 \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \sigma^{\ell_{1}} \leadsto \widetilde{e_{i}}\\\\
-                 \ell = \mathcal{P} \vee (\ell = \mathcal{B} \wedge \ell' =\mathcal{B})
-               }
-               {
-                 \Gamma \vdash \cond{e}{e_{1}}{e_{2}} : \sigma^{\ell_{1}} \leadsto \lcond{\ell}{\widetilde{e}}{\widetilde{e_{1}}}{\widetilde{e_{2}}}
-               }
-
-     \inferrule*[lab={\footnotesize{T-Inp}}]
-               {
-               }
-               {
-                 \Gamma \vdash \kw{in}_{j} : \sigma^{m} \leadsto \kw{in}^{m}_{j}
-               }
-               
-\\\\               
-
-     \inferrule*[lab={\footnotesize{T-Arr}}]
-               {
-                 \forall i \in \{0 \dots n - 1\}.\:\Gamma \vdash e_{i} : \sigma^{\ell} \leadsto \widetilde{e_{i}}
-               }
-               {
-                 \Gamma \vdash [\overline{e_{i}}]_{n} : \sigma^{\ell}[n] \leadsto [\overline{\widetilde{e_{i}}}]_{n}
-               }
-
-     \inferrule*[lab={\footnotesize{T-Sub}}]
-               {
-                 \Gamma \vdash e : \sigma^{\ell} \leadsto \widetilde{e}
-               }
-               {
-                 \Gamma \vdash e : \sigma^{m} \leadsto \widetilde{e} \rhd m
-               }
-
-  \end{array}
-  \]
-  \\\\
-    \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$}
-  \[
-  \\
-  \begin{array}{c}
-     \inferrule*[lab={\footnotesize{T-Decl}}]
-               {
-                 \psi = \sigma \Rightarrow \tau = \sigma^{\ell}\\\\
-                 \psi = \sigma[n] \Rightarrow \tau = \sigma^{\ell}[n]\\\\
-                 \Gamma \vdash e : \tau \leadsto \widetilde{e}
-               }
-               {
-                 \Gamma \vdash \psi\:x = e \leadsto \tau\:x = \widetilde{e} \mid \Gamma, x:\tau
-               }
-
-     \inferrule*[lab={\footnotesize{T-Assgn}}]
-               {
-                 \Gamma(x) = \sigma^{\ell}\\\\
-                 \Gamma \vdash e : \sigma^{\ell} \leadsto \widetilde{e}
-               }
-               {
-                 \Gamma \vdash x := e \leadsto x = \widetilde{e} \mid \Gamma
-               }
-
-\\\\
-
-     \inferrule*[lab={\footnotesize{T-For}}]
-               {
-                 \Gamma, x:\kw{uint}^{\mathcal{P}} \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \_
-               }
-               {
-                 \Gamma \vdash \for{x}{n_{1}}{n_{2}}{s} \leadsto \for{x}{n_{1}}{n_{2}}{\widetilde{s}} \mid \Gamma
-               }
-
-               \\\\
-
-     \inferrule*[lab={\footnotesize{T-Write}}]
-               {
-                 \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
-                 \Gamma \vdash e_{1} : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e_{1}}\\\\
-                 \Gamma \vdash e_{2} : \sigma^{\ell} \leadsto \widetilde{e_{2}}\\\\
-                 \Gamma \models e_{1} < n
-               }
-               {
-                 \Gamma \vdash x[e_{1}] := e_{2} \leadsto x[\widetilde{e_{1}}] := \widetilde{e_{2}} \mid \Gamma
-               }
-
-     \inferrule*[lab={\footnotesize{T-Out}}]
-               {
-                 \Gamma \vdash e : \sigma^{m} \leadsto \widetilde{e}
-               }
-               {
-                 \Gamma \vdash \kw{out}\:e \leadsto \kw{out}\:\widetilde{e} \mid \Gamma
-               }
-
-\\\\
-
-     \inferrule*[lab={\footnotesize{T-If}}]
-               {
-                 \Gamma \vdash e : \kw{bool}^{\mathcal{P}} \leadsto \widetilde{e}\\\\
-                 \forall i \in \{1, 2\}.\:\Gamma \vdash s_{i} \leadsto \widetilde{s_{i}} \mid \_
-               }
-               {
-                 \Gamma \vdash \ite{e}{s_{1}}{s_{2}} \leadsto \ite{\widetilde{e}}{\widetilde{s_{1}}}{\widetilde{s_{2}}}  \mid \Gamma
-               }
-
-     \inferrule*[lab={\footnotesize{T-Seq}}]
-               {
-                 \Gamma \vdash s_{1} \leadsto \widetilde{s_{1}} \mid \Gamma_{1}\\\\
-                 \Gamma_{1} \vdash s_{2} \leadsto \widetilde{s_{2}} \mid \Gamma_{2}
-               }
-               {
-                 \Gamma \vdash s_{1}; s_{2} \leadsto \widetilde{s_{1}}; \widetilde{s_{2}} \mid \Gamma_{2}
-               }
-
-\\\\
-
-     \inferrule*[lab={\footnotesize{T-While}}]
-               {                 
-                 \Gamma(x) = \kw{uint}^{\mathcal{P}}\quad
-                 \Gamma \vdash s \leadsto \widetilde{s} \mid \_\quad
-                 x \notin \mathsf{modifies}(s)
-               }
-               {
-                 \Gamma \vdash \loops{x}{n_{2}}{s} \leadsto \loops{x}{n_{2}}{\widetilde{s}} \mid \Gamma
-               }
-
-  \end{array}
-  \]
-\caption{Compilation judgments (selected rules)}
-\label{fig:compile}
-\end{figure}
-
-\subsubsection*{Compilation judgments} We now come to the compilation
-rules shown in Figure~\ref{fig:compile}. We present the rules in a
-declarative style, where the rules are non-syntax
-directed, and the labels $\ell$ are chosen
-non-deterministically. Section~\ref{sec:impl} describes the inference
-scheme in our implementation.
-
-Judgment $\Gamma \vdash e : \tau \leadsto \widetilde{e}$, where
-$\Gamma$ maps variables $x$ to types $\tau$, says that
-under $\Gamma$, $e$ compiles to $\widetilde{e}$ with type $\tau$.
-
-The rule ({\sc{T-Cons}}) assigns the label $\mathcal{P}$ to the
-constants, as the constants are always public. Rule ({\sc{T-Add}})
-compiles an addition to either public addition ($+_{\mathcal{P}}$), or
-secret addition using an arithmetic circuit ($+_{\mathcal{A}}$). As
-our compiler is cryptographic cost aware, it never compiles the
-addition to boolean addition $+_{\mathcal{B}}$. In a similar manner,
-rule ({\sc{T-Gt}}) compiles $e_{1} > e_{2}$ to either public comparison,
-or secret comparison using boolean circuits. The rule for conditional
-({\sc{T-Cond}}) has two cases: when the conditional expression $e$ is of
-type $\kw{bool}^{\mathcal{P}}$, both the branches have a base type
-$\sigma^{\ell_{1}}$, for an arbitrary $\ell_{1}$, and the conditional is
-compiled to public conditional, whereas when the conditional
-expression has type $\kw{bool}^{\mathcal{B}}$, $\ell_{1}$ is also
-$\mathcal{B}$, and the conditional is compiled to a secret conditional
-using a boolean circuit. Note that we restrict the type of the branches
-to be of base type. Rule ({\sc{T-Read}}) types an array read. It checks
-that the array index $e$ is public, and uses a static bounds checking
-judgment $\Gamma \models e < n$ to prove that the array index is in
-bounds. Section~\ref{sec:impl} discusses our implementation of bounds
-checking. Rule ({\sc{T-Inp}}) picks a label $m$ for the input. Finally,
-rule ({\sc{T-Sub}}) is the subsumption rule that coerces an expression of
-type $\sigma^{\ell}$ to an expression of type $\sigma^{m}$ using the
-coerce expression. Importantly, secrets cannot be coerced to public
-values.
-
-Judgment $\Gamma \vdash s : \tau \leadsto \widetilde{s} \mid \Gamma_{1}$
-compiles a statement $s$ resulting in the statement $\widetilde{s}$
-and type environment $\Gamma_{1}$. Rule ({\sc{T-Decl}}) picks a label
-$\ell$, and adds the binding for $x$ to the environment. Rule
-({\sc{T-For}}) adds the loop counter $x$ to $\Gamma$ at type
-$\kw{uint}^{\mathcal{P}}$, and delegates type checking to the
-\kw{while} form. The rule ({\sc{T-Write}}), similar to ({\sc{T-Read}}),
-checks that the index has type $\kw{uint}^{\mathcal{P}}$, and is in
-bounds. Rule ({\sc{T-Out}})
-types the expression $e$ at some secret label $m$. Rule ({\sc{T-If}})
-checks that the conditional expression is public, and rule
-({\sc{T-Seq}}) sequences the type environments. Finally, the typing
-rule for the (internal) \kw{while} form ensures that $x$ is mapped in
-$\Gamma$ at type $\kw{uint}^{\mathcal{P}}$, and that $x \notin
-\mathsf{modifies}(s)$--this is necessary for ensuring the termination
-of our semantics.
 
 \subsubsection*{Correctness theorem} We first define a judgment for
 translation of environments, $\Gamma \vdash \rho \leadsto
