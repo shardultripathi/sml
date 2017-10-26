@@ -48,7 +48,8 @@ We use an off-the-shelf solver
 in ({\sc {T-Read}}) and ({\sc{T-Write}})),
 Figure~\ref{fig:compile}). We take the \tool source program and
 translate it as an input to the solver. The solver takes less
-than a minute on our largest benchmark.
+than a minute on our largest benchmark to verify that all the array
+accesses are in-bounds.
 
 Our implementation assigns the type labels (rule~{\sc{T-Decl}})
 conservatively. Only the variables that govern the control flow, i.e.,
