@@ -1,46 +1,75 @@
 \section{Implementation}
 \label{sec:impl}
 The  \tool compiler is written in Python and
-compiles each of our benchmarks in under a second to C++ code that makes calls to the ABY
-library~\cite{aby}. We set the security paramenter to 128 and use OT extension-based arithmetic multiplication triples generation. ABY provides facilities to use multiple threads\footnote{The protocol has an offline phase and an online phase. Although multiple threads can be used in the offline phase, the online phase is single threaded.} and we use at most four threads in our evaluation.
+compiles each of our benchmarks in under a second to C++ code that
+makes calls to the ABY
+library~\cite{aby}. We use the default ABY configuration for our
+experiment \footnote{We set the security parameter to 128 and use OT
+extension-based arithmetic multiplication triples generation.}. ABY
+provides multi-threading support (for the offline phase of the
+protocol), we leverage the support and use at most four threads in our
+evaluation.
 
-The current language implementation supports the following operators:
-addition, subtraction, multiplication, division by powers of two, left shift,
-logical and arithmetic right shifts, bitwise-(and, or, xor), unary negation,
-bitwise-negation, logical-(not, and, or, xor), and comparisons (less than, greater than, equality).
-Because of their high cost, integral division and floating-point operators are not supported natively by \tool.
-However, we have implemented integral division in 30 lines of \tool and floating-point support in
-ABY is under active development~\cite{ddkssz15}.
+Our current implementation supports the following operators:
+addition, subtraction, multiplication, division by powers of two, left
+shift,
+logical and arithmetic right shifts, bitwise-(and, or, xor), unary
+negation, 
+bitwise-negation, logical-(not, and, or, xor), and comparisons (less
+than, greater than, equality). 
+Because of their high cost, integral division and floating-point
+operators are not supported natively by \tool. 
+However, we have implemented integral division in 30 lines of \tool,
+while the floating-point support in ABY is under active
+development~\cite{ddkssz15}.
 
 
-Some of our benchamrks require accessing arrays at secret location.
-For example, consider the expression $A[x]$ where $A$ is an array of size 2 and $x$ is shared.
-\tool enforces the array indices to be public. The developer expresses this functionality in \tool
-as $x > 0 ? A[1] : A[0]$. In general, a secret access to an array of size $2^n$ requires $2^{n}-1$ multiplexers in \tool.
+Some of our benchamrks require accessing arrays at secret
+indices. While \tool enforces the array indices to be
+public, secret indices can be encoded in \tool using multiplexers.
+For example, consider the expression $A[x]$ where $A$ is an array of
+size 2 and $x$ is secret-shared. The developer can expresse
+this functionality in \tool as $\cond{x > 0}{A[1]}{A[0]}$. In general,
+a secret access to an array of
+size $2^n$ requires $2^{n}-1$ multiplexers in \tool.
 
  Secure code partitioning currently requires a manual step.
-In particular, the developer needs to decompose a program $P$ into $P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool generates $Q_1||\ldots||Q_k$ automatically.
+In particular, the developer needs to decompose a program $P$ into
+$P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool
+generates $Q_1||\ldots||Q_k$ (the sub-programs with appropriate
+wrappers) automatically.
 Automating the decomposition step requires an analysis that can 
-statically estimate the resource usage of a \tool program and we leave the construction of such
-an analysis as future work.
+statically estimate the resource usage of an \tool program. We leave
+the construction of such an analysis as future work.
 
 We use an off-the-shelf solver
-(SeaHorn~\cite{seahorn}) to check the verification conditions required
-to prove that the array indices remain in bound ($\Gamma\vDash e < n$ in {\sc T-Read}, Figure~\ref{fig:compile}). The solver takes less
+(SeaHorn~\cite{seahorn}) to bound check the array indices
+($\Gamma\vDash e < n$
+in ({\sc {T-Read}}) and ({\sc{T-Write}})),
+Figure~\ref{fig:compile}). We take the \tool source program and
+translate it as an input to the solver. The solver takes less
 than a minute on our largest benchmark.
-The type label is assigned conservatively in  {\sc T-Decl}.
-Only the variables that govern the control flow, i.e., variables
-in if-conditions and for-loops are assigned public labels.
-All other variables are assigned arithmetic labels (and can later be coerced to boolean).
-In the future, we would like to explore more intelligent strategies for label assignment.
+
+Our implementation assigns the type labels (rule~{\sc{T-Decl}})
+conservatively. Only the variables that govern the control flow, i.e.,
+variables in \kw{if}-conditions and \kw{for}-loop counters are
+assigned public labels.
+All other variables are assigned arithmetic labels (that can later be
+coerced to boolean).
+We leave a more sophisticates type inference procedure for future work.
 
 
-The compilation rules of Figure~\ref{fig:compile} can introduce redundant coercions from arithmetic to
-boolean  and vice versa.
-The \tool compiler performs several optimizations to reduce these.
-For example, on each coercion, \tool memorizes the pair of arithmetic share and boolean share involved in the coercion.
-\tool invalidates such pairs when the variables corresponding to the shares are overwritten by assignments.
-In subsequent coercions, \tool  reuses valid pairs (if available) instead of recomputing them afresh. 
+The compilation rules of Figure~\ref{fig:compile} can introduce
+repeated coercions from arithmetic to
+boolean and vice versa.
+The \tool implementation performs several optimizations to reduce
+these coercions.
+For example, on each coercion, \tool memorizes the pair of arithmetic
+share and boolean share involved in the coercion. 
+\tool invalidates such pairs when the variables corresponding to the
+shares are overwritten by assignments. 
+In subsequent coercions, \tool  reuses valid pairs (if available)
+instead of recomputing them afresh.
 
 \divya{
 \begin{enumerate}
