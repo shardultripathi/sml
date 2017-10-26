@@ -18,7 +18,7 @@ The third  stage is similar to the first stage. The results are presented in Tab
 
 \begin{table}
 \begin{tabular}{c|c|c|c |c|c| c}
-  Stage         &  LAN (s) & WAN (s) & Comm. (Mb)  & depth & \#Gates & LOC\\
+  Stage         &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & depth & \#Gates & LOC\\
 \hline
 1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
 \hline
@@ -38,7 +38,7 @@ setting we are about 4 times faster. The main source of these significant speedu
 However, this benchmark requires more lines of code than the previous benchmarks.
 It is inconvinient to write Batcher's sort in an iterative language (about 450 lines of \tool).
 The size of a recursive implementation would be much slower.
-In the future, we would like to add support for functions and recursion.
+In the future, we would like to add support for functions and recursion. \nc{Should we say this in the implementation section or something and not bring it up in the experiments section? Also, do reviewers sometimes say ``Why didnt you do that also?'' Anyway to prevent that?}
 However, the current programmer effort seems miniscule compared to the mammoth implementation effort
 put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuit based
 crypto-backend to this benchmark.
