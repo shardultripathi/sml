@@ -3,13 +3,13 @@
 To demonstrate the expressiveness of \tool, we use it to implement secure matrix factorization~\cite{valeriaMatrix}. Abstractly, given a sparse matrix $\mathcal{M}$ of dimensions
 $n\times m$ and $M$ non-zero entries, the goal is to generate a matrix $U$ of dimension $n\times d$ and a matrix
 $V$ of dimension $d\times m$ such that $\mathcal{M}\approx UV$. This operator is useful in recommender systems.
-In particular, Nikolaenko et al.~\cite{valeriaMatrix} shows how to implement a movie recommender system which does not require users to reveal their data in the clear, i.e., the ratings the users have assigned to movies. The implementation is a two party computation of an iterative algorithm for matrix factorization (Algorithm 1 in~\cite{valeriaMatrix}).
+In particular, Nikolaenko et al.~\cite{valeriaMatrix} shows how to implement a movie recommender system which does not require users to reveal their data in the clear, i.e., the ratings the users have assigned to movies are kept secret. The implementation is a two party computation of an iterative algorithm for matrix factorization (Algorithm~1 in~\cite{valeriaMatrix}).
 This algorithm is based on gradient descent and iteratively converges to a local minima.
 We implement this algorithm in \tool.
   
 To ensure that the algorithm converges to the right local minima, Nikolaenko et al. require
 36 bits of precision. Since ABY supports either 32-bit or 64-bit integers, our \tool implementation
-manipulates 64-bit variables. For $\mathcal{M}$ Nikolaenko et al. consider $n=940$ users, $m=40$ most popular movies, and $M=14683$ ratings from the MovieLens dataset. The time reported in~\cite{valeriaMatrix}
+manipulates 64-bit variables. For the matrix $\mathcal{M}$ of  user data, Nikolaenko et al. consider $n=940$ users, $m=40$ most popular movies, and $M=14683$ ratings from the MovieLens dataset. The time reported in~\cite{valeriaMatrix}
 for one iteration is 2.9 hours\footnote{~\cite{valeriaMatrix} does not report the network round-trip time.}. This compuation is large enough that we partition each iteration
 into three stages. The first stage involves a Batcher~\cite{Batcher} sorting network followed by a linear pass.
 The second stage involves sorting and gradient computations and is the heaviest stage.
@@ -18,7 +18,7 @@ The third  stage is similar to the first stage. The results are presented in Tab
 
 \begin{table}
 \begin{tabular}{c|c|c|c |c|c| c}
-  Stage         &  LAN (s) & WAN (s) & Comm. (Mb)  & depth & \#Gates & LOC\\
+  Stage         &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & depth & \#Gates & LOC\\
 \hline
 1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
 \hline
@@ -35,10 +35,8 @@ Total    &  546      & 2384        & 91571        & --    & 102m & 1494 \\
 
 We observe that in the LAN setting, we are about 19 times faster than~\cite{valeriaMatrix} and in the WAN
 setting we are about 4 times faster. The main source of these significant speedups is that, unlike~\cite{valeriaMatrix}, \tool does not need to convert the functionality into boolean circuits. 
-However, this benchmark requires more lines of code than the previous benchmarks.
-It is inconvinient to write Batcher's sort in an iterative language (about 450 lines of \tool).
-The size of a recursive implementation would be much slower.
-In the future, we would like to add support for functions and recursion.
+However, this benchmark requires more lines of code than the previous benchmarks
+because of  Batcher's sort (450 lines of \tool code in each stage).
 However, the current programmer effort seems miniscule compared to the mammoth implementation effort
 put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuit based
 crypto-backend to this benchmark.
