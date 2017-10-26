@@ -1,5 +1,6 @@
 \section{Implementation}
 \label{sec:impl}
+We discuss some  implementation details of \tool.
 The  \tool compiler is written in Python and
 compiles each of our benchmarks in under a second to C++ code that makes calls to the ABY
 library~\cite{aby}. We set the security paramenter to 128 and use OT extension-based arithmetic multiplication triples generation. ABY provides facilities to use multiple threads\footnote{The protocol has an offline phase and an online phase. Although multiple threads can be used in the offline phase, the online phase is single threaded.} and we use at most four threads in our evaluation.
@@ -13,39 +14,29 @@ However, we have implemented integral division in 30 lines of \tool and floating
 ABY is under active development~\cite{ddkssz15}.
 
 
-Some of our benchamrks require accessing arrays at secret location.
+Some of our benchamrks require accessing arrays at secret locations.
 For example, consider the expression $A[x]$ where $A$ is an array of size 2 and $x$ is shared.
-\tool enforces the array indices to be public. The developer expresses this functionality in \tool
+\tool enforces the array indices to be public as accessing arrays at secret locations is expensive.
+However, the developer can still express this functionality in \tool
 as $x > 0 ? A[1] : A[0]$. In general, a secret access to an array of size $2^n$ requires $2^{n}-1$ multiplexers in \tool.
 
- Secure code partitioning currently requires a manual step.
-In particular, the developer needs to decompose a program $P$ into $P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool generates $Q_1||\ldots||Q_k$ automatically.
-Automating the decomposition step requires an analysis that can 
-statically estimate the resource usage of a \tool program and we leave the construction of such
-an analysis as future work.
 
-We use an off-the-shelf solver
-(SeaHorn~\cite{seahorn}) to check the verification conditions required
-to prove that the array indices remain in bound ($\Gamma\vDash e < n$ in {\sc T-Read}, Figure~\ref{fig:compile}). The solver takes less
-than a minute on our largest benchmark.
-The type label is assigned conservatively in  {\sc T-Decl}.
+
+We provide implementation details of compilation rules {\sc T-Read} and {\sc T-Decl} (Figure~\ref{fig:compile}).
+In particular, the check $\Gamma\vDash e < n$ in {\sc T-Read}
+which prove that the array indices are appropriately bounded
+is discharged by an off-the-shelf solver (SeaHorn~\cite{seahorn}).
+The solver takes less than a minute on our largest benchmark.
+Our implementation of {\sc T-Decl} assigns type labels conservatively.
 Only the variables that govern the control flow, i.e., variables
-in if-conditions and for-loops are assigned public labels.
-All other variables are assigned arithmetic labels (and can later be coerced to boolean).
+in the predicates of if-conditions and loop counters of for-loops are assigned public labels.
+All other variables are  assigned arithmetic labels (and can later be coerced to boolean).
 In the future, we would like to explore more intelligent strategies for label assignment.
 
 
-The compilation rules of Figure~\ref{fig:compile} can introduce redundant coercions from arithmetic to
+Finally, the compilation rules in Figure~\ref{fig:compile} can introduce redundant coercions from arithmetic to
 boolean  and vice versa.
-The \tool compiler performs several optimizations to reduce these.
-For example, on each coercion, \tool memorizes the pair of arithmetic share and boolean share involved in the coercion.
+The  compiler performs several optimizations to reduce these.
+For example, on each coercion, \tool stores the pair of arithmetic share and boolean share involved in the coercion.
 \tool invalidates such pairs when the variables corresponding to the shares are overwritten by assignments.
 In subsequent coercions, \tool  reuses valid pairs (if available) instead of recomputing them afresh. 
-
-\divya{
-\begin{enumerate}
-\item add all the expressions that our language supports such as mult, bit-wise and and anything else.
-\item Say that we compile to source to intermediate and use inter to circuit of ABY.. We can decide if we want to say this.
-\end{enumerate}
-}
- 

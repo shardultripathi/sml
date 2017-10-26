@@ -14,3 +14,11 @@ Let $P$ be a program in our source language with output $z$, that is split into 
 \end{theorem}
 
 \noindent {\em Proof.} From Theorem \ref{theorem:security}, it follows that $\prot_i$ securely realizes $Q_i$ for every $1\leq i\leq k$. Hence, we know that the only information learnt by Party A is $r_1||r_2||\cdots||r_{k-1}||z$ and by Party B is $o_1||o_2||\cdots||o_{k-1}||z$. From the way we defined $r_i$ and $o_i$ ($1\leq i\leq k-1$), to be secret shares of $s_i$, they are individually uniformly random (in $(\mathbb{Z},+)$ and hence perfectly simulatable. From this, the proof of the above theorem follows. \nc{should we write more for this simulator?}
+
+The current implementation of secure code partitioning requires a manual step.
+In particular, the developer needs to decompose a program $P$ into 
+the sequence of small programs $P_1||\ldots||P_k$ manually.
+Then \tool generates the sequence of secure programs $Q_1||\ldots||Q_k$ automatically.
+Automating the decomposition step requires an analysis that can 
+statically estimate the resource usage of a \tool program and we leave the construction of such
+an analysis as future work.
