@@ -57,8 +57,8 @@ and the model is a vector $w\in\R^d$.
  The possible labels are
 $\ell\in\{\mathit{true},\mathit{false}\}$ and the classifier is
 $C_w\equiv w^T\matmul x>0$, where $w^T$ denotes the transpose
-of matrix $w$, $\matmul$ denotes matrix multiplication (with a vector in this case) and $a>b$ returns $1$ if $a>b$ and $0$ otherwise. 
-The {\it model size} of this classifier, i.e., the number of parameters in a model is $d$.
+of matrix $w$, $\matmul$ denotes matrix multiplication (with a vector in this case) and $a>b$ returns $\mathit{true}$ if $a>b$ and $\mathit{false}$ otherwise. 
+The {\it model size} of this classifier, i.e., the number of parameters in the model is $|w|$, i.e., $d$.
 This classifier requires $d$ multiplications, $d-1$
 additions, and a single comparison.
 
@@ -81,7 +81,7 @@ The classifier $C_{P,T}(x)$ outputs
 \]
 The additions in the expression above sum $n$-dimensional vectors.
 The model size of this classifier is $|P|+|T|$.
-This classifier requires $ndF$ comparisons and additions. Note here  that computing $T(i)(j)(x_j)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
+This classifier requires $\Theta(ndF)$ comparisons and additions. Note here  that computing $T(j)(x_j)(i)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
   Section~\ref{sec:impl}). %\nc{Made DG's comment as part of regular text - worth point out}. \cmmt{Is there a +1 etc missing or is this exact?} \nc{By our calculation in Sec 5, it seems that this should be $F/2$ multiplexers}
 
 A {\em decision tree} of size $N$ takes as input an $x\in\R^d$, and the
@@ -162,7 +162,7 @@ Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
 and is zero otherwise. 
 The operation $\circ$ is a pointwise multiplication of two vectors, $W_j$'s and $V_j$'s
 are matrices of appropriate dimensions. The activation function $f$ is given by $f(y) = y$ if
-$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise ($f$ on vectors and matrices are defined point-wise on every element of the vector/matrix). \bonsai can be
+$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise ($f$ on vectors and matrices is defined point-wise on every element of the vector/matrix). \bonsai can be
 seen as a variant of decision trees where the prediction is a function
 of the path traversed from root to the leaf and not just the leaf
 itself.
@@ -369,7 +369,7 @@ Here, $x$ is a 784 length vector obtained from the input image,
 each $W$ is a $10\times 784$ matrix, and each $b$ is a $10$ length
 vector.
 We implement this classifer in \tool and present the results in the
-first row of Table~\ref{tab:tf}. We note that a pure boolean circuit for this functionality cannot fit in the memory of our machines.
+first row of Table~\ref{tab:tf}. We note that a pure boolean circuit for this simple functionality does not fit in the memory of our machines.
 
 
 The next classifer in the Tensorflow tutorial is a convolution neural net with two convolutions
@@ -470,7 +470,7 @@ we believe that with partitioning, \tool can scale to arbitrary sized
 computations while maintaining performance
 competitive with existing specialized protocols. In particular, for a
 large enough DNN, \minion could run
-out of memory but a pipelined \tool implementation would still
+out of memory but an appropriately partitioned \tool implementation would still
 succeed. 
 \begin{table}
 \begin{tabular}{c|c|c|c |c|c|c}
