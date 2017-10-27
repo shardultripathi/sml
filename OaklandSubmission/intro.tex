@@ -1,26 +1,29 @@
   
   
-  \TODO{While taking a pass on intro, check citation correctness or if we are missing any citation.}
+  %% \TODO{While taking a pass on intro, check citation correctness or if we are missing any citation.}
 
 \section{Introduction}
 \label{sec:intro}
 
-Today it is hard for the developers to program secure applications
-using cryptographic techniques. Typical developers lack a deep
-understanding of the cryptographic protocols, and therefore cannot be
-expected to use them correctly and efficiently on their own.
-Ideally, a developer would declare the functionality in a general
-purpose, high-level programming language and a
-tool, e.g. a compiler, would generate an efficient protocol that
-implements the functionality securely, while hiding the cryptography
-behind-the-scenes. This paper presents such a framework for Secure
-Two-party Computation (\mpc).
+%% \aseem{The intuition of this paragraph is conveyed in rest of the
+%% intro already?}
+
+%% Today it is hard for the developers to program secure applications
+%% using cryptographic techniques. Typical developers lack a deep
+%% understanding of the cryptographic protocols, and therefore cannot be
+%% expected to use them correctly and efficiently on their own.
+%% Ideally, a developer would declare the functionality in a general
+%% purpose, high-level programming language and a
+%% tool, e.g. a compiler, would generate an efficient protocol that
+%% implements the functionality securely, while hiding the cryptography
+%% behind-the-scenes. This paper presents such a framework for Secure
+%% Two-party Computation (\mpc).
 
 %Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
 
 %Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
 
-\mpc~(\cite{yao,gmw}) is a powerful
+Secure Two-party Computation (\mpc)~(\cite{yao,gmw}) is a powerful
 cryptographic technique that allows two mutually distrusting parties
 to compute a joint function of their secret inputs in a way that both
 the parties learn nothing about the inputs of each other beyond what
@@ -38,14 +41,14 @@ label.
 Since its introduction in 1980s, there has been a long sequence
 of work that has transformed \mpc from a mere theoretical concept to
 something practically efficient and usable. To understand the
-state-of-the-art, let us consider the following example used by many
+state-of-the-art, let us consider the following example underlying many
 secure prediction algorithms. Suppose Alice wants to write
 a \mpc protocol to securely
-compute $w^Tx >b$. Here $w$ and $x$ are two vectors (inputs of the two
-parties), $b$ is a scalar, $\cdot^{T}$ is the matrix transpose
-operator, and $w^Tx$ denotes the inner product of
-$w^{T}$ and $x$.  With the current state-of-the-art, Alice has following
-options:
+compute $w^Tx >b$. Here $w$ (a vector) and $b$ (a scalar) constitute
+the server model, and $x$ is the client's input vector. Further,
+$\cdot^{T}$ is the matrix transpose operator, and $w^Tx$ denotes the
+inner product of  $w^{T}$ and $x$. With the current state-of-the-art,
+Alice has following options:
 
 %\begin{tiret}
 %\item
@@ -61,7 +64,7 @@ the computation expressed as either a boolean
 circuit~(\cite{yao,gmw}) or an arithmetic circuit~(\cite{gentry}).
 %
 The efficiency of the generated \mpc protocol is thus bounded by the
-efficiency of representing the computation in one of
+efficiency of representing the computation in \emph{one} of
 these representations. For instance, multiplication of two
 $\ell$-bit integers can be either expressed as a boolean circuit of
 size $O(\ell^2)$, or as an arithmetic circuit with 1 multiplication
@@ -142,11 +145,14 @@ This paper presents \tool\footnote{Read as ``easy peasy'',
 stands for Easy 2 Party Computation}, a new \mpc framework.
 \tool is the first
 ``cryptographic-cost aware'' framework that generates efficient and
-scalable \mpc protocols, comprising combinations of arithmetic and
-boolean circuits, from high-level programs devoid of any
-cryptography. Below we describe the salient features of \tool.
+scalable \mpc protocols from high-level programs devoid of any
+cryptographic details. The generated protocols comprise combinations
+of arithmetic and boolean circuits and have performance comparable to
+or better than the custom, specialized
+protocols from previous work. Below we describe the
+salient features of \tool.
 
-\subsubsection*{Programmability} \tool source programs are ideal
+\subsubsection*{Ease of programming} \tool source programs are ideal
 functionalities that describe ``what'' computation needs to be done,
 rather than ``how'' to do it. In particular, the programmer writes the
 high-level computation without thinking about the underlying
@@ -163,26 +169,32 @@ output((acc > b) ? 1 : 0)
 \end{lstlisting}
 
 \vspace{0.2cm}
-We note that the program is quite similar to what a programmer might
-write in a common programming language. The simplicity of the
+The program is quite similar to what a programmer might
+write in C++ or Java. The simplicity of the
 language comes with its usual benefits: it is easily accessible to the
-developers, there are fewer avenues for making mistakes, and it is
-easy to maintain and modify the programs. Needless to say, frameworks
-that expose low-level circuit APIs to the programmer do not enjoy
-these benefits.
+developers, there are fewer avenues for making mistakes, developers
+don't bear the burden of getting cryptographic details right, and it
+is easy to maintain and modify the programs. Needless to say,
+frameworks that expose low-level circuit APIs to the programmer do not
+enjoy these benefits.
 
-\subsubsection*{Cryptogaphic-cost awareness} \tool compiler is aware
+\subsubsection*{Cryptogaphic-cost aware compiler} The \tool compiler
+compiles a source program to a hybrid computation consisting
+of \emph{public} and \emph{secret} parts. In the example above, for
+instance, \tool compiler realizes that the array index~\ls{i} is
+public, and hence, the array accesses need not be compiled as
+multiplexers. Further, within the secret parts, \tool compiler is
+aware
 of the cryptographic costs of arithmetic and boolean representations
-of the source language operators, and their corresponding
-inter-conversion gates. Based on these costs, the compiler, given a
-source program, automatically picks arithmetic or boolean
-representations for different parts of the program, and generates the
+of the source language operators. Based on these costs, the compiler
+automatically picks arithmetic or boolean
+representations for different sub-parts, and generates the
 corresponding circuits along with the required inter-conversion
-gates. The outcome is an effcient \mpc protocol using a combination of
-arithmetic and boolean circuits, while the programmer remains
-oblivious of all the low-level cryptographic details. Our evaluation
-shows that the performance of the
-protocols automatically generated by the \tool compiler is comparable
+gates. The outcome is an effcient \mpc protocol combining arithmetic
+and boolean circuits, while the programmer remains
+oblivious of all these cryptographic details. Our evaluation
+shows that the performance of these automatically generated protocols
+is comparable
 to or better than the custom, specialized protocols developed in the
 previous work. Indeed, \tool is the first such cryptographic-cost
 aware compiler.
@@ -192,7 +204,7 @@ often do not scale to large programs. The reason is that
 most \mpc implementations use a circuit-like representation as an
 intermediate language. Hence, the largest compute that can be done
 securely is upper-bounded by the largest circuit that can fit in the
-memory on a machine\footnote{Using swap and
+machine memory\footnote{Using swap and
 disk space is feasible but it causes huge slowdown.}. This is a
 show-stopper for applications like secure machine learning, secure
 prediction, etc. that operate on large amounts of data. \aseem{Can we
@@ -200,8 +212,8 @@ cite something here to support this claim?}
 \tool addresses the scalability concern using a novel technique that
 we call secure code partitioning (or partitioning in short). At
 a high level, we break the original program into a sequence of small
-sub-programs, which are then sequentially processed by our
-framework, while appropriately threading the intermediate outputs
+sub-programs, which are then sequentially processed by \tool, while
+appropriately threading the intermediate outputs
 along. While this
 addresses the scalability concern (the circuit
 sizes of the sub-programs are now small enough to fit in the memory),
@@ -217,22 +229,21 @@ program large applications in \tool.
 %% correctness and security of this transformation
 %% in \sectionref{pipe}
 
-\subsubsection*{Formal guarantees} We prove a formal correctness and
-security theorem for our compiler. The correctness theorem relates the
+\subsubsection*{Formal guarantees} We prove formal correctness and
+security theorems for our compiler. The correctness theorem proves a
+forward simluation between the
 ``ideal'' semantics (the trusted-third party semantics) of a source
 program and the ``protocol'' semantics (the distributed \mpc
 semantics that relies on circuit evaluation) of the corresponding
-compiled program. Both these semantics are instrumented
-with \emph{observations} that record the outputs. We prove that a
-well-typed source program terminates successfully in the source
-semantics. In addition, we prove that for a well-typed source program,
-its observations in the source semantics are same as the observations
-of its corresponding compiled program in the protocol
-semantics. {\aseem{Had a hard time writing this last sentence,
-suggestions welcome.}}
-For the security theorem, we formally reduce the security of our
-compiler to the security of the back-end cryptographic
-protocol.
+compiled program. The simulation
+theorem not only guarantees that a
+well-typed source program terminates successfully in the ideal
+semantics (e.g. there are no array index out-of-bounds errors), but
+also that the observable outputs in the two semantics are the same. For
+the security theorem, we formally reduce the security
+of our compiler to the security of the back-end cryptographic
+protocol. We also prove a formal security theorem for our partitioning
+scheme.
 
 %% an intermdiate language (that is the output of our
 %% compiler), and a circuit language for arithmetic and boolean
@@ -297,24 +308,24 @@ protocol.
 %% for efficiency reasons. We elaborate on these examples  in
 %% \sectionref{ex}. \\
 
-{\aseem{Not sure about this baseline paragraph. Did not touch it.}} 
-\subsubsection*{Performance Baseline} Most works cite garbled
-circuit based two-party computation as the most practical approach so
-far and use it as the baseline for comparison of performance. But, it
-has been shown multiple times that the garbled circuits based approach
-does not scale for realistic examples. Even for small benchmarks
-(e.g., Na\"{i}ve Bayes) the size of garbled circuit can be
-huge. Hence, comparisons are often done on artificial data sizes and
-garbled circuits are shown to be 500x slower than hand-crafted
-protocols \cite{shafindss}. This is cited as the motivation for need
-for specialized protocols for different ML algorithms in secure
-prediction such as linear regression \cite{shafindss}, decision
-trees \cite{wu}, deep neural networks \cite{minionn} and matrix
-factorization \cite{valeriaMatrix}. Our work is based on generic \mpc
-and we show competitive performance with the specialized protocols
-contrary to the popular belief. Hence, we believe \tool based
-implementations can serve as the performance baseline for future works
-on specialized protocols.
+%% {\aseem{Not sure about this baseline paragraph. Did not touch it.}} 
+%% \subsubsection*{Performance Baseline} Most works cite garbled
+%% circuit based two-party computation as the most practical approach so
+%% far and use it as the baseline for comparison of performance. But, it
+%% has been shown multiple times that the garbled circuits based approach
+%% does not scale for realistic examples. Even for small benchmarks
+%% (e.g., Na\"{i}ve Bayes) the size of garbled circuit can be
+%% huge. Hence, comparisons are often done on artificial data sizes and
+%% garbled circuits are shown to be 500x slower than hand-crafted
+%% protocols \cite{shafindss}. This is cited as the motivation for need
+%% for specialized protocols for different ML algorithms in secure
+%% prediction such as linear regression \cite{shafindss}, decision
+%% trees \cite{wu}, deep neural networks \cite{minionn} and matrix
+%% factorization \cite{valeriaMatrix}. Our work is based on generic \mpc
+%% and we show competitive performance with the specialized protocols
+%% contrary to the popular belief. Hence, we believe \tool based
+%% implementations can serve as the performance baseline for future works
+%% on specialized protocols.
 
 %Finally, our framework \tool can serve as a meaningful baseline for future works on hand-crafted \mpc protocols for specific functionalities such as \textsc{MiniONN} \cite{minionn}. 
 %Prior to our work, garbled circuit based two-party computation is cited as the most practical approach and used as the baseline for comparison of performance. But, it has been observed multiple times this approach does not even scale on realistic examples.
@@ -364,8 +375,9 @@ on specialized protocols.
 
 
 
-\aseem{Checkpointing here. Two more paragraphs to come, one for
-summary of implementation and evaluation, and one for related work.}
+\aseem{Checkpointing here. Three more paragraphs to come, one for
+summary of implementation and evaluation, one for related work, and
+one for baseline argument.}
 
 
 
