@@ -45,7 +45,7 @@ size $2^n$ requires $2^{n}-1$ multiplexers in \tool.
 
 We use an off-the-shelf solver
 (SeaHorn~\cite{seahorn}) to bound check the array indices
-($\Gamma\vDash e < n$
+($P\vDash e < n$
 in ({\sc {T-Read}}) and ({\sc{T-Write}})),
 Figure~\ref{fig:compile}). We take the \tool source program and
 translate it as an input to the solver. The solver takes less
@@ -64,7 +64,7 @@ The compilation rules of Figure~\ref{fig:compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.
 The \tool implementation performs  the standard ``common subexpression elimination"
-optimization to reduce these coercions.
+optimization~\cite{dragonbook} to reduce these coercions.
 On each coercion, \tool memorizes the pair of arithmetic
 share and boolean share involved in the coercion. 
 \tool invalidates such pairs when the variables corresponding to the
