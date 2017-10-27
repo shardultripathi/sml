@@ -872,40 +872,58 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 \kw{out} circuit.
 
 
-\divya{Start here...}
+
+
+
+
 \subsubsection*{Circuit semantics} Evaluating a program in the intermediate language produces a
 circuit over the secret data to be computed using an \mpc protocol in the distributed setting. With
 our circuit semantics, we model the \emph{functional} aspect of a \mpc protocol, parametrized by the sharing functions.
 
 During the circuit evaluation, the wire ranges $r$ are
 mapped to (random) strings $b$. The semantics of these strings is
-given by pairs of encryption-decryption functions\nc{perhaps call this encode-decode functions since its technically not encryption-decryption? In fact more appropriate might be share-reconstruct, but that would require changing notation so lets not do that.}, written as
+given by pairs of encode-decode algorithms, written as
 $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$ (where $m$ is either
-$\mathcal{A}$ or $\mathcal{B}$). More concretely,
+$\mathcal{A}$ or $\mathcal{B}$). 
+More concretely,
 $\mathcal{E}_{m}(c)$ returns a pair of two string $b_{1}$ and $b_{2}$
-(shares of the two parties), with the property that
-$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. We assume that the underlying MPC
+ with the property that
+$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. We assume that the underlying \mpc
 protocol instantiates $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$
-appropriately.
+appropriately. For ABY protocol \cite{aby}, algorithms $(\mathcal{E}_{\mathcal{A}},\mathcal{D}_{\mathcal{A}})$ (resp. $(\mathcal{E}_{\mathcal{B}},\mathcal{D}_{\mathcal{B}})$) correspond to the arithmetic (resp. boolean) sharing and reconstruction algorithms.
 
-The circuit semantics is shown in Figure~\ref{fig:cktsem} using the
-judgments $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \kappa
+
+\figureref{cktsem} gives the judgements for evaluation of circuit by the two parties using the \mpc protocol. The circuit environment for party $j$ is defined as follows:
+
+\vspace{0.2cm}
+$
+\small
+\begin{array}{rrcl}
+    \ftext{Circuit environment} & \widehat\rho_j &::=& \cdot \mid \widehat\rho_j,\wire \mapsto b_j\\
+\end{array}
+$
+\vspace{0.2cm}
+
+\divya{strings $b$ are not formally defined.}
+
+We give the 
+judgments $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate
 \Downarrow b_{1}, b_{2}$, and $\widehat{\rho}_{1}, \widehat{\rho}_{2}
 \vdash \chi \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O$,
-where $\widehat{\rho}_{1}$ and $\widehat{\rho}_{2}$ are the circuit
-environments of the two parties, mapping wire ranges $r$ to strings
-$b$. Rule ({\sc{C-Add}}) evinces the pattern for evaluating circuit
-gates $\kappa$. To evaluate $\kw{add}\:\kappa_{1}\:\kappa_{2}$, the
-rule first evaluates $\kappa_{1}$ to $(b_{11}, b_{21})$ and
-$\kappa_{2}$ to $(b_{12}, b_{22})$. Shares $(b_{11}, b_{21})$ are then
+where $O$ are the observations (similar to source semantics). 
+Rule ({\sc{C-In}}) is used to evaluate the input gate $\kw{in}^{m}_{j}$ that creates the $m$ type shares of the value $c$ input by party $j$.
+Rule ({\sc{C-Mult}}) evinces the pattern for evaluating circuit
+gates $\gate$. To evaluate $\kw{mult}\:\gate_{1}\:\gate_{2}$, the
+rule first evaluates $\gate_{1}$ to $(b_{11}, b_{21})$ and
+$\gate_{2}$ to $(b_{12}, b_{22})$. Shares $(b_{11}, b_{21})$ are then
 combined using $\mathcal{D_{\mathcal{A}}}$ to $n_{1}$, and similarly
 $(b_{12}, b_{22})$ are combined to $n_{2}$. The final output of the
-\kw{add} gate is then $\mathcal{E}_{\mathcal{A}}(n_{1} + n_{2})$. Note
-that this is a functional description of how the \kw{add} gate
+\kw{mult} gate is then $\mathcal{E}_{\mathcal{A}}(n_{1} \mulop n_{2})$. Note
+that this is a functional description of how the \kw{mult} gate
 evaluates, of course, concretely $n_{1}$ and $n_{2}$ are not observed
-by the parties. Rule ({\sc{C-Coerce}}) re-encrypts the shares using the
+by the parties. Rule ({\sc{C-Coerce}}) creates the shares using the
 scheme for $m$. Coming to the evaluation of circuits, the evaluation
-of \kw{bind} updates the mapping of $r$ in the input environments, and
+of \kw{bind} updates the mapping of $\wire$ in the input environments, and
 the rule ({\sc{C-Out}}) outputs the clear value $c$ to the
 observations.
 
@@ -914,7 +932,7 @@ observations.
 
 \begin{figure}
   \small
-  \fbox{$\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa \Downarrow b_{1}, b_{2}$}
+  \fbox{$\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate \Downarrow b_{1}, b_{2}$}
   \[
   \\
   \begin{array}{c}
@@ -927,7 +945,7 @@ observations.
     %%            }               
     \inferrule*[lab={\footnotesize{C-In}}]
                {
-                 b_{1}, b_{2} = \mathcal{E}_{m}(c)
+                 (b_{1}, b_{2}) = \mathcal{E}_{m}(c)
                }
                {
                  \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{in}^{m}_{j} \Downarrow b_{1}, b_{2}
@@ -937,76 +955,76 @@ observations.
                
     \inferrule*[lab={\footnotesize{C-Coerce}}]
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa \Downarrow b_{1}, b_{2}\\\\
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate \Downarrow b_{1}, b_{2}\\\\
                  c = \mathcal{D}_{m_{1}}(b_{1}, b_{2})\\\\
-                 b'_{1}, b'_{2} = \mathcal{E}_{m}(c)
+                 (b'_{1}, b'_{2}) = \mathcal{E}_{m}(c)
                }
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa \rhd m \Downarrow b'_{1}, b'_{2}
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate \rhd m \Downarrow b'_{1}, b'_{2}
                }
 \\\\
 
-    \inferrule*[lab={\footnotesize{C-Add}}]
+    \inferrule*[lab={\footnotesize{C-Mult}}]
                {
-                 \forall i \in \{1, 2\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa_{i} \Downarrow b_{1i}, b_{2i}\quad
+                 \forall i \in \{1, 2\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate_{i} \Downarrow b_{1i}, b_{2i}\quad
                  n_{i} = \mathcal{D}_{\mathcal{A}}(b_{1i}, b_{2i})\\\\
-                 b_{1}, b_{2} = \mathcal{E}_{\mathcal{A}}(n_{1} + n_{2})
+                 (b_{1}, b_{2}) = \mathcal{E}_{\mathcal{A}}(n_{1} \mulop n_{2})
                }
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{add}\:\kappa_{1}\:\kappa_{2} \Downarrow b_{1}, b_{2}
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{mult}\:\gate_{1}\:\gate_{2} \Downarrow b_{1}, b_{2}
                }
 
 \\\\
 
     \inferrule*[lab={\footnotesize{C-Gt}}]
                {
-                 \forall i \in \{1, 2\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa_{i} \Downarrow b_{1i}, b_{2i}\quad
+                 \forall i \in \{1, 2\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate_{i} \Downarrow b_{1i}, b_{2i}\quad
                  n_{i} = \mathcal{D}_{\mathcal{B}}(b_{1i}, b_{2i})\\\\
-                 b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(n_{1} > n_{2})
+                 (b_{1}, b_{2}) = \mathcal{E}_{\mathcal{B}}(n_{1} > n_{2})
                }
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{gt}\:\kappa_{1}\:\kappa_{2} \Downarrow b_{1}, b_{2}
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{gt}\:\gate_{1}\:\gate_{2} \Downarrow b_{1}, b_{2}
                }
 
 \\\\
 
     \inferrule*[lab={\footnotesize{C-Mux}}]
                {
-                 \forall i \in \{1, 2, 3\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa_{i} \Downarrow b_{1i}, b_{2i}\quad
+                 \forall i \in \{1, 2, 3\}.\:\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate_{i} \Downarrow b_{1i}, b_{2i}\quad
                  c_{i} = \mathcal{D}_{\mathcal{B}}(b_{1i}, b_{2i})\\\\
-                 c_{1} = \top \Rightarrow b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(c_{2})\quad
-                 c_{1} = \bot \Rightarrow b_{1}, b_{2} = \mathcal{E}_{\mathcal{B}}(c_{3})
+                 (c_{1} = \top) \Rightarrow \left((b_{1}, b_{2}) = \mathcal{E}_{\mathcal{B}}(c_{2})\right)\hspace{0.1cm}
+                 (c_{1} = \bot) \Rightarrow \left((b_{1}, b_{2}) = \mathcal{E}_{\mathcal{B}}(c_{3})\right)
                }
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{mux}\:\kappa_{1}\:\kappa_{2}\:\kappa_{3} \Downarrow b_{1}, b_{2}
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{mux}\:\gate_{1}\:\gate_{2}\:\gate_{3} \Downarrow b_{1}, b_{2}
                }
 
   \end{array}
   \]
   \\\\
-    \fbox{$\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \chi \Downarrow \widehat{\rho'_{1}}, \widehat{\rho'_{2}}; O$}
+    \fbox{$\widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \crct \Downarrow \widehat{\rho'_{1}}, \widehat{\rho'_{2}}; O$}
   \[
   \\
   \begin{array}{c}
     \inferrule*[lab={\footnotesize{C-Bind}}]
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa \Downarrow b_{1}, b_{2}\\\\
-                 \widehat{\rho'_{1}} = \widehat{\rho_{1}}[r \mapsto b_{1}] \quad
-                 \widehat{\rho'_{2}} = \widehat{\rho_{2}}[r \mapsto b_{2}]
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate \Downarrow b_{1}, b_{2}\\\\
+                 \widehat{\rho'_{1}} = \widehat{\rho_{1}}[\wire \mapsto b_{1}] \quad
+                 \widehat{\rho'_{2}} = \widehat{\rho_{2}}[\wire \mapsto b_{2}]
                }
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{bind}\:\kappa\:r \Downarrow \widehat{\rho'_{1}}, \widehat{\rho'_{2}}; \cdot
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{bind}\:\gate\:\wire \Downarrow \widehat{\rho'_{1}}, \widehat{\rho'_{2}}; \cdot
                }
                
                \hspace{0.1cm}
 
     \inferrule*[lab={\footnotesize{C-Out}}]
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kappa \Downarrow b_{1}, b_{2}\\\\
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \gate \Downarrow b_{1}, b_{2}\\\\
                  c = \mathcal{D}_{m}(b_{1}, b_{2})
                }
                {
-                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{out}\:\kappa \Downarrow \widehat{\rho_{1}}, \widehat{\rho_{2}}; c
+                 \widehat{\rho_{1}}, \widehat{\rho_{2}} \vdash \kw{out}\:\gate \Downarrow \widehat{\rho_{1}}, \widehat{\rho_{2}}; c
                }
 \end{array}
   \]
@@ -1025,7 +1043,7 @@ the static environment $\Gamma$ is consistent with the runtime
 environments $\rho$, $\widetilde{\rho}$, and $\widehat{\rho}_{1}$ and
 $\widehat{\rho}_{2}$. As an example, if $x:\kw{uint}^{\mathcal{P}} \in
 \Gamma$, the judgment checks that $\rho(x) = \widetilde{\rho}(x) =
-n$, for some $n$. We elide the judgment, providing the full definition
+n$, for some $n$. \divya{This judgement is not clear. If I am correct, it says that for public values $\rho$ and $\widetilde{\rho}$ are consistent and for secret values $\rho$ has values and $\widehat{rho}_j$ contain shares.} We elide the judgment, providing the full definition
 in the supplementary material.
 
 With this judgment in hand, the correctness theorem is as follows:
@@ -1034,7 +1052,7 @@ With this judgment in hand, the correctness theorem is as follows:
   $\forall\:\Gamma, s, \widetilde{s}, \Gamma_{1}, \rho, \widetilde{\rho}, \widehat{\rho}_{1}, \widehat{\rho}_{2}$, if:
 
   \begin{enumerate}
-  \item $\Gamma \vdash s \leadsto \widehat{s} \mid \Gamma_{1}$
+  \item $\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$
   \item $\Gamma \vdash \rho \leadsto \widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$
   \end{enumerate}
 
@@ -1051,70 +1069,10 @@ With this judgment in hand, the correctness theorem is as follows:
 \end{theorem}
 
 The theorem states that if a source statement $s$ is well-typed, and
-compiles to $\widetilde{s}$, then $s$ terminates in the source
-semantics with observations $O_{1}$, $\widetilde{s}$ terminates in the
-target semantics with circuit $\chi$, and $\chi$ terminates in the
+compiles to $\widetilde{s}$ in intermediate language, then $s$ terminates in the source
+semantics with observations $O_{1}$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
 circuit semantics with observations $O_{2}$, where $O_{1} = O_{2}$
 Furthermore, the final environments are also in the compilation
-relation.
+relation. \divya{Should we call the judgement between environs as compilation relation?}
+Due to space reasons, we provide the proof in \cite{anonymized}.
 
-\nc{Should we point out that the proof of Theorem 1 is provided elsewhere?}
-\subsubsection*{Security theorem} The protocols we generate provide
-simulation-based security against a semi-honest adversary, in the
-framework of ~\cite{gmw,can00,can01}. At a very high level, in this
-framework, parties are modeled as non-uniform interactive turing
-machines (ITMs), with inputs provided by an environment $\env$. An
-adversary $\adv$, selects and ``corrupts'' one of the parties -
-however, $\adv$ still follows the protocol specification. $\adv$
-interacts with the $\env$, which observes the view of the corrupted
-party. At the end of the interaction, $\env$ outputs a single bit. Two
-different interactions are defined: the {\em real world} and an {\em
-  ideal world}. In the real interaction, the parties run the protocol
-$\prot$ in the presence of $\adv$ and $\env$. Let
-$\real_{\prot,\adv,\env}$ denote the binary distribution ensemble
-describing $\env$'s output in this interaction. In the ideal
-interaction, parties send their inputs to an additional entity, a
-trusted functionality machine $\F$ that carries the desired
-computation truthfully. Let $\simu$ (the simulator) denote the
-adversary in this idealized execution, and $\ideal_{\F,\simu,\env}$
-the binary distribution ensemble describing $\env$'s output after
-interacting with adversary $\simu$ and ideal functionality $\F$. A
-protocol $\prot$ is said to {\em securely realize} a functionality
-$\F$ if for every adversary $\adv$ in the real interaction, there is
-an adversary $\simu$ in the ideal interaction, such that no
-environment $\env$, on any input, can tell the real interaction apart
-from the ideal interaction, except with negligible probability (in the
-security parameter $\secparam$). More precisely, if the two binary
-distribution ensembles above are computationally indistinguishable. 
-
-We shall assume a cryptographic MPC backend that securely implements any circuit $\chi$ that is output by our compiler. In more detail, this means that for every source program $s$, let $\chi$ be the circuit output by our compiler (as in Theorem \ref{theorem:correctness}). We assume that there exists a two-party secure computation protocol $\prot$ that securely realizes the functionality $\chi$ and we will call the corresponding simulator for the protocol as $\simu_{\tiny{2pc}}$ (that runs on input $\chi$ and the output produced by $\chi$ on the parties inputs). We note that the work of \cite{aby} provides such a protocol $\prot$ and simulator $\simu_{\tiny{2pc}}$ for all circuits $\chi$ output by our compiler. We are now ready to state and prove our security theorem.
- 
-\begin{theorem}[Security]\label{theorem:security}
-Let $s$ be any functionality or program in our source language with outputs (or observations) $O_1$, that is compiled into a circuit $\chi$ (as defined in Theorem \ref{theorem:correctness}). Let protocol $\prot$ be the two-party secure computation protocol that securely realizes $\chi$ (as defined above). Then, $\prot$ securely realizes $s$.  
-\end{theorem}
-
-\noindent {\em Proof.} Our simulator $\simu$ simply runs our compiler on program $s$ to obtain $\chi$ and upon receiving output $O_1$, executes $\simu_{\tiny{2pc}}$ on $\chi$ and $O_1$. Let $O_2$ be the outputs (or observations) of $\chi$. First, from Theorem \ref{theorem:correctness}, we have that the observations in $s$ and $\chi$ are the same (i.e. $O_2 = O_1$). Now, from the security of $\prot$, we have that the simulated view output by $\simu_{\tiny{2pc}}$ (with circuit $\chi$ and output $O_2$) is indistinguishable from the real view of the $\prot$ (when executed on circuit $\chi$ and when the output is $O_2$). Combining these two statements, the proof of the theorem follows. 
-\aseem{Can we give a construction of the simulator S in the ideal
-  semantics? The simulator S whenever it receives an observable event,
-  outputs it to Z, and whenever A receives a string in the real
-  semantics, S outputs a random string to Z. Now, with theorem 1,
-  observable events are same in the ideal and real semantics, and with
-  the security of the crypto backend, the random strings and the
-  strings in the protocol are indistinguishable. Is it
-  incorrect/naive?
-
-  Also, we should emaphasize here that the ideal semantics is the
-  source semantics from Figure x and the real semantics is the circuit
-  semantics from Figure y. For the target language semantics, we
-  should emphasize that it does not have access to the secrets, so
-  there are no observations there.
-}
-
-\nc{OK now?}
-  %% \\
-  %% \[
-  %% \begin{array}{rrcl}
-  %%   \ftext{Value} & v &::=& c \mid [\overline{c_{i}}]_{n}\\
-  %%   \ftext{Observation} & O &::=& \cdot \mid c; O\\
-  %% \end{array}
-  %% \]
