@@ -161,14 +161,14 @@ for i in [0:30] { acc =  acc + (w[i] * x[i]); }
 output((acc > b) ? 1 : 0)
 \end{lstlisting}
 \caption{\tool code for $w^Tx >b$}
-\label{fig:introexample}
+\label{fig:ex-sml}
 \end{figure}
 
 \subsubsection*{Ease of programming} \tool source programs are ideal
 functionalities that describe ``what'' computation needs to be done,
 rather than ``how'' to do it. In particular, the programmer writes the
 high-level computation without thinking about the underlying
-cryptographic details. For example, Figure~\ref{fig:introexample}
+cryptographic details. For example, Figure~\ref{fig:ex-sml}
 shows an \tool source
 program for $w^Tx >b$.
 %
@@ -278,18 +278,23 @@ combining secure computation protocols based on homomorphic
 encryption and Yao's garbled circuits
 (e.g. \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,schropferK11}),
 and some have also developed tools that allow writing such
-combinations (e.g. \cite{bogdanov,lone,tasty}). However, as Demmler et
+combinations (e.g. \cite{bogdanov,lone,tasty,autoS}). However, as Demmler et
 al.~\cite{aby} note, due
  to high conversion cost between
 homomorphic encryption and Yao's garbled circuits, these combined
 protocols do not gain much performance over a single
-protocol. Additionally, these prior works neither have
-a developer-friendly language, nor do they formalize their type
-system and operational semantics, and show them to be
-consistent. Kerschbaum et al.~\cite{autoS}
-provide a scheme to automatically select optimal protocols
-for sub-compuations, but they consider a toy language consisting only
-of arithmetic expressions. We provide a detailed survey of related
+protocol. 
+Additionally, these prior works provide informal languages
+or libraries and lack formal semantics.
+%Can be added to related work
+% Kerschbaum et al.~\cite{autoS}
+%provide a scheme to automatically assign homomorphic encryption or
+%garbled circuits to each operators in a computation that has been expressed as a sequence of dyadic operations.
+%They conjecture that the problem is NP hard and gave a linear programming based solution
+%as well as a quadratic time greedy heuristic. \tool  uses a simpler constant time heuristic
+%to assign arithmetic secret sharing or garbled circuits to sub-computations
+%in a richer language with control flow statements such as loops and branches.
+ We provide a detailed survey of related
 work in \sectionref{related}.
 
 The rest of the paper is structured as follows. We formalize \tool and
