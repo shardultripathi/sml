@@ -218,12 +218,12 @@ along. While this
 addresses the scalability concern (the circuit
 sizes of the sub-programs are now small enough to fit in the memory),
 we still have to address
-the security risk of revealing the intermediate outputs. To address
-this, \tool (a) masks the intermediate outputs using a secure secret
-sharing between the two parties, and (b) appends the
-share-reconstruction function to the beginning of the subsequent
-sub-program. As we show in our evaluation, partitioning allows us to
-program large applications in \tool.
+the security risk of revealing the intermediate outputs. \tool comes
+to the rescue -- it automatically inserts the required instrumentation
+to ensure security in the presence of these intermediate outputs. As
+we show in our
+evaluation, partitioning allows us to program large applications
+in \tool.
 
 %% We provide details of partitioning and prove the
 %% correctness and security of this transformation
