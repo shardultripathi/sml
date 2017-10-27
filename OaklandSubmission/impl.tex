@@ -4,12 +4,16 @@ We discuss some  implementation details of \tool.
 The  \tool compiler is written in Python and
 compiles each of our benchmarks in under a second to C++ code that
 makes calls to the ABY
-library~\cite{aby}. We use the default ABY configuration for our
+library~\cite{aby}. 
+ABY provides a GMW-based~\cite{gmw} and a  Yao-based~\cite{yao} protocol for boolean computations.
+Although \tool can generate code for both, we have observed better performance when using the latter
+and use it in our evaluation.
+We use the default ABY configuration for our
 experiment \footnote{We set the security parameter to 128 and use OT
 extension-based arithmetic multiplication triples generation.}. ABY
 provides multi-threading support (for the offline phase of the \mpc
 protocol); we leverage the support and use at most four threads in our
-evaluation.
+evaluation. 
 
 Our current implementation supports the following operators:
 addition, subtraction, multiplication, division by powers of two, left
