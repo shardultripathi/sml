@@ -277,17 +277,20 @@ Before ABY~\cite{aby}, several works have proposed
 combining secure computation protocols based on homomorphic
 encryption and Yao's garbled circuits
 (e.g. \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,schropferK11}),
-  and some have also developed tools that allow writing such combinations
-  (e.g. \cite{bogdanov,lone,tasty}). Kerschbaum et al.~\cite{autoS}
-  even provide a scheme to automatically select optimal protocols
-  for sub-compuations. However, as Demmler et al.~\cite{aby} note, due
-  to high conversion cost between
+and some have also developed tools that allow writing such
+combinations (e.g. \cite{bogdanov,lone,tasty}). However, as Demmler et
+al.~\cite{aby} note, due
+ to high conversion cost between
 homomorphic encryption and Yao's garbled circuits, these combined
 protocols do not gain much performance over a single
-protocol. Additionally, these prior works neither have a
-developer-friendly language, nor do they formalize their type system
-and operational semantics, and show them to be consistent.
-We provide a detailed survey of related work in \sectionref{related}.
+protocol. Additionally, these prior works neither have
+a developer-friendly language, nor do they formalize their type
+system and operational semantics, and show them to be
+consistent. Kerschbaum et al.~\cite{autoS}
+provide a scheme to automatically select optimal protocols
+for sub-compuations, but they consider a toy language consisting only
+of arithmetic expressions. We provide a detailed survey of related
+work in \sectionref{related}.
 
 The rest of the paper is structured as follows. We formalize \tool and
 prove its correctnss and security theorems in
