@@ -38,7 +38,7 @@ expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \subsubsection*{\tool compiler}
 \tool compiler takes as input a source program and produces a C++
 program as output. Figure~\ref{fig:ex-aby} shows the output code for
-the example in Figure~\ref{fig:ex-sml}. The output program contains
+the example in Figure~\ref{fig:ex-sml}. The output program
 contains party-specific code for inputs and outputs
 (\ls{role == SERVER} and \ls{role == CLIENT}), and common code for the
 computation.
@@ -84,6 +84,29 @@ public parts of the program, including the array accesses, and
 generates a \mpc circuit comprising of arithmetic and boolean gates,
 with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
+
+We can now concretely see the advantages of \tool. Unarguably, it is
+easier for a developer to program, and get right, the code in
+Figure~\ref{fig:ex-sml}, rather than the code in
+Figure~\ref{fig:ex-aby} (as we mentioned in Section~\ref{sec:intro},
+other high-level languages are limited in their use of a single,
+arithmetic or boolean, crypto back-end). \tool also enables the
+programmer to easily modify their code, while the compiler takes care
+of efficiency. For example, consider in Figure~\ref{fig:ex-sml} a
+change from multiplication to bitwise OR in the \ls{for} loop. It
+turns out that once that's the case, it is more efficient to do both
+the addition and bitwise OR using boolean circuits (if the addition is
+still done using arithmetic, the conversion cost starts to take
+over). In \tool, the programmer simply needs to change one operator in
+the source code, and the compiler generates efficient code that uses
+boolean addition. Whereas, if the programmer was writing ABY
+code, she either has to sacrifice performance, or she would have to
+revisit many parts of the circuit and change them.
+
+To summarize, \tool raises the level of abstraction for the
+programmers, and generates efficient crypto protocols automatically,
+while its metatheory provides strong correctness and security
+guarantees.
 
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
 %% whether a patient has breast cancer or not. Bob trains a machine learning classification model
@@ -154,4 +177,3 @@ a \mpc protocol.
 %% implementation of the functionality declared by the \tool code. 
 %% Moreover, the \tool compiler also generates a C implementation that can be run natively on a single machine for functional testing. 
 
-%% To summarize, \tool raises the level of abstraction, provides strong static guarantees, and generates efficient code automatically.

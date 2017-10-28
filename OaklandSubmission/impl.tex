@@ -15,27 +15,27 @@ provides multi-threading support (for the offline phase of the \mpc
 protocol); we leverage the support and use at most four threads in our
 evaluation. 
 
-Our current implementation supports the following operators:
+\tool programs can have the following operators:
 addition, subtraction, multiplication, division by powers of two, left
 shift,
 logical and arithmetic right shifts, bitwise-(and, or, xor), unary
 negation, 
 bitwise-negation, logical-(not, and, or, xor), and comparisons (less
-than, greater than, equality). 
+than, greater than, equality).  \TODO{Say something about our compiler being crypto cost aware; some ops always in either A or B and add can be in both}
 Because of their high cost, integral division and floating-point
 operators are not supported natively by \tool. 
 However, we have implemented integral division in 30 lines of \tool,
 while the floating-point support in ABY is under active
 development~\cite{ddkssz15}.
 
-Some of our benchamrks require accessing arrays at secret
+Some of our benchmarks require accessing arrays at secret
 indices. While \tool enforces the array indices to be
 public, secret indices can be encoded in \tool using multiplexers.
 For example, consider the expression $A[x]$ where $A$ is an array of
-size 2 and $x$ is secret-shared. The developer can expresse
+size 2 and $x$ is secret-shared. The developer can express
 this functionality in \tool as $\cond{x > 0}{A[1]}{A[0]}$. In general,
 a secret access to an array of
-size $2^n$ requires $2^{n}-1$ multiplexers in \tool.
+size $n$ requires ${n}-1$ multiplexers in \tool.
 
 %Moved this to Section 4 since P_i and Q_i are ill defined here
 %Secure code partitioning currently requires a manual step.
