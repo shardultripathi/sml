@@ -29,7 +29,7 @@ with \ls{b} only to the client.
 \tool source language is a simple, imperative language that enables
 the programmers to express \mpc computations in terms of their
 ``ideal'' functionalities, without dealing with any cryptographic
-details. The languages provides multi-dimensional arrays, conditional
+details. The language provides multi-dimensional arrays, conditional
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \ls{if}~statements, and special syntax for input/output.
 
@@ -71,7 +71,7 @@ representation, the \tool compiler uses the Yao circuit builder
   with Yao.}.
 
 Importantly, conversions between the arithmetic and boolean
-represenation require share-conversions. The \tool compiler also
+representations require share-conversions. The \tool compiler also
 instruments these conversion gates accordingly. For example, in
 lines~\ref{line:convacc} and~\ref{line:convb}, the compiler converts
 \ls{a_acc} and \ls{a_b} to boolean representation, before they are
@@ -104,7 +104,7 @@ code, she either has to sacrifice performance, or she would have to
 revisit many parts of the circuit and change them.
 
 To summarize, \tool raises the level of abstraction for the
-programmers, and generates efficient crypto protocols automatically,
+programmer, and generates efficient crypto protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees.
 
