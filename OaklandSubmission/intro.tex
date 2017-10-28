@@ -25,7 +25,7 @@
 
 Secure Two-party Computation (\mpc)~(\cite{yao,gmw}) is a powerful
 cryptographic technique that allows two mutually distrusting parties
-to compute a joint function of their secret inputs in a way that both
+to compute a publicly known joint function of their secret inputs in a way that both
 the parties learn nothing about the inputs of each other beyond what
 is revealed by their (possibly different) outputs. For example, \mpc
 can be used for {\em secure
@@ -184,7 +184,9 @@ The program is quite similar to what a programmer might
 write in C++ or Java. The simplicity of the
 language comes with its usual benefits: it is easily accessible to the
 developers, there are fewer avenues for making mistakes, developers
-don't bear the burden of getting cryptographic details right, and it
+don't bear the burden of getting cryptographic details right, 
+code optimizations can be left to the compiler,
+and it
 is easy to maintain and modify the programs. Needless to say,
 frameworks that expose low-level circuit APIs to the programmer do not
 enjoy these benefits.
