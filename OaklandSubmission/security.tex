@@ -40,15 +40,6 @@ Next, $\simu$ runs $\simu_{\tiny{2pc}}$ on $\crct$, input of the corrupt party a
 From the security of $\prot$, we have that the simulated view output by $\simu_{\tiny{2pc}}$ is indistinguishable from the real view of the $\prot$ for $\crct$ between the two parties. Hence, the security follows.
  
 % and upon receiving output $O_1$, executes $\simu_{\tiny{2pc}}$ on $\chi$ and $O_1$. Let $O_2$ be the outputs (or observations) of $\chi$. First, from Theorem \ref{theorem:correctness}, we have that the observations in $s$ and $\chi$ are the same (i.e. $O_2 = O_1$). Now, from the security of $\prot$, we have that the simulated view output by $\simu_{\tiny{2pc}}$ (with circuit $\chi$ and output $O_2$) is indistinguishable from the real view of the $\prot$ (when executed on circuit $\chi$ and when the output is $O_2$). Combining these two statements, the proof of the theorem follows. 
-\aseem{
-  Also, we should emaphasize here that the ideal semantics is the
-  source semantics from Figure x and the real semantics is the circuit
-  semantics from Figure y. For the target language semantics, we
-  should emphasize that it does not have access to the secrets, so
-  there are no observations there.
-}
-
-\nc{OK now?}
   %% \\
   %% \[
   %% \begin{array}{rrcl}

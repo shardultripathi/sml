@@ -200,15 +200,42 @@ et al., and the programmer effort in \tool is just 20
 lines (last column in the table) of high-level code in the \tool
 source language. %\aseem{They write circuits,
  % right?} \nc{Actually, they have a specific protocols for dot product and comparison and also say that their developer effort is minimal as they have to write two function calls to these protocols :).} 
- Our execution time is dominated by the multiplications and
-boolean-ands.
-The number of boolean-and gates (\#And) remains constant for both the
-benchmarks as they reflect the number of gates required for a
-single  comparison, while the number of
-multiplication gates (\#Mul) is the same as the model size $d$.
+% Our execution time is dominated by the multiplications and
+%boolean-ands.
+%The number of boolean-and gates (\#And) remains constant for both the
+%benchmarks as they reflect the number of gates required for a
+%single  comparison, while the number of
+%multiplication gates (\#Mul) is the same as the model size $d$.
 %% The
 %% last column shows the lines of code of \tool program, which is also
 %% independent of the model size.
+
+%\setlength\tabcolsep{7pt}
+%\begin{table*}
+%\begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
+%Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN (s) & WAN (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
+%\hline
+%Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25 & 95 & 30 & 727 & 20\\
+%\hline
+%Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
+%\hline
+%\end{tabular}
+
+\setlength\tabcolsep{2.5pt}
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\hline
+Dataset & $d$  & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}  &  \#Gates & LOC\\
+\hline
+Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25  & 727 & 20\\
+\hline
+Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36  & 795 & 20\\
+\hline
+\end{tabular}
+ \caption{Linear classification results. We compare our results (columns 5, 6, 7) with~\cite{shafindss} (columns 3 and 4)}
+ \label{tab:lc} 
+\end{table}
+
 
 \subsubsection*{Na\"{i}ve Bayes} The results for Na\"{i}ve Bayes are
 in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input
@@ -231,6 +258,22 @@ cryptographic-cost aware compiler, we can scale generic 2PC to real
 prediction tasks, and get performance competitive to or better than the
 specialized protocols.
 
+\setlength\tabcolsep{2.5pt}
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|c |c|c|c|c|}
+\hline
+Dataset & $d$ & $F$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)} & \#Gates  & LOC\\
+\hline
+Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6  & 73k & 50\\
+\hline
+Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
+\hline
+\end{tabular}
+\caption{Na\"{i}ve Bayes results. We compare our results (columns 6 , 7, 8) with~\cite{shafindss} (columns 4 and 5)}
+ \label{tab:nb} 
+\end{table}
+
+
 \subsubsection*{Decision trees}
 Our decision tree numbers in Table~\ref{tab:dt} further validate
 this claim. We compare with the recent work of Wu et al.~\cite{wu} (columns 3 and 4) who
@@ -241,48 +284,38 @@ computations are infeasible with Yao-based 2PC.
 Again, we observe that
 the performance of \tool generated generic 2PC
 code is competitive with specialized protocols. 
-\setlength\tabcolsep{8pt}
-\begin{table*}
-\begin{tabular}{c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $d$  & Prev. time (s) & Prev. Comm (kb) & LAN (s) & WAN (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
+
+
+
+
+
+%\begin{table*}
+%\begin{tabular}{|c|c|c|c |c|c|c|c|c|c|c|}
+%\hline
+%Dataset  & $N$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}& \#And & \#Mul &\#Gates & LOC\\
+%\hline
+%Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 504 & 3 & 3324 & 20\\
+%\hline
+%ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
+%\hline
+%\end{tabular}
+% \caption{Decision tree benchmarks. We compare our results (columns 5 , 6, 7) with~\cite{wu} (columns 3 and 4)}
+% \label{tab:dt} 
+%\end{table*}
+
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25 & 95 & 30 & 727 & 20\\
+Dataset  & $N$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}& \#Gates & LOC\\
 \hline
-Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36 & 95 & 47 & 795 & 20\\
+Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 3324 & 20\\
+\hline
+ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
 \hline
 \end{tabular}
-
- \caption{Linear classification results. We compare our results (columns 5, 6, 7) with~\cite{shafindss} (columns 3 and 4)}
- \label{tab:lc} 
-\end{table*}
-\setlength\tabcolsep{7pt}
-\begin{table*}
-\begin{tabular}{c|c|c|c|c|c |c|c|c|c|c|c}
-Dataset & $d$ & $F$ & Prev. time (s) & Prev. Comm (Mb) & LAN (s) & WAN (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates  & LOC\\
-\hline
-Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6 & 13k & 0 & 73k & 50\\
-\hline
-Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37 & 750k & 0 & 4219k & 50\\
-\hline
-\end{tabular}
-
- \caption{Na\"{i}ve Bayes results. We compare our results (columns 6 , 7, 8) with~\cite{shafindss} (columns 4 and 5)}
- \label{tab:nb} 
-\end{table*}
-
-\begin{table*}
-\begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
-Dataset  & $N$ & Prev. time (s) & Prev. Comm (kb) & LAN time (s) & WAN time (s) & Comm. (kb)  & \#And & \#Mul & \#Gates & LOC\\
-\hline
-Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 504 & 3 & 3324 & 20\\
-\hline
-ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49 & 756 & 5 & 5002 & 20\\
-\hline
-\end{tabular}
-
- \caption{Decision tree benchmarks. We compare our results (columns 5 , 6, 7) with~\cite{wu} (columns 3 and 4)}
+\caption{Decision tree benchmarks. We compare our results (columns 5 , 6, 7) with~\cite{wu} (columns 3 and 4)}
  \label{tab:dt} 
-\end{table*}
+\end{table}
 
 
 %dataset  | size | gates | and | mul | depth | length
@@ -336,22 +369,42 @@ matrix operations efficiently. In contrast, \tool focuses on generic
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in Section~\ref{sec:pipeeval}.
 %net | minionT | minionC | timeL | timeW | comm | gates | and | mul | length 
-\setlength\tabcolsep{6.5pt}
-\begin{table*}
-\begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
-DNN  & Prev. time (s) & Prev. Comm (Mb) & LAN (s) & WAN (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model Size & LOC\\
+
+%\setlength\tabcolsep{6.5pt}
+%\begin{table*}
+%\begin{tabular}{c|c|c|c |c|c|c|c|c|c|c}
+%DNN  & Prev. time (s) & Prev. Comm (Mb) & LAN (s) & WAN (s) & Comm. (Mb)  & \#And & \#Mul & \#Gates & Model Size & LOC\\
+%\hline
+%SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &  2k   & 119k & 366k   & 119k & 78\\
+%\hline
+%Cryptonets &  1.3 & 47.6 & 0.6 & 1.6  & 70    & 2k    & 108k & 316k & 86k & 88\\
+%\hline
+%CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 1640k & 667k & 9480k & 35k & 154\\
+%\hline
+%\end{tabular}
+%
+% \caption{DNN benchmarks. We compare our results (columns 4 , 5, 6) with~\cite{minionn} (columns 2 and 3)}
+% \label{tab:nn} 
+%\end{table*}
+
+\setlength\tabcolsep{2.5pt}
+\begin{table}
+\begin{tabular}{|c|c|c|c |c|c|c|c|c|}
 \hline
-SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &  2k   & 119k & 366k   & 119k & 78\\
+DNN  & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)} & \#Gates & \thead{Model\\ Size} & LOC\\
 \hline
-Cryptonets &  1.3 & 47.6 & 0.6 & 1.6  & 70    & 2k    & 108k & 316k & 86k & 88\\
+SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &   366k   & 119k & 78\\
 \hline
-CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 1640k & 667k & 9480k & 35k & 154\\
+Cryptonets &  1.3 & 47.6 & 0.6 & 1.6  & 70    &  316k & 86k & 88\\
+\hline
+CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 9480k & 35k & 154\\
 \hline
 \end{tabular}
 
  \caption{DNN benchmarks. We compare our results (columns 4 , 5, 6) with~\cite{minionn} (columns 2 and 3)}
  \label{tab:nn} 
-\end{table*}
+\end{table}
+
 
 
 \subsection{State-of-the-art classifiers}
@@ -386,7 +439,8 @@ partitioning.
 % benchmark | size | gates | and | mul | depth  | length | comm | timeL | timeW
 \setlength\tabcolsep{2.5pt}
 \begin{table}
-\begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
+\begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c}
+\hline
 Classifier       & \thead{LAN  \\ (s)} & \thead{WAN \\(s)} & \thead{Comm. \\(Mb)}  & \#And & \#Mul & \#Gates & \thead{Model \\size} & LOC\\
 \hline
 Regression &  0.1         & 0.7         & 5            & 2k    & 8k    &  35k    & 8k   & 38\\
@@ -425,7 +479,8 @@ of \tool. We discuss scalability next.
 
 \setlength\tabcolsep{3.5pt}
 \begin{table}
-\begin{tabular}{c|c|c|c |c|c|c|c|c|c | c}
+\begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c|}
+\hline
 Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm. \\ (Mb)}  & \#And & \#Mul & \#Gates & depth & LOC\\
 \hline
 Chars4k    &  0.1         & 0.7         & 2            & 18k    & 3k    &  85k     & 1   & 89\\
@@ -473,7 +528,8 @@ large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
 succeed. 
 \begin{table}
-\begin{tabular}{c|c|c|c |c|c|c}
+\begin{tabular}{|c|c|c|c |c|c|c|}
+\hline
            &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & \#And & \#Mul & \#Gates \\
 \hline
 Total      &  265.6       & 647.5        & 40683       & 21m    & 61m    &  337m  \\
