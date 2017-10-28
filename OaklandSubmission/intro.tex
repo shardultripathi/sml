@@ -39,7 +39,7 @@ about the server model, beyond what is revelaed by the output
 label.
 
 Our goal is to build a framework that enables programmers, who are not
-expert in cryptography, to easily program efficient and scalable \mpc
+experts in cryptography, to easily program efficient and scalable \mpc
 protocols. Since its introduction in 1980s, there has been a long
 sequence of work along the same lines. To understand the
 state-of-the-art, let us consider an example underlying many
@@ -70,7 +70,7 @@ $\ell$-bit integers can be either expressed as a boolean circuit of
 size $O(\ell^2)$, or as an arithmetic circuit with 1 multiplication
 gate.
 %
-Hence, for better efficiency, Alice would ideally like to compute
+For better efficiency, Alice would ideally like to compute
 $w^Tx$ using an arithmetic circuit, and the comparison with $b$ using
 a boolean circuit.
 %
@@ -149,7 +149,7 @@ scalable \mpc protocols from high-level programs devoid of any
 cryptographic details. The generated protocols comprise combinations
 of arithmetic and boolean circuits and have performance comparable to
 or better than the custom, specialized
-protocols from previous work. Below we describe the
+protocols from previous work (up to a factor of 19x in our experiments, depending on the functionality) \nc{I added this but I guess we are saying it many times, but might be nice to highlight perf early no?}. Below we describe the
 salient features of \tool.
 
 \begin{figure}
@@ -201,8 +201,7 @@ and boolean circuits, while the programmer remains
 oblivious of all these cryptographic details. Our evaluation
 shows that the performance of these automatically generated protocols
 is comparable
-to or better than the custom, specialized protocols developed in the
-previous work. Indeed, \tool is the first such cryptographic-cost
+to or better than the custom, specialized protocols developed in previous works. Indeed, \tool is the first such cryptographic-cost
 aware compiler.
 
 \subsubsection*{Scalability (secure code partitioning)} \mpc tools
@@ -238,7 +237,7 @@ in \tool.
 
 \subsubsection*{Formal guarantees} We prove formal correctness and
 security theorems for our compiler. The correctness theorem proves a
-forward simluation between the
+forward simulation between the
 ``ideal'' semantics (the trusted-third party semantics) of a source
 program and the ``protocol'' semantics (the distributed \mpc
 semantics that relies on circuit evaluation) of the corresponding
@@ -250,7 +249,7 @@ observable outputs in the two semantics are
 identical. For
 the security theorem, we formally reduce the security
 of our compiler to the security of the back-end cryptographic
-protocol. We also prove a formal security theorem for our partitioning
+protocol (by also invoking our correctness theorem). We also prove a formal security theorem for our partitioning
 scheme.
 
 \subsubsection*{Evaluation} We have implemented the \tool toolchain
@@ -298,12 +297,12 @@ or libraries and lack formal semantics.
 work in \sectionref{related}.
 
 The rest of the paper is structured as follows. We formalize \tool and
-prove its correctnss and security theorems in
+prove its correctness and security theorems in
 Section~\ref{sec:ld}. Section~\ref{sec:pipe} details our partitioning
 scheme and proves its security. Section~\ref{sec:impl}
 presents the implementation details, and
 Section~\ref{sec:eval} present a comprehensive evaluation of \tool. We
-begin with an overview.
+begin with an overview of \tool through an example in Section~\ref{sec:ex}. \nc{provided a pointer to sec 2 as well.}
 
 %% Most works cite garbled
 %% circuit based two-party computation as the most practical approach so
