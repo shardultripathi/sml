@@ -35,7 +35,7 @@ a label (e.g. a disease, genomics, or spam detection), and the other
 party (the client) holds a private input that it wants to run the
 classifier on. Using \mpc guarantees that the server learns nothing
 about the client's input or output, and that the client learns nothing
-about the server model, beyond what is revelaed by the output
+about the server classifier, beyond what is revelaed by the output
 label.
 
 Our goal is to build a framework that enables programmers, who are not
@@ -46,7 +46,7 @@ state-of-the-art, let us consider an example underlying many
 secure prediction algorithms. Say Alice wants to write
 a \mpc protocol to securely
 compute $w^Tx >b$. Here $w$ (a vector) and $b$ (a scalar) constitute
-the server model, and $x$ is the client's input vector. Further,
+the server classifier, and $x$ is the client's input vector. Further,
 $\cdot^{T}$ is the matrix transpose operator, and $w^Tx$ denotes the
 inner product of  $w^{T}$ and $x$. Alice has following options.
 
