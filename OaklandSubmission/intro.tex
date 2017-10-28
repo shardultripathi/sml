@@ -163,7 +163,7 @@ uint w[30] = input1(); uint b = input1();
 uint x[30] = input2();
 uint acc = 0;
 for i in [0:30] { acc =  acc + (w[i] * x[i]); }
-output((acc > b) ? 1 : 0)
+output((acc > b) ? 1 : 0, 2) //only to party 2
 \end{lstlisting}
 \caption{\tool code for $w^Tx >b$}
 \label{fig:ex-sml}
