@@ -100,7 +100,7 @@ error-prone (a sentiment echoed by Demmler et al.~\cite{aby} themselves).
 %\item
 A third option for Alice is to earn a PhD in cryptography, and design
 and implement specialized, efficient \mpc protocols (similar
-to~\cite{shafindss,wu,minionn}) for her tasks.
+to~\cite{shafindss,wu,minionn,valeriaMatrix}) for her tasks.
 %\end{tiret}
 %In our work, we achieve the best of all the above options. 
 
@@ -137,8 +137,8 @@ to~\cite{shafindss,wu,minionn}) for her tasks.
 
 %The programmer is oblivious of the cryptographic back-end being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. \divya{Say something about what kind of backend we want. provides \mpc for a mix of arithmetic and boolean circuit with appropriate secure conversion between two types and ABY provides such a framework for semi-honest 2pc.} Our work is compatible with malicious, multiparty as well... etc We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
 
-\subsubsection*{\tool}
-\label{sec:contrib}
+%\subsubsection*{\tool}
+%\label{sec:contrib}
 %Write high level overview of programming language and tool.. \divya{have some preamble}
 
 This paper presents \tool\footnote{Read as ``easy peasy'',
@@ -149,7 +149,11 @@ scalable \mpc protocols from high-level programs devoid of any
 cryptographic details. The generated protocols comprise combinations
 of arithmetic and boolean circuits and have performance comparable to
 or better than the custom, specialized
-protocols from previous work %(up to a factor of 19x in our
+protocols from previous work~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
+These papers (and others) cite the inefficiency of generic \mpc as the major motivation
+behind the design of specialized protocols. Using \tool, we empirically  demonstrate
+the surprising fact that generic \mpc implementations are much more efficient than what they were believed to be. 
+ %(up to a factor of 19x in our
 %experiments, depending on the functionality) \nc{I added this but I
 %  guess we are saying it many times, but might be nice to highlight
 %  perf early no?} \aseem{My rationale was to save the numbers for
