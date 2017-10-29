@@ -1,28 +1,116 @@
 \section{Secure code partitioning}
 \label{sec:pipe}
 
-We  describe ``secure code partitioning'' that allows us to execute {\it large} programs, i.e., programs with a large number of operations.
-In more detail, let $P$ be a program in our source language that generates a circuit $\crct$. For a large enough $P$, the circuit $\crct$  can be larger than the memory size\footnote{In fact, there is an upper limit of $2^{32}-1$ gates for the circuit size in ABY but for most machines the memory limit is hit first.} and fail to execute. Partitioning enables us to
-execute such programs via a source to source transformation that is oblivious to the underlying \mpc backend. Partitioning decomposes the program $P$ into a sequence of smaller \tool programs $Q_1||Q_2||\cdots||Q_k$ (defined below). We compile and execute each $Q_i$ sequentially, feeding the outputs of $Q_i$ as state information to $Q_{i+1}$. We prove that partioning is correct ($P$ and $Q_1||Q_2||\cdots||Q_k$ compute the same functionality) and secure (execution of $Q_1||Q_2||\cdots||Q_k$ does not reveal any more information than $P$). More details follow.
+\newcommand{\prog}{s}
+\newcommand{\seq}{||}
+\newcommand{\state}{st}
 
+We  now describe our ``secure code partitioning'' technique that
+allows \tool to execute programs that require large circuits.
+Let $\prog$ be a program in our source language that
+generates a circuit $\crct$. For some programs, the circuit $\crct$
+can be larger than
+the memory size\footnote{In fact, there is
+  an upper limit of $2^{32}-1$ gates for the circuit size in ABY but
+  for most machines the memory limit is hit first.} and fail to
+execute. Partitioning enables us to 
+execute such programs via a source to source transformation that is
+oblivious to the underlying \mpc backend. Partitioning decomposes the
+program $\prog$ into a sequence of smaller \tool programs
+$\prog_1\seq\prog_2\seq\dots\seq\prog_k$ (as defined below), such
+that the circuit size
+requirement for each of the $\prog_i$ itself is manageable. We compile
+and execute each $\prog_i$ sequentially, feeding the outputs of
+$\prog_i$ as state
+information to $\prog_{i+1}$. We prove our partitioning scheme to be
+correct ($\prog$ and $\prog_1\seq\prog_2\seq\dots\seq\prog_k$ compute
+the same functionality) and secure (execution of
+$\prog_1\seq\prog_2\seq\dots\seq\prog_k$ does
+not reveal any more information than $s$). More details follow.
 
-Let $P$ be a program that takes (secret) inputs $x$ from Alice and $y$ from Bob and produces an output $z$ to both parties. Let $P_1||P_2||\cdots||P_k$ be a sequence of programs such that the following holds: Define $s_0 = \bot$ (the public empty state). For all $1\leq i\leq k-1$, $P_i$ takes inputs $x, y$ and $s_{i-1}$ and outputs  state information $s_i$. Finally, $P_k$ takes inputs $x,y$ and $s_{k-1}$ to  output $z$. Each program $P_i$ ($1\leq i\leq k$) is required to be ``sufficiently'' small (as described later). It is possible to decompose any program $P$  into such $P_1||P_2||\cdots||P_k$. If \tool generates circuit $\crct_i$ from $P_i$, the parties can execute $\crct_1||\crct_2||\cdots||\crct_k$ sequentially (in a distributed setting)  to obtain $s_1,\cdots,s_{k-1},$ and finally output $z$. At the $i^{\textrm{\tiny{th}}}$ step, the parties only need to store information proportional to $x,y,s_{i-1}$ and $\crct_i$ (which is much smaller than $\crct$). However, this execution enables the parties to learn $s_i$ (for all $1\leq i\leq k-1$), which completely breaks the security.
+Let $\prog$ be a program that takes (secret) inputs $x$ from Alice and
+$y$ from Bob and produces an output $z$ to both parties. Let
+$\prog_1\seq\prog_2\seq\dots\seq\prog_k$ be a sequence of programs
+such that the following holds. Define $\state_0 = \bot$ (the public empty
+state). For all
+$1\leq i\leq k-1$, $P_i$ takes inputs $x, y$ and $\state_{i-1}$ and
+outputs state $\state_i$. Finally, $\prog_k$ takes inputs $x, y$ and
+$\state_{k-1}$ to  output $z$. It is
+possible to decompose any program $\prog$  into such
+$\prog_1\seq\prog_2\seq\dots\seq\prog_k$. If \tool generates circuit
+$\crct_i$ from
+$\prog_i$, the parties can execute
+$\crct_1, \crct_2, \dots \crct_k$
+sequentially (in a distributed setting)  to obtain
+$\state_1,\dots,\state_{k-1},$ and finally output $z$. At the
+$i^{\textrm{\tiny{th}}}$ step, the parties only need to store
+information proportional to $x,y,\state_{i-1}$ and $\crct_i$ (which is
+much smaller than $\crct$). However, this execution enables the
+parties to learn $\state_i$ (for all $1\leq i\leq k-1$), which
+completely breaks the security.
 
-To overcome this problem, we define a sequence of new programs $Q_i$ ($1\leq i\leq k$) as follows. Once again, define $s_0 = \bot$. Without loss of generality, let all $s_i$ be values in some additive ring $(\mathbb{Z},+)$ (e.g., the additive ring $(\mathbb{Z}_{2^{64}},+)$, i.e., the additive ring of integers modulo $2^{64}$). 
-Let $r_1,\cdots,r_{k-1}$ be a sequence of random values sampled from the same ring $(\mathbb{Z},+)$ by Alice (in our implementation, all $r_i$ values are generated by a pseudorandom function). Let $Q_1$ be the program that takes as input $x,r_1$ from Alice and $y$ from Bob (and empty state $s_0$), and runs $P_1$ (as defined above) to compute $s_1$ and then outputs $o_1 = s_1 + r_1$ {\em only to} Bob\footnote{While the description of our protocol here assumes that the underlying backend supports only one party receiving output, this is only a simplifying assumption, and we can easily modify our protocol in the case where both parties must receive the same output. To do so, we modify $Q_1$ to output $o_1 = s_1+r_1+t_1$ to both parties (where $t_1$ is random and chosen by Bob). We can then appropriately modify the remaining steps as well.}. Alice's output from $Q_1$ is $r_1$. Next, every $Q_i$ ($2\leq i\leq k-1$) takes as inputs $x,r_{i-1},r_i$ from Alice and $y,o_{i-1}$ from Bob, runs $P_i$ on inputs $x,y$ and state $o_{i-1}-r_{i-1}$ (where $-$ denotes subtraction in the ring $(\mathbb{Z},+)$) and then outputs $s_i+r_i$ only to Bob. Again, Alice's output from $P_i$ is $r_i$. The last program $Q_k$ takes inputs $x,y,r_{k-1},o_{k-1}$, runs $P_k$ on inputs $x,y$ and state $o_{k-1}-r_{k-1}$ and outputs $z$ to both parties.
+To overcome this problem, we define a sequence of new programs
+$\prog'_i$ ($1\leq i\leq k$) as follows. Once again, define $\state_0
+= \bot$. Without
+loss of generality, let all $\state_i$ be values in some additive ring
+$(\mathbb{Z},+)$ (e.g., the additive ring $(\mathbb{Z}_{2^{64}},+)$,
+i.e., the additive ring of integers modulo $2^{64}$).
+Let $r_1,\cdots,r_{k-1}$ be a sequence of random values sampled from
+the same ring $(\mathbb{Z},+)$ by Alice (in our implementation, all
+$r_i$ values are generated by a pseudorandom function). Let $\prog'_1$
+be the program that takes as input $x,r_1$ from Alice and $y$ from Bob
+(and empty state $\state_0$), and runs $\prog_1$ (as defined above) to
+compute $\state_1$ and then outputs $o_1 = \state_1 + r_1$ {\em only
+  to} Bob\footnote{While the description of our protocol here assumes
+  that
+  the underlying backend supports only one party receiving output,
+  this is only a simplifying assumption, and we can easily modify our
+  protocol in the case where both parties must receive the same
+  output. To do so, we modify $\prog'_1$ to output $o_1 = s_1+r_1+t_1$ to
+  both parties (where $t_1$ is random and chosen by Bob). We can then
+  appropriately modify the remaining steps as well.}. Alice's output
+from $\prog'_1$ is $r_1$. Next, every $\prog'_i$ ($2\leq i\leq k-1$)
+takes as inputs $x,r_{i-1},r_i$ from Alice and $y,o_{i-1}$ from Bob,
+runs $\prog_i$
+on inputs $x,y$ and state $o_{i-1}-r_{i-1}$ (where $-$ denotes
+subtraction in the ring $(\mathbb{Z},+)$) and then outputs $s_i+r_i$
+only to Bob. Again, Alice's output from $\prog_i$ is $r_i$. The last
+program $\prog'_k$ takes inputs $x,y,r_{k-1},o_{k-1}$, runs $\prog_k$
+on inputs $x,y$ and state $o_{k-1}-r_{k-1}$ and outputs $z$ to both
+parties.
 
-Given $P$, partitioning first decomposes $P$ into $P_1||P_2||\cdots||P_k$ with the guarantee that the circuits generated for every $Q_i$ defined above are small enough to fit in the machine memory. We then compile and execute the $k$ programs $Q_1||Q_2||\cdots||Q_k$ sequentially (freeing up memory usage after  execution of each $Q_i$) to finally output $z$ to both parties.
+Given $\prog$, partitioning first decomposes $\prog$ into
+$\prog_1\seq\prog_2\seq\dots\seq\prog_k$ with the guarantee that the
+circuits generated for every $\prog'_i$, as defined above, are small
+enough to fit in the machine memory. We then compile and execute the
+$k$ programs $\prog'_1\seq\prog'_2\seq\dots\seq\prog'_k$ sequentially
+(freeing up memory usage after execution of each $\prog'_i$) to
+finally output $z$ to both parties.
 
 \begin{theorem}[Correctness and security of partitioning]
-Let $P$ be a program in our source language with output $z$, that is decomposed into programs $Q_1||Q_2||\cdots ||Q_k$ (as defined in the partioning procedure above) and compiled into the protocol $\prot = \prot_1||\prot_2\cdots ||\prot_k$ that outputs $r_1||r_2||\cdots||z$ (to Alice) and $o_1||o_2||\cdots||z$ (to Bob), then $\prot$ securely realizes $P$.  
+Let $\prog$ be a program in our source language with output $z$, that
+is decomposed into programs
+$\prog'_1\seq\prog'_2\seq\dots\seq\prog'_k$ (as defined in
+the partioning procedure above) and compiled into the protocol $\prot
+= \prot_1\seq\prot_2\dots\seq\prot_k$ that outputs $r_1\seq
+r_2\seq\dots\seq z$
+(to Alice) and $o_1\seq o_2\seq\dots||z$ (to Bob), then $\prot$ securely
+realizes $P$.
 \end{theorem}
 
-\noindent {\em Proof.} From \theoremref{security}, it follows that $\prot_i$ securely realizes $Q_i$ for every $1\leq i\leq k$. Hence, we know that the only information learnt by Alice is $r_1||r_2||\cdots||r_{k-1}||z$ and by Bob is $o_1||o_2||\cdots||o_{k-1}||z$. Since $r_i$ and $o_i$ ($1\leq i\leq k-1$) are individually uniformly random (in $(\mathbb{Z},+)$, outputs received by the adversary can be easily simulated given the final output $z$. 
+\noindent {\em Proof.} From \theoremref{security}, it follows that
+$\prot_i$ securely realizes $\prog'_i$ for every $1\leq i\leq
+k$. Hence, we know that the only information learnt by Alice is
+$r_1||r_2||\cdots||r_{k-1}||z$ and by Bob is
+$o_1||o_2||\cdots||o_{k-1}||z$. Since $r_i$ and $o_i$ ($1\leq i\leq
+k-1$) are individually uniformly random (in $(\mathbb{Z},+)$, outputs
+received by the adversary can be easily simulated given the final
+output $z$.
 
 Our current implementation of secure code partitioning requires a manual step.
-In particular, the developer needs to decompose the large program $P$ into 
-the sequence of small programs $P_1||\ldots||P_k$ manually.
-Then \tool generates $Q_1||\ldots||Q_k$ automatically.
+In particular, the developer needs to decompose the large program $\prog$ into 
+the sequence of small programs $\prog_1\seq\dots\seq\prog_k$ manually.
+Then \tool generates $\prog'_1\seq\dots\seq\prog'_k$ automatically.
 Automating this decomposition step requires an analysis that can 
-statically estimate the resource usage of a \tool program and we leave the construction of such
-an analysis as future work.
+statically estimate the resource usage of a \tool program and we leave
+the construction of such an analysis as future work.
