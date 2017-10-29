@@ -244,20 +244,19 @@ in \tool.
 %% in \sectionref{pipe}
 
 \subsubsection*{Formal guarantees} We prove formal correctness and
-security theorems for our compiler. The correctness theorem proves a
-forward simulation between the
-``ideal'' semantics (the trusted-third party semantics) of a source
+security theorems for our compiler. The correctness theorem relates the
+``trusted third party'' semantics of a source
 program and the ``protocol'' semantics (the distributed \mpc
 semantics that relies on circuit evaluation) of the corresponding
-compiled program. The simulation
+compiled program. The theorem
 guarantees that for a well-typed source program, the two semantics
 successfully terminate
 (e.g. there are no array index out-of-bounds errors), and that the
 observable outputs in the two semantics are
 identical. For
 the security theorem, we formally reduce the security
-of our compiler to the security of the back-end cryptographic
-protocol (by also invoking our correctness theorem). We also prove a formal security theorem for our partitioning
+of our compiler to the security of the  \mpc back-end
+ (by also invoking our correctness theorem). We also prove a formal security theorem for our partitioning
 scheme.
 
 \subsubsection*{Evaluation} We have implemented the \tool toolchain
