@@ -38,10 +38,12 @@ about the client's input or output, and that the client learns nothing
 about the server classifier, beyond what is revelaed by the output
 label.
 
+Since its introduction in 1980s, there has been a long
+sequence of work that has transformed 2PC from a mere theoretical tool to
+something practically efficient and usable.
 Our goal is to build a framework that enables programmers, who are not
 experts in cryptography, to easily program efficient and scalable \mpc
-protocols. Since its introduction in 1980s, there has been a long
-sequence of work along the same lines. To understand the
+protocols.  To understand the
 state-of-the-art, let us consider an example underlying many
 secure prediction algorithms. Say Alice wants to write
 a \mpc protocol to securely
@@ -61,7 +63,7 @@ Sharemind~\cite{sharemind}, \cite{lambdaps} etc.) that would
 automatically compile it to a \mpc protocol. However, all of these
 frameworks use cryptographic backends that take as input
 the computation expressed as either a boolean
-circuit~(\cite{yao,gmw}) or an arithmetic circuit~(\cite{gentry}).
+circuit~(\cite{yao,gmw}) or an arithmetic circuit~(\cite{sss,viff,gentry}). \TODO{check!}
 %
 The efficiency of the generated \mpc protocol is thus bounded by the
 efficiency of representing the computation in \emph{one} of
@@ -86,10 +88,10 @@ different parts of the computation is cumbersome and error-prone.
 Alternatively, Alice can use a tool such as ABY (Demmlet et
 al.~\cite{aby}) that allows
 the computation to be expressed as a combination of arithmetic and
-boolean circuits. However, here the programming interface is quite
+boolean circuits. However, here, the programming interface is quite
 low-level -- the programmer is required to first manually split the
 computation into arithmetic and boolean components, and then write the
-circuits for all the componenets manually, including the appropriate
+circuits for all the components manually, including the appropriate
 inter-conversion gates between them. Clearly, writing correct
 and efficient protocols in such a framework is beyond an average
 programmer who does not understand the various trade-offs between
@@ -149,7 +151,7 @@ scalable \mpc protocols from high-level programs devoid of any
 cryptographic details. The generated protocols comprise combinations
 of arithmetic and boolean circuits and have performance comparable to
 or better than the custom, specialized
-protocols from previous work~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
+protocols from previous works~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
 These papers (and others) cite the inefficiency of generic \mpc as the major motivation
 behind the design of specialized protocols. Using \tool, we empirically  demonstrate
 the surprising fact that generic \mpc implementations are much more efficient than what they were believed to be. 
