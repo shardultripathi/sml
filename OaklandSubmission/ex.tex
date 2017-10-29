@@ -19,12 +19,12 @@ toolchain. We give a brief overview of each of these phases below.
 \subsubsection*{Source language}
 Consider the example $w^Tx >b$ from Section~\ref{sec:intro}, where
 $w$ and $b$ constitute the server's input (a classifier) and $x$ is
-the client's input vector. Figure~\ref{fig:ex-sml} shows \tool code
-for this example. The code first reads the inputs of the two parties
-using the \ls{input1} and \ls{input2} expressions. It then uses a
+the client's input vector. Figure~\ref{fig:ex-sml} shows the \tool code
+for this example. The code first reads the server's (client's) input using
+ \ls{input1} (\ls{input2}). It then uses a
 \ls{for} loop to compute \ls{acc}, the dot product of \ls{w} and
 \ls{x}. Finally, the code outputs the result of comparing \ls{acc}
-with \ls{b} only to the client.
+with \ls{b} only to the client using \ls{output2}.
 
 \tool source language is a simple, imperative language that enables
 the programmers to express \mpc computations in terms of their
@@ -47,7 +47,7 @@ The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
 components translate into API calls into our crypto back-end
-(ABY). For instance, for the code in Figure~\ref{fig:ex-sml}, the \tool
+(ABY). E.g., for the code in Figure~\ref{fig:ex-sml}, the \tool
 compiler realizes that the array index \ls{i} in the dot product loop
 is public, and hence the array accesses need not be compiled
 obliviously. Therefore, it compiles the \ls{for}~loop into a C++
@@ -79,7 +79,7 @@ input to the comparison and multiplexer circuits.
 
 \subsubsection*{Circuit generation and evaluation} The next step in
 \tool is to
-compile the output C++ code and execute it. Doing so reduces away the
+compile the output C++ code and execute it. Doing so evaluates away the
 public parts of the program, including the array accesses, and
 generates a \mpc circuit comprising of arithmetic and boolean gates,
 with appropriate conversion gates. The circuit is then evaluated using
@@ -93,9 +93,9 @@ other high-level languages are limited in their use of a single,
 arithmetic or boolean, crypto back-end). \tool also enables the
 programmer to easily modify their code, while the compiler takes care
 of efficiency. For example, consider in Figure~\ref{fig:ex-sml} a
-change from multiplication to bitwise OR in the \ls{for} loop. It
+change from multiplication to bitwise-or in the \ls{for} loop. It
 turns out that once that's the case, it is more efficient to do both
-the addition and bitwise OR using boolean circuits (if the addition is
+the addition and bitwise-or using boolean circuits (if the addition is
 still done using arithmetic, the conversion cost starts to take
 over). In \tool, the programmer simply needs to change one operator in
 the source code, and the compiler generates efficient code that uses
@@ -106,7 +106,7 @@ revisit many parts of the circuit and change them.
 To summarize, \tool raises the level of abstraction for the
 programmer, and generates efficient crypto protocols automatically,
 while its metatheory provides strong correctness and security
-guarantees.
+guarantees. We provide a formal description of the \tool language next.
 
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
 %% whether a patient has breast cancer or not. Bob trains a machine learning classification model

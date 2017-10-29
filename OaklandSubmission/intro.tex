@@ -167,7 +167,7 @@ uint w[30] = input1(); uint b = input1();
 uint x[30] = input2();
 uint acc = 0;
 for i in [0:30] { acc =  acc + (w[i] * x[i]); }
-output((acc > b) ? 1 : 0, 2) //only to party 2
+output2((acc > b) ? 1 : 0) //only to party 2
 \end{lstlisting}
 \caption{\tool code for $w^Tx >b$}
 \label{fig:ex-sml}
@@ -199,8 +199,8 @@ enjoy these benefits.
 compiles a source program to a hybrid computation consisting
 of \emph{public} and \emph{secret} parts. In the example above, for
 instance, \tool compiler realizes that the array index~\ls{i} is
-public, and hence, the array accesses need not be compiled
-obliviously. Further, within the secret parts, \tool compiler is
+public, and generates non-cryptographic code for it.\rs{check this}
+Further, within the secret parts, \tool compiler is
 aware
 of the cryptographic costs of arithmetic and boolean representations
 of the source language operators. Based on these costs, the compiler
@@ -213,7 +213,7 @@ oblivious of all these cryptographic details. Indeed, \tool is the
 first such cryptographic-cost aware compiler.
 
 \subsubsection*{Scalability (secure code partitioning)} \mpc tools
-often do not scale to large programs. The reason is that
+often do not scale to large functionalities. The reason is that
 most \mpc implementations use a circuit-like representation as an
 intermediate language. Hence, the largest compute that can be done
 securely is upper-bounded by the largest circuit that can fit in the
@@ -233,7 +233,7 @@ addresses the scalability concern (the circuit
 sizes of the sub-programs are now small enough to fit in the memory),
 we still have to address
 the security risk of revealing the intermediate outputs. \tool comes
-to the rescue -- it automatically inserts the required instrumentation
+to the rescue; it automatically inserts the required instrumentation
 to ensure security of these intermediate outputs. As
 we show in our
 evaluation, partitioning allows us to program large applications
@@ -292,7 +292,7 @@ homomorphic encryption and Yao's garbled circuits, these combined
 protocols do not gain much performance over a single
 protocol. 
 Additionally, these prior works provide informal languages
-or libraries and lack formal semantics.
+or libraries that lack formal semantics and static guarantees.
 %Can be added to related work
 % Kerschbaum et al.~\cite{autoS}
 %provide a scheme to automatically assign homomorphic encryption or
