@@ -63,45 +63,52 @@ This classifier requires $d$ multiplications, $d-1$
 additions, and a single comparison.
 
 A more interesting classifier is {\em Na\"{i}ve Bayes} that predicts labels
-from the set $[n]$.
+from the set $[n]$~\cite{shafindss}.
 Here, the input data point is a {\it feature}
 vector $x=(x_0,x_2,\ldots,x_{d-1})^T$ where each $x_j\in [F]$.
-The model has two matrices: a vector $P$ of length $n$ s.t. for each
-$i
-\in [n]$, $P(i)$ is the log-probability that the output label is $i$.
+%The model has two matrices: a vector $P$ of length $n$ s.t. for each
+%$i
+%\in [n]$, $P(i)$ is the log-probability that the output label is $i$.
 %$P(i) \equiv \log p(\ell=i)$, where $p(\ell=i)$ is the likelihood
 %that the output label is $i$ for $i\in[n]$.
-The other matrix $T$ has size $d\times F\times n$ and for each $j\in
-[d], k\in [F], i\in [n]$, the entry $T(j)(k)(i)$ is 
+%The other matrix $T$ has size $d\times F\times n$ and for each $j\in
+%[d], k\in [F], i\in [n]$, the entry $T(j)(k)(i)$ is 
 %\equiv\log p(x_j|\ell=i)$, i.e.,
-the log-probability that  the $j^{th}$ input feature is $k$  conditioned on  the output label being $i$.
-The classifier $C_{P,T}(x)$ outputs
-\[
-{\sf argmax}\ P+\sum_{j=0}^{d-1} T(j)(x_j)
-\]
-The additions in the expression above sum $n$-dimensional vectors.
-The model size of this classifier is $|P|+|T|$.
-This classifier requires $\Theta(ndF)$ comparisons and additions. Note here  that computing $T(j)(x_j)(i)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
-  Section~\ref{sec:impl}). %\nc{Made DG's comment as part of regular text - worth point out}. \cmmt{Is there a +1 etc missing or is this exact?} \nc{By our calculation in Sec 5, it seems that this should be $F/2$ multiplexers}
-
-A {\em decision tree} of size $N$ takes as input an $x\in\R^d$, and the
-model consists of a binary tree of depth $d$ with a boolean predicate
-assigned to each internal node. The root note is the $0^{th}$ node and
-for an internal node $j \in [N]$, the children nodes are $2j+1$ and
-$2j+2$. Each internal node $j\in[N]$ at depth $i$ has a predicate
-$b_{j}^i\equiv x_i\leq w_{j}$. We start evaluating the tree from the
-root and if the predicate at the current node $b_j^i$ is false (resp.,
-true) then $x$ is passed to the left (resp., right) child with
-predicate $b_{2j+1}^{i+1}$ (resp., $b_{2j+2}^{i+1}$). This process is
-repeated till we reach a leaf. The leaves of the tree are labels and
-the output label is the leaf visited by this traversal.
-Such a (binary) decision tree can be encoded as a polynomial (of
-degree linear in depth of the tree) and then the prediction task
-reduces to polynomial evaluation. E.g., a binary tree with depth one
-and size $N=3$ can be encoded as the polynomial
-$(1-b(x))\ell_0 + b(x)\ell_1$ where $b(x)$ is the predicate at the
-root, $\ell_0$ is the label of the left leaf and $\ell_1$ is the label
-of the right leaf.
+%the log-probability that  the $j^{th}$ input feature is $k$  conditioned on  the output label being $i$.
+%The classifier $C_{P,T}(x)$ outputs
+%\[
+%{\sf argmax}\ P+\sum_{j=0}^{d-1} T(j)(x_j)
+%\]
+%The additions in the expression above sum $n$-dimensional vectors.
+%The model size of this classifier is $|P|+|T|$.
+This classifier requires $\Theta(ndF)$ comparisons and additions. %Note here  that computing $T(j)(x_j)(i)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
+  %Section~\ref{sec:impl}). %\nc{Made DG's comment as part of regular text - worth point out}. \cmmt{Is there a +1 etc missing or is this exact?} \nc{By our calculation in Sec 5, it seems that this should be $F/2$ multiplexers}
+%
+A {\em decision tree} of size $N$ takes as input an $x\in\R^d$
+%,
+ and 
+%the
+%model consists of a binary tree of depth $d$ with a boolean predicate
+%assigned to each internal node.
+% The root note is the $0^{th}$ node and
+%for an internal node $j \in [N]$, the children nodes are $2j+1$ and
+%$2j+2$. Each internal node $j\in[N]$ at depth $i$ has a predicate
+%$b_{j}^i\equiv x_i\leq w_{j}$. We start evaluating the tree from the
+%root and if the predicate at the current node $b_j^i$ is false (resp.,
+%true) then $x$ is passed to the left (resp., right) child with
+%predicate $b_{2j+1}^{i+1}$ (resp., $b_{2j+2}^{i+1}$). This process is
+%repeated till we reach a leaf. The leaves of the tree are labels and
+%the output label is the leaf visited by this traversal.
+%Such a (binary) decision tree 
+%and can be encoded as a polynomial (of
+%degree linear in depth of the tree) and then
+ the prediction task
+reduces to polynomial evaluation~\cite{shafindss}.
+% E.g., a binary tree with depth one
+%and size $N=3$ can be encoded as the polynomial
+%$(1-b(x))\ell_0 + b(x)\ell_1$ where $b(x)$ is the predicate at the
+%root, $\ell_0$ is the label of the left leaf and $\ell_1$ is the label
+%of the right leaf.
 
 \subsubsection*{Deep neural nets}
 The next class of classifiers that we benchmark are deep neural nets
@@ -495,6 +502,8 @@ WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k
 \setlength\tabcolsep{6pt}
 \subsection{Partitioning}
 \label{sec:pipeeval}
+We evaluate partitioning next.
+\subsubsection*{CIFAR-10}
 The largest benchmark of \minion~\cite{minionn} is a DNN for CIFAR-10
 dataset~\cite{cifar}. 
 The classifier's task is to categorize colored ($32\times 32$) images
