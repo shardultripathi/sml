@@ -344,11 +344,11 @@ $\sigma^{\ell}[n]$.
 
 Most of the expression forms $\widetilde{e}$ are same as $e$, except
 that the binary operators, and the conditional forms
-are annotated with labels $\ell$, denoting how the operators should be
-evaluated ($\mathcal{P}$ for in-clear, $\mathcal{A}$ for arithmetic circuits, and
-$\mathcal{B}$ for boolean circuits). The
-form $\widetilde{e} \rhd m$ denotes coercing the value of $\widetilde{e}$ to be
-$m$-secret shared, which is useful for share-conversions between boolean and arithmetic and also for sharing public values. 
+are annotated with labels $\ell$.
+Looking ahead, the label determines how the operators are
+evaluated: $\mathcal{P}$-labeled operators are evaluated in-clear, $\mathcal{A}$-labeled operators generate arithmetic circuits, and
+$\mathcal{B}$-labeled operators generate boolean circuits. The
+form $\widetilde{e} \rhd m$ denotes coercing $\widetilde{e}$ to the label $m$, which generates conversions to $m$. 
 %The statements $\widetilde{s}$ are analogous to $s$.
 
 
@@ -602,7 +602,7 @@ of our semantics.
 
 As mentioned earlier, the intermediate language models the code such as in \figureref{ex-aby} output by our compiler. 
 Next, a program in the intermediate language is evaluated to a circuit that can be executed in the distributed setting later. The evaluation to a circuit computes away the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
-Crucially, this phase of the semantics does not have access to the secrets.
+Crucially, this phase of the semantics does not have access to the secret inputs.
 Below, we first provide the language for the circuits used followed by our evaluation rules.
 
 
@@ -612,26 +612,16 @@ Below, we first provide the language for the circuits used followed by our evalu
   \begin{array}{rrcl}
     \ftext{Wire id} & \wire &&\\
     \ftext{Circuit gate} & \gate & ::= & \wire \mid \kw{in}^{m}_{j} \mid \kw{mult}\:\gate_1\:\gate_{2} \mid \kw{gt}\:\gate_{1}\:\gate_{2}\\
-    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \bval \rhd m\\
-    \ftext{Base value} & \bval & ::= & c \mid \gate\\
-    \ftext{Value} & \val & ::= & \bval \mid [\overline{\bval_{i}}]_{n}\\
+    & & \mid & \kw{mux}\:\gate\:\gate_{1}\:\gate_{2} \mid \gate \rhd m \mid c\\
+    \ftext{Sub-circuit} & \val & ::= & \gate \mid [\overline{\gate_{i}}]_{n}\\
     %\ftext{Runtime environment} & \widetilde{\rho} & ::= & \cdot \mid \widetilde{\rho},x \mapsto \val \\
     \ftext{Circuit} & \crct & ::= & \cdot \mid \kw{bind}\:\gate\:\wire \mid \kw{out}\:\gate \mid \crct_{1}; \crct_{2}
   \end{array}
   \]
-\caption{Circuits   \divya{Can we merge base value and circuit gate?}}
+\caption{Circuits  syntax}
 \label{fig:circuits}
 \end{figure}
 
-\subsubsection*{Circuits}
-\figureref{circuits} shows the circuits syntax. A wire id range
-$\wire$ denotes a set of circuit wires that carry the value of a secret
-shared variable in the output circuit (we will concretely define these
-values later as part of the circuit semantics). Circuit gates $\gate$
-are $\wire$, input gates, \kw{mult}, \kw{gt}, and \kw{mux} gates, and
-coerce gates $\bval \rhd m$. \divya{Gates are not just gates but a circuit?} Target values $\val$
-then consist of base values $c$ and $\gate$, and arrays of base
-values. \\
 
 
 
@@ -664,7 +654,7 @@ values. \\
                  \widetilde{\rho} \vdash \widetilde{e} \Downarrow n \quad n < n_{1}
                }
                {
-                 \widetilde{\rho} \vdash x[\widetilde{e}] \Downarrow \bval_n
+                 \widetilde{\rho} \vdash x[\widetilde{e}] \Downarrow \wire_n
                }\\\\
     \inferrule*[lab={\footnotesize{S-SMult}}]
                {
@@ -810,14 +800,24 @@ values. \\
 \label{fig:eval-inter-circ}
 \end{figure}
 
-\subsubsection*{Evaluation to Circuit} \figureref{eval-inter-circ} shows the judgments for the evaluation of the intermediate language to a circuit. 
-The runtime environment is defined as follows:
+\subsubsection*{Evaluation to Circuits}
+\figureref{circuits} shows the syntax of circuits. A wire id range
+$\wire$ denotes a set of circuit wires that carry the runtime value of a
+ variable with a secret label (we will concretely define these runtime
+values later as part of the circuit semantics). Circuit gates $\gate$
+are $\wire$, input gates, \kw{mult}, \kw{gt}, and \kw{mux} gates, 
+coerce gates $\gate \rhd m$, and constant gates.  Sub-circuits $\val$ 
+(generated from $\widetilde e$)
+then consist of gates and arrays of gates. 
+
+ \figureref{eval-inter-circ} shows the judgments for the evaluation of the intermediate language to a circuit. 
+The runtime environment maps variables to sub-circuits and is defined as follows:
 
 \vspace{0.2cm}
 $
 \small
 \begin{array}{rrcl}
-    \ftext{Runtime environment} & \widetilde\rho &::=& \cdot \mid \rho,x \mapsto \val\\
+    \ftext{Runtime environment} & \widetilde\rho &::=& \cdot \mid \widetilde\rho,x \mapsto \val\\
 \end{array}
 $
 \vspace{0.2cm}
@@ -829,26 +829,27 @@ Rules ({\sc{S-PMult}}) and ({\sc{S-SMult}}) illustrate
 the significance of the operator labels. In particular, the rule
 ({\sc{S-PMult}}) evaluates a public multiplication $\widetilde{e_{1}}
 \mulop_{\mathcal{P}} \widetilde{e_{2}}$ to $n_{1} \mulop n_{2}$, similar to the
-source language. In contrast, the rule
+source semantics of \figureref{srcsem}. In contrast, the rule
 ({\sc{S-SMult}}) evaluates a secret multiplication $\widetilde{e_{1}}
 \mulop_{\mathcal{A}} \widetilde{e_{2}}$ to an arithmetic multiplication
 gate $\kw{mult}\:\gate_{1}\:\gate_{2}$. As mentioned above, the intermediate language
 expressions generated by our compiler never have $\widetilde{e_{1}}
 \mulop_{\mathcal{B}} \widetilde{e_{2}}$, as our compiler is aware that $\mulop$
 is more performant using an arithmetic circuit compared to a boolean
-one. Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
-are along the similar lines. Rule ({\sc{S-PCond}}) evaluates a public
+one~\cite{aby}. Rules ({\sc{S-PCond}}) and ({\sc{S-SCond}})
+are along similar lines. Rule ({\sc{S-PCond}}) evaluates a public
 conditional to the value from one of the branches, while the rule
-({\sc{S-SCond}}) evaluates to a \kw{mux} gate that takes input
+({\sc{S-SCond}}) evaluates to a multiplexer \kw{mux} gate that takes input
 circuits from the guard ($\gate_{1}$) and both the branches
 ($\gate_{2}$ and $\gate_{3}$). Once again for performance reasons,
 the target expressions from our compiler do not have
 $\lcond{\mathcal{A}}{e_{1}}{e_{2}}{e_{3}}$. Rules
-({\sc{S-Coerce}}) and ({\sc{S-Inp}}) evaluate to the coerce and input
+({\sc{S-Coerce}}) and ({\sc{S-Inp}}) evaluate to coerce and input
 gates respectively.
 
 Statement evaluation $\widetilde{\rho} \vdash \widetilde{s} \Downarrow
-\widetilde{\rho}_{1}; \chi$ evaluates statements $\widetilde{s}$ to produce a new
+\widetilde{\rho}_{1}; \chi$ evaluates a statement $\widetilde{s}$ under 
+the environment $\widetilde{\rho}$  to produce a new
 environment $\widetilde{\rho}_{1}$, and a circuit $\crct$. A circuit $\crct$ (shown
 in \figureref{circuits}) is either empty, \kw{bind}-ing of a
 circuit gate $\gate$ to wire $\wire$, \kw{out} gate, or a sequence of
@@ -875,8 +876,8 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 
 
 \subsubsection*{Circuit semantics} Evaluating a program in the intermediate language produces a
-circuit over the secret data to be computed using an \mpc protocol in the distributed setting. With
-our circuit semantics, we model the \emph{functional} aspect of a \mpc protocol, parametrized by the sharing functions.
+circuit over the secret data to be computed using a \mpc protocol in the distributed setting. With
+our runtime circuit semantics, we model the \emph{functional} aspect of a \mpc protocol, parametrized by cryptographic encoding and decoding functions.
 
 During the circuit evaluation, the wire ranges $r$ are
 mapped to (random) strings $b$. The semantics of these strings is
@@ -884,26 +885,27 @@ given by pairs of encode-decode algorithms, written as
 $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$ (where $m$ is either
 $\mathcal{A}$ or $\mathcal{B}$). 
 More concretely,
-$\mathcal{E}_{m}(c)$ returns a pair of two string $b_{1}$ and $b_{2}$
+$\mathcal{E}_{m}(c)$ returns a pair of two strings $b_{1}$ and $b_{2}$
  with the property that
-$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. We assume that the underlying \mpc
+$\mathcal{D}_{m}(b_{1}, b_{2}) = c$. 
+The string $b_i$ denotes the $i^{th}$ party's {\it share} of $c$.
+We assume that the underlying \mpc
 protocol instantiates $\mathcal{E}_{m}$ and $\mathcal{D}_{m}$
 appropriately. For ABY protocol \cite{aby}, algorithms $(\mathcal{E}_{\mathcal{A}},\mathcal{D}_{\mathcal{A}})$ (resp. $(\mathcal{E}_{\mathcal{B}},\mathcal{D}_{\mathcal{B}})$) correspond to the arithmetic (resp. boolean) sharing and reconstruction algorithms.
 
 
-\figureref{cktsem} gives the judgements for evaluation of circuit by the two parties using the \mpc protocol. The circuit environment for party $j$ is defined as follows:
+\figureref{cktsem} gives the judgements for evaluation of circuits by the two parties using the \mpc protocol. The circuit environment  is a map from wires to shares and is defined as follows:
 
 \vspace{0.2cm}
 $
 \small
 \begin{array}{rrcl}
-    \ftext{Circuit environment} & \widehat\rho_j &::=& \cdot \mid \widehat\rho_j,\wire \mapsto b_j\\
+    \ftext{Circuit environment} & \widehat\rho &::=& \cdot \mid \widehat\rho,\wire \mapsto b\\
 \end{array}
 $
 \vspace{0.2cm}
 
-\divya{strings $b$ are not formally defined.}
-
+We use $\widehat\rho_j$ to denote the circuit environment for party $j.$ 
 We give the 
 judgments $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate
 \Downarrow b_{1}, b_{2}$, and $\widehat{\rho}_{1}, \widehat{\rho}_{2}
@@ -919,8 +921,7 @@ $(b_{12}, b_{22})$ are combined to $n_{2}$. The final output of the
 \kw{mult} gate is then $\mathcal{E}_{\mathcal{A}}(n_{1} \mulop n_{2})$. Note
 that this is a functional description of how the \kw{mult} gate
 evaluates, of course, concretely $n_{1}$ and $n_{2}$ are not observed
-by the parties. Rule ({\sc{C-Coerce}}) creates the shares using the
-scheme for $m$. Coming to the evaluation of circuits, the evaluation
+by the parties. Rule ({\sc{C-Coerce}}) creates the shares using  $\mathcal{E}_m$. The evaluation
 of \kw{bind} updates the mapping of $\wire$ in the input environments, and
 the rule ({\sc{C-Out}}) outputs the clear value $c$ to the
 observations.
@@ -1026,51 +1027,66 @@ observations.
                }
 \end{array}
   \]
-\caption{Circuit semantics (selected rules)}
+\caption{Circuit semantics in a distributed runtime(selected rules)}
 \label{fig:cktsem}
 \end{figure}
 
 
 
 
-\subsubsection*{Correctness theorem} We first define a judgment for
-translation of environments, $\Gamma \vdash \rho \leadsto
-\widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$. The
-judgment is defined inductively on $\Gamma$, and establishes that
-the static environment $\Gamma$ is consistent with the runtime
-environments $\rho$, $\widetilde{\rho}$, and $\widehat{\rho}_{1}$ and
-$\widehat{\rho}_{2}$. As an example, if $x:\kw{uint}^{\mathcal{P}} \in
-\Gamma$, the judgment checks that $\rho(x) = \widetilde{\rho}(x) =
-n$, for some $n$. \divya{This judgement is not clear. If I am correct, it says that for public values $\rho$ and $\widetilde{\rho}$ are consistent and for secret values $\rho$ has values and $\widehat{rho}_j$ contain shares.} We elide the judgment, providing the full definition
-in the supplementary material.
-
-With this judgment in hand, the correctness theorem is as follows:
+%\subsubsection*{Correctness theorem}
+Finally, the correctness theorem is as follows (the environments on the left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
 
 \begin{theorem}[Correctness]\label{theorem:correctness}
-  $\forall\:\Gamma, s, \widetilde{s}, \Gamma_{1}, \rho, \widetilde{\rho}, \widehat{\rho}_{1}, \widehat{\rho}_{2}$, if:
-
-  \begin{enumerate}
-  \item $\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$
-  \item $\Gamma \vdash \rho \leadsto \widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$
-  \end{enumerate}
-
-  then $\exists \rho_{1}, O_{1}, \widetilde{\rho}_{1}, \chi, \widehat{\rho}'_{1}, \widehat{\rho}'_{2}, O_{2}$, s.t.
-
-  \begin{enumerate}[label=(\alph*)]
-  \item $\rho \vdash s \Downarrow \rho_{1}; O_{1}$
-  \item $\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}_{1}; \chi$
-  \item $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \chi \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O_{2}$
-  \item $\Gamma_{1} \vdash \rho_{1} \leadsto \widetilde{\rho}_{1}; \widehat{\rho}'_{1}, \widehat{\rho}'_{2}$
-  \item $O_{1} = O_{2}$
-  \end{enumerate}
-  
+ $\forall\: s, \widetilde{s}$, if $\vdash s \leadsto \widetilde{s} \mid \_$  then $\exists  O , \chi$, s.t.  $\vdash s \Downarrow \_; O$, $ \vdash \widetilde{s} \Downarrow \_; \chi$, and $ \vdash \chi \Downarrow \_, \_; O$  
 \end{theorem}
 
 The theorem states that if a source statement $s$ is well-typed, and
 compiles to $\widetilde{s}$ in intermediate language, then $s$ terminates in the source
-semantics with observations $O_{1}$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
-circuit semantics with observations $O_{2}$, where $O_{1} = O_{2}$
-Furthermore, the final environments are also in the compilation
-relation. \divya{Should we call the judgement between environs as compilation relation?}
-Due to space reasons, we provide the proof in \cite{anonymized}.
+semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
+circuit semantics with the same observations $O$. 
+Therefore, well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the protocol produces the same outputs as the source semantics.
+% We first define a judgment for
+%translation of environments, $\Gamma \vdash \rho \leadsto
+%\widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$. The
+%judgment is defined inductively on $\Gamma$, and establishes that
+%the static environment $\Gamma$ is consistent with the runtime
+%environments $\rho$, $\widetilde{\rho}$, and $\widehat{\rho}_{1}$ and
+%$\widehat{\rho}_{2}$. 
+%As an example, if $x:\kw{uint}^{\mathcal{P}} \in
+%\Gamma$, the judgment checks that $\rho(x) = \widetilde{\rho}(x) =
+%n$, for some $n$. On the other hand, if $x:\kw{uint}^{m} \in
+%\Gamma$ then the judgement checks that $\mathcal{D}_m( \widehat{\rho}_{1}(\widetilde{\rho}(x)),\widehat{\rho}_{2}(\widetilde{\rho}(x)))=\rho(x)$.
+%%We elide the judgment, providing the full definition
+%%in the supplementary material.
+%With this judgment,
+%the correctness theorem is as follows:
+%
+%\begin{theorem}[Correctness]\label{theorem:correctness}
+%  $\forall\:\Gamma, s, \widetilde{s}, \Gamma_{1}, \rho, \widetilde{\rho}, \widehat{\rho}_{1}, \widehat{\rho}_{2}$, if:
+%
+%  \begin{enumerate}
+%  \item $\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$
+%  \item $\Gamma \vdash \rho \leadsto \widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$
+%  \end{enumerate}
+%
+%  then $\exists \rho_{1}, O_{1}, \widetilde{\rho}_{1}, \chi, \widehat{\rho}'_{1}, \widehat{\rho}'_{2}, O_{2}$, s.t.
+%
+%  \begin{enumerate}[label=(\alph*)]
+%  \item $\rho \vdash s \Downarrow \rho_{1}; O_{1}$
+%  \item $\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}_{1}; \chi$
+%  \item $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \chi \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O_{2}$
+%  \item $\Gamma_{1} \vdash \rho_{1} \leadsto \widetilde{\rho}_{1}; \widehat{\rho}'_{1}, \widehat{\rho}'_{2}$
+%  \item $O_{1} = O_{2}$
+%  \end{enumerate}
+%  
+%\end{theorem}
+%
+%The theorem states that if a source statement $s$ is well-typed, and
+%compiles to $\widetilde{s}$ in intermediate language, then $s$ terminates in the source
+%semantics with observations $O_{1}$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
+%circuit semantics with observations $O_{2}$, where $O_{1} = O_{2}$
+%%Furthermore, the final environments are also in the compilation
+%%relation. \divya{Should we call the judgement between environs as compilation relation?}
+%Due to space reasons, we provide the proof in \cite{anonymized}.
 
