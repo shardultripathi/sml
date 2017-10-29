@@ -415,9 +415,7 @@ Each image in this dataset is a greyscale $28\times 28$ image of
 digits 0 to 9.
 The first model that the tutorial describes is a softmax regression
 that provides an accuracy of 92\%. The classifier evaluates
-\[
- \mathsf{argmax}\ W\matmul x+b
-\]
+$ \mathsf{argmax}\ W\matmul x+b$.
 Here, $x$ is a 784 length vector obtained from the input image,
 each $W$ is a $10\times 784$ matrix, and each $b$ is a $10$ length
 vector.
