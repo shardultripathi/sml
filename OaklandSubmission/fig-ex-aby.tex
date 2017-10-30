@@ -4,16 +4,10 @@
 Circuit* ycirc = s[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = s[S_ARITH]->GetCircuitBuildRoutine();
 ...
-if(role == SERVER) { //read the classifier
-  for(uint32_t i = 0; i < 30; i++) {
-    fin >> w[i];
-    a_w[i] = acirc->PutINGate(w[i], bitlen, SERVER);
-    fin >> b;
-    a_b = acirc->PutINGate(b, bitlen, SERVER); 
-  ...
-  }
-} else { //role == CLIENT, read x as a_x
-...
+if(role == SERVER) { 
+  //Put gate to read the classifier
+} else { //role == CLIENT
+  //Put gate to read x
 }
 
 for(uint32_t i = 0; i < 30; i++) { //dot product$~\label{line:dotproductloop}$
