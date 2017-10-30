@@ -33,7 +33,7 @@ details. The language provides multi-dimensional arrays, conditional
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \ls{if}~statements, and special syntax for input/output.
 
-\input{fig-ex-aby}
+
 
 \subsubsection*{\tool compiler}
 \tool compiler takes as input a source program and produces a C++
@@ -75,6 +75,8 @@ lines~\ref{line:convacc} and~\ref{line:convb}, the compiler converts
 \ls{a_acc} and \ls{a_b} to boolean representation, before they are
 input to the comparison and multiplexer circuits.
 
+\input{fig-ex-aby}
+
 \subsubsection*{Circuit generation and evaluation} The next step in
 \tool is to
 compile the output C++ code and execute it. Doing so evaluates away the
@@ -107,6 +109,9 @@ To summarize, \tool raises the level of abstraction for the
 programmer, and generates efficient \mpc protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees. 
+
+
+
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
 %% whether a patient has breast cancer or not. Bob trains a machine learning classification model
 %% that results in a vector $w$ (say of length 30) and a scalar $b$.
