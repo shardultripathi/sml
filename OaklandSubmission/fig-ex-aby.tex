@@ -5,12 +5,12 @@ Circuit* ycirc = s[S_YAO]->GetCircuitBuildRoutine();
 Circuit* acirc = s[S_ARITH]->GetCircuitBuildRoutine();
 ...
 if(role == SERVER) { 
-  //Put gate to read the classifier
+  //Put gates to read w and b
 } else { //role == CLIENT
-  //Put gate to read x
+  //Put gates to read x
 }
 
-for(uint32_t i = 0; i < 30; i++) { //dot product$~\label{line:dotproductloop}$
+for(uint32_t i = 0; i < 30; i++) { //acc = w^Tx$~\label{line:dotproductloop}$
   share * a_t_0 = acirc->PutMULGate(a_w[i], a_x[i]);$~\label{line:dotmulgate}$
   a_acc = acirc->PutADDGate(a_acc, a_t_0 );$~\label{line:dotaddgate}$
 }

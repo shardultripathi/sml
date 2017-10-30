@@ -22,7 +22,7 @@ $w$ and $b$ constitute the server's input (a classifier) and $x$ is
 the client's input vector. Figure~\ref{fig:ex-sml} shows the \tool code
 for this example. The code first reads the server's (resp. client's) input using
  \ls{input1} (resp. \ls{input2}). It then uses a
-\ls{for} loop to compute \ls{acc}, the dot product of \ls{w} and
+\ls{for} loop to compute \ls{acc}, the inner product of \ls{w} and
 \ls{x}. Finally, the code outputs the result of comparing \ls{acc}
 with \ls{b} only to the client using \ls{output2}.
 
@@ -46,9 +46,9 @@ computation.
 The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
-components translate into API calls into our crypto back-end
+components translate into API calls into our \mpc back-end
 (ABY). E.g., in Figure~\ref{fig:ex-sml}, the \tool
-compiler realizes that the array index \ls{i} in the dot product loop
+compiler realizes that the array index \ls{i} in the inner product loop
 is public, and hence the access locations need not be hidden.
 Therefore, it compiles the \ls{for}~loop into a C++
 \ls{for}~loop that will be executed in-clear
@@ -57,7 +57,7 @@ Therefore, it compiles the \ls{for}~loop into a C++
 Within the secret components, the \tool compiler is ``cryptographic
 cost-aware'', and appropriately picks either arithmetic or boolean
 circuit representations for different sub-componenets. For example,
-the compiler realizes that the dot product computation is more
+the compiler realizes that the inner product computation is more
 efficient in the arithmetic representation, and therefore it builds
 the corresponding circuit using the arithmetic circuit builder
 \ls{acirc} (lines~\ref{line:dotmulgate} and~\ref{line:dotaddgate}). On
@@ -84,11 +84,13 @@ with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
 
 We can now concretely see the advantages of \tool. Unarguably, it is
-easier for a developer to program, and get right, the code in
+easier for a developer to program and get right the code in
 Figure~\ref{fig:ex-sml}, rather than the code in
-Figure~\ref{fig:ex-aby} (as we mentioned in Section~\ref{sec:intro},
-other high-level languages are limited in their use of a single,
-arithmetic or boolean, crypto back-end). \tool also enables the
+Figure~\ref{fig:ex-aby}.
+% (as we mentioned in Section~\ref{sec:intro},
+%other high-level languages are limited in their use of a single,
+%arithmetic or boolean, crypto back-end). 
+\tool also enables the
 programmer to easily modify their code, while the compiler takes care
 of efficiency. For example, consider in Figure~\ref{fig:ex-sml} a
 change from multiplication to bitwise-or in the \ls{for} loop. It
@@ -102,7 +104,7 @@ code, she either has to sacrifice performance, or she would have to
 revisit many parts of the circuit and change them.
 
 To summarize, \tool raises the level of abstraction for the
-programmer, and generates efficient crypto protocols automatically,
+programmer, and generates efficient \mpc protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees. 
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
