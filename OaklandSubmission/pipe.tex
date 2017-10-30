@@ -98,7 +98,9 @@ decomposition $\prog = \prog_1||\prog_2||\ldots||\prog_k$.  For every
 $1\leq i\leq k$, let $\prot_i$ be the \mpc protocol output by our
 framework for $\progn_i$. Our construction for programs $\progn_i$
 ensures that if $\prog$ is well-typed, then for each $1\leq i \leq k$,
-$\progn_i$ is well-typed. Then, by \theoremref{security}, $\prot_i$
+$\progn_i$ is well-typed. Then, by \theoremref{security}, $\prot_i$,
+the \mpc protocol that realizes the output circuit of
+$\widetilde{\progn_i}$,
 securely realizes $\progn_i$. That is, for every $1\leq i \leq k-1$,
 the protocol $\prot_i$ provides observations $r_i$ to Alice and $o_i$
 to Bob. And, protocol $\prot_k$ provides observation $z$ to both Alice
