@@ -46,7 +46,7 @@ computation.
 The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
-components translate into API calls into our crypto back-end
+components translate into API calls into our \mpc back-end
 (ABY). E.g., in Figure~\ref{fig:ex-sml}, the \tool
 compiler realizes that the array index \ls{i} in the dot product loop
 is public, and hence the access locations need not be hidden.
@@ -104,7 +104,7 @@ code, she either has to sacrifice performance, or she would have to
 revisit many parts of the circuit and change them.
 
 To summarize, \tool raises the level of abstraction for the
-programmer, and generates efficient crypto protocols automatically,
+programmer, and generates efficient \mpc protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees. 
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
