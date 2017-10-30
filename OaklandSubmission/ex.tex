@@ -20,8 +20,8 @@ toolchain. We give a brief overview of each of these phases below.
 Consider the example $w^Tx >b$ from Section~\ref{sec:intro}, where
 $w$ and $b$ constitute the server's input (a classifier) and $x$ is
 the client's input vector. Figure~\ref{fig:ex-sml} shows the \tool code
-for this example. The code first reads the server's (client's) input using
- \ls{input1} (\ls{input2}). It then uses a
+for this example. The code first reads the server's (resp. client's) input using
+ \ls{input1} (resp. \ls{input2}). It then uses a
 \ls{for} loop to compute \ls{acc}, the dot product of \ls{w} and
 \ls{x}. Finally, the code outputs the result of comparing \ls{acc}
 with \ls{b} only to the client using \ls{output2}.
@@ -47,10 +47,10 @@ The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
 components translate into API calls into our crypto back-end
-(ABY). E.g., for the code in Figure~\ref{fig:ex-sml}, the \tool
+(ABY). E.g., in Figure~\ref{fig:ex-sml}, the \tool
 compiler realizes that the array index \ls{i} in the dot product loop
-is public, and hence the array accesses need not be compiled
-obliviously. Therefore, it compiles the \ls{for}~loop into a C++
+is public, and hence the access locations need not be hidden.
+Therefore, it compiles the \ls{for}~loop into a C++
 \ls{for}~loop that will be executed in-clear
 (line~\ref{line:dotproductloop}).
 
@@ -65,10 +65,8 @@ the other hand, since the comparison with \ls{b}, and the conditional
 expression computation are more efficient in the boolean
 representation, the \tool compiler uses the Yao circuit builder
 \ls{ycirc} to build the corresponding circuits
-(lines~\ref{line:condyaobegin} to~\ref{line:condyaoend})\footnote{As
-  we mention in
-  Section~\ref{sec:impl}, in our usage of ABY, boolean is synonymous
-  with Yao.}.
+(lines~\ref{line:condyaobegin} to~\ref{line:condyaoend})\footnote{In our usage of ABY, boolean is synonymous
+  with Yao (Section~\ref{sec:impl}).}.
 
 Using both arithmetic and boolean representations requires conversions between them. The \tool compiler also
 instruments these conversion gates accordingly. For example, in

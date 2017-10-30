@@ -74,7 +74,7 @@ takes as inputs $x,r_{i-1},r_i$ from Alice and $y,o_{i-1}$ from Bob,
 runs $\prog_i$
 on inputs $x,y$ and state $o_{i-1}-r_{i-1}$ (where $-$ denotes
 subtraction in the ring $(\mathbb{Z},+)$) and then outputs $s_i+r_i$
-only to Bob. Again, Alice's output from $\prog_i$ is $r_i$. The last
+only to Bob and $r_i$ only to Alice. The last
 program $\prog'_k$ takes inputs $x,y,r_{k-1},o_{k-1}$, runs $\prog_k$
 on inputs $x,y$ and state $o_{k-1}-r_{k-1}$ and outputs $z$ to both
 parties.

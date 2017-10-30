@@ -10,8 +10,7 @@ about the model beyond what is revealed from the output.
 To begin, we first implement the benchmarks from Bost et al.~\cite{shafindss}
 and \minion~\cite{minionn} (both of which study the same setting),
 and show that the performance of the high-level code written in \tool
-is comparable to their hand-crafted protocols
-(Section~\ref{sec:shallow} and Section~\ref{sec:dnneval}).
+is comparable to their hand-crafted protocols.
 %
 Next, we demonstrate the generality and programmability aspects of
 \tool by implementing state-of-the-art machine learning models from
@@ -20,8 +19,10 @@ provide the first 2PC implementation of \bonsai.
 %
 We
 implement a Deep Neural Network (DNN) for CIFAR-10
-dataset~\cite{cifar} from \minion~\cite{minionn} to illustrate the use
-of partitioning in \tool. Finally, we evaluate \tool on the task of matrix factorization~\cite{valeriaMatrix}. 
+dataset~\cite{cifar} from \minion~\cite{minionn} and matrix factorization~\cite{valeriaMatrix}
+to illustrate the use
+of partitioning in \tool.
+%Finally, we evaluate \tool on the task of matrix factorization~\cite{valeriaMatrix}. 
 
 We present the numbers for two network settings, a LAN setting and
 a cross-continent WAN setting. The round trip time between the server
@@ -42,10 +43,10 @@ standard in machine learning) and describe our benchmarks next.
 \subsection{Benchmarks description}
 %\divya{notation can be moved somewhere... } \\
 
-We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector $x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i = \mathsf{max}\ \{x_1,\ldots,x_d\}$. We focus on the machine learning models for {\it classification}. A classifier $C$ uses a trained model to {\it predict} a
+We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector $x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i = \mathsf{max}\ \{x_0,\ldots,x_{d-1}\}$. We focus on the machine learning models for {\it classification}. A classifier $C$ uses a trained model to {\it predict} a
 label $\ell$ for an input data point $x$. For example, given a
 data point which is a tuple of humidity and temperature 
-a classifier might be able to predict a label ``will rain'' or ``will not rain''.
+a classifier can predict a label ``will rain'' or ``will not rain''.
 The {\it model size} of a classifier is the number of parameters in the model.
 For example, the model size of the classifier in~\figureref{ex-sml} is $|w|+1=31$.
 The {\it
@@ -107,7 +108,7 @@ A {\em decision tree} of size $N$ takes as input an $x\in\R^d$
 %and can be encoded as a polynomial (of
 %degree linear in depth of the tree) and then
  the prediction task
-reduces to polynomial evaluation~\cite{shafindss}.
+reduces to evaluation of a $d$-degree polynomial~\cite{shafindss}.
 % E.g., a binary tree with depth one
 %and size $N=3$ can be encoded as the polynomial
 %$(1-b(x))\ell_0 + b(x)\ell_1$ where $b(x)$ is the predicate at the
@@ -245,7 +246,8 @@ Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25  & 727 & 20\\
 Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36  & 795 & 20\\
 \hline
 \end{tabular}
- \caption{Linear classification results. We compare our results (columns 5, 6, 7) with~\cite{shafindss} (columns 3 and 4)}
+ \caption{Linear classification results. We compare \tool (LAN, WAN, Comm)
+ with~\cite{shafindss} (Prev. Time, Prev. Comm).}
  \label{tab:lc} 
 \end{table}
 
@@ -264,7 +266,8 @@ Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6  & 73k & 50\\
 Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 \hline
 \end{tabular}
-\caption{Na\"{i}ve Bayes results. We compare our results (columns 6 , 7, 8) with~\cite{shafindss} (columns 4 and 5)}
+\caption{Na\"{i}ve Bayes results. We compare \tool (LAN, WAN, Comm)
+ with~\cite{shafindss} (Prev. Time, Prev. Comm).}
  \label{tab:nb} 
 \end{table}
 
@@ -290,7 +293,7 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 % \label{tab:dt} 
 %\end{table*}
 
-\begin{table}
+\begin{table}[t]
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
 Dataset  & $N$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}& \#Gates & LOC\\
@@ -300,7 +303,8 @@ Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 3324 & 20\\
 ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
 \hline
 \end{tabular}
-\caption{Decision tree benchmarks. We compare our results (columns 5 , 6, 7) with~\cite{wu} (columns 3 and 4)}
+\caption{Decision tree benchmarks.We compare \tool (LAN, WAN, Comm)
+ with~\cite{wu} (Prev. Time, Prev. Comm).}
  \label{tab:dt} 
 \end{table}
 
@@ -333,8 +337,8 @@ has better performance, despite using a generic 2PC,
 as opposed to custom designed protocols developed by Bost et
 al. Moreover, they remark that in their setup, generic Yao-based 2PC
 did not scale to the smallest of their Na\"{i}ve Bayes classifiers, so
-they had to scale down the prediction task, and even then their
-implementation was 500x slower. Whereas, we show that by using a
+they had to scale down the prediction task, and even then Yao-based \mpc
+was 500x slower. Whereas, we show that by using a
 cryptographic-cost aware compiler, we can scale generic 2PC to real
 prediction tasks, and get performance competitive to or better than the
 specialized protocols. Table~\ref{tab:dt} 
@@ -355,9 +359,9 @@ specialized protocol, while \tool uses a generic 2PC protocol
 The first benchmark  is the DNN described in
 SecureML~\cite{secureml} (Figure 10 in~\cite{minionn}).
 It has three fully connected layers with square as the activation function.
-This DNN is light-weight as it requires only arithmetic computations
-(additions and multiplications) 
-except for the $\mathsf{argmax}$ at the end of the network.
+%This DNN is light-weight as it requires only arithmetic computations
+%(additions and multiplications) 
+%except for the $\mathsf{argmax}$ at the end of the network.
 Next, we implement the DNN described in Cryptonets~\cite{cryptonets} (Figure 11 in~\cite{minionn})
 in \tool.
 This DNN also uses square as the activation function and has one
@@ -406,16 +410,17 @@ CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 9480k & 35k & 154\\
 \hline
 \end{tabular}
 
- \caption{DNN benchmarks. We compare our results (columns 4 , 5, 6) with~\cite{minionn} (columns 2 and 3)}
+ \caption{DNN benchmarks. We compare \tool (LAN, WAN, Comm)
+ with~\cite{minionn} (Prev. Time, Prev. Comm).}
  \label{tab:nn} 
 \end{table}
 
 
-In Table~\ref{tab:nn}, columns 2 and 3 show the time taken by \minion.
-The column ``Model size'' is the number of parameters in the
+In Table~\ref{tab:nn}, 
+the column ``Model size'' is the number of parameters in the
 trained model.
 We observe that our performance is competitive with specialized
-\minion protocols, for both LAN and the WAN settings. Further, lines
+\minion protocols, for both the LAN and the WAN settings. Further, lines
 of \tool source code required is still small. 
 We note that \minion and \tool implementations are both based on ABY.
 These results are surprising as \minion has a much more efficient
@@ -447,7 +452,7 @@ The next classifer in the Tensorflow tutorial is a convolution neural net with t
 (with 32 output channels) and two fully connected layers with ReLU as the activation function.
 This DNN is both bigger and more accurate than the DNNs presented in the previous section.
 In particular, it has an accuracy of 99.2\%.
-Since, we are not aware of any other tools that has used this
+Since, we are not aware of any other tools that have used this
 model as a benchmark, we only report numbers for \tool.
 We observe that this DNN can take a minute per prediction in the WAN
 setting and is the largest benchmark that we have evaluated without
@@ -470,31 +475,6 @@ CNN        &  30.5        & 60.3        & 2955         & 6082k & 4163k &  42104k
  \caption{Tensorflow tutorial benchmarks}
  \label{tab:tf} 
 \end{table}
-
-
-We next present \bonsai~\cite{bonsai} results on three
-standard datasets: character recognition (Chars4k~\cite{campos},
-accuracy 74.71\%), text recognition (USPS~\cite{hull}, accuracy
-94.4\%), and object categorization (WARD~\cite{yang}, accuracy
-95.7\%). 
-The \bonsai models are already over integers and no porting from
-floating-point is required.
-We implement the trained classifiers in \tool for all the benchmarks
-from~\cite{bonsai},
-and show the represenative results in Table~\ref{tab:bonsai}.
-Out of all the benchmarks from~\cite{bonsai}, the dataset WARD
-requires the largest model. 
-The column ``depth''  shows the depth of the
-tree used by \bonsai. The size of \tool 
-program grows with the depth of the tree, as the straightforward \tool
-implementation requires a loop for each layer of the
-tree\footnote{We remark here that our current language does not support functions (which we leave for future work) and with this support, LOC would be even lower.}. 
-
-To summarize, by providing first 2PC implementations of
-state-of-the-art classifiers, we have demonstrated the expressiveness
-of \tool. We discuss scalability next.
-%dataset | size | gates | and | mul | depth | length | comm | timeL | timeW
-
 \setlength\tabcolsep{3.5pt}
 \begin{table}
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c|}
@@ -512,6 +492,31 @@ WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k
  \caption{Bonsai benchmarks}
  \label{tab:bonsai} 
 \end{table}
+
+We next present \bonsai~\cite{bonsai} results on three
+standard datasets: character recognition (Chars4k~\cite{campos},
+accuracy 74.71\%), text recognition (USPS~\cite{hull}, accuracy
+94.4\%), and object categorization (WARD~\cite{yang}, accuracy
+95.7\%). 
+The \bonsai models are already over integers and no porting from
+floating-point is required.
+We implement the trained classifiers in \tool for all the benchmarks
+from~\cite{bonsai},
+and show the represenative results in Table~\ref{tab:bonsai}.
+Out of all the benchmarks from~\cite{bonsai}, the dataset WARD
+requires the largest model. 
+The column ``depth''  shows the depth of the
+tree used by \bonsai. The size of \tool 
+program grows with the depth of the tree, as the straightforward \tool
+implementation requires a loop for each layer of the
+tree\footnote{We remark here that our current language does not support functions (which we leave for future work) and with this support, LOC would be lower and independent of depth.}. 
+
+To summarize, by providing first 2PC implementations of
+state-of-the-art classifiers, we have demonstrated the expressiveness
+of \tool. We discuss scalability next.
+%dataset | size | gates | and | mul | depth | length | comm | timeL | timeW
+
+
 \setlength\tabcolsep{6pt}
 \subsection{Secure code partitioning}
 \label{sec:pipeeval}
@@ -529,7 +534,7 @@ involves multiplying a $64\times 576$ matrix with a
 $576\times 1024$ matrix. The sixth stage performs a ReLU and a
 convolution. The final stage has four convolutions, five ReLUs, and a
 fully connected layer. The total number of lines of \tool code for
-this benchamrk is 336 lines.
+this benchmark is 336 lines.
 
 \begin{table}
 \begin{tabular}{|c|c|c|c |c|c|c|}
@@ -546,8 +551,26 @@ Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  
  \label{tab:cifar} 
 \end{table}
 
+\begin{table}[t]
+\begin{tabular}{|c|c|c|c |c|c| c|}
+\hline
+  Stage         &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & depth & \#Gates & LOC\\
+\hline
+1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
+\hline
+2    &  193        & 1095        & 31945        & 30916    & 37m & 516 \\
+\hline
+3    &  178        & 627        & 29810        & 16369    & 32m  & 478  \\
+\hline
+Total    &  546      & 2384        & 91571        & --    & 102m & 1494 \\
+\hline
+\end{tabular}
+
+ \caption{Partitioning results for matrix factorization. The time reported by~\cite{valeriaMatrix} for this computation is 10440 seconds.}
+ \label{tab:factor} 
+\end{table}
 Table~\ref{tab:cifar} shows the end-to-end numbers as
-well as the numbers for the sixth (the heaviest) stage. 
+well as the numbers for the sixth stage, which is the heaviest. 
 The number of gates are in millions, hence the suffix `m' in the last
 three columns.
 For this DNN, the specialized \minion protocol takes 544 seconds and
@@ -579,24 +602,6 @@ The second stage involves sorting and gradient computations and is the heaviest 
 The third  stage is similar to the first stage. The results are presented in Table~\ref{tab:factor}.
 
 
-\begin{table}
-\begin{tabular}{|c|c|c|c |c|c| c|}
-\hline
-  Stage         &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & depth & \#Gates & LOC\\
-\hline
-1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
-\hline
-2    &  193        & 1095        & 31945        & 30916    & 37m & 516 \\
-\hline
-3    &  178        & 627        & 29810        & 16369    & 32m  & 478  \\
-\hline
-Total    &  546      & 2384        & 91571        & --    & 102m & 1494 \\
-\hline
-\end{tabular}
-
- \caption{Partitioning results for matrix factorization. The time reported by~\cite{valeriaMatrix} for this computation is 10440 seconds.}
- \label{tab:factor} 
-\end{table}
 
 We observe that in the LAN setting, we are about 19 times faster than~\cite{valeriaMatrix} and in the WAN
 setting we are about 4 times faster. The main source of these significant speedups is that, unlike~\cite{valeriaMatrix}, \tool does not need to convert the functionality into boolean circuits. 
@@ -604,7 +609,7 @@ However, this benchmark requires more lines of code than the previous benchmarks
 because of  Batcher's sort (450 lines of \tool code in each stage).
 However, the current programmer effort seems miniscule compared to the mammoth implementation effort
 put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuit based
-crypto-backend to this benchmark.
+backend to this benchmark.
 
 
 %stage | time | comm | gates | mul | add | depth

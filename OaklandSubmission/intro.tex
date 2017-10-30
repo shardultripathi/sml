@@ -8,22 +8,25 @@
 %% \aseem{The intuition of this paragraph is conveyed in rest of the
 %% intro already?}
 
-%% Today it is hard for the developers to program secure applications
-%% using cryptographic techniques. Typical developers lack a deep
-%% understanding of the cryptographic protocols, and therefore cannot be
-%% expected to use them correctly and efficiently on their own.
-%% Ideally, a developer would declare the functionality in a general
-%% purpose, high-level programming language and a
-%% tool, e.g. a compiler, would generate an efficient protocol that
-%% implements the functionality securely, while hiding the cryptography
-%% behind-the-scenes. This paper presents such a framework for Secure
-%% Two-party Computation (\mpc).
-
+ Today it is hard for the developers to program secure applications
+ using cryptographic techniques. Typical developers lack a deep
+ understanding of the cryptographic protocols, and therefore cannot be
+ expected to use them correctly and efficiently on their own.
+ Ideally, a developer would declare the functionality in a general
+ purpose, high-level programming language and a
+ tool, e.g. a compiler, would generate an efficient protocol that
+ implements the functionality securely, while hiding the cryptography
+ behind-the-scenes. 
+ 
+ This paper presents such a framework for Secure
+ Two-party Computation (\mpc),
+%
 %Most cryptographic tools rely on circuit as abstractions for any general computation but real-life developers write programs. It is critical to address this fundamental  representation gap to make cryptography accessible to non-crypto specialist developers. In this work, we address this gap for the case of secure multi-party computation.
-
+%
 %Most cryptographic tools are very hard to use non-crypto specialist developers. The task becomes even more tedious and error-prone for the case of secure multiparty computation since different protocol implementations require the function to be expressed in different representations such as Boolean or Arithmetic circuits. To make cryptography accessible to non-crypto specialist developers, we need to design systems that do crypto automatically and satisfy the properties of ... 
-
-Secure Two-party Computation (\mpc)~(\cite{yao,gmw}) is a powerful
+%
+%Secure Two-party Computation (\mpc)~(\cite{yao,gmw}) is
+a powerful
 cryptographic technique that allows two mutually distrusting parties
 to compute a publicly known joint function of their secret inputs in a way that both
 the parties learn nothing about the inputs of each other beyond what
@@ -38,12 +41,13 @@ about the client's input or output, and that the client learns nothing
 about the server classifier, beyond what is revelaed by the output
 label.
 
-Since its introduction in 1980s, there has been a long
-sequence of work that has transformed 2PC from a mere theoretical tool to
-something practically efficient and usable.
-Our goal is to build a framework that enables programmers, who are not
-experts in cryptography, to easily program efficient and scalable \mpc
-protocols.  To understand the
+%Since its introduction in 1980s, there has been a long
+%sequence of work that has transformed 2PC from a mere theoretical tool to
+%something practically efficient and usable.
+%Our goal is to build a framework that enables programmers, who are not
+%experts in cryptography, to easily program efficient and scalable \mpc
+%protocols. 
+To understand the
 state-of-the-art, let us consider an example underlying many
 secure prediction algorithms. Say Alice wants to write
 a \mpc protocol to securely
@@ -144,12 +148,11 @@ to~\cite{shafindss,wu,minionn,valeriaMatrix}) for her tasks.
 %Write high level overview of programming language and tool.. \divya{have some preamble}
 
 This paper presents \tool\footnote{Read as ``easy peasy'',
-stands for Easy 2 Party Computation.}, a new \mpc framework.
-\tool is the first
+stands for Easy 2 Party Computation.}, the first
 ``cryptographic-cost aware'' framework that generates efficient and
 scalable \mpc protocols from high-level programs devoid of any
-cryptographic details. The generated protocols comprise combinations
-of arithmetic and boolean circuits and have performance comparable to
+cryptographic details. The generated protocols use combinations of
+arithmetic and boolean circuits and have performance comparable to
 or better than the custom, specialized
 protocols from previous works~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
 These papers (and others) cite the inefficiency of generic \mpc as the major motivation
@@ -256,8 +259,9 @@ successfully terminate
 (e.g. there are no array index out-of-bounds errors), with identical
 observable outputs. For
 the security theorem, we formally reduce the security
-of our compiler to the security of the  \mpc back-end
- (by also invoking our correctness theorem). We also prove a formal security theorem against semi-honest (or, ``honest but curious") adversaries for our partitioning
+of the compiler output, against semi-honest (or, ``honest but curious") adversaries,
+ to the security of the  \mpc back-end. 
+ We also prove a formal security theorem against semi-honest  adversaries for our partitioning
 scheme (Section~\ref{sec:ld} and Section~\ref{sec:pipe}).
 
 \subsubsection*{Evaluation} We have implemented \tool

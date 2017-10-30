@@ -545,7 +545,7 @@ form $\widetilde{e} \rhd m$ denotes coercing $\widetilde{e}$ to the label $m$, w
 \label{fig:compile}
 \end{figure}
 
-\subsubsection*{Source to intermediate compilation judgments} We provide the compilation
+\subsubsection*{Source to intermediate compilation} We provide the compilation
 rules in \figureref{compile}. We present the rules in a
 declarative style, where the rules are non-syntax
 directed, and the labels $\ell$ are chosen
@@ -601,9 +601,9 @@ of our semantics.
 
 
 As mentioned earlier, the intermediate language models the code such as in \figureref{ex-aby} output by our compiler. 
-Next, a program in the intermediate language is evaluated to a circuit that can be executed in the distributed setting later. The evaluation to a circuit computes away the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
+Next, a program in the intermediate language is evaluated to a circuit that can be executed in the distributed runtime later. The evaluation to a circuit computes away the public parts of the program and also \emph{flattens} the arrays so that the circuits are unaware of the array structure. 
 Crucially, this phase of the semantics does not have access to the secret inputs.
-Below, we first provide the language for the circuits used followed by our evaluation rules.
+Below, we first provide the language for the circuits followed by the evaluation rules.
 
 
 \begin{figure}
