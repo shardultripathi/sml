@@ -22,7 +22,7 @@ $w$ and $b$ constitute the server's input (a classifier) and $x$ is
 the client's input vector. Figure~\ref{fig:ex-sml} shows the \tool code
 for this example. The code first reads the server's (resp. client's) input using
  \ls{input1} (resp. \ls{input2}). It then uses a
-\ls{for} loop to compute \ls{acc}, the dot product of \ls{w} and
+\ls{for} loop to compute \ls{acc}, the inner product of \ls{w} and
 \ls{x}. Finally, the code outputs the result of comparing \ls{acc}
 with \ls{b} only to the client using \ls{output2}.
 
@@ -84,11 +84,13 @@ with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
 
 We can now concretely see the advantages of \tool. Unarguably, it is
-easier for a developer to program, and get right, the code in
+easier for a developer to program and get right the code in
 Figure~\ref{fig:ex-sml}, rather than the code in
-Figure~\ref{fig:ex-aby} (as we mentioned in Section~\ref{sec:intro},
-other high-level languages are limited in their use of a single,
-arithmetic or boolean, crypto back-end). \tool also enables the
+Figure~\ref{fig:ex-aby}.
+% (as we mentioned in Section~\ref{sec:intro},
+%other high-level languages are limited in their use of a single,
+%arithmetic or boolean, crypto back-end). 
+\tool also enables the
 programmer to easily modify their code, while the compiler takes care
 of efficiency. For example, consider in Figure~\ref{fig:ex-sml} a
 change from multiplication to bitwise-or in the \ls{for} loop. It
