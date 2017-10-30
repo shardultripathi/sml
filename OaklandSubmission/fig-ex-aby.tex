@@ -10,7 +10,7 @@ if(role == SERVER) {
   //Put gates to read x
 }
 
-for(uint32_t i = 0; i < 30; i++) { //acc = w^Tx$~\label{line:dotproductloop}$
+for(uint32_t i = 0; i < 30; i++) { //acc = w$^{\text{{\color{red}T}}}$x$~\label{line:dotproductloop}$
   share * a_t_0 = acirc->PutMULGate(a_w[i], a_x[i]);$~\label{line:dotmulgate}$
   a_acc = acirc->PutADDGate(a_acc, a_t_0 );$~\label{line:dotaddgate}$
 }
