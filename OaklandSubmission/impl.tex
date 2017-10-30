@@ -21,7 +21,7 @@ shift,
 logical and arithmetic right shifts, bitwise-(and, or, xor), unary
 negation, 
 bitwise-negation, logical-(not, and, or, xor), and comparisons (less
-than, greater than, equality).  \TODO{Say something about our compiler being crypto cost aware; some ops always in either A or B and add can be in both}
+than, greater than, equality).  
 Because of their high cost, integral division and floating-point
 operators are not supported natively by \tool. 
 However, we have implemented integral division in 30 lines of \tool,
@@ -49,7 +49,7 @@ size $n$ requires ${n}-1$ multiplexers in \tool.
 
 We use an off-the-shelf solver
 (SeaHorn~\cite{seahorn}) to bound check the array indices
-($P\vDash e < n$
+($\models e < n$
 in ({\sc {T-Read}}) and ({\sc{T-Write}})),
 Figure~\ref{fig:compile}). We take the \tool source program and
 translate it as an input to the solver. The solver takes less
@@ -67,8 +67,14 @@ We leave a more sophisticates type inference procedure for future work.
 The compilation rules of Figure~\ref{fig:compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.
-The \tool implementation performs  the standard ``common subexpression elimination"
-optimization~\cite{dragonbook} to reduce these coercions.
+Since \tool is aware of the cryptographic costs associated with these coercions,
+it tries to minimize them using several optimizations.
+For instance, if boolean shares of a variable are available in scope and the variable is involved in
+an addition then \tool performs the addition in boolean rather than first coercing boolean to arithmetic
+and then performing an arithmetic addition. However, multiplication is always performed in arithmetic
+as the cost of a boolean multiplication is much higher than the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean~\cite{aby}.
+Other optimizations include the standard ``common subexpression elimination"
+optimization~\cite{dragonbook}.
 On each coercion, \tool memorizes the pair of arithmetic
 share and boolean share involved in the coercion. 
 \tool invalidates such pairs when the variables corresponding to the

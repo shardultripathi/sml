@@ -45,7 +45,10 @@ standard in machine learning) and describe our benchmarks next.
 We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector $x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i = \mathsf{max}\ \{x_1,\ldots,x_d\}$. We focus on the machine learning models for {\it classification}. A classifier $C$ uses a trained model to {\it predict} a
 label $\ell$ for an input data point $x$. For example, given a
 data point which is a tuple of humidity and temperature 
-a classifier might be able to predict a label as ``will rain'' or ``will not rain''. The {\it
+a classifier might be able to predict a label ``will rain'' or ``will not rain''.
+The {\it model size} of a classifier is the number of parameters in the model.
+For example, the model size of the classifier in~\figureref{ex-sml} is $|w|+1=31$.
+The {\it
   accuracy} of a classifier refers to the fraction of data points that
 the classifier labels correctly from a given set of test data
 points.
@@ -56,12 +59,13 @@ the input is a data point $x\in\R^d$,
 and the model is a vector $w\in\R^d$.
  The possible labels are
 $\ell\in\{\mathit{true},\mathit{false}\}$ and the classifier is
-$C_w\equiv w^T\matmul x>0$, where $w^T$ denotes the transpose
-of matrix $w$, $\matmul$ denotes matrix multiplication (with a vector in this case) and $a>b$ returns $\mathit{true}$ if $a>b$ and $\mathit{false}$ otherwise. 
-The {\it model size} of this classifier, i.e., the number of parameters in the model is $|w|$, i.e., $d$.
-This classifier requires $d$ multiplications, $d-1$
-additions, and a single comparison.
-
+$C_w\equiv w^Tx>0$.
+%, where $w^T$ denotes the transpose
+%of matrix $w$, $\matmul$ denotes matrix multiplication (with a vector in this case) and $a>b$ returns %$\mathit{true}$ if $a>b$ and $\mathit{false}$ otherwise. 
+%The {\it model size} of this classifier, i.e., the number of parameters in the model is $|w|$, i.e., $d$.
+%This classifier requires $d$ multiplications, $d-1$
+%additions, and a single comparison.
+%
 A more interesting classifier is {\em Na\"{i}ve Bayes} that predicts labels
 from the set $[n]$~\cite{shafindss}.
 Here, the input data point is a {\it feature}
@@ -169,10 +173,11 @@ Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
 and is zero otherwise. 
 The operation $\circ$ is a pointwise multiplication of two vectors, $W_j$'s and $V_j$'s
 are matrices of appropriate dimensions. The activation function $f$ is given by $f(y) = y$ if
-$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise ($f$ on vectors and matrices is defined point-wise on every element of the vector/matrix). \bonsai can be
-seen as a variant of decision trees where the prediction is a function
-of the path traversed from root to the leaf and not just the leaf
-itself.
+$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise ($f$ on vectors and matrices is defined point-wise on every element of the vector/matrix).
+%\bonsai can be
+%seen as a variant of decision trees where the prediction is a function
+%of the path traversed from root to the leaf and not just the leaf
+%itself.
 
 In the following, we implement these classifiers in \tool and report
 the time taken for making secure predictions. Ideally, the machine
@@ -182,8 +187,9 @@ As is standard, we port the classifers to integer manipulating
 programs by scaling the models and rounding~\cite{minionn}. These
 ported classifiers are then implemented in \tool.
 
-\subsection{Standard classifiers}
-\label{sec:shallow}
+\subsection{Secure prediction}
+\noindent\textbf{Standard classifiers}
+%\label{sec:shallow}
 We evaluate the three standard classifiers, linear, Na\"{i}ve Bayes, and
 decision trees, from~\cite{shafindss} on the following data sets from the UCI
 machine learning repository~\cite{uci}:
@@ -192,10 +198,10 @@ Credit Approval data set, Audiology (Standardized) data set, Nursery
 data set, and ECG (electrocardiogram) classification data
 from~\cite{barni}.
 
-\subsubsection*{Linear classifier}The results for linear
-classification are in Table~\ref{tab:lc}. The
-input and the model are both vectors of length $d$. The columns
-``Prev. time'' and ``Prev. comm'' show the time and the total
+The results for linear
+classification are in Table~\ref{tab:lc}.
+The input and the model are both vectors of length $d$. 
+The columns ``Prev. time'' and ``Prev. comm'' show the time and the total
 network communication reported by Bost et al.~\cite{shafindss} for a
 network setting with 40ms
 round trip time, which is same as our WAN setting. The total execution
@@ -244,26 +250,8 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36  & 795 & 20\\
 \end{table}
 
 
-\subsubsection*{Na\"{i}ve Bayes} The results for Na\"{i}ve Bayes are
-in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input
-feature vector $x$ and $F$ is the number of possible values of $x_i$
-for each $i \in [d]$.
-Although, there are no multiplications in these benchmarks, these do
-have a significant number of comparisons (due to array look-ups using
-secret indices) that
-result in many boolean-and gates. %(13k/750k denote 13000/75000). 
-As before columns ``Prev. time'' and ``Prev. comm.'' (columns 4 and 5)
-show the numbers reported
-by Bost et al.~\cite{shafindss}. We observe that \tool generated code
-has better performance, despite using a generic 2PC,
-as opposed to custom designed protocols developed by Bost et
-al. Moreover, they remark that in their setup, generic Yao-based 2PC
-did not scale to the smallest of their Na\"{i}ve Bayes classifiers, so
-they had to scale down the prediction task, and even then their
-implementation was 500x slower. Whereas, we show that by using a
-cryptographic-cost aware compiler, we can scale generic 2PC to real
-prediction tasks, and get performance competitive to or better than the
-specialized protocols.
+%\subsubsection*{Na\"{i}ve Bayes} 
+
 
 \setlength\tabcolsep{2.5pt}
 \begin{table}
@@ -281,16 +269,8 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 \end{table}
 
 
-\subsubsection*{Decision trees}
-Our decision tree numbers in Table~\ref{tab:dt} further validate
-this claim. We compare with the recent work of Wu et al.~\cite{wu} (columns 3 and 4) who
-describe specialized protocols for trees and forests (that perform
-better than~\cite{shafindss}).
-Similar to Bost et al.~\cite{shafindss}, they also remarks that these
-computations are infeasible with Yao-based 2PC.
-Again, we observe that
-the performance of \tool generated generic 2PC
-code is competitive with specialized protocols. 
+%\subsubsection*{Decision trees}
+
 
 
 
@@ -328,8 +308,40 @@ ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
 %dataset  | size | gates | and | mul | depth | length
 
 %dataset | time | comm | timeL | timeW | comm
-\subsection{Deep neural nets}
-\label{sec:dnneval}
+%Our decision tree numbers in Table~\ref{tab:dt} further validate
+%this claim. 
+%We compare with the recent work of Wu et al.~\cite{wu} (columns 3 and 4) who
+%describe specialized protocols for trees and forests (that perform
+%better than~\cite{shafindss}).
+%Similar to Bost et al.~\cite{shafindss}, they also remarks that these
+%computations are infeasible with Yao-based 2PC.
+%Again, we observe that
+%the performance of \tool generated generic 2PC
+%code is competitive with specialized protocols. 
+The results for Na\"{i}ve Bayes are
+in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input
+feature vector $x$ and $F$ is the number of possible values of $x_i$
+for each $i \in [d]$.
+%Although, there are no multiplications in these benchmarks, these do
+%have a significant number of comparisons (due to array look-ups using
+%secret indices) that
+%result in many boolean-and gates. %(13k/750k denote 13000/75000). 
+As before columns ``Prev. time'' and ``Prev. comm.'' (columns 4 and 5)
+show the numbers reported
+by Bost et al.~\cite{shafindss}. We observe that \tool generated code
+has better performance, despite using a generic 2PC,
+as opposed to custom designed protocols developed by Bost et
+al. Moreover, they remark that in their setup, generic Yao-based 2PC
+did not scale to the smallest of their Na\"{i}ve Bayes classifiers, so
+they had to scale down the prediction task, and even then their
+implementation was 500x slower. Whereas, we show that by using a
+cryptographic-cost aware compiler, we can scale generic 2PC to real
+prediction tasks, and get performance competitive to or better than the
+specialized protocols. Table~\ref{tab:dt} 
+compares against the more recent work of~\cite{wu}
+on decision trees and further validates this claim.
+\\\\
+\noindent\textbf{Deep neural nets}
 We evaluate \tool on the DNNs described in SecureML~\cite{secureml},
 Cryptonets~\cite{cryptonets}, and the CNN from \minion~\cite{minionn}. For
 comparison, we consider their implementations from
@@ -360,21 +372,7 @@ arithmetic gates but ReLU requires boolean-and gates.  For a complete
 description of these benchmarks and their accuracies, we refer the
 reader to the original references. 
 
-In Table~\ref{tab:nn}, columns 2 and 3 show the time taken by \minion.
-The column ``Model size'' is the number of parameters in the
-trained model.
-We observe that our performance is competitive with specialized
-\minion protocols, for both LAN and the WAN settings. Further, lines
-of \tool source code required is still small. 
-We note that \minion and \tool implementations are both based on ABY.
-These results are surprising as \minion has a much more efficient
-preprocessing phase and has SIMD 
-(single instruction multiple data) capabilities that allow it to perform
-matrix operations efficiently. In contrast, \tool focuses on generic
-2PC, and such optimizations are part of our future work.
-\minion also reports performance results on a bigger DNN with 7
-convolution layers. In \tool, this benchmark requires partitioning and
-we discuss it in Section~\ref{sec:pipeeval}.
+
 %net | minionT | minionC | timeL | timeW | comm | gates | and | mul | length 
 
 %\setlength\tabcolsep{6.5pt}
@@ -413,8 +411,23 @@ CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 9480k & 35k & 154\\
 \end{table}
 
 
-
-\subsection{State-of-the-art classifiers}
+In Table~\ref{tab:nn}, columns 2 and 3 show the time taken by \minion.
+The column ``Model size'' is the number of parameters in the
+trained model.
+We observe that our performance is competitive with specialized
+\minion protocols, for both LAN and the WAN settings. Further, lines
+of \tool source code required is still small. 
+We note that \minion and \tool implementations are both based on ABY.
+These results are surprising as \minion has a much more efficient
+preprocessing phase and has SIMD 
+(single instruction multiple data) capabilities that allow it to perform
+matrix operations efficiently. In contrast, \tool focuses on generic
+2PC, and such optimizations are part of our future work.
+\minion also reports performance results on a bigger DNN with 7
+convolution layers. In \tool, this benchmark requires partitioning and
+we discuss it in Section~\ref{sec:pipeeval}.
+\\\\
+\noindent\textbf{State-of-the-art classifiers}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
 Its introductory tutorial describes two prediction models for handwritten digit recognition
 using the MNIST dataset~\cite{mnist}.
@@ -500,10 +513,9 @@ WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k
  \label{tab:bonsai} 
 \end{table}
 \setlength\tabcolsep{6pt}
-\subsection{Partitioning}
+\subsection{Secure code partitioning}
 \label{sec:pipeeval}
-We evaluate partitioning next.
-\subsubsection*{CIFAR-10}
+\noindent\textbf{CIFAR-10}
 The largest benchmark of \minion~\cite{minionn} is a DNN for CIFAR-10
 dataset~\cite{cifar}. 
 The classifier's task is to categorize colored ($32\times 32$) images
@@ -519,21 +531,6 @@ convolution. The final stage has four convolutions, five ReLUs, and a
 fully connected layer. The total number of lines of \tool code for
 this benchamrk is 336 lines.
 
-
-Table~\ref{tab:cifar} shows the end-to-end numbers as
-well as the numbers for the sixth (the heaviest) stage. 
-The number of gates are in millions, hence the suffix `m' in the last
-three columns.
-For this DNN, the specialized \minion protocol takes 544 seconds and
-communicates 9272 Mb.
-As with Table~\ref{tab:nn}, \tool generated generic 2PC protocol is
-competitive with \minion here as well. Therefore,
-we believe that with partitioning, \tool can scale to arbitrary sized
-computations while maintaining performance
-competitive with existing specialized protocols. In particular, for a
-large enough DNN, \minion could run
-out of memory but an appropriately partitioned \tool implementation would still
-succeed. 
 \begin{table}
 \begin{tabular}{|c|c|c|c |c|c|c|}
 \hline
@@ -548,5 +545,66 @@ Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  
  \caption{Partitioning results for CIFAR-10. \minion takes 544 seconds and communicates 9272 Mb to evaluate this DNN.}
  \label{tab:cifar} 
 \end{table}
+
+Table~\ref{tab:cifar} shows the end-to-end numbers as
+well as the numbers for the sixth (the heaviest) stage. 
+The number of gates are in millions, hence the suffix `m' in the last
+three columns.
+For this DNN, the specialized \minion protocol takes 544 seconds and
+communicates 9272 Mb.
+As with Table~\ref{tab:nn}, \tool generated generic 2PC protocol is
+competitive with \minion here as well. Therefore,
+we believe that with partitioning, \tool can scale to arbitrary sized
+computations while maintaining performance
+competitive with existing specialized protocols. In particular, for a
+large enough DNN, \minion could run
+out of memory but an appropriately partitioned \tool implementation would still
+succeed.
+\\\\
+\noindent\textbf{Matrix factorization}
+\tool, as a language, is not tied to secure prediction and can express more general computations.
+To demonstrate the expressiveness of \tool, we use it to implement secure matrix factorization~\cite{valeriaMatrix}. Abstractly, given a sparse matrix $\mathcal{M}$ of dimensions
+$n\times m$ and $M$ non-zero entries, the goal is to generate a matrix $U$ of dimension $n\times d$ and a matrix
+$V$ of dimension $d\times m$ such that $\mathcal{M}\approx UV$. This operator is useful in recommender systems.
+In particular, Nikolaenko et al.~\cite{valeriaMatrix} shows how to implement a movie recommender system which does not require users to reveal their data in the clear, i.e., the ratings the users have assigned to movies are kept secret. The implementation is a two party computation of an iterative algorithm for matrix factorization (Algorithm~1 in~\cite{valeriaMatrix}).
+This algorithm is based on gradient descent and iteratively converges to a local minima.
+We implement this algorithm in \tool.
+  
+To ensure that the algorithm converges to the right local minima, Nikolaenko et al. require
+36 bits of precision. Since ABY supports either 32-bit or 64-bit integers, our \tool implementation
+manipulates 64-bit variables. For the matrix $\mathcal{M}$ of  user data, Nikolaenko et al. consider $n=940$ users, $m=40$ most popular movies, and $M=14683$ ratings from the MovieLens dataset. The time reported in~\cite{valeriaMatrix}
+for one iteration is 2.9 hours\footnote{~\cite{valeriaMatrix} does not report the network round-trip time.}. This compuation is large enough that we partition each iteration
+into three stages. The first stage involves a Batcher~\cite{Batcher} sorting network followed by a linear pass.
+The second stage involves sorting and gradient computations and is the heaviest stage.
+The third  stage is similar to the first stage. The results are presented in Table~\ref{tab:factor}.
+
+
+\begin{table}
+\begin{tabular}{|c|c|c|c |c|c| c|}
+\hline
+  Stage         &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & depth & \#Gates & LOC\\
+\hline
+1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
+\hline
+2    &  193        & 1095        & 31945        & 30916    & 37m & 516 \\
+\hline
+3    &  178        & 627        & 29810        & 16369    & 32m  & 478  \\
+\hline
+Total    &  546      & 2384        & 91571        & --    & 102m & 1494 \\
+\hline
+\end{tabular}
+
+ \caption{Partitioning results for matrix factorization. The time reported by~\cite{valeriaMatrix} for this computation is 10440 seconds.}
+ \label{tab:factor} 
+\end{table}
+
+We observe that in the LAN setting, we are about 19 times faster than~\cite{valeriaMatrix} and in the WAN
+setting we are about 4 times faster. The main source of these significant speedups is that, unlike~\cite{valeriaMatrix}, \tool does not need to convert the functionality into boolean circuits. 
+However, this benchmark requires more lines of code than the previous benchmarks
+because of  Batcher's sort (450 lines of \tool code in each stage).
+However, the current programmer effort seems miniscule compared to the mammoth implementation effort
+put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuit based
+crypto-backend to this benchmark.
+
 
 %stage | time | comm | gates | mul | add | depth

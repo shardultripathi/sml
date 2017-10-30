@@ -1,8 +1,9 @@
-\section{Conclusions}
+\section{Conclusion}
 \label{sec:conclude}
-
-Therefore, we believe
-that \tool generated code can be a better baseline than Yao-based 2PC
-when comparing against generic 2PC-based implementations for secure
-prediction tasks. \aseem{I don't understand this last sentence. Why is
-  ours a better baseline?} \nc{This last line is more a comment for a ``conclusion'' and is a bit out of place here. I guess we want to say that till recently if generic 2PC using Yao was not feasible, then people had to come up with specialized protocols and didnt have any benchmark or had a poor benchmark (of Yao) to compare their 2PC with. Moving forward, our language generated 2PC can be the baseline benchmark for all 2PC protocols.}
+\tool is the first
+``cryptographic-cost aware'' framework that generates efficient and
+scalable \mpc protocols from high-level programs.
+The generated protocols comprise combinations
+of arithmetic and boolean circuits and have performance comparable to
+or better than the custom, specialized
+protocols from previous works
