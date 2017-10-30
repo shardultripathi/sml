@@ -48,7 +48,7 @@ program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
 components translate into API calls into our \mpc back-end
 (ABY). E.g., in Figure~\ref{fig:ex-sml}, the \tool
-compiler realizes that the array index \ls{i} in the dot product loop
+compiler realizes that the array index \ls{i} in the inner product loop
 is public, and hence the access locations need not be hidden.
 Therefore, it compiles the \ls{for}~loop into a C++
 \ls{for}~loop that will be executed in-clear
@@ -57,7 +57,7 @@ Therefore, it compiles the \ls{for}~loop into a C++
 Within the secret components, the \tool compiler is ``cryptographic
 cost-aware'', and appropriately picks either arithmetic or boolean
 circuit representations for different sub-componenets. For example,
-the compiler realizes that the dot product computation is more
+the compiler realizes that the inner product computation is more
 efficient in the arithmetic representation, and therefore it builds
 the corresponding circuit using the arithmetic circuit builder
 \ls{acirc} (lines~\ref{line:dotmulgate} and~\ref{line:dotaddgate}). On
