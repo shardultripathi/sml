@@ -20,16 +20,18 @@
 Fairplay's Secure Function Definition Language (SFDL)~\cite{fairplay,fairplaymp} and CBMC-GC~\cite{cbmcgc} compile C or Pascal like programs into boolean circuits that are then evaluated using garbled circuits~\cite{yao}.
 ObliVM~\cite{oblivm} protects access patterns using an oblivious RAM~\cite{oram1,oram2} and also uses garbled circuits for compute.
 In Secure Multiparty Computation Language (SMCL)~\cite{smcl},  Java like programs are compiled into arithmetic circuits that are then evaluated using the VIFF framework~\cite{viff}. Wysteria~\cite{wysteria} compiles  programs into boolean circuits and uses a GMW-based backend~\cite{choi,gmw}. 
- Mitchell {\em et al.}~\cite{lambdaps} allow the user to select between Shamir's secret sharing~\cite{sss} and fully homomorphic encryption~\cite{gentry}.   All these tools use either a arithmetic backend or a boolean backend and do not require share conversions.
+ Mitchell {\em et al.}~\cite{lambdaps} allow the user to select between Shamir's secret sharing~\cite{sss} and fully homomorphic encryption~\cite{gentry}.  Unlike \tool, all these tools use either a arithmetic backend or a boolean backend but not a combination of both.
 
 Next, we discuss tools that expose libraries which  developers can use to describe \mpc protocols. 
 % The exact cryptographic protocols that are used by the library  need not be known to the programmer. However, in order 
 To generate efficient protocols for a functionality, the programmer must break the functionality into components and call the appropriate library functions. For example,  ABY \cite{aby} falls in this category. The TASTY tool~\cite{tasty} allows mixing homomorphic encryption based arithmetic computations 
 and garbled circuits based boolean computations and the interconversions between the two are inserted by the programmer explicitly.
 % While, the programmer need not know how ABY implements boolean or arithmetic computation, he or she must know the type of compute (boolean or arithmetic) that is more efficient for specific sub-computations and also explicitly write calls to convert shares from one scheme to another (boolean secret sharing to arithmetic secret sharing and vice-versa). 
-The work of Kerschbaum et al.~\cite{autoS} provides a scheme to automatically assign homomorphic encryption or garbled circuits to each operator in a computation that is expressed as a sequence of dyadic operations. They conjecture that the problem is NP hard and gave a linear programming based solution
-as well as a quadratic time greedy heuristic. Their performance is much poorer than ABY due to the high 
-costs associated with homomorphic encryption~\cite{aby}.
+The work of Kerschbaum et al.~\cite{autoS} provides a scheme to automatically assign homomorphic encryption or garbled circuits to each operator in a computation that is expressed as a sequence of dyadic operations. They conjecture that the problem is NP hard and gave a linear programming based solution as well as a quadratic time greedy heuristic. 
+These techniques are not directly applicable to \tool programs because of for-loops and if-conditions.
+However, we are exploring whether these ideas can be extended to yield a better type inference.
+%Their performance is much poorer than ABY due to the high 
+%costs associated with homomorphic encryption~\cite{aby}.
 %conversion costs between homomorphic encryption and boolean shares~\cite{aby}.  %On the other hand \tool uses a simpler constant time heuristic to assign arithmetic secret sharing or garbled circuits to sub-computations in a richer language with control flow statements such as loops and branches.
 %While the work of Kerschbaum {\em et al.}~\cite{kos14} provides a heuristic to automatically select the protocol for various types of sub-computations, one would still need to manually write the program using the share conversion tools of ABY. Similarly, the TASTY tool~\cite{tasty} provides a way to mix both boolean and arithmetic circuits (using homomorphic encryption for the arithmetic compute). 
 Other examples include the VIFF framework~\cite{viff} for arithmetic computations and Sharemind~\cite{sharemind} (that provides secure 3-party boolean computation). 
@@ -37,7 +39,7 @@ Other examples include the VIFF framework~\cite{viff} for arithmetic computation
 %\noindent{\bf Protocol Implementation:} Tools at this level of abstraction require the programmer to have a deep understanding of how cryptographic secure computation protocols work and the programmer must provide calls to low-level cryptographic building blocks such as oblivious transfer. For example while the programmer need not know the specific oblivious transfer protocol implemented in the backend, he or she still needs to know how to build a secure computation protocol from such building blocks. This abstraction requires the highest knowledge of cryptography from the programmer. Examples of such tools include L1~\cite{lone} and Qilin~\cite{qilin}.
 
 The implementations of \mpc backends  have made  tremendous progress in the last decade.
-For example, the circuits can be optimized for depth~\cite{ddkssz15,cbmcgcdepth}, large garbled circuits can be pipelined~\cite{yao-pipe}, and oblivious RAM~\cite{oram1,oram2} can be used to hide access patterns of MIPS code~\cite{mips}. 
+For example, the circuits can be optimized for depth~\cite{ddkssz15,cbmcgcdepth}, large garbled circuits can be pipelined~\cite{yao-pipe}, and oblivious RAM~\cite{oram1,oram2} can be used to hide access patterns of MIPS code~\cite{mips}. Incorporating these backends would only improve the performance and scalability of \tool implementations.
 
 %\\\\
 %\noindent\textbf{Custom \mpc protocols.} 
