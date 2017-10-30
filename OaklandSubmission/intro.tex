@@ -10,7 +10,7 @@
 
  Today it is hard for the developers to program secure applications
  using cryptographic techniques. Typical developers lack a deep
- understanding of the cryptographic protocols, and therefore cannot be
+ understanding of cryptographic protocols, and therefore cannot be
  expected to use them correctly and efficiently on their own.
  Ideally, a developer would declare the functionality in a general
  purpose, high-level programming language and a
@@ -38,7 +38,7 @@ a label (e.g. a disease, genomics, or spam detection), and the other
 party (the client) holds a private input that it wants to run the
 classifier on. Using \mpc guarantees that the server learns nothing
 about the client's input or output, and that the client learns nothing
-about the server classifier, beyond what is revelaed by the output
+about the classifier, beyond what is revelaed by the output
 label.
 
 %Since its introduction in 1980s, there has been a long
@@ -72,7 +72,7 @@ circuit~(\cite{yao,gmw}) or an arithmetic circuit~(\cite{sss,viff,gentry}). \TOD
 The efficiency of the generated \mpc protocol is thus bounded by the
 efficiency of representing the computation in \emph{one} of
 these representations. For instance, multiplication of two
-$\ell$-bit integers can be either expressed as a boolean circuit of
+$\ell$-bit integers can either be expressed as a boolean circuit of
 size $O(\ell^2)$, or as an arithmetic circuit with 1 multiplication
 gate.
 %
@@ -155,7 +155,7 @@ cryptographic details. The generated protocols use combinations of
 arithmetic and boolean circuits and have performance comparable to
 or better than the custom, specialized
 protocols from previous works~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
-These papers (and others) cite the inefficiency of generic \mpc as the major motivation
+In fact, these papers (and others) cite the inefficiency of generic \mpc as the major motivation
 behind the design of specialized protocols. Using \tool, we empirically  demonstrate
 the surprising fact that generic \mpc implementations are much more efficient than what they were believed to be. 
  %(up to a factor of 19x in our
@@ -230,7 +230,7 @@ prediction, etc. that operate on large amounts of data.
 %cite something here to support this claim?}
 \tool addresses the scalability concern using a novel technique that
 we call secure code partitioning (or partitioning in short). At
-a high level, we break the original program into a sequence of small
+a high level, we decompose the original program into a sequence of small
 sub-programs, which are then sequentially processed by \tool, while
 appropriately threading the intermediate outputs
 along. While this
