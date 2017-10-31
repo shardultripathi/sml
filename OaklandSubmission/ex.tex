@@ -31,14 +31,14 @@ the programmers to express \mpc computations in terms of their
 ``ideal'' functionalities, without dealing with any cryptographic
 details. The language provides multi-dimensional arrays, conditional
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
-\ls{if}~statements, and special syntax for input/output.
+\ls{if}~statements, and special syntax for input/output from each party.
 
 
 
 \subsubsection*{\tool compiler}
 \tool compiler takes as input a source program and produces a C++
-program as output. Figure~\ref{fig:ex-aby}\footnote{This is also how a program written directly in
-  ABY would look like.}. shows the output code for
+program as output. Figure~\ref{fig:ex-aby} shows the output code\footnote{This is also how a program written directly in
+  ABY would look like.} for
 the example in Figure~\ref{fig:ex-sml}. The output program
 contains party-specific code for inputs and outputs
 (\ls{role == SERVER} and \ls{role == CLIENT}), and common code for the
@@ -91,7 +91,7 @@ if(role == SERVER)\;\{
 }$
   //Put gates to read w and b
 $\mathtt{
-\}\;else\;\{\;\;\text{{\color{blue}//role == CLIENT}}
+\}\;else\;\{\;\;\textbf{{\color{blue}//role == CLIENT}}
 }$  
   //Put gates to read x
 $\mathtt{
@@ -99,7 +99,7 @@ $\mathtt{
 }$  
 
 $\mathtt{
-for(uint32\_t\;i\;=\;0;\;i\;<\;30;\;i = i + 1)\;\{\;\;\text{\color{blue}//acc = w}^{\text{{\color{blue}T}}}\text{\color{blue}x}~\label{line:dotproductloop}
+for(uint32\_t\;i\;=\;0;\;i\;<\;30;\;i = i + 1)\;\{\;\;\textbf{\color{blue}//acc = w}^{\textbf{{\color{blue}T}}}\textbf{\color{blue}x}~\label{line:dotproductloop}
 }$
 $\mathtt{
 \;\;\;\;share\;*a\_t\_0 = acirc\rightarrow PutMULGate(a\_w[i], a\_x[i]);~\label{line:dotmulgate}
@@ -146,7 +146,7 @@ party\rightarrow ExecCircuit();
 }$
 
 $\mathtt{
-if(role == CLIENT) \{\;\;\text{\color{blue}//only to the client}
+if(role == CLIENT) \{\;\;\textbf{\color{blue}//only to the client}
 }$
 $\mathtt{
 \;\;\;\;uint32\_t \_o = y\_out\rightarrow get\_clear\_value\langle uint32\_t \rangle();
@@ -164,7 +164,7 @@ $\mathtt{
 \tool is to
 compile the output C++ code and execute it. Doing so evaluates away the
 public parts of the program, including the array accesses, and
-generates a \mpc circuit comprising of arithmetic and boolean gates,
+generates a  circuit comprising of arithmetic and boolean gates,
 with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
 
