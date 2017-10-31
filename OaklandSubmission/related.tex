@@ -28,7 +28,7 @@ To generate efficient protocols for a functionality, the programmer must break t
 and garbled circuits based boolean computations and the interconversions between the two are inserted by the programmer explicitly.
 % While, the programmer need not know how ABY implements boolean or arithmetic computation, he or she must know the type of compute (boolean or arithmetic) that is more efficient for specific sub-computations and also explicitly write calls to convert shares from one scheme to another (boolean secret sharing to arithmetic secret sharing and vice-versa). 
 The work of Kerschbaum et al.~\cite{autoS} provides a scheme to automatically assign homomorphic encryption or garbled circuits to each operator in a computation that is expressed as a sequence of dyadic operations. They conjecture that the problem is NP hard and gave a linear programming based solution as well as a quadratic time greedy heuristic. 
-These techniques are not directly applicable to \tool programs because of for-loops and if-conditions.
+These techniques are not directly applicable to \tool programs because of $\mathtt{for}$-loops and $\mathtt{if}$-conditions.
 However, we are exploring whether these ideas can be extended to yield a better type inference.
 %Their performance is much poorer than ABY due to the high 
 %costs associated with homomorphic encryption~\cite{aby}.
