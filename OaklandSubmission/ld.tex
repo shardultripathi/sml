@@ -844,14 +844,14 @@ Sub-circuits $\val$ (generated from $\widetilde e$) then consist of
 gates and arrays of gates.
 
 \figureref{eval-inter-circ} shows the judgments for the evaluation of
-the intermediate language to a circuit. The runtime environment maps
-variables to sub-circuits and is defined as follows:
+the intermediate language to a circuit. The circuit generation environment maps
+variables to sub-circuits:
 
 \vspace{0.2cm}
 $
 \small
 \begin{array}{rrcl}
-    \ftext{Runtime environment} & \widetilde\rho &::=& \cdot \mid \widetilde\rho,x \mapsto \val\\
+    \ftext{Circuit generation environment} & \widetilde\rho &::=& \cdot \mid \widetilde\rho,x \mapsto \val\\
 \end{array}
 $
 \vspace{0.2cm}
@@ -1070,7 +1070,7 @@ observations.
                }
 \end{array}
   \]
-\caption{Circuit semantics in a distributed runtime(selected rules)}
+\caption{Circuit semantics in a distributed runtime (selected rules)}
 \label{fig:cktsem}
 \end{figure}
 
