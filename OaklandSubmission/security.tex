@@ -27,10 +27,27 @@ from the ideal interaction, except with negligible probability (in the
 security parameter $\secparam$). More precisely, the above two
 distribution ensembles  are computationally indistinguishable. 
 
-We shall assume a cryptographic \mpc backend that securely implements any circuit $\crct$ that is output by our compiler (see \figureref{circuits}). In more detail, this means that for any well-typed source program $s$, let $\crct$ be the circuit output by our compiler (as in \theoremref{correctness}). We assume that there exists a \mpc protocol $\prot$ that securely realizes the functionality $\crct$ and let $\simu_{\tiny{2pc}}$ be the corresponding simulator  (that runs on $\crct$, input of the corrupt party and the output obtained from trusted functionality for $\crct$). We note that the work of \cite{aby} provides such a protocol $\prot$ and simulator $\simu_{\tiny{2pc}}$ for all circuits $\crct$ output by our compiler. We are now ready to state and prove our security theorem.
+We shall assume a cryptographic \mpc backend that securely implements
+any circuit $\crct$ that is output by our compiler
+(see \figureref{circuits}). In more detail, this means that for any
+well-typed source program $s$, let $\crct$ be the output circuit output
+(as in \theoremref{correctness}). We assume that there
+exists a \mpc protocol $\prot$ that securely realizes the
+functionality $\crct$ and let $\simu_{\tiny{2pc}}$ be the
+corresponding simulator  (that runs on $\crct$, input of the corrupt
+party and the output obtained from trusted functionality for
+$\crct$). We note that ABY~\cite{aby} provides such a protocol
+$\prot$ and simulator $\simu_{\tiny{2pc}}$ for all circuits $\crct$
+output in our framework. We now state and prove our
+security theorem. 
  
 \begin{theorem}[Security]\label{theorem:security}
-Let $s$ be any functionality or program in our source language with outputs (or observations) $O_1$, that is compiled into a circuit $\chi$ (as defined in Theorem \ref{theorem:correctness}). Let protocol $\prot$ be the two-party secure computation protocol that securely realizes $\chi$ (as defined above). Then, $\prot$ securely realizes $s$.  
+Let $s$ be any functionality or program in our source language with
+outputs (or observations) $O_1$, that outputs a circuit
+$\chi$ (as defined in Theorem \ref{theorem:correctness}). Let protocol
+$\prot$ be the two-party secure computation protocol that securely
+realizes $\chi$ (as defined above). Then, $\prot$ securely realizes
+$s$.
 \end{theorem}
 
 \noindent {\em Proof.} 
