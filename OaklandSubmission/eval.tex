@@ -66,8 +66,8 @@ $C_w\equiv w^Tx>0$.
 %This classifier requires $d$ multiplications, $d-1$
 %additions, and a single comparison.
 %
-A more interesting classifier is {\em Na\"{i}ve Bayes} that predicts labels
-from the set $[n]$~\cite{shafindss}.
+A more interesting classifier is {\em Na\"{i}ve Bayes}~\cite{shafindss} that predicts labels
+from the set $[n]$.
 Here, the input data point is a {\it feature}
 vector $x=(x_0,x_2,\ldots,x_{d-1})^T$ where each $x_j\in [F]$.
 %The model has two matrices: a vector $P$ of length $n$ s.t. for each
@@ -84,11 +84,11 @@ vector $x=(x_0,x_2,\ldots,x_{d-1})^T$ where each $x_j\in [F]$.
 %{\sf argmax}\ P+\sum_{j=0}^{d-1} T(j)(x_j)
 %\]
 %The additions in the expression above sum $n$-dimensional vectors.
-%The model size of this classifier is $|P|+|T|$.
-This classifier requires $\Theta(ndF)$ comparisons and additions. %Note here  that computing $T(j)(x_j)(i)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
+The model size of this classifier is $\Theta(ndF)$.
+% comparisons and additions. %Note here  that computing $T(j)(x_j)(i)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
   %Section~\ref{sec:impl}). %\nc{Made DG's comment as part of regular text - worth point out}. \cmmt{Is there a +1 etc missing or is this exact?} \nc{By our calculation in Sec 5, it seems that this should be $F/2$ multiplexers}
 %
-A {\em decision tree} of size $N$ takes as input an $x\in\R^d$
+A {\em decision tree} of size $N$ and depth $d$ takes as input an $x\in\R^d$
 %,
  and 
 %the
@@ -258,7 +258,7 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36  & 795 & 20\\
 \begin{table}
 \begin{tabular}{|c|c|c|c|c|c |c|c|c|c|}
 \hline
-Dataset & $d$ & $F$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)} & \#Gates  & LOC\\
+Dataset & $n$ & $F$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)} & \#Gates  & LOC\\
 \hline
 Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6  & 73k & 50\\
 \hline
@@ -294,13 +294,13 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 \setlength\tabcolsep{3.8pt}
 
 \begin{table}[t]
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
-Dataset  & $N$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}& \#Gates & LOC\\
+Dataset  & $d$ & $N$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}& \#Gates & LOC\\
 \hline
-Nursery & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 3324 & 20\\
+Nursery & 4 & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 3324 & 20\\
 \hline
-ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
+ECG & 4 &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
 \hline
 \end{tabular}
 \caption{Decision tree benchmarks.We compare \tool (LAN, WAN, Comm)
@@ -323,9 +323,7 @@ ECG &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
 %the performance of \tool generated generic 2PC
 %code is competitive with specialized protocols. 
 The results for Na\"{i}ve Bayes are
-in Table~\ref{tab:nb}. As before, $d$ denotes the length of the input
-feature vector $x$ and $F$ is the number of possible values of $x_i$
-for each $i \in [d]$.
+in Table~\ref{tab:nb}. As before, $n$ denotes the number of classes and $F$ is the number of features.
 %Although, there are no multiplications in these benchmarks, these do
 %have a significant number of comparisons (due to array look-ups using
 %secret indices) that
@@ -369,7 +367,7 @@ two convolutions (with 16 output channels each) and two fully
 connected layers.  In contrast to the previous two DNNs, it uses
 ReLU for activation and
 has significantly higher number of boolean-and gates.
-Recall, that square activation can be implemented entirely using
+Note that square activation can be implemented entirely using
 arithmetic gates but ReLU requires boolean-and gates.  For a complete
 description of these benchmarks and their accuracies, we refer the
 reader to the original references. 
@@ -440,10 +438,11 @@ The first model that the tutorial describes is a softmax regression
 that provides an accuracy of 92\%. The classifier evaluates
 $ \mathsf{argmax}\ W\matmul x+b$.
 Here, $x$ is a 784 length vector obtained from the input image,
-each $W$ is a $10\times 784$ matrix, and each $b$ is a $10$ length
+ $W$ is a $10\times 784$ matrix, and  $b$ is a $10$ length
 vector.
 We implement this classifier in \tool and present the results in the
-first row of Table~\ref{tab:tf}. We note that a pure boolean circuit for this simple functionality does not fit in the memory of our machines.
+first row of Table~\ref{tab:tf}. 
+%We note that a pure boolean circuit for this simple functionality does not fit in the memory of our machines and cannot be evaluated using garbled circuits.
 
 
 The next classifier in the Tensorflow tutorial is a convolution neural net with two convolutions
@@ -596,8 +595,7 @@ manipulates 64-bit variables. For the matrix $\mathcal{M}$ of  user data, Nikola
 for one iteration is 2.9 hours\footnote{~\cite{valeriaMatrix} does not report the network round-trip time.}. This computation is large enough that we partition each iteration
 into three stages. The first stage involves a Batcher~\cite{Batcher} sorting network followed by a linear pass.
 The second stage involves sorting and gradient computations and is the heaviest stage.
-The third  stage is similar to the first stage. The results are presented in Table~\ref{tab:factor}.
-
+The third  stage is similar to the first stage. The results are presented in Table~\ref{tab:factor}. These circuits have a large depth (column ``depth"); the circuits for secure prediction had depth below 100.
 
 
 We observe that in the LAN setting, we are about 19 times faster than~\cite{valeriaMatrix} and in the WAN
