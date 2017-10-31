@@ -517,7 +517,7 @@ of \tool. We discuss scalability next.
 \setlength\tabcolsep{6pt}
 \subsection{Secure code partitioning}
 \label{sec:pipeeval}
-\noindent\textbf{CIFAR-10}
+\noindent\textbf{CIFAR-10.}
 The largest benchmark of \minion~\cite{minionn} is a DNN for CIFAR-10
 dataset~\cite{cifar}. 
 The classifier's task is to categorize colored ($32\times 32$) images
@@ -581,7 +581,7 @@ large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
 succeed.
 \\\\
-\noindent\textbf{Matrix factorization}
+\noindent\textbf{Matrix factorization.}
 \tool is not tied to secure prediction and can express more general computations.
 To demonstrate this expressiveness, we  implement secure matrix factorization~\cite{valeriaMatrix}. Abstractly, given a sparse matrix $\mathcal{M}$ of dimensions
 $n\times m$ and $M$ non-zero entries, the goal is to generate a matrix $U$ of dimension $n\times d$ and a matrix
