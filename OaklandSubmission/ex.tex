@@ -42,13 +42,13 @@ program as output. Figure~\ref{fig:ex-aby} shows the output code\footnote{This i
 the example in Figure~\ref{fig:ex-sml}. The output program
 contains party-specific code for inputs and outputs
 (\ls{role == SERVER} and \ls{role == CLIENT}), and common code for the
-computation
+computation.
 
 The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
 components translate into API calls into our \mpc back-end
-(ABY). E.g., in Figure~\ref{fig:ex-sml}, the \tool
+(ABY). For example, in Figure~\ref{fig:ex-sml}, the \tool
 compiler realizes that the array index \ls{i} in the inner product loop
 is public, and hence the access locations need not be hidden.
 Therefore, it compiles the \ls{for}~loop into a C++

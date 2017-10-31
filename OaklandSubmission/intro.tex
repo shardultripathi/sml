@@ -8,7 +8,7 @@
 %% \aseem{The intuition of this paragraph is conveyed in rest of the
 %% intro already?}
 
- Today it is hard for the developers to program secure applications
+ Today it is hard for developers to program secure applications
  using cryptographic techniques. Typical developers lack a deep
  understanding of cryptographic protocols, and cannot be
  expected to use them correctly and efficiently on their own.
@@ -66,8 +66,8 @@ ObliVM~\cite{oblivm}, CBMC-GC~\cite{cbmcgc}, SMCL~\cite{smcl},
 Sharemind~\cite{sharemind}, \cite{lambdaps} etc.) that would
 automatically compile it to a \mpc protocol. However, all of these
 frameworks use cryptographic backends that take as input
-the computation expressed as either a boolean
-circuit~(\cite{yao,gmw}) or an arithmetic circuit~(\cite{sss,viff,gentry}). 
+the computation expressed either as a boolean
+circuit~(\cite{yao,gmw}) or as an arithmetic circuit~(\cite{sss,viff,gentry}). 
 %
 The efficiency of the generated \mpc protocol is thus bounded by the
 efficiency of representing the computation in \emph{one} of
@@ -101,7 +101,7 @@ and efficient protocols in such a framework is beyond an average
 programmer who does not understand the various trade-offs between
 arithmetic and boolean circuits, and even for an expert cryptographer,
 writing large computations in such a framework can be tedious and
-error-prone (a sentiment echoed by Demmler et al.~\cite{aby} themselves).
+subject to errors (a sentiment echoed by Demmler et al.~\cite{aby} themselves).
 
 %\item
 A third option for Alice is to earn a PhD in cryptography, and design
