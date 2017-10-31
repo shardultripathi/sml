@@ -166,10 +166,10 @@ The predicted value is
 %(3) The argument to $f$ is a scalar (right?), and so is its output,
 %so then is $\circ$ defined OR is it applying $f$ pointwise to a vector?}
 %\nc{(1) I agree we should do that to be consistent with before. (2) I assumed $f()$ is computed to give a vector somehow and $I_j(x)W_j^TZx$ also gives a vector somehow and then we do $\circ$; I might be wrong. (3) Hmm.. I thought it was a vector, but I dont know how. (4) Can we specify somewhere the dimensions of these matrices?}
+\vspace{-10pt}
 \[
 {\sf argmax} \sum_{j = 0}^{N - 1} I_j(x)[ (W_j^T\matmul Z\matmul x) \circ (f(V_j^T\matmul Z\matmul x))] 
 \]
-
 Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
 and is zero otherwise. 
 The operation $\circ$ is a pointwise multiplication of two vectors, $W_j$'s and $V_j$'s
@@ -547,7 +547,7 @@ Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  
 \hline
 \end{tabular}
 
- \caption{Partitioning results for CIFAR-10. \minion takes 544 seconds and communicates 9272 Mb to evaluate this DNN.}
+ \caption{Partitioning results for CIFAR-10. \minion takes 544 seconds and communicates 9272 Mb.}
  \label{tab:cifar} 
 \end{table}
 
@@ -585,8 +585,8 @@ out of memory but an appropriately partitioned \tool implementation would still
 succeed.
 \\\\
 \noindent\textbf{Matrix factorization}
-\tool, as a language, is not tied to secure prediction and can express more general computations.
-To demonstrate the expressiveness of \tool, we use it to implement secure matrix factorization~\cite{valeriaMatrix}. Abstractly, given a sparse matrix $\mathcal{M}$ of dimensions
+\tool is not tied to secure prediction and can express more general computations.
+To demonstrate this expressiveness, we  implement secure matrix factorization~\cite{valeriaMatrix}. Abstractly, given a sparse matrix $\mathcal{M}$ of dimensions
 $n\times m$ and $M$ non-zero entries, the goal is to generate a matrix $U$ of dimension $n\times d$ and a matrix
 $V$ of dimension $d\times m$ such that $\mathcal{M}\approx UV$. This operator is useful in recommender systems.
 In particular, Nikolaenko et al.~\cite{valeriaMatrix} shows how to implement a movie recommender system which does not require users to reveal their data in the clear, i.e., the ratings the users have assigned to movies are kept secret. The implementation is a two party computation of an iterative algorithm for matrix factorization (Algorithm~1 in~\cite{valeriaMatrix}).
