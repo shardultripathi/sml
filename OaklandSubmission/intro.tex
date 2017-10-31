@@ -12,9 +12,9 @@
  using cryptographic techniques. Typical developers lack a deep
  understanding of cryptographic protocols, and therefore cannot be
  expected to use them correctly and efficiently on their own.
- Ideally, a developer would declare the functionality in a general
+ Ideally, a developer would declare the functionality in a, general
  purpose, high-level programming language and a
- tool, e.g. a compiler, would generate an efficient protocol that
+ tool, e.g., a compiler would generate an efficient protocol that
  implements the functionality securely, while hiding the cryptography
  behind-the-scenes. 
  
@@ -34,7 +34,7 @@ is revealed by their (possibly different) outputs. For example, \mpc
 can be used for {\em secure
 prediction}~(\cite{shafindss,wu,barni,minionn,secureml}),
 where one party (the server) holds a proprietary classifier to predict
-a label (e.g. a disease, genomics, or spam detection), and the other
+a label (e.g., a disease, genomics, or spam detection), and the other
 party (the client) holds a private input that it wants to run the
 classifier on. Using \mpc guarantees that the server learns nothing
 about the client's input or output, and that the client learns nothing
@@ -54,7 +54,7 @@ a \mpc protocol to securely
 compute $w^Tx >b$. Here $w$ (a vector) and $b$ (a scalar) constitute
 the server classifier, and $x$ is the client's input vector. Further,
 $\cdot^{T}$ is the matrix transpose operator, and $w^Tx$ denotes the
-inner product of  $w^{T}$ and $x$. Alice has following options.
+inner product of  $w$ and $x$. Alice has following options.
 
 %\begin{tiret}
 %\item
@@ -93,7 +93,7 @@ Alternatively, Alice can use a tool such as ABY (Demmlet et
 al.~\cite{aby}) that allows
 the computation to be expressed as a combination of arithmetic and
 boolean circuits. However, here, the programming interface is quite
-low-level -- the programmer is required to first manually split the
+low-level: the programmer is required to first manually split the
 computation into arithmetic and boolean components, and then write the
 circuits for all the components manually, including the appropriate
 inter-conversion gates between them. Clearly, writing correct
