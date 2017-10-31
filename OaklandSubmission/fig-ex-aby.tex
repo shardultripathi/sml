@@ -1,37 +1,81 @@
 \begin{figure}
 \begin{lstlisting}[language=C, mathescape=true]
 //circuit builders for arithmetic and boolean
-Circuit* ycirc = s[S_YAO]->GetCircuitBuildRoutine();
-Circuit* acirc = s[S_ARITH]->GetCircuitBuildRoutine();
-...
-if(role == SERVER) { 
+$\mathtt{
+Circuit\;*ycirc = s[S\_YAO]\rightarrow GetCircuitBuildRoutine();
+}$
+$\mathtt{
+Circuit\;*acirc = s[S\_ARITH]\rightarrow GetCircuitBuildRoutine();
+}$
+$\dots$
+$\mathtt{
+if(role == SERVER)\;\{ 
+}$
   //Put gates to read w and b
-} else { //role == CLIENT
+$\mathtt{
+\}\;else\;\{\;\;\text{{\color{red}//role == CLIENT}}
+}$  
   //Put gates to read x
-}
+$\mathtt{
+\}
+}$  
 
-for(uint32_t i = 0; i < 30; i++) { //acc = w$^{\text{{\color{red}T}}}$x$~\label{line:dotproductloop}$
-  share * a_t_0 = acirc->PutMULGate(a_w[i], a_x[i]);$~\label{line:dotmulgate}$
-  a_acc = acirc->PutADDGate(a_acc, a_t_0 );$~\label{line:dotaddgate}$
-}
+$\mathtt{
+for(uint32\_t\;i\;=\;0;\;i\;<\;30;\;i = i + 1)\;\{\;\;\text{\color{red}//acc = w}^{\text{{\color{red}T}}}\text{\color{red}x}~\label{line:dotproductloop}
+}$
+$\mathtt{
+\;\;\;\;share\;*a\_t\_0 = acirc\rightarrow PutMULGate(a\_w[i], a\_x[i]);~\label{line:dotmulgate}
+}$
+$\mathtt{
+\;\;\;\;a\_acc = acirc\rightarrow PutADDGate(a\_acc, a\_t\_0 );~\label{line:dotaddgate}
+}$
+$\mathtt{
+\}
+}$
 
 //convert acc and b from arithmetic to boolean
-share *y_acc = ycirc->PutA2YGate(a_acc);$~\label{line:convacc}$
-share *y_b = ycirc->PutA2YGate(a_b);$~\label{line:convb}$
+$\mathtt{
+share\;*y\_acc = ycirc\rightarrow PutA2YGate(a\_acc);~\label{line:convacc}
+}$
+$\mathtt{
+share\;*y\_b = ycirc\rightarrow PutA2YGate(a\_b);~\label{line:convb}
+}$
 
-share *y_pred = ycirc->PutGTGate (y_acc, y_b);$~\label{line:condyaobegin}$
-uint32_t one = 1 ;
-share *y_1 = ycirc->PutCONSGate(one, bitlen);
-uint32_t zero = 0 ;
-share *y_0 = ycirc->PutCONSGate(zero, bitlen);
-share *y_t = ycirc->PutMUXGate(y_pred, y_1, y_0);$~\label{line:condyaoend}$
+$\mathtt{
+share\;*y\_pred = ycirc\rightarrow PutGTGate(y\_acc, y\_b);~\label{line:condyaobegin}
+}$
+$\mathtt{
+uint32\_t\;one = 1;
+}$
+$\mathtt{
+share\;*y\_1 = ycirc\rightarrow PutCONSGate(one, bitlen);
+}$
+$\mathtt{
+uint32\_t\;zero = 0 ;
+}$
+$\mathtt{
+share\;*y\_0 = ycirc\rightarrow PutCONSGate(zero, bitlen);
+}$
+$\mathtt{
+share\;*y\_t = ycirc\rightarrow PutMUXGate(y\_pred, y\_1, y\_0);~\label{line:condyaoend}
+}$
 
-share *y_out = ycirc->PutOUTGate(y_t, CLIENT);
-party->ExecCircuit();
+$\mathtt{
+share\;*y\_out = ycirc\rightarrow PutOUTGate(y\_t, CLIENT);
+}$
+$\mathtt{
+party\rightarrow ExecCircuit();
+}$
 
-if(role==CLIENT) {  //only to the client
-  uint32_t _o = y_out->get_clear_value<uint32_t>();
-}
+$\mathtt{
+if(role == CLIENT) \{\;\;\text{\color{red}//only to the client}
+}$
+$\mathtt{
+\;\;\;\;uint32\_t \_o = y\_out\rightarrow get\_clear\_value\langle uint32\_t \rangle();
+}$
+$\mathtt{
+\}
+}$
 \end{lstlisting}
 \caption{\tool compiler (partial) output for Figure~\ref{fig:ex-sml}}
 \label{fig:ex-aby}
