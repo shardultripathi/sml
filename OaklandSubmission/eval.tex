@@ -142,7 +142,7 @@ by a convolution layer grows linearly with {\it window size}
 Therefore, fully connected layers are lighter computation-wise compared
 to convolution layers. However, the model size  of fully connected
 layers is larger than those of convolution layers.
-In general, DNNs are computationaly heavy but provide
+In general, DNNs are computationally heavy but provide
 much better accuracies on computer vision tasks than the classifiers
 discussed above.
 
@@ -183,7 +183,7 @@ In the following, we implement these classifiers in \tool and report
 the time taken for making secure predictions. Ideally, the machine
 learning classifiers are mathematical expressions over $\R$ that are
 usually approximated by floating-point operations. 
-As is standard, we port the classifers to integer manipulating
+As is standard, we port the classifiers to integer manipulating
 programs by scaling the models and rounding~\cite{minionn}. These
 ported classifiers are then implemented in \tool.
 
@@ -441,11 +441,11 @@ $ \mathsf{argmax}\ W\matmul x+b$.
 Here, $x$ is a 784 length vector obtained from the input image,
 each $W$ is a $10\times 784$ matrix, and each $b$ is a $10$ length
 vector.
-We implement this classifer in \tool and present the results in the
+We implement this classifier in \tool and present the results in the
 first row of Table~\ref{tab:tf}. We note that a pure boolean circuit for this simple functionality does not fit in the memory of our machines.
 
 
-The next classifer in the Tensorflow tutorial is a convolution neural net with two convolutions
+The next classifier in the Tensorflow tutorial is a convolution neural net with two convolutions
 (with 32 output channels) and two fully connected layers with ReLU as the activation function.
 This DNN is both bigger and more accurate than the DNNs presented in the previous section.
 In particular, it has an accuracy of 99.2\%.
@@ -499,7 +499,7 @@ The \bonsai models are already over integers and no porting from
 floating-point is required.
 We implement the trained classifiers in \tool for all the benchmarks
 from~\cite{bonsai},
-and show the represenative results in Table~\ref{tab:bonsai}.
+and show the representative results in Table~\ref{tab:bonsai}.
 Out of all the benchmarks from~\cite{bonsai}, the dataset WARD
 requires the largest model. 
 The column ``depth''  shows the depth of the
@@ -593,7 +593,7 @@ We implement this algorithm in \tool.
 To ensure that the algorithm converges to the right local minima, Nikolaenko et al. require
 36 bits of precision. Since ABY supports either 32-bit or 64-bit integers, our \tool implementation
 manipulates 64-bit variables. For the matrix $\mathcal{M}$ of  user data, Nikolaenko et al. consider $n=940$ users, $m=40$ most popular movies, and $M=14683$ ratings from the MovieLens dataset. The time reported in~\cite{valeriaMatrix}
-for one iteration is 2.9 hours\footnote{~\cite{valeriaMatrix} does not report the network round-trip time.}. This compuation is large enough that we partition each iteration
+for one iteration is 2.9 hours\footnote{~\cite{valeriaMatrix} does not report the network round-trip time.}. This computation is large enough that we partition each iteration
 into three stages. The first stage involves a Batcher~\cite{Batcher} sorting network followed by a linear pass.
 The second stage involves sorting and gradient computations and is the heaviest stage.
 The third  stage is similar to the first stage. The results are presented in Table~\ref{tab:factor}.
