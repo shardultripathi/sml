@@ -38,7 +38,7 @@ a label (e.g., a disease, genomics, or spam detection), and the other
 party (the client) holds a private input that it wants to run the
 classifier on. Using \mpc guarantees that the server learns nothing
 about the client's input or output, and that the client learns nothing
-about the classifier, beyond what is revelaed by the output
+about the classifier, beyond what is revealed by the output
 label.
 
 %Since its introduction in 1980s, there has been a long
@@ -89,7 +89,7 @@ different parts of the computation is cumbersome and error-prone.
 
 %\item
 
-Alternatively, Alice can use a tool such as ABY (Demmlet et
+Alternatively, Alice can use a tool such as ABY (Demmler et
 al.~\cite{aby}) that allows
 the computation to be expressed as a combination of arithmetic and
 boolean circuits. However, here, the programming interface is quite
@@ -210,7 +210,7 @@ is easy to maintain and modify the programs. Needless to say,
 frameworks that expose low-level circuit APIs to the programmer do not
 enjoy these benefits.
 
-\subsubsection*{Cryptogaphic-cost aware compiler} The \tool compiler
+\subsubsection*{Cryptographic-cost aware compiler} The \tool compiler
 compiles a source program to a hybrid computation consisting
 of \emph{public} and \emph{secret} parts. In the example above, for
 instance, \tool compiler realizes that the array index~\ls{i} is
@@ -222,7 +222,7 @@ of the source language operators. Based on these costs, the compiler
 automatically picks arithmetic or boolean
 representations for different sub-parts, and generates the
 corresponding circuits along with the required inter-conversion
-gates. The outcome is an effcient \mpc protocol combining arithmetic
+gates. The outcome is an efficient \mpc protocol combining arithmetic
 and boolean circuits, while the programmer remains
 oblivious of all these cryptographic details. Indeed, \tool is the
 first such cryptographic-cost aware compiler.
