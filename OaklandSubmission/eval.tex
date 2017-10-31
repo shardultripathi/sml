@@ -20,8 +20,7 @@ provide the first 2PC implementation of \bonsai.
 We
 implement a Deep Neural Network (DNN) for CIFAR-10
 dataset~\cite{cifar} from \minion~\cite{minionn} and matrix factorization~\cite{valeriaMatrix}
-to illustrate the use
-of partitioning in \tool.
+to evaluate partitioning.
 %Finally, we evaluate \tool on the task of matrix factorization~\cite{valeriaMatrix}. 
 
 We present the numbers for two network settings, a LAN setting and
@@ -166,7 +165,7 @@ The predicted value is
 %(3) The argument to $f$ is a scalar (right?), and so is its output,
 %so then is $\circ$ defined OR is it applying $f$ pointwise to a vector?}
 %\nc{(1) I agree we should do that to be consistent with before. (2) I assumed $f()$ is computed to give a vector somehow and $I_j(x)W_j^TZx$ also gives a vector somehow and then we do $\circ$; I might be wrong. (3) Hmm.. I thought it was a vector, but I dont know how. (4) Can we specify somewhere the dimensions of these matrices?}
-\vspace{-10pt}
+%\vspace{-10pt}
 \[
 {\sf argmax} \sum_{j = 0}^{N - 1} I_j(x)[ (W_j^T\matmul Z\matmul x) \circ (f(V_j^T\matmul Z\matmul x))] 
 \]
@@ -330,9 +329,7 @@ for each $i \in [d]$.
 %have a significant number of comparisons (due to array look-ups using
 %secret indices) that
 %result in many boolean-and gates. %(13k/750k denote 13000/75000). 
-As before columns ``Prev. time'' and ``Prev. comm.'' (columns 4 and 5)
-show the numbers reported
-by Bost et al.~\cite{shafindss}. We observe that \tool generated code
+As before, we compare with Bost et al.~\cite{shafindss} and observe that \tool generated code
 has better performance, despite using a generic 2PC,
 as opposed to custom designed protocols developed by Bost et
 al. Moreover, they remark that in their setup, generic Yao-based 2PC
@@ -573,8 +570,8 @@ Table~\ref{tab:cifar} shows the end-to-end numbers as
 well as the numbers for the sixth stage, which is the heaviest. 
 The number of gates are in millions, hence the suffix `m' in the last
 three columns.
-For this DNN, the specialized \minion protocol takes 544 seconds and
-communicates 9272 Mb.
+%For this DNN, the specialized \minion protocol takes 544 seconds and
+%communicates 9272 Mb.
 As with Table~\ref{tab:nn}, \tool generated generic 2PC protocol is
 competitive with \minion here as well. Therefore,
 we believe that with partitioning, \tool can scale to arbitrary sized
@@ -608,7 +605,7 @@ setting we are about 4 times faster. The main source of these significant speedu
 However, this benchmark requires more lines of code than the previous benchmarks
 because of  Batcher's sort (450 lines of \tool code in each stage).
 However, the current programmer effort seems miniscule compared to the mammoth implementation effort
-put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuit based
+put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuits based
 backend to this benchmark.
 
 
