@@ -167,12 +167,22 @@ Below we describe
 the salient features of \tool.
 
 \begin{figure}
-\begin{lstlisting}[language=C]
-uint w[30] = input1(); uint b = input1();
-uint x[30] = input2();
-uint acc = 0;
-for i in [0:30] { acc =  acc + (w[i] * x[i]); }
-output2((acc > b) ? 1 : 0) //only to party 2
+\begin{lstlisting}[language=C,mathescape=true]
+$\mathtt{
+uint\;w[30] = input1();\;\;uint\;b = input1();
+}$
+$\mathtt{
+uint\;x[30] = input2();
+}$
+$\mathtt{
+uint\;acc = 0;
+}$
+$\mathtt{
+for\;i\;in\;[0:30]\;{\;acc\;=\;acc\;+\;(w[i]\;\times\;x[i]);\;}
+}$
+$\mathtt{
+output2((acc > b)\;?\;1\;:\;0)\;\text{{\color{red}//only to party 2}}
+}$
 \end{lstlisting}
 \caption{\tool code for $w^Tx >b$}
 \label{fig:ex-sml}
