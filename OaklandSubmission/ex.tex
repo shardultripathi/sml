@@ -13,13 +13,13 @@
 \label{fig:toolchain}
 \end{figure}
 
-Figure~\ref{fig:toolchain} shows an overview of the \tool
+\figureref{toolchain} shows an overview of the \tool
 toolchain. We give a brief overview of each of these phases below.
 
 \subsubsection*{Source language}
-Consider the example $w^Tx >b$ from Section~\ref{sec:intro}, where
+Consider the example $w^Tx >b$ from \sectionref{intro}, where
 $w$ and $b$ constitute the server's input (a classifier) and $x$ is
-the client's input vector. Figure~\ref{fig:ex-sml} shows the \tool code
+the client's input vector. \figureref{ex-sml} shows the \tool code
 for this example. The code first reads the server's (resp. client's) input using
  \ls{input1} (resp. \ls{input2}). It then uses a
 \ls{for} loop to compute \ls{acc}, the inner product of \ls{w} and
@@ -37,9 +37,9 @@ expressions (the ternary $?\::$ operator), \ls{for}~loops,
 
 \subsubsection*{\tool compiler}
 \tool compiler takes as input a source program and produces a C++
-program as output. Figure~\ref{fig:ex-aby} shows the output code\footnote{This is also how a program written directly in
+program as output. \figureref{ex-aby} shows the output code\footnote{This is also how a program written directly in
   ABY would look like.} for
-the example in Figure~\ref{fig:ex-sml}. The output program
+the example in \figureref{ex-sml}. The output program
 contains party-specific code for inputs and outputs
 (\ls{role == SERVER} and \ls{role == CLIENT}), and common code for the
 computation.
@@ -48,7 +48,7 @@ The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
 components translate into API calls into our \mpc back-end
-(ABY). For example, in Figure~\ref{fig:ex-sml}, the \tool
+(ABY). For example, in \figureref{ex-sml}, the \tool
 compiler realizes that the array index \ls{i} in the inner product loop
 is public, and hence the access locations need not be hidden.
 Therefore, it compiles the \ls{for}~loop into a C++
@@ -67,7 +67,7 @@ expression computation are more efficient in the boolean
 representation, the \tool compiler uses the Yao circuit builder
 \ls{ycirc} to build the corresponding circuits
 (lines~\ref{line:condyaobegin} to~\ref{line:condyaoend}) (in our usage
-of ABY, boolean is synonymous with Yao (Section~\ref{sec:impl})).
+of ABY, boolean is synonymous with Yao, we elaborate in \sectionref{impl}).
 
 Using both arithmetic and boolean representations requires conversions between them.
 The \tool compiler also
@@ -155,7 +155,7 @@ $\mathtt{
 \}
 }$
 \end{lstlisting}
-\caption{\tool compiler (partial) output for Figure~\ref{fig:ex-sml}}
+\caption{\tool compiler (partial) output for \figureref{ex-sml}}
 \label{fig:ex-aby}
 \end{figure}
 
@@ -170,14 +170,14 @@ a \mpc protocol.
 
 We can now concretely see the advantages of \tool. Unarguably, it is
 easier for a developer to program and get right the code in
-Figure~\ref{fig:ex-sml}, rather than the code in
-Figure~\ref{fig:ex-aby}.
+\figureref{ex-sml}, rather than the code in
+\figureref{ex-aby}.
 % (as we mentioned in Section~\ref{sec:intro},
 %other high-level languages are limited in their use of a single,
 %arithmetic or boolean, crypto back-end). 
 \tool also enables the
 programmer to easily modify their code, while the compiler takes care
-of efficiency. For example, consider in Figure~\ref{fig:ex-sml} a
+of efficiency. For example, consider in \figureref{ex-sml} a
 change from multiplication to bitwise-or in the \ls{for} loop. It
 turns out that once that's the case, it is more efficient to do both
 the addition and bitwise-or using boolean circuits (if the addition is

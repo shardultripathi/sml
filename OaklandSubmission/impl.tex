@@ -50,8 +50,8 @@ size $n$ requires ${n}-1$ multiplexers in \tool.
 We use an off-the-shelf solver
 (SeaHorn~\cite{seahorn}) to bound check the array indices
 ($\models e < n$
-in ({\sc {T-Read}}) and ({\sc{T-Write}})),
-Figure~\ref{fig:compile}). We take the \tool source program and
+in ({\sc {T-Read}}) and ({\sc{T-Write}}),
+\figureref{compile}). We take the \tool source program and
 translate it as an input to the solver. The solver takes less
 than a minute on our largest benchmark to verify that all the array
 accesses are in-bounds.
@@ -64,7 +64,7 @@ All other variables are assigned arithmetic labels (that can later be
 coerced to boolean).
 We leave a more sophisticated type inference procedure for future work.
 
-The compilation rules of Figure~\ref{fig:compile} can introduce
+The compilation rules of \figureref{compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.
 Since \tool is aware of the cryptographic costs associated with these coercions,

@@ -42,7 +42,16 @@ standard in machine learning) and describe our benchmarks next.
 \subsection{Benchmarks description}
 %\divya{notation can be moved somewhere... } \\
 
-We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector $x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i = \mathsf{max}\ \{x_0,\ldots,x_{d-1}\}$. We focus on the machine learning models for {\it classification}. A classifier $C$ uses a trained model to {\it predict} a
+We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector
+$x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i =
+\mathsf{max}\ \{x_0,\ldots,x_{d-1}\}$. Finally, if $A$ is
+a matrix (resp. vector) then we write $f(A)$ for the matrix (resp. vector)
+obtained by applying the scalar function $f$ to each entry of $A$
+pointwise.
+
+We focus on the machine
+learning models for {\it classification}. A classifier $C$ uses a
+trained model to {\it predict} a
 label $\ell$ for an input data point $x$. For example, given a
 data point which is a tuple of humidity and temperature 
 a classifier can predict a label ``will rain'' or ``will not rain''.
@@ -121,8 +130,6 @@ matrix
 multiplication followed by an {\it activation} function $f$. The most
 common activation functions are square $f(x)=x^2$ and rectifier linear
 unit (ReLU) $f(x)=\mathsf{max}(x,0)$.
-If $A$ is a matrix then the output of $f(A)$ is also a matrix that is
-obtained by applying $f$ to each entry of $A$ pointwise.
 Given an input vector $x$, the predicted label of a DNN is
 \[
  \mathsf{argmax}\ W_N\matmul f_{N-1}(\ldots f_1(W_1\matmul x)\ldots)
@@ -155,7 +162,7 @@ class and \tool provides the first 2PC protocol for it.
 \bonsai takes as input $x \in \R^d$, and its model consists of a
 binary tree with $N$ nodes, and a matrix $Z$. Each node $j$ contains
 matrices $W_j$ and $V_j$, and a vector $\theta_{j}$. The internal node
-$j$  evaluates a predicate $\theta_j^TZx > 0$ to decide whether
+$j$  evaluates a predicate $(\theta_j^T \matmul Z \matmul x) > 0$ to decide whether
 to pass $x$ to the left child $2j+1$ or the right child $2j+2$.
 The predicted value is
 
@@ -173,7 +180,10 @@ Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
 and is zero otherwise. 
 The operation $\circ$ is a pointwise multiplication of two vectors, $W_j$'s and $V_j$'s
 are matrices of appropriate dimensions. The activation function $f$ is given by $f(y) = y$ if
-$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise ($f$ on vectors and matrices is defined point-wise on every element of the vector/matrix).
+$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise.
+%% ($f$ on vectors and
+%% matrices is defined point-wise on every element of the
+%% vector/matrix).
 %\bonsai can be
 %seen as a variant of decision trees where the prediction is a function
 %of the path traversed from root to the leaf and not just the leaf
@@ -426,7 +436,7 @@ matrix operations efficiently. In contrast, \tool focuses on generic
 2PC, and such optimizations are part of our future work.
 \minion also reports performance results on a bigger DNN with 7
 convolution layers. In \tool, this benchmark requires partitioning and
-we discuss it in Section~\ref{sec:pipeeval}.
+we discuss it in \sectionref{pipeeval}.
 \\\\
 \noindent\textbf{State-of-the-art classifiers.}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.

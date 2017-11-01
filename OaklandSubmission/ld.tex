@@ -248,7 +248,7 @@ model only one dimensional arrays, our implementation supports
  integer constants $n$, \kw{bool} constants $\top$ and $\bot$,
 variables $x$, binary operations $e_{1} \mulop e_{2}$ and $e_{1} >
 e_{2}$ (we support several other
-operators in the implementation, detailed in Section~\ref{sec:impl}),
+operators in the implementation, detailed in \sectionref{impl}),
 conditionals $\cond{e}{e_{1}}{e_{2}}$,
 array literals
 $[\overline{e_{i}}]_{n}$\footnote{We write $\overline{e}$ (and
@@ -296,8 +296,8 @@ evaluates to some constant $c$ denoting party $j$'s input.
 %We model the inputs to be base constants, a
 An array input can be written in the
 language as $[\kw{in}_{j}]_{n}$, which can then evaluate using the
-rule ({\sc{E-Arr}}). The notation $\forall i \in [n]$ is read
-  as $\forall i \in \{0\dots n - 1\}$. The remaining rules are
+rule ({\sc{E-Arr}}) (the notation $\forall i \in [n]$ is read
+  as $\forall i \in \{0\dots n - 1\}$). The remaining rules are
 straightforward, and are elided for space reasons.
 
 The judgment $\rho \vdash s \Downarrow \rho_{1}; O$ represents the
@@ -598,7 +598,7 @@ to be of base type.
 Rule ({\sc{T-Read}}) type checks an array read. It checks
 that the array index $e$ is public, and uses a static bounds checking
 judgment $ \models e < n$ to prove that the array index is in
-bounds. Section~\ref{sec:impl} discusses our implementation of this
+bounds. \sectionref{impl} discusses our implementation of this
 check. Rule ({\sc{T-Inp}}) picks a label $m$ for the input. Finally,
 the rule ({\sc{T-Sub}}) is the subsumption rule that coerces an expression of
 type $\sigma^{\ell}$ to an expression of type $\sigma^{m}$ using the
@@ -949,7 +949,7 @@ judgments $\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate
 \Downarrow b_{1}, b_{2}$, and $\widehat{\rho}_{1}, \widehat{\rho}_{2}
 \vdash \chi \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O$,
 where $O$ are the observations (similar to source semantics). 
-The former judgement evaluates a gate under the environments
+The former judgment evaluates a gate under the environments
 $\widehat{\rho}_j$ and generates shares $b_j$ of the gate's output.
 Rule ({\sc{C-In}}) evaluates the input gate $\kw{in}^{m}_{j}$, and
 creates the $m$-type shares of the value $c$ input by party $j$.
@@ -1105,7 +1105,7 @@ Therefore, well typed programs always terminate (array indices are always in bou
 %As an example, if $x:\kw{uint}^{\mathcal{P}} \in
 %\Gamma$, the judgment checks that $\rho(x) = \widetilde{\rho}(x) =
 %n$, for some $n$. On the other hand, if $x:\kw{uint}^{m} \in
-%\Gamma$ then the judgement checks that $\mathcal{D}_m( \widehat{\rho}_{1}(\widetilde{\rho}(x)),\widehat{\rho}_{2}(\widetilde{\rho}(x)))=\rho(x)$.
+%\Gamma$ then the judgment checks that $\mathcal{D}_m( \widehat{\rho}_{1}(\widetilde{\rho}(x)),\widehat{\rho}_{2}(\widetilde{\rho}(x)))=\rho(x)$.
 %%We elide the judgment, providing the full definition
 %%in the supplementary material.
 %With this judgment,
@@ -1136,6 +1136,6 @@ Therefore, well typed programs always terminate (array indices are always in bou
 %semantics with observations $O_{1}$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
 %circuit semantics with observations $O_{2}$, where $O_{1} = O_{2}$
 %%Furthermore, the final environments are also in the compilation
-%%relation. \divya{Should we call the judgement between environs as compilation relation?}
+%%relation. \divya{Should we call the judgment between environs as compilation relation?}
 %Due to space reasons, we provide the proof in \cite{anonymized}.
 
