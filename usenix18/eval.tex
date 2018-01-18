@@ -62,7 +62,7 @@ The {\it
 the classifier labels correctly from a given set of test data
 points.
 
-\subsubsection*{Standard classifiers}
+\paragraph{Standard classifiers.}
 A {\em binary linear classifier} is one of the simplest classifiers. Here,
 the input is a data point $x\in\R^d$,
 and the model is a vector $w\in\R^d$.
@@ -123,7 +123,7 @@ reduces to evaluation of a $d$-degree polynomial~\cite{shafindss}.
 %root, $\ell_0$ is the label of the left leaf and $\ell_1$ is the label
 %of the right leaf.
 
-\subsubsection*{Deep neural nets}
+\paragraph{Deep neural nets.}
 The next class of classifiers that we benchmark are deep neural nets
 or DNNs. A DNN has multiple layers such that each layer computes a
 matrix
@@ -153,7 +153,7 @@ In general, DNNs are computationally heavy but provide
 much better accuracies on computer vision tasks than the classifiers
 discussed above.
 
-\subsubsection*{State-of-the-art classifiers}
+\paragraph{State-of-the-art classifiers.}
 Finally, there are a class of machine learning classifiers that are
 much more efficient than
 DNNs and provide reasonably good accuracies on standard learning
@@ -198,7 +198,7 @@ programs by scaling the models and rounding~\cite{minionn}. These
 ported classifiers are then implemented in \tool.
 
 \subsection{Secure prediction}
-\noindent\textbf{Standard classifiers.}
+\paragraph{Standard classifiers.}
 %\label{sec:shallow}
 We evaluate the three standard classifiers, linear, Na\"{i}ve Bayes, and
 decision trees, from~\cite{shafindss} on the following data sets from the UCI
@@ -246,9 +246,10 @@ source language. %\aseem{They write circuits,
 
 \setlength\tabcolsep{2.8pt}
 \begin{table}
+\footnotesize
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-Dataset & $d$  & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}  &  \#Gates & LOC\\
+Dataset & $d$  & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)}  &  \thead{Num \\ gates} & LOC\\
 \hline
 Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25  & 727 & 20\\
 \hline
@@ -256,19 +257,19 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36  & 795 & 20\\
 \hline
 \end{tabular}
  \caption{Linear classification results. We compare \tool (LAN, WAN, Comm)
- with~\cite{shafindss} (Prev. Time, Prev. Comm).}
+ with~\cite{shafindss} (Prev time, Prev comm).}
  \label{tab:lc} 
 \end{table}
-
 
 %\subsubsection*{Na\"{i}ve Bayes} 
 
 
 \setlength\tabcolsep{2.5pt}
 \begin{table}
+\footnotesize
 \begin{tabular}{|c|c|c|c|c|c |c|c|c|c|}
 \hline
-Dataset & $n$ & $F$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)} & \#Gates  & LOC\\
+Dataset & $n$ & $F$ & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)} & \thead{Num \\ gates}  & LOC\\
 \hline
 Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6  & 73k & 50\\
 \hline
@@ -276,7 +277,7 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 \hline
 \end{tabular}
 \caption{Na\"{i}ve Bayes results. We compare \tool (LAN, WAN, Comm)
- with~\cite{shafindss} (Prev. Time, Prev. Comm).}
+ with~\cite{shafindss} (Prev time, Prev comm).}
  \label{tab:nb} 
 \end{table}
 
@@ -304,9 +305,10 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 \setlength\tabcolsep{3.8pt}
 
 \begin{table}[t]
+\footnotesize
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
-Dataset  & $d$ & $N$ & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)}& \#Gates & LOC\\
+Dataset  & $d$ & $N$ & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)}& \thead{Num \\ gates} & LOC\\
 \hline
 Nursery & 4 & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 3324 & 20\\
 \hline
@@ -314,7 +316,7 @@ ECG & 4 &  6 & 0.4 & 102 & 0.1 & 0.4 & 49  & 5002 & 20\\
 \hline
 \end{tabular}
 \caption{Decision tree benchmarks.We compare \tool (LAN, WAN, Comm)
- with~\cite{wu} (Prev. Time, Prev. Comm).}
+ with~\cite{wu} (Prev time, Prev comm).}
  \label{tab:dt} 
 \end{table}
 
@@ -351,7 +353,7 @@ specialized protocols. Table~\ref{tab:dt}
 compares against the more recent work of~\cite{wu}
 on decision trees and further validates this claim.
 \\\\
-\noindent\textbf{Deep neural nets.}
+\paragraph{Deep neural nets.}
 We evaluate \tool on the DNNs described in SecureML~\cite{secureml},
 Cryptonets~\cite{cryptonets}, and the CNN from \minion~\cite{minionn}. For
 comparison, we consider their implementations from
@@ -404,9 +406,10 @@ reader to the original references.
 
 \setlength\tabcolsep{2.5pt}
 \begin{table}
+\footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|}
 \hline
-DNN  & \thead{Prev. \\ time\\ (s)} & \thead{Prev. \\ Comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm. \\(kb)} & \#Gates & \thead{Model\\ Size} & LOC\\
+DNN  & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)} & \thead{Num \\ gates} & \thead{Model\\ size} & LOC\\
 \hline
 SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &   366k   & 119k & 78\\
 \hline
@@ -417,7 +420,7 @@ CNN        &  9.4 & 657.5& 5.1 & 11.6 & 501  & 9480k & 35k & 154\\
 \end{tabular}
 
  \caption{DNN benchmarks. We compare \tool (LAN, WAN, Comm)
- with~\cite{minionn} (Prev. Time, Prev. Comm).}
+ with~\cite{minionn} (Prev time, Prev comm).}
  \label{tab:nn} 
 \end{table}
 
@@ -438,7 +441,7 @@ matrix operations efficiently. In contrast, \tool focuses on generic
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in \sectionref{pipeeval}.
 \\\\
-\noindent\textbf{State-of-the-art classifiers.}
+\paragraph{State-of-the-art classifiers.}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
 Its introductory tutorial describes two prediction models for handwritten digit recognition
 using the MNIST dataset~\cite{mnist}.
@@ -469,9 +472,10 @@ partitioning.
 % benchmark | size | gates | and | mul | depth  | length | comm | timeL | timeW
 \setlength\tabcolsep{2.5pt}
 \begin{table}
+\footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c}
 \hline
-Classifier       & \thead{LAN  \\ (s)} & \thead{WAN \\(s)} & \thead{Comm. \\(Mb)}  & \#And & \#Mul & \#Gates & \thead{Model \\size} & LOC\\
+Classifier       & \thead{LAN  \\ (s)} & \thead{WAN \\(s)} & \thead{Comm \\(Mb)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} & \thead{Model \\size} & LOC\\
 \hline
 Regression &  0.1         & 0.7         & 5            & 2k    & 8k    &  35k    & 8k   & 38\\
 \hline
@@ -484,9 +488,10 @@ CNN        &  30.5        & 60.3        & 2955         & 6082k & 4163k &  42104k
 \end{table}
 \setlength\tabcolsep{3.5pt}
 \begin{table}
+\footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c|}
 \hline
-Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm. \\ (Mb)}  & \#And & \#Mul & \#Gates & depth & LOC\\
+Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm \\ (Mb)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} & depth & LOC\\
 \hline
 Chars4k    &  0.1         & 0.7         & 2            & 18k    & 3k    &  85k     & 1   & 89\\
 \hline
@@ -543,9 +548,10 @@ this benchmark is 336 lines.
 
 \setlength\tabcolsep{6pt}
 \begin{table}
+\footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|}
 \hline
-           &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & \#And & \#Mul & \#Gates \\
+           &  LAN (s) & WAN (s) & \thead{Comm \\ (Mb)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} \\
 \hline
 Total      &  265.6       & 647.5        & 40683       & 21m    & 61m    &  337m  \\
 \hline
@@ -558,9 +564,10 @@ Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  
 \end{table}
 
 \begin{table}[t]
+\footnotesize
 \begin{tabular}{|c|c|c|c |c|c| c|}
 \hline
-  Stage         &  LAN (s) & WAN (s) & \thead{Comm. \\ (Mb)}  & depth & \#Gates & LOC\\
+  Stage         &  LAN (s) & WAN (s) & \thead{Comm \\ (Mb)}  & depth & \thead{Num \\ gates} & LOC\\
 \hline
 1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
 \hline

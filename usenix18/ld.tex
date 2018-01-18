@@ -239,7 +239,7 @@ and proofs can be found in~\cite{anonymized}.
 \label{fig:srcsem}
 \end{figure}
 
-\subsubsection*{Source language} Our source language
+\paragraph{Source language.} Our source language
  is a simple imperative language shown in \figureref{srclang}. Types
 $\psi$ consist of the base types $\sigma$, and arrays
 of base types $\sigma[n]$, where $n$ is the array length. Though we
@@ -263,7 +263,7 @@ $\kw{out}\:e$ denotes revealing the value of $e$ to the
 parties. The \kw{while} statement is an internal syntax that is not
 exposed to the programmer. \\
 
-\noindent\textbf{Source semantics.} The runtime semantics for the source language is shown in
+\paragraph{Source semantics.} The runtime semantics for the source language is shown in
 \figureref{srcsem}. These semantics show how a ``trusted third party" computes the outputs when given the inputs of both the parties. 
  Values $v$, runtime environments $\rho$, and
 observations $O$ are defined as follows:
@@ -342,7 +342,7 @@ expression, and adds its value to the observations.
 \label{fig:interlang}
 \end{figure}
 
-\subsubsection*{Intermediate language} \figureref{interlang} shows the
+\paragraph{Intermediate language.} \figureref{interlang} shows the
 intermediate language of our compiler. The syntax follows that of the source
 language, except that the types and operators are \emph{labeled}. 
 %Below we mainly focus on the bits that are different from the source
@@ -564,7 +564,7 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
 \label{fig:compile}
 \end{figure}
 
-\subsubsection*{Source to intermediate compilation} We provide the compilation
+\paragraph{Source to intermediate compilation.} We provide the compilation
 rules in \figureref{compile}. We present the rules in a
 declarative style, where the rules are non-syntax
 directed, and the labels $\ell$ are chosen
@@ -833,7 +833,7 @@ evaluation rules.
 \label{fig:eval-inter-circ}
 \end{figure}
 
-\subsubsection*{Evaluation to Circuits}
+\paragraph{Evaluation to Circuits.}
 \figureref{circuits} shows the syntax of circuits. A wire id range
 $\wire$ denotes a set of circuit wires that carry the runtime value of a
  variable with a secret label (we will concretely define these runtime
@@ -904,7 +904,7 @@ array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 \kw{out} circuit.
 
 
-\subsubsection*{Circuit semantics} Evaluating a program in the
+\paragraph{Circuit semantics.} Evaluating a program in the
 intermediate language produces a
 circuit to be computed using a distributed \mpc protocol. With
 our circuit semantics, we model the \emph{functional} aspect

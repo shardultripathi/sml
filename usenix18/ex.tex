@@ -16,7 +16,7 @@
 \figureref{toolchain} shows an overview of the \tool
 toolchain. We give a brief overview of each of these phases below.
 
-\subsubsection*{Source language}
+\paragraph{Source language.}
 Consider the example $w^Tx >b$ from \sectionref{intro}, where
 $w$ and $b$ constitute the server's input (a classifier) and $x$ is
 the client's input vector. \figureref{ex-sml} shows the \tool code
@@ -35,7 +35,7 @@ expressions (the ternary $?\::$ operator), \ls{for}~loops,
 
 
 
-\subsubsection*{\tool compiler}
+\paragraph{\tool compiler.}
 \tool compiler takes as input a source program and produces a C++
 program as output. \figureref{ex-aby} shows the output code\footnote{This is also how a program written directly in
   ABY would look like.} for
@@ -160,7 +160,7 @@ $\mathtt{
 \end{figure}
 
 
-\subsubsection*{Circuit generation and evaluation} The next step in
+\paragraph{Circuit generation and evaluation.} The next step in
 \tool is to
 compile the output C++ code and execute it. Doing so evaluates away the
 public parts of the program, including the array accesses, and
