@@ -1,0 +1,168 @@
+\usepackage{epsfig,endnotes}
+\usepackage{varwidth}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{balance}
+\usepackage{xcolor}
+\usepackage{nicefrac}
+\usepackage{amsmath}
+\usepackage{braket}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{bigdelim}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{indentfirst}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{boxedminipage}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{cleveref}
+\usepackage{subcaption}
+\usepackage[normalem]{ulem}
+\usepackage{xpatch}
+%\usepackage{MnSymbol}
+\usepackage{xspace}
+\usepackage{listings}
+\usepackage{mathpartir}
+\usepackage{makecell}
+
+\usepackage[pdftex,bookmarks=true,pdfstartview=FitH,colorlinks,linkcolor=blue,filecolor=blue,citecolor=blue,urlcolor=blue,pagebackref=true]{hyperref}
+    \urlstyle{sf}
+
+\usepackage{stmaryrd}
+
+\newlength{\saveparindent}
+\setlength{\saveparindent}{\parindent}
+\newlength{\saveparskip}
+\setlength{\saveparskip}{\parskip}
+ 
+ 
+\newenvironment{tiret}{%
+\begin{list}{\hspace{2pt}\rule[0.5ex]{6pt}{1pt}\hfill}{\labelwidth=15pt%
+\labelsep=5pt \leftmargin=20pt \topsep=3pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{0pt} }}{\end{list}}
+ 
+\newenvironment{enum}{%
+\begin{list}{{\rm (\arabic{ctr})}\hfill}{\usecounter{ctr}\labelwidth=17pt%
+\labelsep=6pt \leftmargin=23pt \topsep=5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{3pt} }}{\end{list}}
+ 
+\newenvironment{newenum}{%
+\begin{list}{{\rm \arabic{ctr}.}\hfill}{\usecounter{ctr}\labelwidth=17pt%
+\labelsep=6pt \leftmargin=23pt \topsep=.5pt%
+\setlength{\listparindent}{\saveparindent}%
+\setlength{\parsep}{\saveparskip}%
+\setlength{\itemsep}{5pt} }}{\end{list}}
+
+\newcommand{\tool}{{\textsc{EzPC}}\xspace}
+\newcommand{\minion}{{\textsc{MiniONN}}\xspace}
+\newcommand{\bonsai}{{\textsc{Bonsai}}\xspace}
+\newcommand{\R}{{\mathbb{R}}\xspace}
+\newcommand{\mpc}{{2PC}\xspace}
+
+\newtheorem{problem}{Problem}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{remk}[theorem]{Remark}
+\newtheorem{apdxlemma}{Lemma}
+
+
+\newcommand{\namedref}[2]{\hyperref[#2]{#1~\ref*{#2}}\xspace}
+\newcommand{\lemmaref}[1]{\namedref{Lemma}{lem:#1}}
+\newcommand{\propref}[1]{\namedref{Proposition}{prop:#1}}
+\newcommand{\theoremref}[1]{\namedref{Theorem}{theorem:#1}}
+\newcommand{\claimref}[1]{\namedref{Claim}{clm:#1}}
+\newcommand{\corolref}[1]{\namedref{Corollary}{corol:#1}}
+\newcommand{\figureref}[1]{\namedref{Figure}{fig:#1}}
+\newcommand{\tableref}[1]{\namedref{Table}{tbl:#1}}
+\newcommand{\equationref}[1]{\namedref{Equation}{eq:#1}}
+\newcommand{\defref}[1]{\namedref{Definition}{def:#1}}
+\newcommand{\observationref}[1]{\namedref{Observation}{obs:#1}}
+\newcommand{\procedureref}[1]{\namedref{Procedure}{proc:#1}}
+\newcommand{\importedtheoremref}[1]{\namedref{Imported Theorem}{impthm:#1}}
+\newcommand{\informaltheoremref}[1]{\namedref{Informal Theorem}{infthm:#1}}
+
+\newcommand{\sectionref}[1]{\namedref{Section}{sec:#1}}
+\newcommand{\appendixref}[1]{\namedref{Appendix}{app:#1}}
+\newcommand{\propertyref}[1]{\namedref{Property}{prop:#1}}
+
+\newcommand{\algoref}[1]{\namedref{Algorithm}{algo:#1}}
+
+
+
+\newcommand{\TODO}[1]{{{\color{red} TODO: #1}}}
+\newcommand{\divya}[1]{{{\color{blue} dg: #1}}}
+\newcommand{\cmmt}[1]{{{\color{red} check: #1}}}
+\newcommand{\nc}[1]{{{\color{purple} nc: #1}}}
+\newcommand{\rs}[1]{{{\color{magenta} rs: #1}}}
+
+\definecolor{mypink}{rgb}{1,0.2,0.4}
+\newcommand{\aseem}[1]{{{\color{mypink} Aseem: #1}}}
+
+\newcommand{\adv}{\mathcal{A}}
+\newcommand{\env}{\mathcal{Z}}
+\newcommand{\prot}{\Pi}
+\newcommand{\real}{\mathsf{REAL}}
+\newcommand{\ideal}{\mathsf{IDEAL}}
+\newcommand{\simu}{\mathcal{S}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\secparam}{\kappa}
+\newcommand{\matmul}{\cdot}
+
+\newcommand{\mulop}{\times}
+%%circuits syntax
+\newcommand{\gate}{{g}}
+\newcommand{\wire}{w}
+\newcommand{\bval}{\widetilde{r}}
+\newcommand{\val}{\widetilde{v}}
+\newcommand{\crct}{\chi}
+
+%\renewcommand{\ttdefault}{cmtt}
+
+\lstset{ % 
+    language=C,
+    backgroundcolor=\color{white},   
+    basicstyle=\footnotesize\ttfamily,
+    breakatwhitespace=false,
+    breaklines=false,
+    belowskip=-0.3cm,
+    captionpos=b,                    
+    commentstyle=\color{blue}\bfseries,
+    deletekeywords={...}, 
+    escapeinside={\%*}{*)}, 
+    extendedchars=true, 
+    %% frame=single,
+    keepspaces=true,
+    keywordstyle=\color{black},
+    keywordstyle=[2]\color{black},
+    otherkeywords={*,...,uint,input1,input2,output,in},
+    keywords=[2]{private},
+    numbers=left,
+    numbersep=5pt, 
+    numberstyle=\tiny\color{gray}\bfseries, 
+    rulecolor=\color{black},
+    showspaces=false,
+    showstringspaces=false, 
+    showtabs=false, 
+    stepnumber=2, 
+    stringstyle=\color{mymauve},
+    tabsize=2, 
+    title=\lstname
+}
+
+\newcommand{\ls}[1]{{{\ensuremath{{\mathtt{#1}}}}}}
+%\let\ls\lstinline

@@ -1,0 +1,62 @@
+\section{Related work}
+\label{sec:related}
+
+%\divya{Related Work: writing some citations here to be used appropriately.}
+%\begin{enumerate}
+%\item Secure Computation of MIPS Machine Code https://eprint.iacr.org/2015/547
+%\item TASTY https://eprint.iacr.org/2010/365.pdf. Does not have language; user has to know what parts in HE and what in Yao and writes something similar to ABY
+%\item ABY cites many papers on first page of intro for using a mix of HE and boolean MPC; but they didnt give much gain because HE is expensive
+%\nc{I will look into this and write.}
+%\item verilog, hardware tool chain paper http://encrypto.de/papers/DDKSSZ15.pdf
+%\item automatic choosing between HE and Yao https://eprint.iacr.org/2014/200.pdf 
+%I think this one still does not have a language; I don't know how to specify function
+ 
+\tool falls into the category of frameworks that compile high level languages to \mpc protocols. We discuss other such frameworks next.
+%Existing \mpc tools work with either a high or a low level desciption of the functionalities to be implemented securely.
+ %\end{enumerate}
+%\noindent\textbf{Generating \mpc protocols.}
+%There has been vast literature on the generation of \mpc protocols. These works all provide tools at various levels of abstraction that help a programmer generate cryptographic protocols for various functionalities. These levels can be classified as follows: 
+%Examples of tools in the former category include the following: 
+Fairplay's Secure Function Definition Language (SFDL)~\cite{fairplay,fairplaymp} and CBMC-GC~\cite{cbmcgc} compile C or Pascal like programs into boolean circuits that are then evaluated using garbled circuits~\cite{yao}.
+ObliVM~\cite{oblivm} protects access patterns using an oblivious RAM~\cite{oram1,oram2} and also uses garbled circuits for compute.
+In Secure Multiparty Computation Language (SMCL)~\cite{smcl},  Java
+like programs are compiled into arithmetic circuits that are then
+evaluated using the VIFF
+framework~\cite{viff}. Wysteria~\cite{wysteria} enables programmers to
+write $n$-party mixed-mode programs that combine local, per-party
+computations with secure computations. It compiles secure
+computations to
+boolean circuits and uses a GMW-based backend~\cite{choi,gmw}.
+ Mitchell et al.~\cite{lambdaps} allow the user to select between
+ Shamir's secret sharing~\cite{sss} and fully homomorphic
+ encryption~\cite{gentry}.  Unlike \tool, all these tools use either
+ an arithmetic backend or a boolean backend but not a combination of
+ both.
+
+Next, we discuss tools that expose libraries which  developers can use to describe \mpc protocols. 
+% The exact cryptographic protocols that are used by the library  need not be known to the programmer. However, in order 
+To generate efficient protocols for a functionality, the programmer must break the functionality into components and call the appropriate library functions. For example,  ABY \cite{aby} falls in this category. The TASTY tool~\cite{tasty} allows mixing homomorphic encryption based arithmetic computations 
+and garbled circuits based boolean computations and the interconversions between the two are inserted by the programmer explicitly.
+% While, the programmer need not know how ABY implements boolean or arithmetic computation, he or she must know the type of compute (boolean or arithmetic) that is more efficient for specific sub-computations and also explicitly write calls to convert shares from one scheme to another (boolean secret sharing to arithmetic secret sharing and vice-versa). 
+The work of Kerschbaum et al.~\cite{autoS} provides a scheme to automatically assign homomorphic encryption or garbled circuits to each operator in a computation that is expressed as a sequence of dyadic operations. They conjecture that the problem is NP hard and gave a linear programming based solution as well as a quadratic time greedy heuristic. 
+These techniques are not directly applicable to \tool programs because of $\mathtt{for}$-loops and $\mathtt{if}$-conditions.
+However, we are exploring whether these ideas can be extended to yield a better type inference.
+%Their performance is much poorer than ABY due to the high 
+%costs associated with homomorphic encryption~\cite{aby}.
+%conversion costs between homomorphic encryption and boolean shares~\cite{aby}.  %On the other hand \tool uses a simpler constant time heuristic to assign arithmetic secret sharing or garbled circuits to sub-computations in a richer language with control flow statements such as loops and branches.
+%While the work of Kerschbaum {\em et al.}~\cite{kos14} provides a heuristic to automatically select the protocol for various types of sub-computations, one would still need to manually write the program using the share conversion tools of ABY. Similarly, the TASTY tool~\cite{tasty} provides a way to mix both boolean and arithmetic circuits (using homomorphic encryption for the arithmetic compute). 
+Other examples include the VIFF framework~\cite{viff} for arithmetic computations and Sharemind~\cite{sharemind} (that provides secure 3-party boolean computation). 
+%\\\\
+%\noindent{\bf Protocol Implementation:} Tools at this level of abstraction require the programmer to have a deep understanding of how cryptographic secure computation protocols work and the programmer must provide calls to low-level cryptographic building blocks such as oblivious transfer. For example while the programmer need not know the specific oblivious transfer protocol implemented in the backend, he or she still needs to know how to build a secure computation protocol from such building blocks. This abstraction requires the highest knowledge of cryptography from the programmer. Examples of such tools include L1~\cite{lone} and Qilin~\cite{qilin}.
+
+The implementations of \mpc backends  have made  tremendous progress in the last decade.
+For example, the circuits can be optimized for depth~\cite{ddkssz15,cbmcgcdepth}, large garbled circuits can be pipelined~\cite{yao-pipe}, and oblivious RAM~\cite{oram1,oram2} can be used to hide access patterns of MIPS code~\cite{mips}. Incorporating these backends would only improve the performance and scalability of \tool implementations.
+
+%\\\\
+%\noindent\textbf{Custom \mpc protocols.} 
+Many works have designed specialized, hand-crafted protocols for various \mpc tasks. 
+%The reason for doing this was to allow for a mix between arithmetic and boolean computations as a secure computation protocol for a pure boolean circuit would have been very inefficient. 
+This requires deep knowledge of cryptography
+to ensure the security of the protocols.
+Examples include privacy-preserving classification of medical ElectroCardioGram (ECG)~\cite{barni}, iris and fingerprint recognition~\cite{blanton}, remote diagnostics~\cite{brickell}, private sequence analysis~\cite{franz}, private biometric identification~\cite{huang}, privacy-preserving matrix factorization and ridge-regression~\cite{valeriaMatrix, valeriaRidge}, machine-learning classification~\cite{shafindss}, decision trees and forests~\cite{wu}, neural network training~\cite{secureml} and prediction~\cite{minionn}.
+% As seen from our experiments, the protocols generated by \tool give us better or comparable execution times as many of the above works with minimal programmer overhead. %\nc{What do we want to say here exactly?}

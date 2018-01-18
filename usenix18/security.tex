@@ -1,0 +1,67 @@
+
+\subsubsection*{Security theorem} The protocols we generate provide
+simulation-based security against a semi-honest adversary, in the
+framework of ~\cite{gmw,can00,can01}. At a very high level, in this
+framework, parties are modeled as non-uniform interactive turing
+machines (ITMs), with inputs provided by an environment $\env$. An
+adversary $\adv$, selects and ``corrupts'' one of the parties -
+however, $\adv$ still follows the protocol specification. $\adv$
+interacts with $\env$ that observes the view of the corrupted
+party. At the end of the interaction, $\env$ outputs a single bit based on the output of the honest party and the view of the adversary. Two
+different interactions are defined: the {\em real world} and an {\em
+  ideal world}. In the real interaction, the parties run the protocol
+$\prot$ in the presence of $\adv$ and $\env$. Let
+$\real_{\prot,\adv,\env}$ denote the  distribution ensemble
+describing $\env$'s output in this interaction. 
+In the ideal interaction, parties send their inputs to  a
+trusted functionality that performs the desired
+computation truthfully. Let $\simu$ (the simulator) denote the
+adversary in this ideal execution, and $\ideal_{\F,\simu,\env}$
+the distribution ensemble describing $\env$'s output after
+interacting with the ideal adversary $\simu$. A
+protocol $\prot$ is said to {\em securely realize} a functionality
+$\F$ if for every adversary $\adv$ in the real interaction, there is
+an adversary $\simu$ in the ideal interaction, such that no
+environment $\env$, on any input, can tell the real interaction apart
+from the ideal interaction, except with negligible probability (in the
+security parameter $\secparam$). More precisely, the above two
+distribution ensembles  are computationally indistinguishable. 
+
+We shall assume a cryptographic \mpc backend that securely implements
+any circuit $\crct$ that is output by our compiler
+(see \figureref{circuits}). This means that for any
+well-typed source program $s$, let $\crct$ be the circuit generated
+as in \theoremref{correctness}. We assume that there
+exists a \mpc protocol $\prot$ that securely realizes the
+functionality $\crct$ and let $\simu_{\tiny{2pc}}$ be the
+corresponding simulator  (that runs on $\crct$, input of the corrupt
+party and the output obtained from trusted functionality for
+$\crct$). We note that ABY~\cite{aby} provides such a protocol
+$\prot$ and simulator $\simu_{\tiny{2pc}}$ for all circuits $\crct$
+output in our framework. We now state and prove our
+security theorem. 
+ 
+\begin{theorem}[Security]\label{theorem:security}
+Let $s$ be a well typed program in our source language
+that generates a circuit
+$\chi$ (as defined in Theorem \ref{theorem:correctness}). Let protocol
+$\prot$ be the two-party secure computation protocol that securely
+realizes $\chi$ (as defined above). Then, $\prot$ securely realizes
+$s$.
+\end{theorem}
+
+\noindent {\em Proof.} 
+Our simulator $\simu$ simply runs our compiler on program $s$ to obtain $\crct$. It is crucial that this compilation to circuits does not require the secret inputs of the parties. Next, $\simu$ sends the input of the corrupt party to the trusted functionality of $s$ to obtain outputs $O_1$. Note that $O_1$ is same as the observations in the source semantics. 
+By \theoremref{correctness}, these outputs $O_1$ are identical to outputs (or observations) $O_2$ of $\crct$ under circuit semantics. 
+Next, $\simu$ runs $\simu_{\tiny{2pc}}$ on $\crct$, input of the corrupt party and $O_2$.
+% (note, while $\simu_{\tiny{2pc}}$ expects output $O_1$ as its input, it is ok for $\simu$ to run $\simu_{\tiny{2pc}}$ on $O_2$ instead as $O_2=O_1$). 
+From the security of $\prot$, we have that the simulated view output by $\simu_{\tiny{2pc}}$ is indistinguishable from the real view. Hence, the security follows.
+ 
+% and upon receiving output $O_1$, executes $\simu_{\tiny{2pc}}$ on $\chi$ and $O_1$. Let $O_2$ be the outputs (or observations) of $\chi$. First, from Theorem \ref{theorem:correctness}, we have that the observations in $s$ and $\chi$ are the same (i.e. $O_2 = O_1$). Now, from the security of $\prot$, we have that the simulated view output by $\simu_{\tiny{2pc}}$ (with circuit $\chi$ and output $O_2$) is indistinguishable from the real view of the $\prot$ (when executed on circuit $\chi$ and when the output is $O_2$). Combining these two statements, the proof of the theorem follows. 
+  %% \\
+  %% \[
+  %% \begin{array}{rrcl}
+  %%   \ftext{Value} & v &::=& c \mid [\overline{c_{i}}]_{n}\\
+  %%   \ftext{Observation} & O &::=& \cdot \mid c; O\\
+  %% \end{array}
+  %% \]
