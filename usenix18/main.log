@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Cygwin) (preloaded format=pdflatex 2017.7.18)  18 JAN 2018 13:46
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Cygwin) (preloaded format=pdflatex 2017.7.18)  18 JAN 2018 13:54
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1028,18 +1028,8 @@ Overfull \hbox (8.76144pt too wide) in paragraph at lines 114--115
  []
 
 ) (./ld.tex
-Overfull \hbox (11.2953pt too wide) detected at line 98
-[]
- []
-
-
 Underfull \hbox (badness 10000) in paragraph at lines 165--168
 
- []
-
-
-Overfull \hbox (6.55957pt too wide) detected at line 237
-[] []
  []
 
 
@@ -1054,47 +1044,33 @@ cs for the
  []
 
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 273.
-
-[5]
-Overfull \hbox (4.09631pt too wide) detected at line 340
-[]
- []
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 27
+3.
 
 
-Overfull \hbox (19.9271pt too wide) detected at line 475
-[]
- []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-
+ [5]
 Underfull \hbox (badness 10000) in paragraph at lines 475--478
 
  []
 
-
-Overfull \hbox (1.75516pt too wide) detected at line 757
-[] []
- []
-
-
+[6]
 Underfull \hbox (badness 10000) in paragraph at lines 757--760
 
  []
 
 
-Overfull \hbox (5.94833pt too wide) detected at line 831
-[] []
- []
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 85
+4.
 
-[6]
+[7]
 
-LaTeX Font Warning: Command \small invalid in math mode on input line 854.
-
-
-LaTeX Font Warning: Command \small invalid in math mode on input line 939.
+LaTeX Font Warning: Command \footnotesize invalid in math mode on input line 93
+9.
 
 
-Overfull \hbox (29.80453pt too wide) detected at line 1046
+Overfull \hbox (2.33884pt too wide) detected at line 1046
 [] []
  []
 
@@ -1103,19 +1079,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 1046--1049
 
  []
 
-
-Overfull \hbox (17.19926pt too wide) detected at line 1073
-[] []
- []
-
-
+[8]
 Underfull \hbox (badness 1173) in paragraph at lines 1087--1091
 []$\OMS/ztmcm/m/n/10 8 \OML/ztmcm/m/it/10 s; []$\OT1/ptm/m/it/10 , if $\OMS/ztm
 cm/m/n/10 ` \OML/ztmcm/m/it/10 s \U/msa/m/n/10   [] \OMS/ztmcm/m/n/10 j []$ \OT
 1/ptm/m/it/10 then
  []
 
-) (./security.tex [7]
+) (./security.tex
 
 LaTeX Font Warning: Command \tiny invalid in math mode on input line 36.
 
@@ -1128,7 +1099,7 @@ LaTeX Font Warning: Command \tiny invalid in math mode on input line 56.
 
 LaTeX Font Warning: Command \tiny invalid in math mode on input line 58.
 
-) (./pipe.tex [8]
+) (./pipe.tex [9]
 Overfull \hbox (4.87396pt too wide) in paragraph at lines 91--93
 []
  []
@@ -1138,10 +1109,13 @@ Underfull \hbox (badness 1043) in paragraph at lines 132--1
 \OT1/ptm/m/n/10 par-ti-tion-ing for pro-grams that re-quire large cir-cuits.
  []
 
-) [9] (./eval.tex [10]
+[10]) (./eval.tex [11]
 Underfull \hbox (badness 1365) in paragraph at lines 203--210
 \OT1/ptm/m/n/10 clas-si-fiers, lin-ear, Na[]^^Pve Bayes, and de-ci-sion trees,
  []
+
+
+Underfull \vbox (badness 3482) has occurred while \output is active []
 
 
 Overfull \hbox (3.09874pt too wide) in paragraph at lines 250--260
@@ -1173,7 +1147,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 337--356
 
  []
 
-[11]
+[12]
 Overfull \hbox (5.98685pt too wide) in paragraph at lines 410--421
 [][] 
  []
@@ -1204,7 +1178,7 @@ Overfull \hbox (6.3631pt too wide) in paragraph at lines 492--503
 [][] 
  []
 
-[12]
+[13]
 Overfull \hbox (12.60307pt too wide) in paragraph at lines 552--561
 [][] 
  []
@@ -1214,7 +1188,7 @@ Overfull \hbox (10.60329pt too wide) in paragraph at lines 568--581
 [][] 
  []
 
-) (./train.tex) (./related.tex [13]) (./conclude.tex)
+[14]) (./train.tex) (./related.tex) (./conclude.tex)
 Underfull \hbox (badness 2343) in paragraph at lines 3--83
 []\OT1/ptm/m/n/10 We pre-sented \OT1/ptm/m/sc/10 EzPC\OT1/ptm/m/n/10 , the firs
 t cryptographic-cost
@@ -1224,7 +1198,7 @@ t cryptographic-cost
 \tf@brf=\write5
 \openout5 = `main.brf'.
 
- [14]
+ [15]
 Underfull \hbox (badness 2726) in paragraph at lines 80--80
 []\OT1/ptm/m/sc/8 Brickell, J., Porter, D. E., Shmatikov, V., and
  []
@@ -1239,11 +1213,9 @@ Underfull \hbox (badness 1496) in paragraph at lines 188--188
 []\OT1/ptm/m/sc/8 Gurfinkel, A., Kah-sai, T., Ko-mu-rav-elli, A., and
  []
 
-[15])
+[16])
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 97.
- [16] [17] [18
-
-]
+ [17]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 97.
  (./main.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 97.
@@ -1251,18 +1223,18 @@ Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 97.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 6169754567C72A03D967655BC13FC616;676.
 Package rerunfilecheck Info: File `main.brf' has not changed.
-(rerunfilecheck)             Checksum: D827289E28132E1D425F1C4F6618E975;5126.
+(rerunfilecheck)             Checksum: 5B1BD0C83E456D82364491403040AEEE;5132.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 21442 strings out of 494936
- 365208 string characters out of 6181325
- 499975 words of memory out of 5000000
- 24219 multiletter control sequences out of 15000+600000
- 81200 words of font info for 190 fonts, out of 8000000 for 9000
+ 21424 strings out of 494936
+ 365084 string characters out of 6181325
+ 475975 words of memory out of 5000000
+ 24216 multiletter control sequences out of 15000+600000
+ 75174 words of font info for 175 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  38i,23n,49p,10424b,1217s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-dist/fon
@@ -1270,20 +1242,19 @@ ts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts/type1/publi
 c/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/
 cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></us
 r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/share/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmss9.pfb></usr/share/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pf
-b></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt9.pfb></usr/share/t
-exmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/share/texmf-dist
-/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texmf-dist/fonts/ty
-pe1/public/rsfs/rsfs10.pfb></usr/share/texmf-dist/fonts/type1/urw/symbol/usyr.p
-fb></usr/share/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/share/texmf-dis
-t/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times
-/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (18 pages, 327916 bytes).
+ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmtt10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmtt8.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msa
+m10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><
+/usr/share/texmf-dist/fonts/type1/public/rsfs/rsfs10.pfb></usr/share/texmf-dist
+/fonts/type1/urw/symbol/usyr.pfb></usr/share/texmf-dist/fonts/type1/urw/symbol/
+usyr.pfb></usr/share/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/te
+xmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texmf-dist/fonts/type1/ur
+w/times/utmri8a.pfb>
+Output written on main.pdf (17 pages, 311802 bytes).
 PDF statistics:
- 735 PDF objects out of 1000 (max. 8388607)
- 683 compressed objects within 7 object streams
- 178 named destinations out of 1000 (max. 500000)
+ 723 PDF objects out of 1000 (max. 8388607)
+ 674 compressed objects within 7 object streams
+ 177 named destinations out of 1000 (max. 500000)
  102 words of extra memory for PDF output out of 10000 (max. 10000000)
 

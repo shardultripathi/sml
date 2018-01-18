@@ -83,7 +83,7 @@ and proofs can be found in~\cite{anonymized}.
 
 
 \begin{figure}
-  \small
+  \footnotesize
   \[
   \begin{array}{rrcl}
     \ftext{Base type} & \sigma &::=& \kw{uint} \mid \kw{bool}\\
@@ -101,7 +101,7 @@ and proofs can be found in~\cite{anonymized}.
 \end{figure}
 
 \begin{figure}
-  \small
+  \footnotesize
   \fbox{$\rho \vdash e \Downarrow v$}
   \[
   \\
@@ -270,7 +270,7 @@ observations $O$ are defined as follows:
 
 \vspace{0.1cm}
 $
-\small
+\footnotesize
 \begin{array}{rrcl}
     \ftext{Value} & v &::=& c \mid [\overline{c_{i}}]_{n}\\
     \ftext{Runtime environment} & \rho &::=& \cdot \mid \rho,x \mapsto v\\
@@ -327,7 +327,7 @@ expression, and adds its value to the observations.
 %\newcommand{\loops}[3]{\ensuremath{\kw{while}\:{#1} \leq {#2}\:\kw{do}\:{#3}}}
 
 \begin{figure}
-  \small
+  \footnotesize
   \[
   \begin{array}{rrcl}
     \ftext{Secret label} & m &::=& \mathcal{A} \mid \mathcal{B}\\
@@ -365,8 +365,8 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
 
 
 
-\begin{figure}[t]
-  \small
+\begin{figure}
+  \footnotesize
   \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}
   \[
   \begin{array}{c}
@@ -643,7 +643,7 @@ evaluation rules.
 
 
 \begin{figure}
-  \small
+  \footnotesize
   \[
   \begin{array}{rrcl}
     \ftext{Wire id} & \wire &&\\
@@ -664,8 +664,8 @@ evaluation rules.
 
 
 
-\begin{figure}[t]
-  \small
+\begin{figure}
+  \footnotesize
   \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \val$}
   \[
   \\
@@ -851,7 +851,7 @@ variables to sub-circuits:
 
 \vspace{0.2cm}
 $
-\small
+\footnotesize
 \begin{array}{rrcl}
     \ftext{Circuit generation environment} & \widetilde\rho &::=& \cdot \mid \widetilde\rho,x \mapsto \val\\
 \end{array}
@@ -936,7 +936,7 @@ map from wires to shares:
 
 \vspace{0.2cm}
 $
-\small
+\footnotesize
 \begin{array}{rrcl}
     \ftext{Circuit environment} & \widehat\rho &::=& \cdot \mid \widehat\rho,\wire \mapsto b\\
 \end{array}
@@ -973,7 +973,7 @@ observations.
 
 
 \begin{figure}
-  \small
+  \footnotesize
   \fbox{$\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate \Downarrow b_{1}, b_{2}$}
   \[
   \\
