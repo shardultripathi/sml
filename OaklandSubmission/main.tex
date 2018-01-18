@@ -1,7 +1,8 @@
 \documentclass[conference,compsoc]{IEEEtran}
 
 \input{headers}
-
+\usepackage{authblk}
+\IEEEoverridecommandlockouts
 
 \begin{document}
 \title{\tool: Programmable, Efficient, and Scalable Secure Two-Party Computation}
@@ -10,12 +11,25 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
- \author{\IEEEauthorblockN{Nishanth Chandran \hspace{10pt} Divya Gupta  \hspace{10pt} Aseem Rastogi \hspace{10pt}  Rahul Sharma } \IEEEauthorblockA{Microsoft Research, India\hspace{10pt} Email: \{nichandr,t-digu,aseemr,rahsha,t-shtrip\}@microsoft.com}
-\and
-\IEEEauthorblockN{Shardul Tripathi }
- \IEEEauthorblockA{IIT Delhi, India}
-}
+% \author{
+% \IEEEauthorblockN{Nishanth Chandran \hspace{10pt} Divya Gupta  \hspace{10pt} Aseem Rastogi \hspace{10pt}  Rahul Sharma } \IEEEauthorblockA{Microsoft Research, India\hspace{10pt} Email: \{nichandr,t-digu,aseemr,rahsha,t-shtrip\}@microsoft.com}
+%\and
+%\IEEEauthorblockN{Shardul Tripathi }
+% \IEEEauthorblockA{IIT Delhi, India}
 %}
+%}
+
+\author[1]{Nishanth Chandran}
+\author[1]{Divya Gupta}
+\author[1]{Aseem Rastogi}
+\author[1]{Rahul Sharma}
+%\author[1,2]{Shardul Tripathi}
+\author[2]{Shardul Tripathi%\thanks{Work done while Shardul was interning at Microsoft Research India.}
+}
+\affil[1]{Microsoft Research India\authorcr Email: {\{nichandr,t-digu,aseemr,rahsha\}@microsoft.com}\vspace{1.5ex}}
+\affil[2]{Dept. of Computer Science and Engineering, I.I.T. Delhi, India \authorcr Email: {shardul.511@gmail.com}  \vspace{-2ex}} 
+%\affil[1]{Microsoft Research India \authorcr Email: {\tt \{uid1, uid2\}@microsoft.com}\vspace{1.5ex}}
+%\affil[2]{Dept. of Computer Science and Engineering, IIT Delhi, India \authorcr Email: {\tt uid3@jpl.nasa.gov} \vspace{-2ex}} 
 
 
 
