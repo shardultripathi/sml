@@ -85,10 +85,10 @@ Thus, given a decomposition of $\prog$ into
 $\prog_1\seq\prog_2\seq\dots\seq\prog_k$, we can use the construction
 above to generate programs $\progn_1,\progn_2,\ldots,\progn_k$, that
 can be sequentially executed, using the unmodified underlying \mpc
-backend. An example illustrating the technique of secure code partitioning is provided in  \appendixref{codepartitioning}.
+backend. An example illustrating the technique of secure code partitioning is provided in  \appendixref{codepartitioning}. We prove the following theorem for code partitioning:
 
-\paragraph{Security.} The following theorem states the correctness and security of
-code partitioning.
+%% \paragraph{Security.} The following theorem states the correctness and security of
+%% code partitioning.
 
 \begin{theorem}[Correctness and security of partitioning]
 If $\prog_1||\prog_2||\ldots||\prog_k$ is a decomposition of a program $\prog$, then there exists a sequence of programs $\progn_1, \progn_2, \ldots, \progn_k$ and protocols $\prot_1, \prot_2, \ldots, \prot_k$ such that for all $i$, $\prot_i$ securely realizes $\progn_i$ and  $\prot

@@ -317,6 +317,7 @@ expression, and adds its value to the observations.
 %\newcommand{\for}[4]{\ensuremath{\kw{for}\:{#1}\:\kw{in}\:[{#2}, {#3}]\:\kw{do}\:{#4}}}
 %\newcommand{\ite}[3]{\ensuremath{\kw{if}({#1}, {#2}, {#3})}}
 %\newcommand{\loops}[3]{\ensuremath{\kw{while}\:{#1} \leq {#2}\:\kw{do}\:{#3}}}
+
 \begin{figure}[htp]
   \footnotesize
   \[
@@ -352,6 +353,13 @@ $\mathcal{B}$-labeled operators generate boolean circuits. The
 form $\langle \ell \rhd m \rangle\:\widetilde{e}$ denotes coercing
 $\widetilde{e}$ from label $\ell$ to label $m$.
 %The statements $\widetilde{s}$ are analogous to $s$.
+
+\paragraph{Source to intermediate compilation.} We provide the compilation
+rules in \figureref{compile}. We present the rules in a
+declarative style, where the rules are non-syntax
+directed, and the labels $\ell$ are chosen
+non-deterministically. \sectionref{impl} describes the label  inference
+scheme in our implementation.
 
 \begin{figure}[H]
   \footnotesize
@@ -527,12 +535,6 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
 \label{fig:compile}
 \end{figure}
 %\vspace{-0.2in}
-\paragraph{Source to intermediate compilation.} We provide the compilation
-rules in \figureref{compile}. We present the rules in a
-declarative style, where the rules are non-syntax
-directed, and the labels $\ell$ are chosen
-non-deterministically. \sectionref{impl} describes the label  inference
-scheme in our implementation.
 
 The judgment $\Gamma \vdash e : \tau \leadsto \widetilde{e}$, where
 $\Gamma$ maps variables $x$ to types $\tau$, says that
