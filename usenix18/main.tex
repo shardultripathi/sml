@@ -60,40 +60,40 @@ recent works that provide hand-crafted protocols for various
 functionalities such as secure  prediction  and matrix factorization.
 
 \aseem{Usenix TODOs:
-  (a) Explain cryptographic cost-awareness better (Reviewer A, Rahul).
+  (a) Explain cryptographic cost-awareness better (Reviewer A, Rahul). -- left for future.
 
-  (b) Comment about side-channels (Reviewer A, Aseem).
+  (b) Comment about side-channels (Reviewer A, Aseem). -- will add in Usenix.
 
-  (c) Remove the comment about extension to malicious security (Reviewer A, Nishanth/Divya)? \nc{I think we can keep it, but I've added a caveat that a more complete treatment of malicious security is left to future work.}
+  (c) Remove the comment about extension to malicious security (Reviewer A, Nishanth/Divya)? \nc{I think we can keep it, but I've added a caveat that a more complete treatment of malicious security is left to future work.} -- done.
 
-  (d) Highlight advantages of EzPC more in Section 2 (Reviewer A, Aseem).
+  (d) Highlight advantages of EzPC more in Section 2 (Reviewer A, Aseem). -- add heading to the S2 para.
 
-  (e) Add proofs and defns to appendix, Usenix has no limit (Reviewer B, Aseem).
+  (e) Add proofs and defns to appendix, Usenix has no limit (Reviewer B, Aseem). -- will add for usenix.
 
-  (f) More explanation to Section 4, with a small example (Reviewer B, Nishanth). \nc{Done.}
+  (f) More explanation to Section 4, with a small example (Reviewer B, Nishanth). \nc{Done.} -- will move to Appendix B.
 
   (g) Comment about high branches (branches on secrets), we plan to
-  support proper declassification in future (Reviewer B, All)?
+  support proper declassification in future (Reviewer B, All)? -- ignore for now.
 
   (h) Can the compiler reject secure programs -- of course! Type
   systems are inherently conservative. May be we don't need to add
-  anything about it (Reviewer B, All)?
+  anything about it (Reviewer B, All)? -- ignore for now.
 
-  (i) How are optimizations secure (Reviewer B, Divya/Aseem).
+  (i) How are optimizations secure (Reviewer B, Divya/Aseem). -- add in S5.
 
   (j) Compiler validation, read about Frigate and add to related work
-  (Reviewer C, Aseem).
+  (Reviewer C, Aseem). -- probably add.
 
   (k) Discuss what would it take to handle malicious parties -- may be
   we don't address this (Reviewer C, All)? \nc{Added a little more to conclusions.}
 
   (l) Limitation of manual partitioning -- it is what it is at this
-  point (Reviewer C, All).
+  point (Reviewer C, All). -- ignore for now.
 
   (m) Getting code from others, consistent machine configuration for
   Bost et al. (Reviewer C, Rahul/Nishanth). \nc{Wrote a line.}
 
-  (n) Comment on why are we better than Minion (Reviewer C, Rahul).
+  (n) Comment on why are we better than Minion (Reviewer C, Rahul). -- add a line, reword ``surprising''.
 }
 %\tool provides formal correctness and security guarantees.
 %% (up to
@@ -128,8 +128,13 @@ functionalities such as secure  prediction  and matrix factorization.
 %\bibliography{bib}
 %\balance
 
-%\appendix
-%\input{app-stash}
+\appendix
+
+\input{appendix_a}
+
+\input{appendix_b}
+
+\input{appendix_c}
 
 \end{document}
 
