@@ -115,9 +115,9 @@ $[\overline{e_{i}}]_{n}$\footnote{We write $\overline{e}$ (and
 The length of the sequence is usually clear from the context.}, and
 array reads $x[e]$. The expression $\kw{in}_{j}$ denotes input from
 party $j$. The statements $s$ in the language comprise of variable
-declarations and assignments ($\psi\:x = e$ and $x := e$ resp.),
-\kw{for} loops, array writes ($x[e_{1}] := e_{2}$), \kw{if}
-statements, and sequence of statements ($s_{1}; s_{2}$). The statement
+declarations, assignments,
+\kw{for} loops, array writes, \kw{if}
+statements, and sequence of statements. The statement
 $\kw{out}\:e$ denotes revealing the value of $e$ to the
 parties. The \kw{while} statement is an internal syntax that is not
 exposed to the programmer. \\
@@ -297,9 +297,8 @@ The judgment $\rho \vdash s \Downarrow \rho_{1}; O$ represents the
 big-step evaluation of a statement $s$ under environment $\rho$,
 producing a new environment $\rho_{1}$ and observations $O$. Rule
 ({\sc{E-Decl}}) evaluates the expression $e$ to $v$, and returns the
-updated environment $\rho,x \mapsto v$, with empty observations. Rule
-({\sc{E-If}}) evaluates the guard expression, and then evaluates
-either $s_{1}$ or $s_{2}$ accordingly. The $\kw{for}$ statements evaluate
+updated environment $\rho,x \mapsto v$, with empty observations. The
+$\kw{for}$ statements evaluate
 through the internal $\kw{while}$ syntax. Specifically, the rule
 ({\sc{E-For}}) appends $\rho$ with $x\mapsto n_{1}$,
 evaluates $\loops{x}{n_{2}}{s}$ to $\rho_{1}; O$, and returns
@@ -564,8 +563,8 @@ to be of base type.
 Rule ({\sc{T-Read}}) type checks an array read. It checks
 that the array index $e$ is public, and uses a static bounds checking
 judgment $ \models e < n$ to prove that the array index is in
-bounds. \sectionref{impl} discusses our implementation of this
-check. Rule ({\sc{T-Inp}}) picks a label $m$ for the input. Finally,
+bounds \footnote{\sectionref{impl} discusses our implementation of this
+check.}. Rule ({\sc{T-Inp}}) picks a label $m$ for the input. Finally,
 the rule ({\sc{T-Sub}}) is the subsumption rule that coerces an expression of
 type $\sigma^{\ell}$ to an expression of type $\sigma^{m}$ using the
 coerce expression. It is important for security that the secrets
@@ -582,9 +581,7 @@ Rule ({\sc{T-Assign}}) looks up the type of $x$ in $\Gamma$ and compiles $e$ to 
 Note that in this rule we restrict the type of variable $x$ to be of base type.
 Rule ({\sc{T-For}}) adds the loop counter $x$ to $\Gamma$ at type
 $\kw{uint}^{\mathcal{P}}$, and delegates type checking to the
-\kw{while} form. The rule ({\sc{T-Write}}), similar to ({\sc{T-Read}}),
-checks that the index has type $\kw{uint}^{\mathcal{P}}$, and is in
-bounds. Rule ({\sc{T-Out}})
+\kw{while} form. Rule ({\sc{T-Out}})
 types the expression $e$ at some secret label $m$. Rule ({\sc{T-If}})
 checks that the conditional expression is public, and rule
 ({\sc{T-Seq}}) sequences the type environments. Finally, the typing
