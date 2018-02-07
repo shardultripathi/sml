@@ -1,3 +1,157 @@
 \newpage
 
-\section{Description of benchmarks}
+\section{Description of benchmarks}\label{app:benchmarks}
+We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector
+$x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i =
+\mathsf{max}\ \{x_0,\ldots,x_{d-1}\}$. Finally, if $A$ is
+a matrix (resp. vector) then we write $f(A)$ for the matrix (resp. vector)
+obtained by applying the scalar function $f$ to each entry of $A$
+pointwise.
+
+We focus on the machine
+learning models for {\it classification}. A classifier $C$ uses a
+trained model to {\it predict} a
+label $\ell$ for an input data point $x$. For example, given a
+data point which is a tuple of humidity and temperature 
+a classifier can predict a label ``will rain'' or ``will not rain''.
+The {\it model size} of a classifier is the number of parameters in the model.
+For example, the model size of the classifier in~\figureref{ex-sml} is $|w|+1=31$.
+The {\it
+  accuracy} of a classifier refers to the fraction of data points that
+the classifier labels correctly from a given set of test data
+points.
+
+\paragraph{Standard classifiers.}
+A {\em binary linear classifier} is one of the simplest classifiers. Here,
+the input is a data point $x\in\R^d$,
+and the model is a vector $w\in\R^d$.
+ The possible labels are
+$\ell\in\{\mathit{true},\mathit{false}\}$ and the classifier is
+$C_w\equiv w^Tx>0$.
+%, where $w^T$ denotes the transpose
+%of matrix $w$, $\matmul$ denotes matrix multiplication (with a vector in this case) and $a>b$ returns %$\mathit{true}$ if $a>b$ and $\mathit{false}$ otherwise. 
+%The {\it model size} of this classifier, i.e., the number of parameters in the model is $|w|$, i.e., $d$.
+%This classifier requires $d$ multiplications, $d-1$
+%additions, and a single comparison.
+%
+A more interesting classifier is {\em Na\"{i}ve Bayes}~\cite{shafindss} that predicts labels
+from the set $[n]$.
+Here, the input data point is a {\it feature}
+vector $x=(x_0,x_2,\ldots,x_{d-1})^T$ where each $x_j\in [F]$.
+%The model has two matrices: a vector $P$ of length $n$ s.t. for each
+%$i
+%\in [n]$, $P(i)$ is the log-probability that the output label is $i$.
+%$P(i) \equiv \log p(\ell=i)$, where $p(\ell=i)$ is the likelihood
+%that the output label is $i$ for $i\in[n]$.
+%The other matrix $T$ has size $d\times F\times n$ and for each $j\in
+%[d], k\in [F], i\in [n]$, the entry $T(j)(k)(i)$ is 
+%\equiv\log p(x_j|\ell=i)$, i.e.,
+%the log-probability that  the $j^{th}$ input feature is $k$  conditioned on  the output label being $i$.
+%The classifier $C_{P,T}(x)$ outputs
+%\[
+%{\sf argmax}\ P+\sum_{j=0}^{d-1} T(j)(x_j)
+%\]
+%The additions in the expression above sum $n$-dimensional vectors.
+The model size of this classifier is $\Theta(ndF)$.
+% comparisons and additions. %Note here  that computing $T(j)(x_j)(i)$ requires a secret look-up in matrix  $T$  based on secret input $x_j$ resulting in $F-1$ comparisons using multiplexers (see
+  %Section~\ref{sec:impl}). %\nc{Made DG's comment as part of regular text - worth point out}. \cmmt{Is there a +1 etc missing or is this exact?} \nc{By our calculation in Sec 5, it seems that this should be $F/2$ multiplexers}
+%
+A {\em decision tree} of size $N$ and depth $d$ takes as input an $x\in\R^d$
+%,
+ and 
+%the
+%model consists of a binary tree of depth $d$ with a boolean predicate
+%assigned to each internal node.
+% The root note is the $0^{th}$ node and
+%for an internal node $j \in [N]$, the children nodes are $2j+1$ and
+%$2j+2$. Each internal node $j\in[N]$ at depth $i$ has a predicate
+%$b_{j}^i\equiv x_i\leq w_{j}$. We start evaluating the tree from the
+%root and if the predicate at the current node $b_j^i$ is false (resp.,
+%true) then $x$ is passed to the left (resp., right) child with
+%predicate $b_{2j+1}^{i+1}$ (resp., $b_{2j+2}^{i+1}$). This process is
+%repeated till we reach a leaf. The leaves of the tree are labels and
+%the output label is the leaf visited by this traversal.
+%Such a (binary) decision tree 
+%and can be encoded as a polynomial (of
+%degree linear in depth of the tree) and then
+ the prediction task
+reduces to evaluation of a $d$-degree polynomial~\cite{shafindss}.
+% E.g., a binary tree with depth one
+%and size $N=3$ can be encoded as the polynomial
+%$(1-b(x))\ell_0 + b(x)\ell_1$ where $b(x)$ is the predicate at the
+%root, $\ell_0$ is the label of the left leaf and $\ell_1$ is the label
+%of the right leaf.
+
+\paragraph{Deep neural nets.}
+The next class of classifiers that we benchmark are deep neural nets
+or DNNs. A DNN has multiple layers such that each layer computes a
+matrix
+multiplication followed by an {\it activation} function $f$. The most
+common activation functions are square $f(x)=x^2$ and rectifier linear
+unit (ReLU) $f(x)=\mathsf{max}(x,0)$.
+Given an input vector $x$, the predicted label of a DNN is
+\[
+ \mathsf{argmax}\ W_N\matmul f_{N-1}(\ldots f_1(W_1\matmul x)\ldots)
+\]
+Here, $f_i$'s are the (public) activation functions, the model
+consists of matrices $W_i$,  $x \in \R^d$ is the input vector, and the
+operator $\matmul$ denotes a matrix multiplication.
+Neural nets usually have one or more fully connected layers, each of
+which multiplies a matrix with a vector.
+Some neural nets have convolution layers and such DNNs are also called
+Convolutional Neural Nets or CNNs.
+For the purpose of this paper, a convolution can be considered as a
+(heavy) matrix-matrix multiplication. The size of matrices manipulated
+by a convolution layer grows linearly with {\it window size}
+(typically 9 or 25), the number of {\it output channels} (typically
+16, 32, or 64), and the size of the matrix input to this layer.
+Therefore, fully connected layers are lighter computation-wise compared
+to convolution layers. However, the model size  of fully connected
+layers is larger than those of convolution layers.
+In general, DNNs are computationally heavy but provide
+much better accuracies on computer vision tasks than the classifiers
+discussed above.
+
+\paragraph{State-of-the-art classifiers.}
+Finally, there are a class of machine learning classifiers that are
+much more efficient than
+DNNs and provide reasonably good accuracies on standard learning
+tasks. \bonsai~\cite{bonsai} is a state-of-the art classifier in this
+class and \tool provides the first 2PC protocol for it.
+\bonsai takes as input $x \in \R^d$, and its model consists of a
+binary tree with $N$ nodes, and a matrix $Z$. Each node $j$ contains
+matrices $W_j$ and $V_j$, and a vector $\theta_{j}$. The internal node
+$j$  evaluates a predicate $(\theta_j^T \matmul Z \matmul x) > 0$ to decide whether
+to pass $x$ to the left child $2j+1$ or the right child $2j+2$.
+The predicted value is
+
+%\aseem{I had a hard time parsing this. (1) Should we use $\cdot$ for
+%  matrix multiplication as we did for DNNs? (2) Precedence of $\circ$
+%  over scalar multiplication (or is it associative so doesn't matter?)
+%(3) The argument to $f$ is a scalar (right?), and so is its output,
+%so then is $\circ$ defined OR is it applying $f$ pointwise to a vector?}
+%\nc{(1) I agree we should do that to be consistent with before. (2) I assumed $f()$ is computed to give a vector somehow and $I_j(x)W_j^TZx$ also gives a vector somehow and then we do $\circ$; I might be wrong. (3) Hmm.. I thought it was a vector, but I dont know how. (4) Can we specify somewhere the dimensions of these matrices?}
+%\vspace{-10pt}
+\[
+{\sf argmax} \sum_{j = 0}^{N - 1} I_j(x)[ (W_j^T\matmul Z\matmul x) \circ (f(V_j^T\matmul Z\matmul x))] 
+\]
+Here, $I_j(x)$ is 1 if the $j^{th}$ node is present on the path traversed by $x$
+and is zero otherwise. 
+The operation $\circ$ is a pointwise multiplication of two vectors, $W_j$'s and $V_j$'s
+are matrices of appropriate dimensions. The activation function $f$ is given by $f(y) = y$ if
+$-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise.
+%% ($f$ on vectors and
+%% matrices is defined point-wise on every element of the
+%% vector/matrix).
+%\bonsai can be
+%seen as a variant of decision trees where the prediction is a function
+%of the path traversed from root to the leaf and not just the leaf
+%itself.
+
+In the following, we implement these classifiers in \tool and report
+the time taken for making secure predictions. Ideally, the machine
+learning classifiers are mathematical expressions over $\R$ that are
+usually approximated by floating-point operations. 
+As is standard, we port the classifiers to integer manipulating
+programs by scaling the models and rounding~\cite{minionn}. These
+ported classifiers are then implemented in \tool.
