@@ -1,3 +1,4 @@
+\vspace{-0.1in}
 \section{\tool Overview}
 \label{sec:ex}
 %$w^Tx>0$, mnist logistic regression
@@ -15,7 +16,7 @@
 
 \figureref{toolchain} shows an overview of the \tool
 toolchain. We give a brief overview of each of these phases below.
-
+\vspace{-0.1in}
 \paragraph{Source language.}
 Consider the example $w^Tx >b$ from \sectionref{intro}, where
 $w$ and $b$ constitute the server's input (a classifier) and $x$ is
@@ -32,9 +33,7 @@ the programmers to express \mpc computations in terms of their
 details. The language provides multi-dimensional arrays, conditional
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \ls{if}~statements, and special syntax for input/output from each party.
-
-
-
+\vspace{-0.1in}
 \paragraph{\tool compiler.}
 \tool compiler takes as input a source program and produces a C++
 program as output. \figureref{ex-aby} shows the output code\footnote{This is also how a program written directly in
@@ -75,7 +74,7 @@ instruments these conversion gates accordingly. For example, in
 lines~\ref{line:convacc} and~\ref{line:convb}, the compiler converts
 \ls{a\_acc} and \ls{a\_b} to boolean representation, before they are
 input to the comparison and multiplexer circuits.
-
+\vspace{-0.2in}
 \begin{figure}[h]
 \begin{lstlisting}[language=C, mathescape=true]
 //circuit builders for arithmetic and boolean
@@ -167,8 +166,8 @@ public parts of the program, including the array accesses, and
 generates a  circuit comprising of arithmetic and boolean gates,
 with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
-
-We can now concretely see the advantages of \tool. Unarguably, it is
+\vspace{-0.1in}
+\paragraph{Salient features of \tool.} We can now concretely see the advantages of \tool. Unarguably, it is
 easier for a developer to program and get right the code in
 \figureref{ex-sml}, rather than the code in
 \figureref{ex-aby}.
@@ -186,9 +185,7 @@ over). In \tool, the programmer simply needs to change one operator in
 the source code, and the compiler generates efficient code that uses
 boolean addition. Whereas, if the programmer was writing ABY
 code, she either has to sacrifice performance, or she would have to
-revisit many parts of the circuit and change them.
-
-To summarize, \tool raises the level of abstraction for the
+revisit many parts of the circuit and change them. To summarize, \tool raises the level of abstraction for the
 programmer, and generates efficient \mpc protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees. 

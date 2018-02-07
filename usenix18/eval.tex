@@ -1,3 +1,4 @@
+\vspace{-0.1in}
 \section{Evaluation}
 \label{sec:eval}
 We evaluate \tool on a variety of problems that can fall under the umbrella of {\it secure prediction}, where one
@@ -196,7 +197,7 @@ prediction tasks, and get performance competitive to or better than the
 specialized protocols. Table~\ref{tab:dt} 
 compares against the more recent work of~\cite{wu}
 on decision trees and further validates this claim.
-\\\\
+\vspace{-0.2in}
 \paragraph{Deep neural nets.}
 We evaluate \tool on the DNNs described in SecureML~\cite{secureml},
 Cryptonets~\cite{cryptonets}, and the CNN from \minion~\cite{minionn}. For
@@ -280,7 +281,7 @@ We note that while the \minion implementation is based on the ABY framework, it 
 \minion also reports performance results on a bigger DNN with 7
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in \sectionref{pipeeval}.
-\\\\
+\vspace{-0.18in}
 \paragraph{State-of-the-art classifiers.}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
 Its introductory tutorial describes two prediction models for handwritten digit recognition
@@ -437,7 +438,7 @@ large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
 succeed.
 
-\subsection{Matrix factorization.}
+\subsection{Matrix factorization}
 \tool is not tied to secure prediction and can express more general computations.
 To demonstrate this expressiveness, we  implement secure matrix factorization~\cite{valeriaMatrix}. Abstractly, given a sparse matrix $\mathcal{M}$ of dimensions
 $n\times m$ and $M$ non-zero entries, the goal is to generate a matrix $U$ of dimension $n\times d$ and a matrix
