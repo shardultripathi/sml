@@ -928,7 +928,8 @@ observations.
 
 \begin{figure}
   \footnotesize
-  \fbox{$\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate \Downarrow b_{1}, b_{2}$}
+  \fbox{$\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate \Downarrow b_{1}, b_{2}$}\quad\quad
+  \fbox{$\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \crct \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O$}
   \[
   \\
   \begin{array}{c}
@@ -996,13 +997,7 @@ observations.
                  \widehat{\rho}_{1}, \widehat{\rho}_{3} \vdash \kw{mux}\:\gate_{1}\:\gate_{2}\:\gate_{3} \Downarrow b_{1}, b_{2}
                }
 
-  \end{array}
-  \]
   \\\\
-    \fbox{$\widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \crct \Downarrow \widehat{\rho}'_{1}, \widehat{\rho}'_{2}; O$}
-  \[
-  \\
-  \begin{array}{c}
     \inferrule*[lab={\footnotesize{C-Bind}}]
                {
                  \widehat{\rho}_{1}, \widehat{\rho}_{2} \vdash \gate \Downarrow b_{1}, b_{2}\\\\
