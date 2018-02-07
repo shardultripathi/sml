@@ -100,6 +100,30 @@ and proofs can be found in~\cite{anonymized}.
 \label{fig:srclang}
 \end{figure}
 
+\paragraph{Source language.} Our source language
+ is a simple imperative language shown in \figureref{srclang}. Types
+$\psi$ consist of the base types $\sigma$, and arrays
+of base types $\sigma[n]$, where $n$ is the array length. Though we
+model only one dimensional arrays, our implementation supports
+ multi-dimensional arrays as well. Expressions $e$ in the language include the
+ integer constants $n$, \kw{bool} constants $\top$ and $\bot$,
+variables $x$, binary operations $e_{1} \mulop e_{2}$ and $e_{1} >
+e_{2}$ (we support several other
+operators in the implementation, detailed in \sectionref{impl}),
+conditionals $\cond{e}{e_{1}}{e_{2}}$,
+array literals
+$[\overline{e_{i}}]_{n}$\footnote{We write $\overline{e}$ (and
+  similarly for other symbols) to denote a sequence of expressions.
+The length of the sequence is usually clear from the context.}, and
+array reads $x[e]$. The expression $\kw{in}_{j}$ denotes input from
+party $j$. The statements $s$ in the language comprise of variable
+declarations and assignments ($\psi\:x = e$ and $x := e$ resp.),
+\kw{for} loops, array writes ($x[e_{1}] := e_{2}$), \kw{if}
+statements, and sequence of statements ($s_{1}; s_{2}$). The statement
+$\kw{out}\:e$ denotes revealing the value of $e$ to the
+parties. The \kw{while} statement is an internal syntax that is not
+exposed to the programmer. \\
+
 \begin{figure}
   \footnotesize
   \fbox{$\rho \vdash e \Downarrow v$}
@@ -239,30 +263,6 @@ and proofs can be found in~\cite{anonymized}.
 \label{fig:srcsem}
 \end{figure}
 
-\paragraph{Source language.} Our source language
- is a simple imperative language shown in \figureref{srclang}. Types
-$\psi$ consist of the base types $\sigma$, and arrays
-of base types $\sigma[n]$, where $n$ is the array length. Though we
-model only one dimensional arrays, our implementation supports
- multi-dimensional arrays as well. Expressions $e$ in the language include the
- integer constants $n$, \kw{bool} constants $\top$ and $\bot$,
-variables $x$, binary operations $e_{1} \mulop e_{2}$ and $e_{1} >
-e_{2}$ (we support several other
-operators in the implementation, detailed in \sectionref{impl}),
-conditionals $\cond{e}{e_{1}}{e_{2}}$,
-array literals
-$[\overline{e_{i}}]_{n}$\footnote{We write $\overline{e}$ (and
-  similarly for other symbols) to denote a sequence of expressions.
-The length of the sequence is usually clear from the context.}, and
-array reads $x[e]$. The expression $\kw{in}_{j}$ denotes input from
-party $j$. The statements $s$ in the language comprise of variable
-declarations and assignments ($\psi\:x = e$ and $x := e$ resp.),
-\kw{for} loops, array writes ($x[e_{1}] := e_{2}$), \kw{if}
-statements, and sequence of statements ($s_{1}; s_{2}$). The statement
-$\kw{out}\:e$ denotes revealing the value of $e$ to the
-parties. The \kw{while} statement is an internal syntax that is not
-exposed to the programmer. \\
-
 \paragraph{Source semantics.} The runtime semantics for the source language is shown in
 \figureref{srcsem}. These semantics show how a ``trusted third party" computes the outputs when given the inputs of both the parties. 
  Values $v$, runtime environments $\rho$, and
@@ -362,8 +362,6 @@ $\mathcal{B}$-labeled operators generate boolean circuits. The
 form $\langle \ell \rhd m \rangle\:\widetilde{e}$ denotes coercing
 $\widetilde{e}$ from label $\ell$ to label $m$.
 %The statements $\widetilde{s}$ are analogous to $s$.
-
-
 
 \begin{figure}
   \footnotesize
@@ -473,10 +471,15 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
 
   \end{array}
   \]
-  \\\\
+\caption{Expression compilation (selected rules)}
+\label{fig:exp-compile}
+\end{figure}
+
+
+\begin{figure}
+  \footnotesize
     \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$}
   \[
-  \\
   \begin{array}{c}
      \inferrule*[lab={\footnotesize{T-Decl}}]
                {
@@ -560,12 +563,12 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
 
   \end{array}
   \]
-\caption{Compilation judgments (selected rules)}
-\label{fig:compile}
+\caption{Statement compilation (selected rules)}
+\label{fig:stmt-compile}
 \end{figure}
 
 \paragraph{Source to intermediate compilation.} We provide the compilation
-rules in \figureref{compile}. We present the rules in a
+rules in \figureref{exp-compile} and \figureref{stmt-compile}. We present the rules in a
 declarative style, where the rules are non-syntax
 directed, and the labels $\ell$ are chosen
 non-deterministically. \sectionref{impl} describes the label  inference
@@ -658,11 +661,6 @@ evaluation rules.
 \caption{Circuits  syntax}
 \label{fig:circuits}
 \end{figure}
-
-
-
-
-
 
 \begin{figure}
   \footnotesize
