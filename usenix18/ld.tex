@@ -80,9 +80,7 @@ and proofs can be found in~\cite{anonymized}.
 
 %\TODO{Do we want to write things in logical order or order in paper?}
 
-
-
-\begin{figure}
+\begin{figure}[htp]
   \footnotesize
   \[
   \begin{array}{rrcl}
@@ -124,9 +122,10 @@ $\kw{out}\:e$ denotes revealing the value of $e$ to the
 parties. The \kw{while} statement is an internal syntax that is not
 exposed to the programmer. \\
 
-\begin{figure}
+\begin{figure}[htp]
   \footnotesize
-  \fbox{$\rho \vdash e \Downarrow v$}
+  \fbox{$\rho \vdash e \Downarrow v$}\quad\quad
+  \fbox{$\rho \vdash s \Downarrow \rho_{1}; O$}
   \[
   \\
   \begin{array}{c}
@@ -185,13 +184,7 @@ exposed to the programmer. \\
                {
                  \rho \vdash \kw{in}_{j} \Downarrow c
                }
-  \end{array}
-  \]
-  \\\\
-    \fbox{$\rho \vdash s \Downarrow \rho_{1}; O$}
-  \[
-  \\
-  \begin{array}{c}
+               \\\\
     \inferrule*[lab={\footnotesize{E-Decl}}]
                {
                  \rho \vdash e \Downarrow v
@@ -326,7 +319,7 @@ expression, and adds its value to the observations.
 %\newcommand{\ite}[3]{\ensuremath{\kw{if}({#1}, {#2}, {#3})}}
 %\newcommand{\loops}[3]{\ensuremath{\kw{while}\:{#1} \leq {#2}\:\kw{do}\:{#3}}}
 
-\begin{figure}
+\begin{figure}[htp]
   \footnotesize
   \[
   \begin{array}{rrcl}
@@ -363,10 +356,10 @@ form $\langle \ell \rhd m \rangle\:\widetilde{e}$ denotes coercing
 $\widetilde{e}$ from label $\ell$ to label $m$.
 %The statements $\widetilde{s}$ are analogous to $s$.
 
-\begin{figure}
+\begin{figure}[H]
   \footnotesize
-  \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}
-  \[
+  \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}\quad\quad
+  \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$}  \[
   \begin{array}{c}
      \inferrule*[lab={\footnotesize{T-UInt}}]
                {
@@ -390,25 +383,7 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
                {
                  \Gamma \vdash \kw{in}_{j} : \sigma^{m} \leadsto \kw{in}^{m}_{j}
                }
-
-   
-
-    %% \inferrule*[lab={\footnotesize{T-Cons}}]
-    %%            {
-    %%              \tau = \mathsf{typeof}(c)^{\mathcal{P}}
-    %%            }
-    %%            {
-    %%              \Gamma \vdash c : \tau \leadsto c
-    %%            }
-
-    %%  \inferrule*[lab={\footnotesize{T-Var}}]
-    %%            {
-    %%            }
-    %%            {
-    %%              \Gamma \vdash x : \Gamma(x) \leadsto x
-    %%            }
-\\\\
-
+               \\\\
 	  \inferrule*[lab={\footnotesize{T-Mult}}]
                {
                  \forall i \in \{1,2\}.\:\Gamma \vdash e_{i} : \kw{uint}^{\ell} \leadsto \widetilde{e}_{i}\\\\
@@ -468,19 +443,7 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
                {
                  \Gamma \vdash e : \sigma^{m} \leadsto \langle \ell \rhd m \rangle\:\widetilde{e}
                }
-
-  \end{array}
-  \]
-\caption{Expression compilation (selected rules)}
-\label{fig:exp-compile}
-\end{figure}
-
-
-\begin{figure}
-  \footnotesize
-    \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$}
-  \[
-  \begin{array}{c}
+\\\\
      \inferrule*[lab={\footnotesize{T-Decl}}]
                {
                  \Gamma \vdash e : \psi^{\ell} \leadsto \widetilde{e}
@@ -563,12 +526,12 @@ $\widetilde{e}$ from label $\ell$ to label $m$.
 
   \end{array}
   \]
-\caption{Statement compilation (selected rules)}
-\label{fig:stmt-compile}
+\caption{Source compilation (selected rules)}
+\label{fig:src-compile}
 \end{figure}
 
 \paragraph{Source to intermediate compilation.} We provide the compilation
-rules in \figureref{exp-compile} and \figureref{stmt-compile}. We present the rules in a
+rules in \figureref{src-compile}. We present the rules in a
 declarative style, where the rules are non-syntax
 directed, and the labels $\ell$ are chosen
 non-deterministically. \sectionref{impl} describes the label  inference
@@ -631,20 +594,6 @@ does not modify $x$ ($x \notin
 \mathsf{modifies}(s)$)--this is necessary for ensuring termination.
 
 
-
-As mentioned earlier, the intermediate language models the code such
-as in \figureref{ex-aby} output by our compiler.
-Next, a program in the intermediate language is evaluated to a circuit
-that can be executed in the distributed runtime later. The evaluation
-to a circuit computes away the public parts of the program and also
-\emph{flattens} the arrays so that the circuits are unaware of the
-array structure.
-Crucially, this phase of the semantics does not have access to the
-secret inputs.
-Below, we first provide the language for the circuits followed by the
-evaluation rules.
-
-
 \begin{figure}
   \footnotesize
   \[
@@ -662,9 +611,34 @@ evaluation rules.
 \label{fig:circuits}
 \end{figure}
 
-\begin{figure}
+As mentioned earlier, the intermediate language models the code such
+as in \figureref{ex-aby} output by our compiler.
+Next, a program in the intermediate language is evaluated to a circuit
+that can be executed in the distributed runtime later. The evaluation
+to a circuit computes away the public parts of the program and also
+\emph{flattens} the arrays so that the circuits are unaware of the
+array structure.
+Crucially, this phase of the semantics does not have access to the
+secret inputs.
+Below, we first provide the language for the circuits followed by the
+evaluation rules.
+
+\paragraph{Evaluation to Circuits.}
+\figureref{circuits} shows the syntax of circuits. A wire id range
+$\wire$ denotes a set of circuit wires that carry the runtime value of a
+ variable with a secret label (we will concretely define these runtime
+values later as part of the circuit semantics). Circuit gates $\gate$
+are wires $\wire$, input gates $\kw{in}^m_j$, multiplication gates \kw{mult}, comparison gates \kw{gt}, and multiplexer \kw{mux} gates, 
+coerce gates $\langle \ell \rhd m \rangle$, and constants.
+Sub-circuits $\val$ (generated from $\widetilde e$) then consist of
+gates and arrays of gates.  A circuit $\crct$ is either empty, \kw{bind}-ing of a
+circuit gate $\gate$ to wire $\wire$, \kw{out} gate, or a sequence of
+circuits.
+
+\begin{figure}[htp]
   \footnotesize
-  \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \val$}
+  \fbox{$\widetilde{\rho} \vdash \widetilde{e} \Downarrow \val$}\quad\quad
+  \fbox{$\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}_{1}; \crct$}
   \[
   \\
   \begin{array}{c}
@@ -751,13 +725,7 @@ evaluation rules.
                {
                  \widetilde{\rho} \vdash \kw{in}^{m}_{j} \Downarrow \kw{in}^{m}_{j}
                }
-  \end{array}
-  \]
-  \\\\
-    \fbox{$\widetilde{\rho} \vdash \widetilde{s} \Downarrow \widetilde{\rho}_{1}; \crct$}
-  \[
-  \\
-  \begin{array}{c}
+               \\\\
     \inferrule*[lab={\footnotesize{S-DeclC}}]
                {
                  \widetilde{\rho} \vdash \widetilde{e} \Downarrow \val\\\\
@@ -830,18 +798,6 @@ evaluation rules.
 \caption{Evaluation of Intermediate Language to Circuit (selected rules)}
 \label{fig:eval-inter-circ}
 \end{figure}
-
-\paragraph{Evaluation to Circuits.}
-\figureref{circuits} shows the syntax of circuits. A wire id range
-$\wire$ denotes a set of circuit wires that carry the runtime value of a
- variable with a secret label (we will concretely define these runtime
-values later as part of the circuit semantics). Circuit gates $\gate$
-are wires $\wire$, input gates $\kw{in}^m_j$, multiplication gates \kw{mult}, comparison gates \kw{gt}, and multiplexer \kw{mux} gates, 
-coerce gates $\langle \ell \rhd m \rangle$, and constants.
-Sub-circuits $\val$ (generated from $\widetilde e$) then consist of
-gates and arrays of gates.  A circuit $\crct$ is either empty, \kw{bind}-ing of a
-circuit gate $\gate$ to wire $\wire$, \kw{out} gate, or a sequence of
-circuits.
 
 \figureref{eval-inter-circ} shows the judgments for the evaluation of
 the intermediate language to a circuit. The circuit generation environment maps
