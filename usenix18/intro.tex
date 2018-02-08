@@ -263,9 +263,12 @@ successfully terminate
 (e.g., there are no array index out-of-bounds errors) with identical
 observable outputs. For
 the security theorem, we formally reduce the security
-of our scheme against semi-honest (or, ``honest but curious") adversaries
- to the semi honest security of the  \mpc back-end. 
- We also prove a formal security theorem against semi-honest  adversaries for our partitioning
+of our scheme against semi-honest (or, ``honest but curious")
+adversaries to the semi honest security of the  \mpc back-end. The
+theorem provides protection against side-channels arising from
+conditionals and memory access patterns.
+ We also prove a formal security theorem against semi-honest
+ adversaries for our partitioning
 scheme (\sectionref{ld} and~\sectionref{pipe}).
 %\vspace{-0.2in}
 \paragraph{Evaluation.} We have implemented \tool
