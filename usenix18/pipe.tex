@@ -28,7 +28,7 @@ information to $\progn_{i+1}$. We prove our partitioning scheme to be
 correct ($\prog$ and sequential execution of $\progn_1,\progn_2,\ldots,\progn_k$ compute
 the same functionality) and secure (sequential execution of
 $\progn_1,\progn_2,\ldots,\progn_k$ does
-not reveal any more information than $\prog$). More details follow.
+not reveal any more information than $\prog$). More formal details follow, while an example illustrating the technique of secure code partitioning is provided in  \appendixref{codepartitioning}. 
 
 Let $\prog$ be a program that takes (secret) inputs $x$ from Alice and
 $y$ from Bob and produces an output $z$ to both parties. Let
@@ -68,9 +68,11 @@ compute $\state_1$ and then outputs $o_1 = \state_1 + r_1$ {\em only
   the underlying backend supports only one party receiving output,
   this is only a simplifying assumption, and we can easily modify our
   protocol in the case where both parties must receive the same
-  output. To do so, we modify $\progn_1$ to output $o_1 = s_1+r_1+r'_1$ to
-  both parties (where $r'_1$ is random and chosen by Bob). We can then
-  appropriately modify the remaining steps as well.}. Alice's output
+  output. %To do so, we modify $\progn_1$ to output $o_1 = s_1+r_1+r'_1$ to
+  %both parties (where $r'_1$ is random and chosen by Bob). We can then
+  %appropriately modify the remaining steps as well.
+  }. 
+  Alice's output
 from $\progn_1$ is $r_1$. Next, every $\progn_i$ ($2\leq i\leq k-1$)
 takes as inputs $x,r_{i-1},r_i$ from Alice and $y,o_{i-1}$ from Bob,
 runs $\prog_i$
@@ -85,7 +87,7 @@ Thus, given a decomposition of $\prog$ into
 $\prog_1\seq\prog_2\seq\dots\seq\prog_k$, we can use the construction
 above to generate programs $\progn_1,\progn_2,\ldots,\progn_k$, that
 can be sequentially executed, using the unmodified underlying \mpc
-backend. An example illustrating the technique of secure code partitioning is provided in  \appendixref{codepartitioning}. We prove the following theorem for code partitioning:
+backend. We prove the following theorem for code partitioning:
 
 %% \paragraph{Security.} The following theorem states the correctness and security of
 %% code partitioning.
