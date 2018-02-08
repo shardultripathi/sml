@@ -16,16 +16,16 @@
 
 \figureref{toolchain} shows an overview of the \tool
 toolchain. We give a brief overview of each of these phases below.
-\vspace{-0.1in}
+\vspace{-0.15in}
 \paragraph{Source language.}
 Consider the example $w^Tx >b$ from \sectionref{intro}, where
-$w$ and $b$ constitute the server's input (a classifier) and $x$ is
+$w$ and $b$ are the server's input (a classifier) and $x$ is
 the client's input vector. \figureref{ex-sml} shows the \tool code
 for this example. The code first reads the server's (resp. client's) input using
  \ls{input1} (resp. \ls{input2}). It then uses a
 \ls{for} loop to compute \ls{acc}, the inner product of \ls{w} and
-\ls{x}. Finally, the code outputs the result of comparing \ls{acc}
-with \ls{b} only to the client using \ls{output2}.
+\ls{x}. Finally, the code compares \ls{acc}
+with \ls{b} and outputs this only to the client using \ls{output2}.
 
 \tool source language is a simple, imperative language that enables
 the programmers to express \mpc computations in terms of their
@@ -167,8 +167,8 @@ generates a  circuit comprising of arithmetic and boolean gates,
 with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
 \vspace{-0.1in}
-\paragraph{Salient features of \tool.} We can now concretely see the advantages of \tool. Unarguably, it is
-easier for a developer to program and get right the code in
+\paragraph{Advantages of \tool.} We can now concretely see the advantages of \tool. Unarguably, it is
+easier for a developer to program and get the code right in
 \figureref{ex-sml}, rather than the code in
 \figureref{ex-aby}.
 % (as we mentioned in Section~\ref{sec:intro},
@@ -178,14 +178,14 @@ easier for a developer to program and get right the code in
 programmer to easily modify their code, while the compiler takes care
 of efficiency. For example, consider in \figureref{ex-sml} a
 change from multiplication to bitwise-or in the \ls{for} loop. It
-turns out that once that's the case, it is more efficient to do both
+turns out that in this case, it is more efficient to do both
 the addition and bitwise-or using boolean circuits (if the addition is
-still done using arithmetic, the conversion cost starts to take
+done using arithmetic, the conversion cost starts to take
 over). In \tool, the programmer simply needs to change one operator in
 the source code, and the compiler generates efficient code that uses
 boolean addition. Whereas, if the programmer was writing ABY
-code, she either has to sacrifice performance, or she would have to
-revisit many parts of the circuit and change them. To summarize, \tool raises the level of abstraction for the
+code, she either has to sacrifice performance, or would have to
+revisit many parts of the circuit and change them. In summary, \tool raises the level of abstraction for the
 programmer, and generates efficient \mpc protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees. 
