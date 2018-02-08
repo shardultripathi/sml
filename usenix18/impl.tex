@@ -81,4 +81,9 @@ share and boolean share involved in the coercion.
 \tool invalidates such pairs when the variables corresponding to the
 shares are overwritten by assignments. 
 In subsequent coercions, \tool  reuses valid pairs (if available)
-instead of inserting code to recompute them afresh. 
+instead of inserting code to recompute them afresh.
+
+Since all these optimizations are standard compiler
+optimizations~\cite{dragonbook}, we rely on their correctness to
+maintain correctness and security for the optimized programs.
+

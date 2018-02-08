@@ -36,9 +36,9 @@ expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \vspace{-0.1in}
 \paragraph{\tool compiler.}
 \tool compiler takes as input a source program and produces a C++
-program as output. \figureref{ex-aby} shows the output code\footnote{This is also how a program written directly in
-  ABY would look like.} for
-the example in \figureref{ex-sml}. The output program
+program as output. \figureref{ex-aby} shows the output code for
+the example in \figureref{ex-sml} -- this is also how a program written directly in
+  ABY would look like. The output program
 contains party-specific code for inputs and outputs
 (\ls{role == SERVER} and \ls{role == CLIENT}), and common code for the
 computation.
@@ -74,7 +74,8 @@ instruments these conversion gates accordingly. For example, in
 lines~\ref{line:convacc} and~\ref{line:convb}, the compiler converts
 \ls{a\_acc} and \ls{a\_b} to boolean representation, before they are
 input to the comparison and multiplexer circuits.
-\vspace{-0.2in}
+%\vspace{-0.2in}
+
 \begin{figure}[h]
 \begin{lstlisting}[language=C, mathescape=true]
 //circuit builders for arithmetic and boolean
