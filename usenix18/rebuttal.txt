@@ -1,3 +1,6 @@
+[AR]: What is the high-level point of the rebuttal? Worth thinking
+about that.
+
 We thank the reviewers for their useful comments. We address a few of them below.
 
 First, our language does indeed allow providing input that is public,
