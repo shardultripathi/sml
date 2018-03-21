@@ -1,0 +1,112 @@
+===========================================================================
+REVIEWS
+
+Review #200A
+===========================================================================
+
+Overall merit
+-------------
+2. Weak reject
+
+Relative ranking
+----------------
+2. Top 50% but not top 25% of submitted papers
+
+Reviewer expertise
+------------------
+4. Expert
+
+Writing quality
+---------------
+4. Well-written
+
+Paper summary
+-------------
+This paper presents a domain-specific language and compiler for mixed-mode secure two-party computation based on the ABY (ref. [18]) secure computation engine.  The authors claim that their language is easy to use because it abstracts away all details about which underlying 2-PC protocol to use and details of the 2-PC protocol.  The goal is to enable a non-cryptographer to use this system.
+
+The authors provide formal semantics for their language and compiler to show that it always produces correct and secure code.  They also describe a few basic techniques such as partitioning and memoizing conversions to allow the compilation and evaluation of large MPC programs.
+
+The authors then show how their compiler can be used to build secure 2-PC for several applications related to machine learning.  They compare these to results from prior work, and show that the resulting protocols are comparable or faster to prior work while requiring only a few lines of code to implement.
+
+Overall, while it is indeed important to build tools to enable non-cryptographers to develop MPC applications, this paper is unimpressive.  The language is quite limited, for example there is no way for a party to provide input that should be public.  The mixed-mode choices are rather simplistic (e.g., always do multiplication using arithmetic sharing) and are not backed by any evidence as to why the choice was made.  The performance results are underwhelming, and in particular it is not clear that they beat a Yao-only approach.  In particular, the paper fails to cite Groce et al. (https://na01.safelinks.protection.outlook.com/?url=https%3A%2F%2Feprint.iacr.org%2F2016%2F458.pdf&data=04%7C01%7Caseemr%40microsoft.com%7Cfaf1796dfc634efa923b08d58ec56434%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C1%7C636571900807907308%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwifQ%3D%3D%7C-1&sdata=B9XqRvUBRByEWVuHGbPR84Nvqk5xd6XogFJASiiBik4%3D&reserved=0) which shows better performance for two of the experiments using only a garbled-circuit approach.
+
+Strengths
+---------
+- The paper is well written and easy to follow
+- The formal semantics of the language and compiler, appear to allow for formal arguments of correctness.
+
+Weaknesses
+----------
+- The paper does not adequately compare its work to other efforts on compilers for secure computation (e.g., CBMC-GC (Ref. 27, 11), Picco, and others).  While I appreciate that the existing compilers only build Boolean circuits, it is important to highlight how they compare to the new compiler in terms of size of circuits produced.
+
+- The authors claim that mixed-mode protocols give them a significant improvement, but all of their examples are very simple and no evidence is provided for why their choices are optimal.  They just say, e.g. multiplication is always done using arithmetic.  Nothing is discussed about input sizes, network settings, etc. that may have an impact on these choices.
+
+- The performance numbers given are not very impressive.  In particular, it is not clear that the produced construction would beat a Yao-only approach, for example the numbers they give are worse than the ones for Yao-only computation by Groce et al. (https://na01.safelinks.protection.outlook.com/?url=https%3A%2F%2Feprint.iacr.org%2F2016%2F458.pdf&data=04%7C01%7Caseemr%40microsoft.com%7Cfaf1796dfc634efa923b08d58ec56434%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C1%7C636571900807907308%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwifQ%3D%3D%7C-1&sdata=B9XqRvUBRByEWVuHGbPR84Nvqk5xd6XogFJASiiBik4%3D&reserved=0).  Additionally, the communication bandwidth seems to only be marginally better (and, in some cases, actually worse) than in prior work.  So, the performance gains are minimal at best in a bandwidth-limited setting.
+
+- The secure code partitioning technique is not really new.  In particular, in the garbled circuit setting essentially the same approach has been used several times before (e.g., Groce et al. (https://na01.safelinks.protection.outlook.com/?url=https%3A%2F%2Feprint.iacr.org%2F2016%2F458.pdf&data=04%7C01%7Caseemr%40microsoft.com%7Cfaf1796dfc634efa923b08d58ec56434%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C1%7C636571900807907308%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwifQ%3D%3D%7C-1&sdata=B9XqRvUBRByEWVuHGbPR84Nvqk5xd6XogFJASiiBik4%3D&reserved=0) - not cited, Mood et al. (https://na01.safelinks.protection.outlook.com/?url=https%3A%2F%2Farxiv.org%2Fpdf%2F1506.02954&data=04%7C01%7Caseemr%40microsoft.com%7Cfaf1796dfc634efa923b08d58ec56434%7C72f988bf86f141af91ab2d7cd011db47%7C1%7C0%7C636571900807907308%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwifQ%3D%3D%7C-1&sdata=4GRzqZMFUnryxOxSZveLJ2OP9NX5uBTTPAIFeduSbWk%3D&reserved=0) - not cited, and pipelining - Ref. 28)).  It seems that its worth mentioning that you do this in the arithmetic setting, though its not clear why you ONLY do this in the arithmetic setting, but doesn’t seem to merit the lengthy discussion you devote to this.
+
+Comments for author
+-------------------
+In addition to the comments above, I had a few more detailed comments / questions
+
+1.  Is there a way for a party to provide non-private input (e.g., if they have values that are part of the computation but dont need to be private) or does this have to be essentially hard-coded into the code?
+
+2.  I would appreciate more discussion on the “cryptographic cost-aware” compiler.  How were the costs estimated?  Are they one size fits all, or are there choices that depend on input size / networking?  It seems that for each of your basic operations you just have a default way for evaluating it, is that really the case?
+
+3.  Also, it would be good to describe, or at least specify the costs of conversions.  This would allow the reader to better understand your justifications for the above.
+
+4.  In Sections 5 and 6, some more details would be useful.
+	- Is there a bandwidth limit in either the LAN or the WAN settings or are you assuming unbounded bandwidth?  It would be good to see some discussion of what the bottleneck is for performance.
+	- To make the paper more standalone, please give a little more detail on the “default ABY configuration”. 
+
+5.  The statement of Theorem 1 should probably not use only mathematical notation to make it more readable.
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+
+Review #200B
+===========================================================================
+
+Overall merit
+-------------
+3. Weak accept
+
+Relative ranking
+----------------
+3. Top 25% but not top 10% of submitted papers
+
+Reviewer expertise
+------------------
+4. Expert
+
+Writing quality
+---------------
+4. Well-written
+
+Paper summary
+-------------
+The paper presents a framework for developing secure computation applications. It introduces a domain-specific language to describe the secure application. The framework takes a user's description and translates it into a lower-level description for ABY. It uses a combination of arithmetic sharing and Yao's Garbled Circuit protocols to implement the functionality for better performance. The authors also introduce a neat method to partition the computation into smaller steps for scalability.
+
+Strengths
+---------
+- The paper is well written and clear. The related work in the literature has been sufficiently reviewed.
+- The compiler is formally presented, and concrete proofs of correctness and security are provided.
+- The proposed method for partitioning the process is elegant and simple.
+- As stated in the paper, the framework is the first to automatically map the description into multiple secure computation protocols such that the overall cost is minimized.
+- The framework's language is simple enough that is possible to be used by non-experts to develop secure computation applications.
+
+Weaknesses
+----------
+- It is yet another paper in the field that proposes a new domain-specific language for secure computation. The authors did not provide enough evidence that their new language is superior compared to the state-of-the-art or the other contributions of paper could not have been applied to other compilers in the existing literature.
+- EzPC does not support secret array access (x[i] where i is secret), while such a crucial pice is supported in other available frameworks such as ObliVM and Obliv-C. In EzPC, a programmer has to create a tree of MUX to access an array which is tedious and inefficient (compared to ORAM used in other frameworks).
+
+Comments for author
+-------------------
+The fact that secure array access is not permitted in EzPC is revealed very late in the paper. It would be better if it is mentioned earlier in the paper, e.g., in Section 2. Source language.
+
+Little attention is paid to the cost optimization of the framework (only one paragraph in Section 5). It would be nice, if the authors explain this part more thoroughly and show more concretely that produced implementation is actually optimized.
+
+What's the point of designing a new compiler every time? Given the number of domain-specific languages around, the time spend on designing the language and compiler could have been used to improve other aspects of the framework. The authors could have worked on other available languages and tools in the literature and improved them instead of design a new one from scratch. The cost-aware compilation presented in the paper could have been integrated with other compilers with less effort.
+
+
