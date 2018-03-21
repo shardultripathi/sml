@@ -1,5 +1,11 @@
-[AR]: What is the high-level point of the rebuttal? Worth thinking
-about that.
+﻿[AR]: What is the high-level point of the rebuttal? Worth thinking about that.
+
+[DG]: I agree with Aseem's comment above. 
+
+[DG] Regarding the Rev #1, I feel that he is just not convinced that we need a mix of arithmetic and boolean representations for efficiency reasons. He seems to come from Yao garbled circuits club and believes that with enough optimizations Yao can work best in all contexts. And we need to contest this belief. For this, we should give citations of all papers that argued a mix of arithmetic and boolean starting with line of work of HE+Yao, ABY, SecureML, MiniONN, Gazelle and more. We should point out that even specialized protocols for NNs and other big tasks did indeed use mix of A and B. And this is critical. It has been observed by various works that doing large number of multiplications using Yao is terrible (huge size of boolean circuit resulting in big communication complexity etc).
+
+[DG] Then regarding Groce et al. we can write that it does better than standard Yao by pushing more stuff from online to offline phase. It does no improvement in overall time of a GC based computation. And just like all other works, we are intersted in overall end-to-end time and not just online time unlike Groce et al.
+
 
 We thank the reviewers for their useful comments. We address a few of them below.
 
@@ -11,8 +17,14 @@ secret-shared leading to high overheads. However, this input is
 hard-coded during compile time and we currently do not allow users to
 input such values at runtime (can we say why?)
 
+[DG] the reason for above is the following. Given the ABY code, the circuit generation phase happens on both client and server independently and then ABY compares these circuits for equality. If we allowed dynamic public inputs at circuit generation step, this public value would have to be communicated to the other party. Currently, it is not supported directly in ABY. There is no fundamental reason for this, just that they didnt support this. 
+
 [AR]: The reviewer is making a distinction between compile time
-constants and public inputs. For example, a public input might be
+constants and public inputs. 
+
+[DG] I agree.
+
+[AR] For example, a public input might be
 implemented as follows:
 
 let x = input1 () in
@@ -22,9 +34,13 @@ let y = declassify x in
 We can't support this currently (we had this support in Wysteria
 because we were interpreting the programs).
 
+[DG] This can be one way to implement public values by declassifying it.
+
 We can rebut by saying: "We don't support it currently, the parties
 would have to do out-of-band communication, and hardcode them in the
 program. For our ML benchmarks, we haven't needed this support."
+
+[DG] I agree.
 
 
 As noted in prior works ([19], [27], [32]), purely Boolean circuits
@@ -33,7 +49,12 @@ have reasonable performance when dealing with small input sizes
 can be infeasible to run using garbled circuits when the matrix
 dimensions are large (e.g. in our machine learning applications). In
 fact, for these applications, the Yao’s circuit generated would not
-fit in memory. Additionally, the work of Groce et al. only compares
+fit in memory. 
+
+[DG] Above might not be valid argument with Yao pipelining technique. It was just that ABY does not have Yao pipelining supported. I have some suggestions on how to address this above.
+
+
+Additionally, the work of Groce et al. only compares
 online times with prior work and do not include pre-processing
 time. We remark that these benchmarks are too small for any
 appreciable differences in performance between various protocols and
@@ -51,6 +72,8 @@ well, and for large benchmarks it would be terrible? The reviewer also
 says that our benchmarks are simple. Can we be more forceful if indeed
 Groce benchmarks are smaller than ours?
 
+[DG] We can certainly quantify this. For example, Groce et al. runs experiments for linear classifier or hyperplane based thing where the length of inner product is 30 or 47. Compare this with simplest model for MNIST which is logistic regression, where we need to do an inner product of length 784. Also, we can look at numofgates in Tables of experiments, and it is clear that for DNNs, CNNs and matrix factorization, number of gates is just huge. Also, here we can note that for DNNs this number of gates is for mix of A and B circuit. If we write size of just boolean circuit, it would be order of magnitude bigger. Some of these arguments can be used to justify that our benchmarks are much larger and no one has done them earlier.
+
 
 We do not claim that our compiler choices are optimal. Multiplication
 is always done using arithmetic secret sharing as the cost of matrix
@@ -60,6 +83,8 @@ that are available and not stale. Obtaining a compiler with better
 choices is an interesting optimization problem that could potentially
 consider other parameters such as network latency, bandwidth, compute
 resources and so on. We leave this exploration to future work.
+
+[DG] We should quantify by saying that for 64-bit integer multiplication, using A shares, we need to do 2 multiplications of uint64. Over Yao, the circuit size would 64*64 and would require at least 64*64 AES operations in online phase.
 
 Secure code partitioning is not a new technique by itself. We only
 claim that it provides a generic way to execute large programs without
@@ -74,12 +99,15 @@ that allows mixed arithmetic and Boolean computation. The task of
 figuring out which part of compute to execute using which type of
 sharing is unique to our compiler.
 
+[DG] May be say something like "it is the first framework where the compiler chooses between different protocols based on cryptographic costs. All earlier DSL's in this space only had a single back-end and there was no choice to be made." 
+I think this is a major contribution on the language and compiler front.
+
 
 We agree with the reviewer that EzPC does not support secret array
 access and combining the techniques of EzPC and ObliVM to support
 Boolean, arithmetic and secret array access would be an interesting
 future direction. However, for our benchmarks (e.g. ML algorithms such
-as DNNs/CNNs), the access patterns are uniform and so providing for
+as logistic regresion, linear classifier, DNNs/CNNs), the access patterns are uniform and so providing for
 secret array accesses will not improve performance.
 We agree with the other comments made by the reviewers and will
 incorporate them accordingly. One or two comments have not been
