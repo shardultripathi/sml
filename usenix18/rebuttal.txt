@@ -1,9 +1,83 @@
 We thank the reviewers for their useful comments. We address a few of them below.
-First, our language does indeed allow providing input that is public, by specifying the value to be a constant public value (is this correct and can we write the syntax for it?). An example of public input is loop counter value. This ensures that such values need not be secret-shared leading to high overheads. However, this input is hard-coded during compile time and we currently do not allow users to input such values at runtime (can we say why?)
-As noted in prior works ([19], [27], [32]), purely Boolean circuits have reasonable performance when dealing with small input sizes (e.g. Groce et al.); even a simple task such as matrix multiplication can be infeasible to run using garbled circuits when the matrix dimensions are large (e.g. in our machine learning applications). In fact, for these applications, the Yao’s circuit generated would not fit in memory. Additionally, the work of Groce et al. only compares online times with prior work and do not include pre-processing time. We remark that these benchmarks are too small for any appreciable differences in performance between various protocols and we only included them to compare our work with other secure ML classification works. However, we thank the reviewer for the pointer to Groce et al. and shall include it in the paper. Another point to be noted is that our framework can be modified to incorporate further optimized backends (for Boolean, e.g. Groce et al.) and for Arithmetic.
-We do not claim that our compiler choices are optimal. Multiplication is always done using arithmetic secret sharing as the cost of matrix multiplication in Boolean shares is much higher; addition is done either over Boolean or Arithmetic shares depending on prior shares that are available and not stale. Obtaining a compiler with better choices is an interesting optimization problem that could potentially consider other parameters such as network latency, bandwidth, compute resources and so on. We leave this exploration to future work.
-Secure code partitioning is not a new technique by itself. We only claim that it provides a generic way to execute large programs without going into the details of underlying individual secure protocols. We implement it only in the arithmetic setting currently as share reconstruction is simple 32-bit addition, which has roughly the same cost in both the Boolean and arithmetic settings. 
-Our new language is superior to other prior domain-specific language in that it is the only language to allow compilation into a backend that allows mixed arithmetic and Boolean computation. The task of figuring out which part of compute to execute using which type of sharing is unique to our compiler.
-We agree with the reviewer that EzPC does not support secret array access and combining the techniques of EzPC and ObliVM to support Boolean, arithmetic and secret array access would be an interesting future direction. However, for our benchmarks (e.g. ML algorithms such as DNNs/CNNs), the access patterns are uniform and so providing for secret array accesses will not improve performance.
-We agree with the other comments made by the reviewers and will incorporate them accordingly.
-One or two comments have not been addressed and we are slightly over the word limit (500 words).
+
+First, our language does indeed allow providing input that is public,
+by specifying the value to be a constant public value (is this correct
+and can we write the syntax for it?). An example of public input is
+loop counter value. This ensures that such values need not be
+secret-shared leading to high overheads. However, this input is
+hard-coded during compile time and we currently do not allow users to
+input such values at runtime (can we say why?)
+
+[AR]: The reviewer is making a distinction between compile time
+constants and public inputs. For example, a public input might be
+implemented as follows:
+
+let x = input1 () in
+let y = declassify x in
+//now on y is public
+
+We can't support this currently (we had this support in Wysteria
+because we were interpreting the programs).
+
+We can rebut by saying: "We don't support it currently, the parties
+would have to do out-of-band communication, and hardcode them in the
+program. For our ML benchmarks, we haven't needed this support."
+
+
+As noted in prior works ([19], [27], [32]), purely Boolean circuits
+have reasonable performance when dealing with small input sizes
+(e.g. Groce et al.); even a simple task such as matrix multiplication
+can be infeasible to run using garbled circuits when the matrix
+dimensions are large (e.g. in our machine learning applications). In
+fact, for these applications, the Yao’s circuit generated would not
+fit in memory. Additionally, the work of Groce et al. only compares
+online times with prior work and do not include pre-processing
+time. We remark that these benchmarks are too small for any
+appreciable differences in performance between various protocols and
+we only included them to compare our work with other secure ML
+classification works. However, we thank the reviewer for the pointer
+to Groce et al. and shall include it in the paper. Another point to be
+noted is that our framework can be modified to incorporate further
+optimized backends (for Boolean, e.g. Groce et al.) and for
+Arithmetic.
+
+
+[AR]: I don't understand this well. Is this trying to say that Groce
+et al.'s benchmarks are small, and so their pure Yao approach works
+well, and for large benchmarks it would be terrible? The reviewer also
+says that our benchmarks are simple. Can we be more forceful if indeed
+Groce benchmarks are smaller than ours?
+
+
+We do not claim that our compiler choices are optimal. Multiplication
+is always done using arithmetic secret sharing as the cost of matrix
+multiplication in Boolean shares is much higher; addition is done
+either over Boolean or Arithmetic shares depending on prior shares
+that are available and not stale. Obtaining a compiler with better
+choices is an interesting optimization problem that could potentially
+consider other parameters such as network latency, bandwidth, compute
+resources and so on. We leave this exploration to future work.
+
+Secure code partitioning is not a new technique by itself. We only
+claim that it provides a generic way to execute large programs without
+going into the details of underlying individual secure protocols. We
+implement it only in the arithmetic setting currently as share
+reconstruction is simple 32-bit addition, which has roughly the same
+cost in both the Boolean and arithmetic settings.
+
+Our new language is superior to other prior domain-specific language
+in that it is the only language to allow compilation into a backend
+that allows mixed arithmetic and Boolean computation. The task of
+figuring out which part of compute to execute using which type of
+sharing is unique to our compiler.
+
+
+We agree with the reviewer that EzPC does not support secret array
+access and combining the techniques of EzPC and ObliVM to support
+Boolean, arithmetic and secret array access would be an interesting
+future direction. However, for our benchmarks (e.g. ML algorithms such
+as DNNs/CNNs), the access patterns are uniform and so providing for
+secret array accesses will not improve performance.
+We agree with the other comments made by the reviewers and will
+incorporate them accordingly. One or two comments have not been
+addressed and we are slightly over the word limit (500 words).
