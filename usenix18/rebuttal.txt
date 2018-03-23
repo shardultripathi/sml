@@ -5,29 +5,30 @@ remaining concerns in a detailed section.
 Comparison with Yao-only approach, Groce et al., and CBMC-GC etc.:
 
 We are not the first to observe that the Yao-only approach does not
-scale well beyond small examples ([18], [26], [31], [40],
-[37]), especially for large-scale arithmetic computations commonly
-found in Machine Learning (ML) algorithms -- the main use case of
-EzPC. Indeed, this observation is one of the main driver behind
-development of specialized MPC protocols in previous work ([40],
-[37]). Therefore, it is critical to combine the  arithmetic and
-boolean circuits for the kind of ML algorithms we apply EzPC to.
+scale well beyond examples with small number of multiplications ([18],
+[26], [31], [40], [37]), especially for large-scale arithmetic
+computations commonly found in Machine Learning (ML) algorithms -- the
+main use case of EzPC. Indeed, this observation is one of the main
+drivers behind development of specialized MPC protocols in previous
+work ([40], [37]). Therefore, it is critical to combine the
+arithmetic and boolean circuits for the kind of ML algorithms we apply
+EzPC to.
 
 We thank Reviewer A for the Groce et al. reference. We present a
 thorough comparison in the detailed section below. At a high-level,
 the two overlapping benchmarks in Groce et al. are quite small, and
 so, it is not surprising that the Yao-only approach works well. It is
 not clear that Groce et al.'s approach would scale to large EzPC
-examples (CIFAR 10 or matrix factorization). Furthermore, Groce et
-al. improve the "online" protocol time at the cost of more "offline"
-computation, while we are interested in minimizing the overall time
-(more below).
+examples (DNNs or matrix factorization). Furthermore, our numbers
+cannot be compared directly with Groce et al. since they report only
+the "online" time of the protocols, while we report the sum of online
+and "offline" times (more below).
 
-As for comparing with other compilers, we compare EzPC with the best
-known previous work, except for the benchmarks such as Bonsai, where
-EzPC is the first MPC implementation. Compilers such as
-CBMC-GC have not been used at the scale of benchmarks that we have
-presented in the paper.
+As for comparing with other compilers, we go a step further and
+compare EzPC with the best known previous specialized protocols,
+except for the benchmarks such as Bonsai, where EzPC is the first MPC
+implementation. Compilers such as CBMC-GC have not been used at the
+scale of benchmarks that we have presented in the paper.
 
 
 Performance gains:
@@ -36,7 +37,8 @@ For large benchmarks, such as CIFAR 10 (Table 7) and Matrix
 Factorization (Table 8), EzPC performs much better than the previous
 best known algorithms (~2x and ~19x resp.). Unsurprisingly, for small
 benchmarks in Tables 1-4, where the baseline time itself is only
-~5seconds, the performance gains of EzPC do not seem as impressive.
+~5seconds, the performance gains of EzPC do not seem as
+impressive. TODO: add a line about specialized vs generic.
 
 
 Language features:
@@ -60,9 +62,9 @@ As mentioned in Sec. 5, our compiler currently applies certain
 heuristics to choose arithmetic or boolean circuit for different parts
 of the program. Even with such simple heuristics, we are able to
 achieve the demonstrated efficiency and scalability. A more precise
-cost model that factors in the cost of network, input sizes, etc. is
-the immediate future work for us.
-
+cost model that factors in the cost of network, input sizes,
+etc. would only improve performance (more details below).
+ 
 
 ==============================================
 
@@ -89,6 +91,19 @@ Boolean circuit for this inner product itself would roughly consist of
 entire computation is only 35k). The work of Groce et al. can
 potentially be used as a backend  for the Boolean part of the compute
 in our protocols - we leave this exploration to future work.
+
+
+Cost aware compiler:
+
+
+We do not claim that our compiler choices are optimal. Multiplication
+is always done using arithmetic secret sharing as the cost of matrix
+multiplication in Boolean shares is much higher (for 64-bit integer
+multiplication, using arithmetic shares, we need to do 2
+multiplications of uint64. Over Yao, the circuit size would be 64*64
+and would require at least 4096 AES operations in the online
+phase.). Addition is done either over Boolean or Arithmetic shares
+depending on prior shares that are available and not stale.
 
 
 Secure code partitioning:
@@ -259,7 +274,6 @@ A long sequence of works  have provided evidence that pure Boolean circuit compu
 
 We thank the reviewer for pointing us to
 
-We do not claim that our compiler choices are optimal. Multiplication is always done using arithmetic secret sharing as the cost of matrix multiplication in Boolean shares is much higher (for 64-bit integer multiplication, using arithmetic shares, we need to do 2 multiplications of uint64. Over Yao, the circuit size would be 64*64 and would require at least 4096 AES operations in the online phase.). Addition is done either over Boolean or Arithmetic shares depending on prior shares that are available and not stale. Obtaining a compiler with better choices is an interesting optimization problem that could potentially consider other parameters such as network latency, bandwidth, and compute resources. We leave this exploration to future work.
 
 Our new language is superior to other prior domain-specific languages in that it is the only language to allow compilation into a backend that allows mixed arithmetic and Boolean computation. Ours is the first framework where the compiler chooses between different protocols based on cryptographic costs. All earlier DSL's in this space only had a single back-end and there was no choice to be made.
 
