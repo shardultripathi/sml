@@ -1,4 +1,134 @@
-﻿[AR]: What is the high-level point of the rebuttal? Worth thinking about that.
+﻿We thank the reviewers for their comments. We structure the rebuttal
+to address high-level concerns in the first ~500 words, addressing
+remaining concerns in a detailed section.
+
+Comparison with Yao-only approach, Groce et al., and CBMC-GC etc.:
+
+We are not the first to observe that the Yao-only approach does not
+scale well beyond small examples ([18], [26], [31], [40],
+[37]), especially for large-scale arithmetic computations commonly
+found in Machine Learning (ML) algorithms -- the main use case of
+EzPC. Indeed, this observation is one of the main driver behind
+development of specialized MPC protocols in previous work ([40],
+[37]). Therefore, it is critical to combine the  arithmetic and
+boolean circuits for the kind of ML algorithms we apply EzPC to.
+
+We thank Reviewer A for the Groce et al. reference. We present a
+thorough comparison in the detailed section below. At a high-level,
+the two overlapping benchmarks in Groce et al. are quite small, and
+so, it is not surprising that the Yao-only approach works well. It is
+not clear that Groce et al.'s approach would scale to large EzPC
+examples (CIFAR 10 or matrix factorization). Furthermore, Groce et
+al. improve the "online" protocol time at the cost of more "offline"
+computation, while we are interested in minimizing the overall time
+(more below).
+
+As for comparing with other compilers, we compare EzPC with the best
+known previous work, except for the benchmarks such as Bonsai, where
+EzPC is the first MPC implementation. Compilers such as
+CBMC-GC have not been used at the scale of benchmarks that we have
+presented in the paper.
+
+
+Performance gains:
+
+For large benchmarks, such as CIFAR 10 (Table 7) and Matrix
+Factorization (Table 8), EzPC performs much better than the previous
+best known algorithms (~2x and ~19x resp.). Unsurprisingly, for small
+benchmarks in Tables 1-4, where the baseline time itself is only
+~5seconds, the performance gains of EzPC do not seem as impressive.
+
+
+Language features:
+
+We agree with the reviewers that the EzPC language itself is quite
+simple, and currently does not support features such as secret
+indices, and public inputs. However, the EzPC design has been driven
+by machine learning, specifically secure prediction case studies. In
+our experience, we have found that even with such a simple language,
+we can implement a lot of such examples.
+
+We also remark that while the EzPC language is simple, its compiler is
+the first compiler that generates a mix of arithmetic and boolean
+circuits, while hiding all the low-level crypto details from the
+programmer.
+
+
+Cost aware compiler:
+
+As mentioned in Sec. 5, our compiler currently applies certain
+heuristics to choose arithmetic or boolean circuit for different parts
+of the program. Even with such simple heuristics, we are able to
+achieve the demonstrated efficiency and scalability. A more precise
+cost model that factors in the cost of network, input sizes, etc. is
+the immediate future work for us.
+
+
+==============================================
+
+Detailed responses:
+
+
+Comparison with Groce et al.:
+
+Groce et al. improve on native Yao's garbled circuits by moving
+more computation to the offline (input independent) phase, and thereby
+achieving lower timings for the online (input dependent) phase. The
+overall times remain roughly the same. As in many other works, we are
+interested in the overall execution times of our
+protocols -- not just the online phase. Additionally, the benchmarks
+provided in Groce et al. (and also Bost et al.) are small "warm-up"
+benchmarks that we provide in our paper for completeness (vector
+dimensions are 30 and 47). The full power of our techniques can be
+best seen in the ease of running large benchmarks such as Tensorflow
+neural networks (this is one of our simplest large benchmarks, for
+which no prior secure computation protocols even exist); the base
+inner product for this compute is over vectors of length 784. The
+Boolean circuit for this inner product itself would roughly consist of
+800k gates (whereas the number of gates in the hybrid approach for the
+entire computation is only 35k). The work of Groce et al. can
+potentially be used as a backend  for the Boolean part of the compute
+in our protocols - we leave this exploration to future work.
+
+
+Secure code partitioning:
+
+Secure code partitioning is not a new technique by itself. We only
+claim that it provides a generic way to execute large programs without
+going into the details of underlying individual secure protocols. We
+implement it only in the arithmetic setting currently as share
+reconstruction is simple addition, which has roughly the same cost in
+both the Boolean and arithmetic settings.
+
+
+Secure array accesses:
+
+Combining the techniques of EzPC and ObliVM to support
+Boolean, arithmetic and secret array access would be an interesting
+future direction. However, for ML algorithms such as logistic
+regression, linear classifier, DNNs/CNNs, the access patterns are
+uniform and so providing for secret array accesses will not improve
+performance.
+
+
+Integrating in an existing compiler:
+
+We found that we can write many secure prediction algorithms
+in an EzPC-like simple language, without pulling in complexities of
+other languages and systems. When we add more features to EzPC, such
+as ORAM support, we could definitely consider the option of
+integrating with some other compiler.
+
+
+========== END ==========
+
+
+
+
+
+
+
+[AR]: What is the high-level point of the rebuttal? Worth thinking about that.
 
 [DG]: I agree with Aseem's comment above. 
 
@@ -125,17 +255,13 @@ We thank the reviewers for their useful comments. We address a few of them.
 
 First, our language allows providing public input, by specifying the value to be a compile-time constant value. An example is loop counter value. However, we do not currently support run-time public values to be input by parties (primarily because the underlying ABY backend does not provide support for this). Such values would have to be communicated out-of-band to the other party, and hardcoded into the program. We remark that for our ML benchmarks, we haven't needed this support but acknowledge that this would be a useful feature to integrate in the future.
 
-A long sequence of works ([18], [26], [31], [40], [37]) have provided evidence that pure Boolean circuit computation (such as Yao's garbled circuit) does not provide good efficiency, especially when running large-scale arithmetic computation. Indeed, even specialized protocols for executing Neural Networks and other more sophisticated ML tasks ([40], [37]) did use a (manual) mix of Arithmetic and Boolean computation for efficiency and remark that doing large number of multiplications using Yao is terrible (due to the large size of the Boolean circuit resulting in high communication).
+A long sequence of works  have provided evidence that pure Boolean circuit computation (such as Yao's garbled circuit) does not provide good efficiency, especially when running . Indeed, even specialized protocols for executing Neural Networks and other more sophisticated ML tasks  did use a (manual) mix of Arithmetic and Boolean computation for efficiency and remark that doing large number of multiplications using Yao is terrible (due to the large size of the Boolean circuit resulting in high communication).
 
-We thank the reviewer for pointing us to Groce et al. that improves on native Yao's garbled circuits by moving more computation to the offline (input independent) phase, and thereby achieving lower timings for the online (input dependent) phase. The overall times remain roughly the same. As in many other works, we are interested in the overall execution times of our protocols. Additionally, the benchmarks provided in Groce et al. (and also Bost et al.) are small "warm-up" benchmarks that we provide in our paper for completeness (vector dimensions are 30 and 47). The full power of our techniques can be best seen in the ease of running large benchmarks such as Tensorflow neural networks (this is one of our simplest large benchmarks, for which no prior secure computation protocols even exist); the base inner product for this compute is over vectors of length 784. The Boolean circuit for this inner product itself would roughly consist of 800k gates (whereas the number of gates in the hybrid approach for the entire computation is only 35k). The work of Groce et al. can potentially be used as a backend for the Boolean part of the compute in our protocols - we leave this exploration to future work.
+We thank the reviewer for pointing us to
 
 We do not claim that our compiler choices are optimal. Multiplication is always done using arithmetic secret sharing as the cost of matrix multiplication in Boolean shares is much higher (for 64-bit integer multiplication, using arithmetic shares, we need to do 2 multiplications of uint64. Over Yao, the circuit size would be 64*64 and would require at least 4096 AES operations in the online phase.). Addition is done either over Boolean or Arithmetic shares depending on prior shares that are available and not stale. Obtaining a compiler with better choices is an interesting optimization problem that could potentially consider other parameters such as network latency, bandwidth, and compute resources. We leave this exploration to future work.
 
-Secure code partitioning is not a new technique by itself. We only claim that it provides a generic way to execute large programs without going into the details of underlying individual secure protocols. We implement it only in the arithmetic setting currently as share reconstruction is simple addition, which has roughly the same cost in both the Boolean and arithmetic settings.
-
 Our new language is superior to other prior domain-specific languages in that it is the only language to allow compilation into a backend that allows mixed arithmetic and Boolean computation. Ours is the first framework where the compiler chooses between different protocols based on cryptographic costs. All earlier DSL's in this space only had a single back-end and there was no choice to be made.
-
-We agree with the reviewer that EzPC does not support secret array access and combining the techniques of EzPC and ObliVM to support Boolean, arithmetic and secret array access would be an interesting future direction. However, for our benchmarks (e.g. ML algorithms such as logistic regression, linear classifier, DNNs/CNNs), the access patterns are uniform and so providing for secret array accesses will not improve performance.
 
 We agree with the other comments made by the reviewers and will incorporate them accordingly.
 
