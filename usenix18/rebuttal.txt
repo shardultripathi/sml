@@ -2,32 +2,31 @@
 to address main concerns in the first ~500 words, leaving the rest to
 a detailed section.
 
-Comparison with Yao-only, Groce et al., CBMC-GC etc.:
+Comparison with Groce et al., CBMC-GC, Yao-only etc.:
 
-We are not the first to observe that the Yao-only approach does not
-scale well beyond examples with small number of multiplications ([18],
-[26], [31], [40], [37]), especially for large-scale arithmetic
-computations commonly found in Machine Learning (ML) algorithms -- the
-main use case of EzPC. Indeed, this observation is one of the main
-drivers behind development of the specialized MPC protocols in previous
-work ([40], [37]). Therefore, it is critical to combine the
-arithmetic and boolean circuits for the kind of ML algorithms we apply
-EzPC to.
+We thank Reviewer A for the Groce et al. reference. Our numbers
+should not be directly compared with theirs since they report only the
+"online" time of the protocols, while we report the sum of online and
+"offline" times. Further, the benchmarks in Groce et al. are quite
+small, and so, it is not surprising that the Yao-only approach works
+well. It is unclear that their approach would scale to our larger
+benchmarks, e.g. DNNs or matrix factorization (more thorough
+comparison below).
 
-We thank Reviewer A for the Groce et al. reference. Firstly, our
-numbers  cannot be compared directly with Groce et al. since they
-report only the "online" time of the protocols, while we report the
-sum of online and "offline" times. Further, the two overlapping
-benchmarks in Groce et al. are quite small, and so, it is not
-surprising that the Yao-only approach works well. It is not clear that
-Groce et al.'s approach would scale to larger EzPC examples, e.g. DNNs
-or matrix factorization (more thorough comparison below).
+CBMC-GC takes 30seconds and generates 1.8 million gates to multiply 2
+5x5 matrices. On the other hand, MNIST logistic regression (Table 5 in
+our paper) consists of multiplying 2 192x192 matrices -- and EzPC
+generated protocol takes 0.7 seconds (in WAN) with 35k gates.
 
-As for comparing with the other compilers, we go a step further and
-compare with the best known previous specialized protocols,
-except for benchmarks such as Bonsai, where ours is the first 2PC
-implementation. Compilers such as CBMC-GC have not been used at the
-scale of benchmarks that we have presented in the paper.
+As for the Yao-only approach in general, we are not the first to
+observe that it does not scale well beyond examples with small number
+of multiplications ([18], [26], [31], [40], [37]), especially for
+large-scale arithmetic computations commonly found in Machine Learning
+(ML) algorithms -- the main use case of EzPC. Indeed, this observation
+is one of the main drivers behind development of the specialized MPC
+protocols in previous work ([40], [37]). Therefore, it is critical to
+combine the arithmetic and boolean circuits for the kind of ML
+algorithms we apply EzPC to.
 
 
 Performance gains not being impressive:
@@ -39,7 +38,8 @@ benchmarks in Tables 1-4, where the baseline time itself is only
 ~5seconds, the performance gains of EzPC do not seem as
 impressive. But even then we would like to point out that while most
 of the previous work on those benchmarks developed specialized
-protocols, EzPC framework is general and programmer friendly.
+protocols, EzPC framework is general, programmer friendly, and does
+not require any crypto expertise.
 
 
 Language features:
