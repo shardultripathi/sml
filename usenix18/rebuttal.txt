@@ -28,8 +28,7 @@ protocols in previous work ([40], [37]). Therefore, it is critical to
 combine the arithmetic and boolean circuits for the kind of ML
 algorithms we apply EzPC to.
 
-
-Performance gains not being impressive:
+Performance gains:
 
 For large benchmarks, such as CIFAR 10 (Table 7) and Matrix
 Factorization (Table 8), EzPC performs much better than the previous
@@ -41,13 +40,12 @@ of the previous work on those benchmarks developed specialized
 protocols, EzPC framework is general, programmer friendly, and does
 not require any crypto expertise.
 
-
 Language features:
 
 EzPC language itself is quite simple and currently does not support
 features such as secret indices and public inputs. However, the
 language design has been driven by machine learning, specifically
-secure prediction, case studies. As we show, even with such a simple
+secure prediction case studies. As we show, even with such a simple
 language, we can implement a lot of such examples.
 
 We also remark that while the source language is simple, EzPC compiler
@@ -55,16 +53,14 @@ is the first compiler that generates a mix of arithmetic and boolean
 circuits, while hiding all the low-level crypto details from the
 programmer.
 
-
-Cost-awareness
+Cost-awareness:
 
 Our compiler currently applies certain heuristics to choose arithmetic
-or boolean circuit for different parts of the program (Sec. 5). Even
+or boolean circuits for different parts of the program (Sec. 5). Even
 with such simple heuristics, we are able to achieve the demonstrated
 efficiency and scalability. A more precise cost model that factors in
 the cost of network, input sizes, etc. would only improve performance
 (more on it below).
-
 
 ==============================================
 
