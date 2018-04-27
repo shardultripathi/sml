@@ -1,0 +1,104 @@
+\newpage
+
+\setlength\intextsep{5pt}
+\setlength{\textfloatsep}{5pt}
+\setlength{\abovecaptionskip}{5pt}
+\setlength{\belowcaptionskip}{5pt}
+
+\section{Example of secure code partitioning}\label{app:codepartitioning}
+We now illustrate code partitioning through an example. Consider the functionality in Figure \ref{fig:largecode}. This is a functionality that takes as input two vectors $w$ and $v$ from Alice and two vectors $x$ and $y$ from Bob. It computes two inner products $w^Tx$ and $v^Ty$, compares the first value with the second and returns a boolean value (which is $1$ if $w^Tx>v^Ty$ and $0$ otherwise) to Bob. Now, if we wish to partition this functionality using secure code partitioning, one possible split is as follows into the following three programs\footnote{All arithmetic is over an appropriate ring in the following discussion.}. Partition $1$ (Figure \ref{fig:codepartitioning1}) computes $w^Tx$ and ``secret shares'' the output of this computation between Alice and Bob (Alice's share is $r_1$, a random value, and Bob's share is $o_1 = w^Tx+r_1$). Next, partition $2$ (Figure \ref{fig:codepartitioning2}) computes $v^Ty$ and once again provides Alice with $r_2$ and Bob with $o_2 = v^Ty+r_2$. Finally, partition $3$ (Figure \ref{fig:codepartitioning3}) compares $o_1-r_1$ with $o_2-r_2$ and provides the output to Bob. It is easy to see that the size of the programs $1, 2$ and $3$ (and their corresponding circuits output by the \tool compiler) are smaller than the program in Figure \ref{fig:largecode} and its corresponding circuit, and in particular, smaller than the state that must be maintained between the programs.
+
+\begin{figure}
+\begin{lstlisting}[language=C,mathescape=true]
+$\mathtt{
+uint\;w[30] = input1();\;\;uint\;v[30] = input1();
+}$
+$\mathtt{
+uint\;x[30] = input2();\;\;uint\; y[30] = input2();
+}$
+$\mathtt{
+uint\;acc1 = 0;\;\;uint\;acc2 =0;
+}$
+$\mathtt{
+for\;i\;in\;[0:30]\;
+}$
+$\mathtt{\{acc1\;=\;acc1\;+\;(w[i]\;\times\;x[i]);\;
+}$
+$\mathtt{\;\;acc2\;=\;acc2\;+\;(v[i]\;\times\;y[i]);\}
+}$
+$\mathtt{
+output2((acc1 > acc2)\;?\;1\;:\;0)\;\textbf{{\color{blue}//only to party 2}}
+}$
+\end{lstlisting}
+\caption{\tool code for $w^Tx > v^Ty$}
+\label{fig:largecode}
+\end{figure}
+
+\begin{figure}
+\begin{lstlisting}[language=C,mathescape=true]
+$\mathtt{
+uint\;w[30] = input1();\;\;uint\;r1 = input1();
+}$
+$\mathtt{
+uint\;x[30] = input2();
+}$
+$\mathtt{
+uint\;acc1 = 0;
+}$
+$\mathtt{
+for\;i\;in\;[0:30]\;\{acc1\;=\;acc1\;+\;(w[i]\;\times\;x[i]);\}
+}$
+$\mathtt{
+uint\;o1 = acc1+r1;
+}$
+$\mathtt{
+output2(o1)\;\textbf{{\color{blue}//acc1 is ``secret shared''}}
+}$
+\end{lstlisting}
+\caption{Partition 1: Code for $o_1 = w^Tx+r_1$}
+\label{fig:codepartitioning1}
+\end{figure}
+
+\begin{figure}
+\begin{lstlisting}[language=C,mathescape=true]
+$\mathtt{
+uint\;v[30] = input1();\;\;uint\;r2 = input1();
+}$
+$\mathtt{
+uint\;y[30] = input2();
+}$
+$\mathtt{
+uint\;acc2 =0;
+}$
+$\mathtt{
+for\;i\;in\;[0:30]\;\{acc2\;=\;acc2\;+\;(v[i]\;\times\;y[i]);\;\}
+}$
+$\mathtt{
+uint\;o2 =acc2+r2;
+}$
+$\mathtt{
+output2(o2)\;\textbf{{\color{blue}//acc2 is ``secret shared''}}
+}$
+\end{lstlisting}
+\caption{Partition 2: Code for $o_2 = v^Ty+r_2$}
+\label{fig:codepartitioning2}
+\end{figure}
+
+\begin{figure}
+\begin{lstlisting}[language=C,mathescape=true]
+$\mathtt{
+uint\;r1 = input1();\;\;uint\;r2 = input1();
+}$
+$\mathtt{
+uint\;o1 = input2();\;\;uint\; o2 = input2();
+}$
+$\mathtt{
+uint\;acc3 = o1-r1;\;\;uint\;acc4 =o2-r2;
+}$
+$\mathtt{
+output2((acc3 > acc4)\;?\;1\;:\;0)\;\textbf{{\color{blue}//only to party 2}}
+}$
+\end{lstlisting}
+\caption{Partition 3: Code for $(o_1-r_1)>(o_2-r_2)$}
+\label{fig:codepartitioning3}
+\end{figure}
