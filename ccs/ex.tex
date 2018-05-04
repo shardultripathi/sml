@@ -16,7 +16,7 @@
 
 \figureref{toolchain} shows an overview of the \tool
 toolchain. We give a brief overview of each of these phases below.
-\vspace{-0.15in}
+
 \paragraph{Source language.}
 Consider the example $w^Tx >b$ from \sectionref{intro}, where
 $w$ and $b$ are the server's input (a classifier) and $x$ is
@@ -33,7 +33,7 @@ the programmers to express \mpc computations in terms of their
 details. The language provides multi-dimensional arrays, conditional
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \ls{if}~statements, and special syntax for input/output from each party.
-\vspace{-0.1in}
+
 \paragraph{\tool compiler.}
 \tool compiler takes as input a source program and produces a C++
 program as output. \figureref{ex-aby} shows the output code for
@@ -167,8 +167,9 @@ public parts of the program, including the array accesses, and
 generates a  circuit comprising of arithmetic and boolean gates,
 with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
-\vspace{-0.1in}
-\paragraph{Advantages of \tool.} We can now concretely see the advantages of \tool. Unarguably, it is
+
+
+\paragraph{Advantages of \tool} We can now concretely see the advantages of \tool. Unarguably, it is
 easier for a developer to program and get the code right in
 \figureref{ex-sml}, rather than the code in
 \figureref{ex-aby}.
@@ -190,6 +191,12 @@ revisit many parts of the circuit and change them. In summary, \tool raises the 
 programmer, and generates efficient \mpc protocols automatically,
 while its metatheory provides strong correctness and security
 guarantees. 
+
+\subsection{Comparison with Yao-only approach}
+Before we provide the formalization of our compiler, we show that for performance it it critical to use a mix of arithmetic and boolean circuits.
+We demonstrate the performance benefits of mixed computation over boolean-only compute by comparing with previous tools CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm} that are based on Yao's garbled circuits. As we already mentioned that we are not the first to observe that Yao-only approach does not scale well beyond examples with small numbers of multiplications \cite{aby,tasty,autos,secureml,minionn,chameleon}, especially for large-scale multiplications commonly found in Machine Learning (ML) algorithms -- the main use case of \tool. Indeed, this is one of the main drivers behind development of the specialized MPC protocols in previous works \cite{secureml,minionn,shafindss} with which we compare the performance of our automatically generated protocols in \sectionref{eval}.
+
+The largest example benchmark in CBMC-GC is multiplication of two $8\times 8$ matrices for which it generates <FILL> gates and takes <FILL> seconds to run. In contrast, in \tool we use arithmetic sharing for this compute that generates <FILL> gates and completes in <FILL> seconds. We tried running CBMC-GC for multiplying two $20\times 20$ matrices and it timed out after 5 hours. In contrast, most of our benchmarks are much bigger. For example, we run a moderate size DNN for <FILL> in <FILL> seconds which contains a multiplication of <FILL> matrix and <FILL> matrix as a sub-computation. On the other hand, ObliVM scales to larger benchmarks with its use of Yao-pipelining \cite{yao-pipe}. We ran inner-product computations of varying lengths followed by a comparison in both ObliVM and \tool (see Table~\cite{oblivm-compare}). Our experiments show that we are atleast 30x faster than ObliVM due to our use of arithmetic sharing for inner-product computation. 
 
 
 
