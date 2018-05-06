@@ -4,6 +4,7 @@
 
 \newcommand{\prog}{s}
 \newcommand{\progn}{t}
+\newcommand{\mprog}{u}
 \newcommand{\seq}{||}
 \newcommand{\stateq}{q}
 
@@ -29,9 +30,15 @@ correct ($\prog$ and sequential execution of $\progn_1,\progn_2,\ldots,\progn_k$
 the same functionality) and secure (sequential execution of
 $\progn_1,\progn_2,\ldots,\progn_k$ does
 not reveal any more information than $\prog$). 
-\dg{Prior works such as FastGC \cite{yao-pipe} and ObliVM \cite{oblivm} have considered the idea of pipelining of circuits for secure computation based on Yao's garbled circuits that allows them to scale to large circuits. Our technique of secure code partitioning works with high level programs and does source code transformation. This gives a generic way to execute programs with large underlying circuits (even a mix of arithmetic and Boolean) and is not tied to the specific details of the cryptographic protocol used.
-}
-More formal details follow, while an example illustrating the technique of secure code partitioning is provided in  \appendixref{codepartitioning}. \dg{We describe it only in the arithmetic setting but the same can be done in the Boolean setting as well.}
+Our techniques take inspiration from the idea of pipelining Yao's garbled circuits described in FastGC \cite{yao-pipe}.
+However, unlike FastGC, we do not operate at a circuit level and partitioning is independent of the specific
+\mpc protocol. 
+%
+%Prior works such as FastGC \cite{yao-pipe} and ObliVM \cite{oblivm} have developed similar techniques specific to garbled circuits that work at the level of circuits.
+%
+%considered the idea of pipelining of circuits for secure computation based on Yao's garbled circuits that allows them to scale to large circuits. Our technique of secure code partitioning works with high level programs and does source code transformation. This gives a generic way to execute programs with large underlying circuits (even a mix of arithmetic and Boolean) and is not tied to the specific details of the cryptographic protocol used.
+%}
+More formal details follow, while an example illustrating the technique of secure code partitioning is provided in  \appendixref{codepartitioning}. 
 
 Let $\prog$ be a program that takes (secret) inputs $x$ from Alice and
 $y$ from Bob and produces an output $z$ to both parties. Let
@@ -74,7 +81,7 @@ compute $\stateq_1$ and then outputs $o_1 = \stateq_1 + r_1$ {\em only
   output. %To do so, we modify $\progn_1$ to output $o_1 = s_1+r_1+r'_1$ to
   %both parties (where $r'_1$ is random and chosen by Bob). We can then
   %appropriately modify the remaining steps as well.
-  }. 
+ }. 
   Alice's output
 from $\progn_1$ is $r_1$. Next, every $\progn_i$ ($2\leq i\leq k-1$)
 takes as inputs $x,r_{i-1},r_i$ from Alice and $y,o_{i-1}$ from Bob,
@@ -84,7 +91,7 @@ subtraction in the ring $(\mathbb{Z},+)$) and then outputs $\stateq_i+r_i$
 to Bob and $r_i$ to Alice. The last
 program $\progn_k$ takes inputs $x,y,r_{k-1},o_{k-1}$, runs $\prog_k$
 on inputs $x,y$ and state $\stateq_{k-1} = (o_{k-1}-r_{k-1})$ and outputs $z$ to both
-parties.
+parties. Although we have used arithmetic sharing here, Boolean sharing can be used to achieve the same effect.
 
 Thus, given a decomposition of $\prog$ into
 $\prog_1\seq\prog_2\seq\dots\seq\prog_k$, we can use the construction
@@ -145,10 +152,22 @@ sequence of programs $\progn_1,\dots\progn_k$ automatically. We then
 compile and execute the $k$ programs
 $\progn_1,\progn_2,\ldots,\progn_k$ sequentially, freeing up memory
 usage after execution of each $\progn_i$.
-\dg{Automating the  decomposition step requires an analysis that can 
+Automating the  decomposition step requires an analysis that can 
 statically estimate the resource usage of a \tool program.
-Resource analysis of programs is a well-known hard problem~\cite{raml}
- and we describe a heuristic analysis in Appendix~\ref{app:pipe-idea}.}
+Resource analysis of high-level programs is a well-known hard problem~\cite{raml}
+and we describe a heuristic analysis.
+
+To build $s_1$, we consider the longest
+prefix of $s$ whose computation {\it size} is below the threshold enforced by the available memory of the machine.
+If $\prog = \prog_1; \prog_r$ then we recurse on $\prog_r$ to obtain $\prog_2,\ldots,\prog_k$.
+For a program $\mprog$, to estimate ${\it size}(\mprog)$, we need to discuss three important cases: if $\mprog\equiv\mprog_1;\mprog_2$
+then ${\it size}(\mprog)={\it size}(\mprog_1)+{\it size}(\mprog_2)$; if $\mprog\equiv\ite{e_1}{\mprog_1}{\mprog_2}$ then ${\it size}(\mprog)=\max({\it size}(\mprog_1),{\it size}(\mprog_2))$; if $s\equiv\forl{i}{n_1}{n_2}{\mprog_1}$ then
+${\it size}(\mprog)=(n_2-n_1){\it size}(\mprog_1)$. If $(n_2-n_1){\it size}(\mprog_1)$ is above the threshold then
+we replace $\mprog$ by 
+\[\forl{i}{n_1}{\frac{n_1+n_2}{2}}{\mprog_1}; \forl{i}{\frac{n_1+n_2}{2}}{n_2}{\mprog_1}\]
+ and recurse to find the prefix again.
+This heuristic analysis is sufficient for the benchmarks discussed in our evaluation.
+ 
 % \nc{I changed the heading.}
 
 

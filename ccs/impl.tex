@@ -6,10 +6,8 @@ The  \tool compiler is written in Python and
 compiles each of our benchmarks in under a second to C++ code that
 makes calls to the ABY
 library~\cite{aby}. 
-\TODO{Fix this!}
-ABY provides a GMW-based~\cite{gmw} and a  Yao-based~\cite{yao} protocol for boolean computations.
-Although \tool can generate code for both, we have observed better performance when using the latter
-and use it in our evaluation.
+ABY provides support for Arithmetic computation based on \cite{autoS}, and boolean computations based on GMW~\cite{gmw} as well as Yao's garbled circuits~\cite{yao}. Although \tool can generate code for both kinds of boolean computations, we have observed better performance when using the garbled circuits
+and use it in our evaluation. Hence, \tool generated code uses Arithmetic computation and garbled circuits based boolean computations.
 We use $128$ bits of security and OT
 extension-based arithmetic multiplication triplets generation. ABY
 provides multi-threading support (for the offline phase of the \mpc
@@ -53,9 +51,10 @@ We use an off-the-shelf solver
 ($\models e < n$
 in ({\sc {T-Read}}) and ({\sc{T-Write}}),
 \figureref{compile}). We take the \tool source program and
-translate it as an input to the solver. The solver takes less
+translate it as an input C program to the solver. The solver takes less
 than a minute on our largest benchmark to verify that all the array
-accesses are in-bounds.
+accesses are in-bounds. This C program can also enable
+validation of \tool generated protocols via differential testing~\cite{mckeeman,frigate}.
 
 Our implementation assigns the type labels (rule~{\sc{T-Decl}})
 conservatively. Only the variables that govern the control flow, i.e.,
@@ -65,7 +64,6 @@ All other variables are assigned arithmetic labels (that can later be
 coerced to boolean).
 We leave a more sophisticated type inference procedure for future work.
 
-\dg{remove addition?}
 The compilation rules of \figureref{compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.

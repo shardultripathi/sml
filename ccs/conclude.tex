@@ -1,5 +1,6 @@
 \section{Conclusion and Future Work}
 \label{sec:conclude}
+\dg{Make it consistent with contributions in intro.}
 We presented \tool, the first
 cryptographic-cost aware framework that generates efficient and
 scalable \mpc protocols from high-level programs.
@@ -13,7 +14,11 @@ can be extended to obtain a framework with malicious security. Furthermore,
 partitioning can be modified to provide malicious security by {\it signing} the shares of the intermediate states. However, we are not aware of a maliciously secure \mpc implementation for combinations of
 arithmetic and boolean circuits.
 
-\dg{Add other future work such as language enhancement to support public inputs, declassification of intermediate values, secret array indices and support of ORAM. But since current focus was ML applications, didn't require these as such. Also add functions. Also, crypto backends would keep improving and although our ideas extend to works such as Gazelle, we leave integrating it as a backend in \tool as future work.}
+\dg{Add other future work such as language enhancement to support public inputs, declassification of intermediate values, secret array indices and support of ORAM. But since current focus was ML applications, didn't require these as such. Also add functions. Also, crypto backends would keep improving and although our ideas extend to works such as Gazelle, we leave integrating it as a backend in \tool as future work.
+
+We will explore the possibility of mechanically verifying the implementation of our compiler.
+
+Tensorflow to \tool.}
 
 
 

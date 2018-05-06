@@ -94,7 +94,7 @@ source language. %\aseem{They write circuits,
 \footnotesize
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
 \hline
-Dataset & $d$  & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)}  &  \thead{Num \\ gates} & LOC\\
+Dataset & $d$  & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (KB)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(KB)}  &  \thead{Num \\ gates} & LOC\\
 \hline
 Breast cancer & 30 & 0.3 & 36 & 0.1 & 0.3 & 25  & 727 & 20\\
 \hline
@@ -114,7 +114,7 @@ Credit & 47 & 0.3 & 41 & 0.1 & 0.3 & 36  & 795 & 20\\
 \footnotesize
 \begin{tabular}{|c|c|c|c|c|c |c|c|c|c|}
 \hline
-Dataset & $n$ & $F$ & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)} & \thead{Num \\ gates}  & LOC\\
+Dataset & $n$ & $F$ & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (KB)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(KB)} & \thead{Num \\ gates}  & LOC\\
 \hline
 Nursery & 5 & 9 & 1.5 & 0.2 & 0.1 & 0.4 & 0.6  & 73k & 50\\
 \hline
@@ -153,7 +153,7 @@ Audiology & 24 & 70 & 3.9 & 2.0 & 1.5 & 2.9 & 37  & 4219k & 50\\
 \footnotesize
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
-Dataset  & $d$ & $N$ & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)}& \thead{Num \\ gates} & LOC\\
+Dataset  & $d$ & $N$ & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (KB)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(KB)}& \thead{Num \\ gates} & LOC\\
 \hline
 Nursery & 4 & 4 & 0.3 & 102 & 0.1 & 0.3 & 32 & 3324 & 20\\
 \hline
@@ -254,7 +254,7 @@ reader to the original references.
 \footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|}
 \hline
-DNN  & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (kb)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(kb)} & \thead{Num \\ gates} & \thead{Model\\ size} & LOC\\
+DNN  & \thead{Prev \\ time\\ (s)} & \thead{Prev \\ comm\\ (MB)} & \thead{LAN  \\ (s)} & \thead{WAN\\ (s)} & \thead{Comm \\(MB)} & \thead{Num \\ gates} & \thead{Model\\ size} & LOC\\
 \hline
 SecureML   &  1.1 & 15.8 & 0.7 & 1.7  & 76   &   366k   & 119k & 78\\
 \hline
@@ -316,7 +316,7 @@ partitioning.
 \footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c}
 \hline
-Classifier       & \thead{LAN  \\ (s)} & \thead{WAN \\(s)} & \thead{Comm \\(Mb)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} & \thead{Model \\size} & LOC\\
+Classifier       & \thead{LAN  \\ (s)} & \thead{WAN \\(s)} & \thead{Comm \\(MB)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} & \thead{Model \\size} & LOC\\
 \hline
 Regression &  0.1         & 0.7         & 5            & 2k    & 8k    &  35k    & 8k   & 38\\
 \hline
@@ -332,7 +332,7 @@ CNN        &  30.5        & 60.3        & 2955         & 6082k & 4163k &  42104k
 \footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|c|c|c | c|}
 \hline
-Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm \\ (Mb)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} & depth & LOC\\
+Dataset       & \thead{LAN \\(s)} & \thead{WAN \\(s)} & \thead{Comm \\ (MB)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} & depth & LOC\\
 \hline
 Chars4k    &  0.1         & 0.7         & 2            & 18k    & 3k    &  85k     & 1   & 89\\
 \hline
@@ -392,7 +392,7 @@ this benchmark is 336 lines.
 \footnotesize
 \begin{tabular}{|c|c|c|c |c|c|c|}
 \hline
-           &  LAN (s) & WAN (s) & \thead{Comm \\ (Mb)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} \\
+           &  LAN (s) & WAN (s) & \thead{Comm \\ (MB)}  & \thead{Num \\ And} & \thead{Num \\ Mul} & \thead{Num \\ gates} \\
 \hline
 Total      &  265.6       & 647.5        & 40683       & 21m    & 61m    &  337m  \\
 \hline
@@ -408,7 +408,7 @@ Stage 6    &  55.2        & 122.6        & 6744        & 12m    & 10m   &  98m  
 \footnotesize
 \begin{tabular}{|c|c|c|c |c|c| c|}
 \hline
-  Stage         &  LAN (s) & WAN (s) & \thead{Comm \\ (Mb)}  & depth & \thead{Num \\ gates} & LOC\\
+  Stage         &  LAN (s) & WAN (s) & \thead{Comm \\ (MB)}  & depth & \thead{Num \\ gates} & LOC\\
 \hline
 1    &  175       & 662        & 29816       & 16370    & 33m    & 500  \\
 \hline
@@ -436,7 +436,7 @@ computations while maintaining performance
 competitive with existing specialized protocols. In particular, for a
 large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
-succeed.
+succeed. For example, consider a large DNN with $n$ layers such that the circuit for only a single layer can  fit into memory. Then, \tool using partitioning can evaluate this large DNN in $n$ stages.
 
 \subsection{Matrix factorization}
 \tool is not tied to secure prediction and can express more general computations.
@@ -465,7 +465,18 @@ put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a bool
 backend to this benchmark.
 
 \subsection{Subsequent Work}
-\TODO{....}
+Subsequent to our work, there have been improvements in the cryptographic backends.
+For example, Gazelle describes specialized protocols for DNNs---which use a 
+lattice-based packed additively homomorphic encryption scheme (PAHE) for arithmetic computations and garbled circuits for boolean computations---that can evaluate the CNN benchmark of Table~\ref{tab:nn} in 0.8 seconds (as opposed to
+5.1 seconds taken by \tool when using ABY). Such advances in cryptography are
+orthogonal to our contributions. In particular, we are interested in using Gazelle
+as our backend when it becomes available. Furthermore, the authors of Gazelle remark:
+``A final, very interesting and ambitious line
+of work would be to build a compiler that allows us to easily
+express arbitrary computations and automatically factor the
+computation into PAHE and two-party primitives.''
+\tool addresses this exact problem of factoring computations into
+arithmetic and boolean parts.
 
 
 %stage | time | comm | gates | mul | add | depth

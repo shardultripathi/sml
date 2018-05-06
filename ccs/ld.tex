@@ -40,7 +40,9 @@
 
 
 In this section we prove correctness and security of our \tool compiler.
-\dg{Put a warning that this section is technical and not prerequisite for understanding later section.}
+The readers who are interested in using the compiler as a black box can
+move directly to  Section~\ref{sec:pipe}.
+%\dg{Put a warning that this section is technical and not prerequisite for understanding later section.}
 %We formalize our source, intermediate and circuit languages. 
 %An example of a program in our source language is provided in \figureref{ex-sml}.
 %Our source runtime semantics is a model of the ideal, trusted third-party semantics, and
@@ -362,7 +364,7 @@ directed, and the labels $\ell$ are chosen
 non-deterministically. \sectionref{impl} describes the label  inference
 scheme in our implementation.
 
-\begin{figure}[H]
+\begin{figure}[t]
   \footnotesize
   \fbox{$\Gamma \vdash e : \tau \leadsto \widetilde{e}$}\quad\quad
   \fbox{$\Gamma \vdash s \leadsto \widetilde{s} \mid \Gamma_{1}$}  \[
@@ -1020,14 +1022,12 @@ observations.
 \end{figure}
 
 
-\paragraph{Correctness Theorem.} We prove that all well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program. That is, if a source statement $s$ is well-typed, and compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the circuit semantics with the same observations $O$. Formally, the the correctness theorem is as follows (the environments on the left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
+\paragraph{Correctness Theorem.} We prove that all well typed programs always terminate successfully (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program. That is, if a source statement $s$ is well-typed, and compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the circuit semantics with the same observations $O$. Formally, the correctness theorem is as follows (the environments on the left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
 
 
 %\subsubsection*{Correctness theorem}
-\old{
-Finally, the correctness theorem is as follows (the environments on
-the left of $\vdash$ are empty and we elide the environments on the
-right of $\vdash$ for brevity):}
+
+%Finally, the correctness theorem is as follows (the environments onthe left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
 
 \begin{theorem}[Correctness]\label{theorem:correctness}
  $\forall\: s, \widetilde{s}$, if $\vdash s \leadsto \widetilde{s}
@@ -1036,13 +1036,13 @@ right of $\vdash$ for brevity):}
   \Downarrow \_, \_; O$.
 \end{theorem}
 
-\old{The theorem states that if a source statement $s$ is well-typed, and
-compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source
-semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
-circuit semantics with the same observations $O$. 
-Therefore, well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program.}
+%%\old{The theorem states that if a source statement $s$ is well-typed, and
+%compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source
+%semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
+%circuit semantics with the same observations $O$. 
+%Therefore, well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program.}
 
-\dg{We prove the theorem in Appendix~\ref{}.}
+We prove the theorem in Appendix~\ref{app:formal}.
 % We first define a judgment for
 %translation of environments, $\Gamma \vdash \rho \leadsto
 %\widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$. The

@@ -75,7 +75,7 @@ these representations. For instance, multiplication of two
 $\ell$-bit integers can either be expressed as a boolean circuit of
 size $O(\ell^2)$, or as an arithmetic circuit with 1 multiplication
 gate.
-\dg{It is well-known that boolean circuits are not suitable for doing arithmetic operations such as integer multiplications but are unavoidable for boolean operations such as comparison \cite{aby,tasty,autoS,secureml,minionn,chameleon}.}
+It is well-known that boolean circuits are not suitable for doing arithmetic operations such as integer multiplications but are unavoidable for boolean operations such as comparison \cite{aby,tasty,autoS,secureml,minionn,chameleon}.
 %
 For better efficiency, Alice would ideally like to compute
 $w^Tx$ using an arithmetic circuit, and the comparison with $b$ using
@@ -152,8 +152,15 @@ This paper presents \tool\footnote{Read as ``easy peasy'',
 stands for Easy 2 Party Computation.}, the first
 ``cryptographic-cost aware'' framework that generates efficient and
 scalable \mpc protocols from high-level programs devoid of any
-cryptographic details. The generated protocols use combinations of
-arithmetic and boolean circuits and have performance comparable to
+cryptographic details. 
+The generated protocols use combinations of
+arithmetic and boolean circuits that introduce unique compilation challenges.
+Standard compilers do not attempt to reason about or insert non-trivial type casts
+and require the programmers to perform them explicitly. 
+We back \tool with formal semantics that enable the compiler to
+insert type conversions between boolean and arithmetic components
+while maintaining provable correctness, security, and efficiency.
+The automatically generated protocols have performance comparable to
 or better than the custom, specialized
 protocols from previous works~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
 In fact, these papers (and others) cite the inefficiency of generic \mpc as the major motivation
@@ -305,7 +312,17 @@ protocols do not gain much performance over a single
 protocol. 
 Additionally, these prior works provide informal languages
 or libraries that lack formal semantics and static guarantees.
-\dg{Cite works like Wysteria~\cite{wysteria} for public inputs and declassification of intermediate values, ObliVM~\cite{oblivm} for hiding secret array indices using Oblivious RAM. But since the focus of this work is machine learning applications, we do not concern ourselves with these language complexities.}
+Finally, we focus on the language
+features necessary to implement machine learning applications.
+In particular, we do not discuss declassification of
+intermediate values or indexing into arrays at secret indices.
+ Handling them requires additional complexity. For example,
+Wysteria~\cite{wysteria} handles the former using dependent types
+and ObliVM~\cite{oblivm} uses Oblivious RAM for the latter.
+These situations arise seldomly in the machine learning applications that we consider:
+intermediate values don't need to be declassified and arrays are traversed in an oblivious manner.
+
+%\dg{Cite works like Wysteria~\cite{wysteria} for public inputs and declassification of intermediate values, ObliVM~\cite{oblivm} for hiding secret array indices using Oblivious RAM. But since the focus of this work is machine learning applications, we do not concern ourselves with these language complexities.}
 %Can be added to related work
 % Kerschbaum et al.~\cite{autoS}
 %provide a scheme to automatically assign homomorphic encryption or
