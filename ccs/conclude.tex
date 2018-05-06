@@ -1,3 +1,24 @@
+\section{Conclusion and Future Work}
+\label{sec:conclude}
+We presented \tool, the first
+cryptographic-cost aware framework that generates efficient and
+scalable \mpc protocols from high-level programs.
+The generated protocols comprise combinations
+of arithmetic and boolean circuits and have performance comparable to, or better than the custom, specialized
+protocols from previous works.
+The \mpc backed we use provides security against semi-honest or passive adversaries.
+%our compiler is oblivious to the ``type of adversary'' for the underlying \mpc backend.
+Given a \mpc backend secure against malicious or active adversaries, Theorem \ref{theorem:security} 
+can be extended to obtain a framework with malicious security. Furthermore,  
+partitioning can be modified to provide malicious security by {\it signing} the shares of the intermediate states. However, we are not aware of a maliciously secure \mpc implementation for combinations of
+arithmetic and boolean circuits.
+
+\dg{Add other future work such as language enhancement to support public inputs, declassification of intermediate values, secret array indices and support of ORAM. But since current focus was ML applications, didn't require these as such. Also, crypto backends would keep improving and although our ideas extend to works such as Gazelle, we leave integrating it as a backend in \tool as future work.}
+
+
+
+
+
 %% \section{Conclusion}
 %% \label{sec:conclude}
 %% We presented \tool, the first

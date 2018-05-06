@@ -5,7 +5,7 @@
 \newcommand{\forl}[4]{\ensuremath{\kw{for}\:{#1}\:\kw{in}\:[{#2}, {#3}]\:\kw{do}\:{#4}}}
 \newcommand{\ite}[3]{\ensuremath{\kw{if}({#1}, {#2}, {#3})}}
 \newcommand{\loops}[3]{\ensuremath{\kw{while}\:{#1} \leq {#2}\:\kw{do}\:{#3}}}
-\vspace{-0.1in}
+
 \section{Formal development}
 \label{sec:ld}
 
@@ -40,6 +40,7 @@
 
 
 In this section we prove correctness and security of our \tool compiler.
+\dg{Put a warning that this section is technical and not prerequisite for understanding later section.}
 %We formalize our source, intermediate and circuit languages. 
 %An example of a program in our source language is provided in \figureref{ex-sml}.
 %Our source runtime semantics is a model of the ideal, trusted third-party semantics, and
@@ -98,7 +99,7 @@ release complete typeset proofs in a tech report.
 \caption{Source language syntax}
 \label{fig:srclang}
 \end{figure}
-\vspace{-0.1in}
+
 \paragraph{Source language.} Our source language
  is a simple imperative language shown in \figureref{srclang}. Types
 $\psi$ consist of the base types $\sigma$, and arrays
@@ -120,7 +121,7 @@ declarations, assignments,
 \kw{for} loops, array writes, \kw{if}
 statements, and sequence of statements. The statement
 $\kw{out}\:e$ denotes revealing the value of $e$ to the
-parties. The \kw{while} statement is an internal syntax that is not
+parties\footnote{Our language also has statements $\kw{out}_1\:e$ (resp., $\kw{out}_2\:e$) to reveal value of $e$ to only the first (resp., second) party. We omit these for brevity.}. The \kw{while} statement is an internal syntax that is not
 exposed to the programmer. \\
 
 \begin{figure}[htp]
@@ -255,7 +256,7 @@ exposed to the programmer. \\
 \caption{Source semantics}
 \label{fig:srcsem}
 \end{figure}
-\vspace{-0.1in}
+
 \paragraph{Source semantics.} The runtime semantics for the source language is shown in
 \figureref{srcsem}. These semantics show how a ``trusted third party" computes the outputs when given the inputs of both the parties. 
  Values $v$, runtime environments $\rho$, and
@@ -353,7 +354,7 @@ $\mathcal{B}$-labeled operators generate boolean circuits. The
 form $\langle \ell \rhd m \rangle\:\widetilde{e}$ denotes coercing
 $\widetilde{e}$ from label $\ell$ to label $m$.
 %The statements $\widetilde{s}$ are analogous to $s$.
-\vspace{-0.2in}
+
 \paragraph{Source to intermediate compilation.} We provide the compilation
 rules in \figureref{compile}. We present the rules in a
 declarative style, where the rules are non-syntax
@@ -619,7 +620,7 @@ Crucially, this phase of the semantics does not have access to the
 secret inputs.
 Below, we first provide the language for the circuits followed by the
 evaluation rules.
-%\vspace{-0.2in}
+
 \paragraph{Evaluation to Circuits.}
 \figureref{circuits} shows the syntax of circuits. A wire id range
 $\wire$ denotes a set of circuit wires that carry the runtime value of a
@@ -852,7 +853,7 @@ assignment rules (not shown in the figure) are similar. The rule
 ({\sc{S-WriteCkt}}) shows the case for writing to an array, where the
 array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 \kw{out} circuit.
-%\vspace{-0.2in}
+
 \paragraph{Circuit semantics.} Evaluating a program in the
 intermediate language produces a
 circuit to be computed using a distributed \mpc protocol. With
@@ -1019,12 +1020,14 @@ observations.
 \end{figure}
 
 
+\paragraph{Correctness Theorem.} We prove that all well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program. That is, if a source statement $s$ is well-typed, and compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the circuit semantics with the same observations $O$. Formally, the the correctness theorem is as follows (the environments on the left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
 
 
 %\subsubsection*{Correctness theorem}
+\old{
 Finally, the correctness theorem is as follows (the environments on
 the left of $\vdash$ are empty and we elide the environments on the
-right of $\vdash$ for brevity):
+right of $\vdash$ for brevity):}
 
 \begin{theorem}[Correctness]\label{theorem:correctness}
  $\forall\: s, \widetilde{s}$, if $\vdash s \leadsto \widetilde{s}
@@ -1033,11 +1036,13 @@ right of $\vdash$ for brevity):
   \Downarrow \_, \_; O$.
 \end{theorem}
 
-The theorem states that if a source statement $s$ is well-typed, and
+\old{The theorem states that if a source statement $s$ is well-typed, and
 compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source
 semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the
 circuit semantics with the same observations $O$. 
-Therefore, well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program.
+Therefore, well typed programs always terminate (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program.}
+
+\dg{We prove the theorem in Appendix~\ref{}.}
 % We first define a judgment for
 %translation of environments, $\Gamma \vdash \rho \leadsto
 %\widetilde{\rho}; \widehat{\rho}_{1}, \widehat{\rho}_{2}$. The

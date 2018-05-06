@@ -1,4 +1,4 @@
-\vspace{-0.2in}
+%\vspace{-0.2in}
 \section{Evaluation}
 \label{sec:eval}
 We evaluate \tool on a variety of problems that can fall under the umbrella of {\it secure prediction}, where one
@@ -28,7 +28,7 @@ We present the numbers for two network settings, a LAN setting and
 a cross-continent WAN setting. The round trip time between the server
 and the client machines in the two settings is 1ms and 40ms respectively. Each
 machine has an Intel(R) Xeon(R) CPU E5-2673 v3 processor running at
-2.40GHz with 28 GBs of RAM. Where we compare our execution times with prior protocols, we match our system and network parameters with those of the prior work (as the code for works such as Bost et al. \cite{shafindss} and \minion~\cite{minionn} are not publicly available).
+2.40GHz with 28 GBs of RAM. When we compare our execution times with prior protocols, we match our system and network parameters with those of the prior work (as the code for works such as Bost et al. \cite{shafindss} and \minion~\cite{minionn} are not publicly available).
 %
 %% The  \tool compiler is written in Python and
 %% compiles each of our benchmarks in under a second to C++ code that makes calls to the ABY
@@ -197,7 +197,7 @@ prediction tasks, and get performance competitive to or better than the
 specialized protocols. Table~\ref{tab:dt} 
 compares against the more recent work of~\cite{wu}
 on decision trees and further validates this claim.
-\vspace{-0.2in}
+
 \paragraph{Deep neural nets.}
 We evaluate \tool on the DNNs described in SecureML~\cite{secureml},
 Cryptonets~\cite{cryptonets}, and the CNN from \minion~\cite{minionn}. For
@@ -281,7 +281,7 @@ We note that while the \minion implementation is based on the ABY framework, it 
 \minion also reports performance results on a bigger DNN with 7
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in \sectionref{pipeeval}.
-\vspace{-0.18in}
+
 \paragraph{State-of-the-art classifiers.}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
 Its introductory tutorial describes two prediction models for handwritten digit recognition
@@ -463,6 +463,9 @@ because of  Batcher's sort (450 lines of \tool code in each stage).
 However, the current programmer effort seems miniscule compared to the mammoth implementation effort
 put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuits based
 backend to this benchmark.
+
+\subsection{Subsequent Work}
+\TODO{....}
 
 
 %stage | time | comm | gates | mul | add | depth

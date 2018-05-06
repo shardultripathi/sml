@@ -1,4 +1,4 @@
-\vspace{-0.1in}
+
 \section{\tool Overview}
 \label{sec:ex}
 %$w^Tx>0$, mnist logistic regression
@@ -30,9 +30,10 @@ with \ls{b} and outputs this only to the client using \ls{output2}.
 \tool source language is a simple, imperative language that enables
 the programmers to express \mpc computations in terms of their
 ``ideal'' functionalities, without dealing with any cryptographic
-details. The language provides multi-dimensional arrays, conditional
+details. The language provides multi-dimensional arrays \dg{with public indices}, conditional
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \ls{if}~statements, and special syntax for input/output from each party.
+\TODO{Add a justification for not having secret indices, public inputs etc. Unless there is a better place to have those.}
 
 \paragraph{\tool compiler.}
 \tool compiler takes as input a source program and produces a C++
@@ -195,16 +196,22 @@ guarantees.
 
 \subsection{Comparison with Yao-only approach}
 Before we provide the formalization of our compiler, we show that for performance it it critical to use a mix of arithmetic and boolean circuits.
-We demonstrate the performance benefits of mixed computation over boolean-only compute by comparing with previous tools CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm} that are based on Yao's garbled circuits. As we already mentioned that we are not the first to observe that Yao-only approach does not scale well beyond examples with small numbers of multiplications \cite{aby,tasty,autos,secureml,minionn,chameleon}, especially for large-scale multiplications commonly found in Machine Learning (ML) algorithms -- the main use case of \tool. Indeed, this is one of the main drivers behind development of the specialized MPC protocols in previous works \cite{secureml,minionn,shafindss} with which we compare the performance of our automatically generated protocols in \sectionref{eval}.
+We demonstrate the performance benefits of mixed computation over boolean-only compute by comparing with previous tools CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm} that are based on Yao's garbled circuits. As we already mentioned,  we are not the first to observe that Yao-only approach does not scale well beyond examples with small numbers of multiplications \cite{aby,tasty,autoS,secureml,minionn,chameleon}, especially for large-scale multiplications commonly found in Machine Learning (ML) algorithms -- the main use case of \tool.  
+\dg{Speaking loosely,} multiplying two $64$-bit integers using arithmetic sharing requires only $2$ multiplications, whereas Yao requires at least $4096$ AES operations in the online phase.
+Indeed, this is one of the main drivers behind development of various specialized MPC protocols in previous works \cite{secureml,minionn,shafindss} that we compare against in \sectionref{eval}.
 
-The largest example benchmark in CBMC-GC is multiplication of two $8\times 8$ matrices for which it generates <FILL> gates and takes <FILL> seconds to run. In contrast, in \tool we use arithmetic sharing for this compute that generates <FILL> gates and completes in <FILL> seconds. We tried running CBMC-GC for multiplying two $20\times 20$ matrices and it timed out after 5 hours. In contrast, most of our benchmarks are much bigger. For example, we run a moderate size DNN for <FILL> in <FILL> seconds which contains a multiplication of <FILL> matrix and <FILL> matrix as a sub-computation. On the other hand, ObliVM scales to larger benchmarks with its use of Yao-pipelining \cite{yao-pipe}. We ran inner-product computations of varying lengths followed by a comparison in both ObliVM and \tool (see Table~\cite{oblivm-compare}). Our experiments show that we are atleast 30x faster than ObliVM due to our use of arithmetic sharing for inner-product computation. 
+The largest example benchmark in CBMC-GC is multiplication of two $8\times 8$ matrices for which it generates <FILL> gates and takes <FILL> seconds to run. In contrast, in \tool we use arithmetic sharing for this compute that generates <FILL> gates and completes in <FILL> seconds. We tried running CBMC-GC for multiplying two $20\times 20$ matrices and it timed out after 5 hours. In contrast, most of our benchmarks are much bigger. For example, we run the secure computation of a DNN for CIFAR-10 in 265 seconds which requires multiplying a $64\times576$ matrix with a $576\times1024$ matrix as a sub-computation. On the other hand, ObliVM scales to larger benchmarks with its use of Yao-pipelining \cite{yao-pipe}. We ran inner-product computations of varying lengths followed by a comparison in both ObliVM and \tool (see Table~\cite{oblivm-compare}). Our experiments show that we are atleast 30x faster than ObliVM due to our use of arithmetic sharing for inner-product computation. 
 
 \subsection{Cryptographic cost-aware compiler}
 \label{sec:ccc}
-\dg{Points to address. 1. hard problem nto solve optimally 2. some decisions are fixed and some are context sensitive 3. our heuristics and their basis}
+\dg{Points to address. 1. hard problem to solve optimally 2. some decisions are fixed and some are context sensitive 3. our heuristics and their basis}
 One of the main challenges for our compiler is to split the compute between arithmetic and boolean parts well. 
-As mentioned above, \tool is a cryptographic cost-aware compiler and uses the arithmetic and boolean costs of primitive operators and the inter-conversion costs to make the split. We analyse these costs by running microbenchmarks for basic operations and interconversions and obtained numers consistent with ABY~\cite{aby} (see Figures 2 and 3 in \cite{aby}). Based on these costs, our compiler has some hard constraints. For example, multiplication should always be performed in arithmetic circuit as the cost of boolean multiplication is much higher than the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean. However, this is not the case for addition. In \tool, if both the operands of addition are boolean shared, we do the addition using boolean circuit, else we use arithmetic circuit. Hence, addition may be done in arithmetic or boolean depending on the operands. 
-We note that doing an optimal split between arithmetic and boolean is an NP-hard problem and in this work, we use some heuristics based on costs observed using microbenchmarking. Moreover, for our machine learning benchmarks (such as linear classifier, DNNs, etc) these choices seem optimal.
+As mentioned above, \tool is a cryptographic cost-aware compiler and uses the arithmetic and boolean costs of primitive operators and the inter-conversion costs to make the split. We analyse these costs by running microbenchmarks for basic operations and interconversions and our observations were consistent with ABY~\cite{aby} (see Figures 2 and 3 in \cite{aby}). Based on these costs, our compiler has some hard constraints. For example, multiplication should always be performed in arithmetic circuit as the cost of boolean multiplication is much higher than  the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean \dg{($\sim9x$ time $\&$ $\sim20x$ comm. in LAN setting)}.
+However, this is not the case for addition. In \tool, if both the operands of addition are boolean shared, we do the addition using boolean circuit, else we use arithmetic circuit. Hence, addition may be done in arithmetic or boolean depending on the operands. 
+Finally, all the boolean operations such as comparison, shifts, multiplexors, etc are done using Yao.
+We note that doing an optimal split between arithmetic and boolean is an \dg{NP-hard} problem and in this work, we use some heuristics based on costs observed using microbenchmarking. Moreover, for our machine learning benchmarks (such as linear classifier, DNNs, etc) these choices seem optimal.
+
+\dg{\textsc{People wanted estimate of interconversion costs. I don't know where to put it. May be implementation?} Interconversion costs: Converting from A to Y requires computing computing a Yao circuit for addition that is linear size and hence, requires linear number of symmetric key operations. Similarly, Y2A requires computing a subtraction circuit that is again linear size.}
 
 
 

@@ -65,7 +65,7 @@ All other variables are assigned arithmetic labels (that can later be
 coerced to boolean).
 We leave a more sophisticated type inference procedure for future work.
 
-\dg{Remove some parts from here..}
+\dg{remove addition?}
 The compilation rules of \figureref{compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.
@@ -73,8 +73,8 @@ Since \tool is aware of the cryptographic costs associated with these coercions,
 it tries to minimize them using several optimizations.
 For instance, if boolean shares of a variable are available in scope and the variable is involved in
 an addition then \tool performs the addition in boolean rather than first coercing boolean to arithmetic
-and then performing an arithmetic addition. However, multiplication is always performed in arithmetic
-as the cost of a boolean multiplication is much higher than the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean~\cite{aby}.
+and then performing an arithmetic addition. 
+%However, multiplication is always performed in arithmetic as the cost of a boolean multiplication is much higher than the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean~\cite{aby}.
 Other optimizations include the standard ``common subexpression elimination"
 optimization~\cite{dragonbook}.
 On each coercion, \tool memorizes the pair of arithmetic
