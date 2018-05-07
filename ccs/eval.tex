@@ -372,6 +372,10 @@ of \tool. We discuss scalability next.
 
 \subsection{Secure code partitioning}
 \label{sec:pipeeval}
+\aseem{Is it worth splitting it into microbenchamrking first, which is
+  Fig. 11, and then comparison with others? Right now, Fig. 11 text
+  just comes at the end, should be highlight it in a paragraph or
+  something?}
 The largest benchmark of \minion~\cite{minionn} is a DNN for CIFAR-10
 dataset~\cite{cifar}. 
 The classifier's task is to categorize colored ($32\times 32$) images
@@ -436,7 +440,18 @@ computations while maintaining performance
 competitive with existing specialized protocols. In particular, for a
 large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
-succeed. For example, consider a large DNN with $n$ layers such that the circuit for only a single layer can  fit into memory. Then, \tool using partitioning can evaluate this large DNN in $n$ stages. To further illustrate the need for and utility of partitioning, we ran a series of DNNs with different layers with and without partitioning (where partitioning was done for every layer of the DNN). For up to 5-layer DNNs, the performance of both settings was comparable, thereby illustrating that partitioning did not cause any overhead to performance. For networks that had 6 or more layers, performance of the protocol without partitioning dramatically dropped, while the protocol with partitioning continued to scale linearly. These results are illustrated in Figure~\ref{fig:partitioning}.
+succeed. For example, consider a large DNN with $n$ layers such that
+the circuit for only a single layer can  fit into memory. Then, \tool
+using partitioning can evaluate this large DNN in $n$ stages. To
+further illustrate the need for and utility of partitioning, we ran a
+series of DNNs with different layers with and without partitioning
+(where partitioning was done for every layer of the DNN). For up to
+5-layer DNNs, the performance of both settings was comparable, thereby
+illustrating that partitioning did not cause any overhead to
+performance. For networks that had 6 or more layers, performance of
+the protocol without partitioning dramatically dropped, while the
+protocol with partitioning continued to scale linearly. These results
+are illustrated in Figure~\ref{fig:partitioning}.
 
 \begin{figure}
 \includegraphics[width=8cm]{partitioning.png}
@@ -471,18 +486,21 @@ put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a bool
 backend to this benchmark.
 
 \subsection{Subsequent Work}
-Subsequent to our work, there have been improvements in the cryptographic backends.
-For example, Gazelle describes specialized protocols for DNNs---which use a 
-lattice-based packed additively homomorphic encryption scheme (PAHE) for arithmetic computations and garbled circuits for boolean computations---that can evaluate the CNN benchmark of Table~\ref{tab:nn} in 0.8 seconds (as opposed to
-5.1 seconds taken by \tool when using ABY). Such advances in cryptography are
-orthogonal to our contributions. In particular, we are interested in using Gazelle
-as our backend when it becomes available. Furthermore, the authors of Gazelle remark:
+Subsequent to our work, \aseem{TODO} et al. \aseem{cite} have
+presented Gazelle, a framework for specialized DNN
+protocols. Gazelle use a lattice-based packed additively homomorphic
+encryption scheme (PAHE) for arithmetic computations and garbled
+circuits for boolean computations. Gazelle can evaluate the CNN benchmark of
+Table~\ref{tab:nn} in 0.8 seconds, as opposed to
+5.1 seconds taken by \tool with the ABY backend. Such advances in
+cryptographic backends are orthogonal to our contributions. In
+particular, once Gazelle is available, we could add it as another
+cryptographic backend to \tool. Furthermore, the authors of Gazelle remark:
 ``A final, very interesting and ambitious line
 of work would be to build a compiler that allows us to easily
 express arbitrary computations and automatically factor the
-computation into PAHE and two-party primitives.''
-\tool addresses this exact problem of factoring computations into
-arithmetic and boolean parts.
+computation into PAHE and two-party primitives'' -- the exact problem
+that \tool solves.
 
 
 %stage | time | comm | gates | mul | add | depth

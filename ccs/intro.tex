@@ -14,7 +14,7 @@
  expected to use them correctly and efficiently on their own.
  Ideally, a developer would declare the functionality in a general
  purpose, high-level programming language and a
- tool, e.g., a compiler would generate an efficient protocol that
+ tool, e.g. a compiler, would generate an efficient protocol that
  implements the functionality securely, while hiding the cryptography
  behind-the-scenes. 
  
@@ -54,7 +54,7 @@ a \mpc protocol to securely
 compute $w^Tx >b$. Here $w$ (a vector) and $b$ (a scalar) constitute
 the server classifier, and $x$ is the client's input vector. Further,
 $\cdot^{T}$ is the matrix transpose operator, and $w^Tx$ denotes the
-inner product of  $w$ and $x$. Alice has the following options.
+inner product of  $w^T$ and $x$. Alice has the following options.
 
 %\begin{tiret}
 %\item
@@ -156,10 +156,18 @@ cryptographic details.
 The generated protocols use combinations of
 arithmetic and boolean circuits that introduce unique compilation challenges.
 Standard compilers do not attempt to reason about or insert non-trivial type casts
-and require the programmers to perform them explicitly. 
+and require the programmers to perform them explicitly. \aseem{This
+last sentence and the bit about unique compilation challenges seems
+unnecessary to me. Compilers do insert type casts automatically. Also
+at this point in the paper the words ``type casts'' don't mean much.}
 We back \tool with formal semantics that enable the compiler to
 insert type conversions between boolean and arithmetic components
-while maintaining provable correctness, security, and efficiency.
+while maintaining provable correctness, security, and
+efficiency. \aseem{Provable efficiency? Perhaps provable should
+be rescoped. And again, type conversions may not be clear at this
+point. I would simply say that EzPC inserts inter-conversion gates
+automatically. It is backed by a formal model and provides
+provable correctness and security, and efficiency.}
 The automatically generated protocols have performance comparable to
 or better than the custom, specialized
 protocols from previous works~\cite{shafindss,wu,minionn,secureml,cryptonets,valeriaMatrix}.
@@ -255,7 +263,8 @@ to the rescue; it automatically inserts the required instrumentation
 to ensure security of these intermediate outputs (\sectionref{pipe}). As
 we show in our
 evaluation, partitioning allows us to program large applications
-in \tool.
+in \tool. \aseem{What about the differences from Yao pipelining? Worth
+adding here that it is a backend-agnostic technique?}
 
 %% We provide details of partitioning and prove the
 %% correctness and security of this transformation
@@ -272,7 +281,7 @@ successfully terminate
 (e.g., there are no array index out-of-bounds errors) with identical
 observable outputs. For
 the security theorem, we formally reduce the security
-of our scheme against semi-honest (or, ``honest but curious")
+of our scheme against semi-honest (or ``honest but curious")
 adversaries to the semi honest security of the  \mpc back-end. The
 theorem provides protection against side-channels arising from
 conditionals and memory access patterns.
