@@ -349,7 +349,7 @@ WARD       &  0.3         & 1.1         & 9            & 106k    & 8k    &  506k
 We next present \bonsai~\cite{bonsai} results on three
 standard datasets: character recognition (Chars4k~\cite{campos},
 accuracy 74.71\%), text recognition (USPS~\cite{hull}, accuracy
-94.4\%), and object categorization (WARD~\cite{yang}, accuracy
+94.4\%), and object categorization (WARD\\~\cite{yang}, accuracy
 95.7\%). 
 The \bonsai models are already over integers and no porting from
 floating-point is required.
@@ -436,7 +436,13 @@ computations while maintaining performance
 competitive with existing specialized protocols. In particular, for a
 large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
-succeed. For example, consider a large DNN with $n$ layers such that the circuit for only a single layer can  fit into memory. Then, \tool using partitioning can evaluate this large DNN in $n$ stages.
+succeed. For example, consider a large DNN with $n$ layers such that the circuit for only a single layer can  fit into memory. Then, \tool using partitioning can evaluate this large DNN in $n$ stages. To further illustrate the need for and utility of partitioning, we ran a series of DNNs with different layers with and without partitioning (where partitioning was done for every layer of the DNN). For up to 5-layer DNNs, the performance of both settings was comparable, thereby illustrating that partitioning did not cause any overhead to performance. For networks that had 6 or more layers, performance of the protocol without partitioning dramatically dropped, while the protocol with partitioning continued to scale linearly. These results are illustrated in Figure~\ref{fig:partitioning}.
+
+\begin{figure}
+\includegraphics[width=8cm]{partitioning.png}
+\caption{Comparison of \tool code with and without partitioning. x-axis denotes the number of layers of the DNN, while y-axis denotes time in seconds for the secure protocol.}
+\label{fig:partitioning}
+\end{figure}
 
 \subsection{Matrix factorization}
 \tool is not tied to secure prediction and can express more general computations.

@@ -54,7 +54,7 @@ a \mpc protocol to securely
 compute $w^Tx >b$. Here $w$ (a vector) and $b$ (a scalar) constitute
 the server classifier, and $x$ is the client's input vector. Further,
 $\cdot^{T}$ is the matrix transpose operator, and $w^Tx$ denotes the
-inner product of  $w$ and $x$. Alice has following options.
+inner product of  $w$ and $x$. Alice has the following options.
 
 %\begin{tiret}
 %\item
@@ -247,7 +247,7 @@ a high level, we decompose the original program into a sequence of small
 sub-programs, which are then sequentially processed by \tool, while
 appropriately threading the intermediate outputs
 along. While this
-addresses the scalability concern (the circuit
+addresses the scalability concern (i.e., the circuit
 sizes of the sub-programs are now small enough to fit in the memory),
 we still have to address
 the security risk of revealing the intermediate outputs. \tool comes
@@ -319,8 +319,9 @@ intermediate values or indexing into arrays at secret indices.
  Handling them requires additional complexity. For example,
 Wysteria~\cite{wysteria} handles the former using dependent types
 and ObliVM~\cite{oblivm} uses Oblivious RAM for the latter.
-These situations arise seldomly in the machine learning applications that we consider:
-intermediate values don't need to be declassified and arrays are traversed in an oblivious manner.
+These situations seldomly arise in the machine learning applications that we consider:
+intermediate values don't need to be declassified and arrays are traversed in an oblivious manner. We provide a detailed survey of related
+work in \sectionref{related}.
 
 %\dg{Cite works like Wysteria~\cite{wysteria} for public inputs and declassification of intermediate values, ObliVM~\cite{oblivm} for hiding secret array indices using Oblivious RAM. But since the focus of this work is machine learning applications, we do not concern ourselves with these language complexities.}
 %Can be added to related work
@@ -331,8 +332,7 @@ intermediate values don't need to be declassified and arrays are traversed in an
 %as well as a quadratic time greedy heuristic. \tool  uses a simpler constant time heuristic
 %to assign arithmetic secret sharing or garbled circuits to sub-computations
 %in a richer language with control flow statements such as loops and branches.
- We provide a detailed survey of related
-work in \sectionref{related}.
+ 
 
 %% The rest of the paper is structured as follows. We formalize \tool and
 %% prove its correctness and security theorems in
