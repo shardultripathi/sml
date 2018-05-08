@@ -276,8 +276,9 @@ trained model.
 We observe that our performance is competitive with specialized
 \minion protocols, for both the LAN and the WAN settings. Further, lines
 of \tool source code required is still small. 
-%We note that while the \minion implementation is based on the ABY framework, it does not use the framework ``off-the-shelf'' and provide tailor-made optimizations for their applications. %By contrast, \tool focuses on generic
-%2PC, exploiting ABY's performant implementation. Optimizations such as those found in \minion are part of our future work.
+We note that while the \minion implementation is based on the ABY framework, it does not use ABY ``off-the-shelf'' and performs application-specific optimizations. In contrast, \tool focuses on generic
+\mpc and directly exploits the exisiting performant implementations in ABY.
+% Optimizations such as those found in \minion are part of our future work.
 \minion also reports performance results on a bigger DNN with 7
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in \sectionref{pipeeval}.
