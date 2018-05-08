@@ -448,7 +448,8 @@ sequence of DNNs with and without partitioning
 (where every layer of each DNN is a separate stage) in~\figureref{partitioning}.
 For DNNs with up to 4 (hidden) layers, the performance is almost idential and the lines overlap, thereby
 illustrating that partitioning did not cause any noticeable performance overheads.
-Memory issues start showing up with the 5 (hidden) layer DNN and the non-partitioned implementation is slower.
+Memory issues start showing up in the non-partitioned implementation with the 5 layer DNN and it is slower.
+Performance degrades rapidly thereafter and
 DNNs with 6 or more layers fail to execute (terminate with a ``bus error").
 However, the partitioned implementation scales well to even these large DNNs.
 
