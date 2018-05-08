@@ -299,8 +299,9 @@ to the rescue; it automatically inserts the required instrumentation
 to ensure security of these intermediate outputs (\sectionref{pipe}). As
 we show in our
 evaluation, partitioning allows us to program large applications
-in \tool. \aseem{What about the differences from Yao pipelining? Worth
-adding here that it is a backend-agnostic technique?}
+in \tool. 
+%\aseem{What about the differences from Yao pipelining? Worth
+%adding here that it is a backend-agnostic technique?}
 
 %% We provide details of partitioning and prove the
 %% correctness and security of this transformation
@@ -327,7 +328,10 @@ scheme (\sectionref{ld} and~\sectionref{pipe}).
 
 \paragraph{Evaluation.} We have implemented \tool
 using ABY~\cite{aby} as the
-cryptographic back-end. We evaluate \tool by implementing a wide range
+cryptographic back-end.
+We compare \tool with Yao-based compilers in~\sectionref{oblivm}
+and with specialized protocols in~\sectionref{eval}. 
+ We evaluate \tool by implementing a wide range
 of secure prediction benchmarks including linear and na\"{i}ve bayes
 classifiers, decision trees, deep neural networks, state-of-the-art
 classifiers from Tensorflow~\cite{tensorflow}

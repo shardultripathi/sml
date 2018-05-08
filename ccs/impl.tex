@@ -47,13 +47,13 @@ size $n$ requires ${n}-1$ multiplexers in \tool.
 %the construction of such an analysis as future work.
 
 We use an off-the-shelf solver
-(SeaHorn~\cite{seahorn}) to bound check the array indices
-($\models e < n$
+(SeaHorn~\cite{seahorn}) to check that the array indices
+are within bounds ($\models e < n$
 in ({\sc {T-Read}}) and ({\sc{T-Write}}),
 \figureref{compile}). We take the \tool source program and
 translate it as an input C program to the solver. The solver takes less
 than a minute on our largest benchmark to verify that all the array
-accesses are in-bounds. This C program can also enable
+accesses are in-bounds. This C program also enables
 validation of \tool generated protocols via differential testing~\cite{mckeeman,frigate}.
 
 Our implementation assigns the type labels (rule~{\sc{T-Decl}})
@@ -68,12 +68,13 @@ The compilation rules of \figureref{compile} can introduce
 repeated coercions from arithmetic to
 boolean and vice versa.
 Since \tool is aware of the cryptographic costs associated with these coercions,
-it tries to minimize them using several optimizations.
-For instance, if boolean shares of a variable are available in scope and the variable is involved in
-an addition then \tool performs the addition in boolean rather than first coercing boolean to arithmetic
-and then performing an arithmetic addition. 
-%However, multiplication is always performed in arithmetic as the cost of a boolean multiplication is much higher than the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean~\cite{aby}.
-Other optimizations include the standard ``common subexpression elimination"
+it tries to minimize them using several optimizations, e.g., by
+%For instance, if boolean shares of a variable are available in scope and the %variable is involved in
+%an addition then \tool performs the addition in boolean rather than first %coercing boolean to arithmetic
+%and then performing an arithmetic addition. 
+%However, multiplication is always performed in arithmetic as the cost of a %boolean multiplication is much higher than the cost of coercing from boolean %to arithmetic, performing an arithmetic multiplication, and then coercing from %arithmetic to boolean~\cite{aby}.
+%Other optimizations include
+the standard ``common subexpression elimination"
 optimization~\cite{dragonbook}.
 On each coercion, \tool memorizes the pair of arithmetic
 share and boolean share involved in the coercion. 
@@ -81,8 +82,7 @@ share and boolean share involved in the coercion.
 shares are overwritten by assignments. 
 In subsequent coercions, \tool  reuses valid pairs (if available)
 instead of inserting code to recompute them afresh.
-
-All these optimizations are standard compiler
+These optimizations are standard compiler
 optimizations~\cite{dragonbook}, and we rely on their correctness to
-maintain the correctness and security for the optimized programs.
+maintain the correctness and security of the optimized programs.
 

@@ -276,8 +276,8 @@ trained model.
 We observe that our performance is competitive with specialized
 \minion protocols, for both the LAN and the WAN settings. Further, lines
 of \tool source code required is still small. 
-We note that while the \minion implementation is based on the ABY framework, it does not use the framework ``off-the-shelf'' and provide tailor-made optimizations for their applications. By contrast, \tool focuses on generic
-2PC, exploiting ABY's performant implementation. Optimizations such as those found in \minion are part of our future work.
+%We note that while the \minion implementation is based on the ABY framework, it does not use the framework ``off-the-shelf'' and provide tailor-made optimizations for their applications. %By contrast, \tool focuses on generic
+%2PC, exploiting ABY's performant implementation. Optimizations such as those found in \minion are part of our future work.
 \minion also reports performance results on a bigger DNN with 7
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in \sectionref{pipeeval}.
@@ -351,8 +351,8 @@ standard datasets: character recognition (Chars4k~\cite{campos},
 accuracy 74.71\%), text recognition (USPS~\cite{hull}, accuracy
 94.4\%), and object categorization (WARD\\~\cite{yang}, accuracy
 95.7\%). 
-The \bonsai models are already over integers and no porting from
-floating-point is required.
+%The \bonsai models are already over integers and no porting from
+%floating-point is required.
 We implement the trained classifiers in \tool for all the benchmarks
 from~\cite{bonsai},
 and show the representative results in Table~\ref{tab:bonsai}.
@@ -372,10 +372,10 @@ of \tool. We discuss scalability next.
 
 \subsection{Secure code partitioning}
 \label{sec:pipeeval}
-\aseem{Is it worth splitting it into microbenchamrking first, which is
-  Fig. 11, and then comparison with others? Right now, Fig. 11 text
-  just comes at the end, should be highlight it in a paragraph or
-  something?}
+%\aseem{Is it worth splitting it into microbenchamrking first, which is
+ % Fig. 11, and then comparison with others? Right now, Fig. 11 text
+ % just comes at the end, should be highlight it in a paragraph or
+ % something?}
 The largest benchmark of \minion~\cite{minionn} is a DNN for CIFAR-10
 dataset~\cite{cifar}. 
 The classifier's task is to categorize colored ($32\times 32$) images
@@ -440,18 +440,17 @@ computations while maintaining performance
 competitive with existing specialized protocols. In particular, for a
 large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
-succeed. For example, consider a large DNN with $n$ layers such that
-the circuit for only a single layer can  fit into memory. Then, \tool
-using partitioning can evaluate this large DNN in $n$ stages. To
-further illustrate the need for and utility of partitioning, we ran a
-series of DNNs with different layers with and without partitioning
-(where partitioning was done for every layer of the DNN). For up to
-5-layer DNNs, the performance of both settings was comparable, thereby
-illustrating that partitioning did not cause any overhead to
-performance. For networks that had 6 or more layers, performance of
-the protocol without partitioning dramatically dropped, while the
-protocol with partitioning continued to scale linearly. These results
-are illustrated in Figure~\ref{fig:partitioning}.
+succeed.
+
+\paragraph{Scalability.}  To
+illustrate the scalability of partitioning, we evaluate a
+sequence of DNNs with and without partitioning
+(where every layer of each DNN is a separate stage) in~\figureref{partitioning}.
+For DNNs with up to 4 (hidden) layers, the performance is almost idential and the lines overlap, thereby
+illustrating that partitioning did not cause any noticeable performance overheads.
+Memory issues start showing up with the 5 (hidden) layer DNN and the non-partitioned implementation is slower.
+DNNs with 6 or more layers fail to execute (terminate with a ``bus error").
+However, the partitioned implementation scales well to even these large DNNs.
 
 \begin{figure}
 \includegraphics[width=8cm]{partitioning.png}
@@ -486,15 +485,15 @@ put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a bool
 backend to this benchmark.
 
 \subsection{Subsequent Work}
-Subsequent to our work, \aseem{TODO} et al. \aseem{cite} have
-presented Gazelle, a framework for specialized DNN
-protocols. Gazelle use a lattice-based packed additively homomorphic
+Subsequent to our work, Juvekar et al.~\cite{gazelle}  have
+presented {\sc Gazelle}, a specialized protocol for DNNs.
+{\sc Gazelle} use a lattice-based packed additively homomorphic
 encryption scheme (PAHE) for arithmetic computations and garbled
-circuits for boolean computations. Gazelle can evaluate the CNN benchmark of
+circuits for boolean computations. {\sc Gazelle} can evaluate the CNN benchmark of
 Table~\ref{tab:nn} in 0.8 seconds, as opposed to
 5.1 seconds taken by \tool with the ABY backend. Such advances in
 cryptographic backends are orthogonal to our contributions. In
-particular, once Gazelle is available, we could add it as another
+particular, once {\sc Gazelle} is available, we could add it as another
 cryptographic backend to \tool. Furthermore, the authors of Gazelle remark:
 ``A final, very interesting and ambitious line
 of work would be to build a compiler that allows us to easily

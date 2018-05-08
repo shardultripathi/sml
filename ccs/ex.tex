@@ -74,11 +74,9 @@ of ABY, boolean is synonymous with Yao, we elaborate in
 Using both arithmetic and boolean representations requires conversions between them.
 The \tool compiler also
 instruments these conversion gates accordingly. For example, in
-lines~\ref{line:convacc} and~\ref{line:convb}, the compiler converts
-\ls{a\_acc} and \ls{a\_b} to boolean representation, before they are
-input to the comparison and multiplexer circuits. \aseem{Question: why
-  is b arithmetic to begin with? Can this input be boolean and then we
-  don't have to insert a conversion gate for it?}
+line~\ref{line:convacc}, the compiler converts
+\ls{a\_acc} to a boolean representation, before it is
+input to the comparison and multiplexer circuits.
 %\vspace{-0.2in}
 
 \begin{figure}[h]
@@ -119,9 +117,6 @@ $\mathtt{
 //convert acc and b from arithmetic to boolean
 $\mathtt{
 share\;*y\_acc = ycirc\rightarrow PutA2YGate(a\_acc);~\label{line:convacc}
-}$
-$\mathtt{
-share\;*y\_b = ycirc\rightarrow PutA2YGate(a\_b);~\label{line:convb}
 }$
 
 $\mathtt{
@@ -198,23 +193,14 @@ while its metatheory provides strong correctness and security
 guarantees. 
 
 \subsection{Comparison with Yao-only approach}
-\aseem{We decided to put it here, but reading now, this subsection
-  seems to be a bit misplaced to me. How about moving it to 6.1, the
-  first subsection in the
-  Evaluation? And we can add a couple of lines about it in the
-  introduction evaluation paragraph (We first show that mixed
-  protocols are much more efficient than Yao only by comparing with
-  blah blah). Here it seems quite abrupt, we
-  are talking about EzPC at a high-level, with compiler features
-  etc. and suddenly details about numbers, CIFAR and what not start
-  coming. Seems too soon.}
-Before we provide the formalization of our compiler, we show that for performance it it critical to use a mix of arithmetic and boolean circuits.
-We demonstrate the performance benefits of mixed computation over boolean-only compute by comparing with previous tools CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm} that are based on Yao's garbled circuits. As we already mentioned,  we are not the first to observe that Yao-only approach does not scale well beyond examples with small numbers of multiplications \cite{aby,tasty,autoS,secureml,minionn,chameleon}, especially for large-scale multiplications commonly found in Machine Learning (ML) algorithms -- the main use case of \tool.  
-Roughly, multiplying two $64$-bit integers using arithmetic sharing requires only $2$ multiplications, whereas Yao requires at least $4096$ AES operations in the online phase.
-Indeed, this is one of the main drivers behind development of various specialized MPC protocols in previous works \cite{secureml,minionn,shafindss} that we compare against in \sectionref{eval}.
+\label{sec:oblivm}
+We show that it is critical to use a mix of arithmetic and boolean circuits  for performance.
+ Previous work has observed that Yao's garbled circuits do not scale to machine learning examples that require a large number of multiplications~\cite{aby,tasty,autoS,secureml,minionn,chameleon}.
+Indeed, this is one of the main drivers behind the development of various specialized MPC protocols in previous works~\cite{secureml,minionn,shafindss} (we compare against them in~\sectionref{eval}) .
+Here, we empirically demonstrate the performance benefits of mixed computations over boolean-only compute by comparing with state of the art Yao-based compilers CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm}.
 
-The largest example benchmark in CBMC-GC is multiplication of two $8\times 8$ matrices for which it generates about a million gates and takes about ten seconds to run. In contrast, in \tool we use arithmetic sharing for this compute that generates 1218 gates and runs in about 0.1 seconds. We tried running CBMC-GC for multiplying two $20\times 20$ matrices and it timed out after 5 hours. In contrast, most of our benchmarks are much bigger. For example, we run the secure computation of a DNN for CIFAR-10 in 265 seconds which requires multiplying a $64\times576$ matrix with a $576\times1024$ matrix as a sub-computation. On the other hand, ObliVM scales to larger benchmarks with its use of Yao-pipelining \cite{yao-pipe}. We ran inner-product computations of varying lengths followed by a comparison in both ObliVM and \tool (see Table~\cite{oblivm-compare} in the Appendix). 
-Our experiments show that we are atleast 30x faster than ObliVM due to our use of arithmetic sharing for inner-product computation. 
+The largest benchmark in CBMC-GC is a multiplication of two $8\times 8$ matrices for which it generates about a million gates and takes about ten seconds to run. In contrast, \tool uses arithmetic sharing, generates 1218 gates, and runs in less than 0.1 seconds. When we tried multiplying two $20\times 20$ matrices with CBMC-GC, it timed out after 5 hours. Our benchmarks require much bigger computations (e.g., multiplying a $64\times576$ matrix with a $576\times1024$ matrix). Unlike CBMC-GC, ObliVM can scale to larger benchmarks (because it uses Yao-pipelining \cite{yao-pipe}). We evaluated the program in \figureref{ex-sml} with vectors of lengths varying between $10^3$ and $10^6$ using both \tool and ObliVM. 
+\tool evaluates the inner-product in arithmetic and, empirically, is at least 25x faster than ObliVM. 
 
 %% \subsection{Cryptographic cost-aware compiler}
 %% \label{sec:ccc}
@@ -228,46 +214,42 @@ Our experiments show that we are atleast 30x faster than ObliVM due to our use o
 %Moreover, for our machine learning benchmarks (such as linear classifier, DNNs, etc) these choices seem optimal.
 
 \section{Cryptographic cost-awareness}
+ \label{sec:ccc}
+In this section, we explain various heuristics that \tool uses to split
+the computation in a program into arithmetic and
+boolean parts. While finding an optimum split  is an NP-hard problem (the predicates in {\tt if} statements can have arbitrary non-linear arithmetic),
+\tool uses heuristics based
+on empirical micro-benchmarking that  perform well in practice (Section~\ref{sec:eval}).
 
-In this section we explain various heuristics that \tool uses to split
-the secret computation in a program between arithmetic and
-boolean. While an optimal split in general is an NP-hard problem
-\aseem{can we cite something?}, \tool heuristics are empirically based
-on micro-benchmarking, and perform well on the various secure
-prediction benchmarks (Section~\ref{sec:eval}).
-
-\paragraph{Micro-benchmarking.} The cost of splitting the compuation
-between arithmetic and boolean involves the cost of operations
-(addition, multiplication, etc.) and the cost of inter-conversion
-gates between arithmetic and boolean. Cryptographic cost of converting
-an arithmetic share to a boolean share requires computing a garbled
-circuit for addition that is linear in size. Similarly, the cost of
-converting from boolean to arithmetic is computing a subtraction
-circuit inside garbled circuit that is again linear in size. Demmler
-et al.~\cite{aby} analyze all these costs by running
+The split
+between arithmetic and boolean requires knowing the cost of
+individual operations
+(addition, multiplication, inter-conversion between arithmetic and boolean, etc.).
+Demmler
+et al.~\cite{aby} document these costs by running
 microbenchmarks for basic operations and interconversions (Figures
-2 and 3 in \cite{aby}). \tool heuristics are based on these results.
+2 and 3 in \cite{aby}). \tool heuristics are based on their results.
 
-\paragraph{Multiplication.} For multiplication, \tool always chooses
-arithmetic circuit, as the cost of boolean multiplication is much
-higher than the cost of coercing the operands from boolean to
-arithmetic, performing an arithmetic multiplication, and then coercing
+ Converting
+an arithmetic share to a boolean share requires computing a garbled
+circuit for addition. The size of this circuit grows  linearly in the bitwidth of the inputs. Similarly, converting from boolean to arithmetic requires computing a 
+garbled circuit for subtraction, which is also linear. 
+Since each conversion has roughly the same cost as a boolean addition,
+ \tool performs
+addition using a boolean circuit
+if the operands  are boolean shared, else it uses an arithmetic
+circuit.
+
+For multiplication, \tool always chooses
+an arithmetic circuit, as the cost of a boolean multiplication is much
+higher than the cost of converting the operands from boolean to
+arithmetic, performing an arithmetic multiplication, and then converting
 the result back to boolean ($\sim9x$ more time $\&$ $\sim20x$ more
-communication in a LAN setting). Since the performance gap is quite
-large, we believe that this choice is optimal for realistic network
-settings.
-
-\paragraph{Addition.} However, this is not the case for addition. If
-both the operands of addition are boolean shared, \tool performs
-addition using a boolean circuit, else it uses an arithmetic
-circuit. \aseem{What if one operand is in boolean and the other is in
-  arithmetic?} Hence, addition may be done in arithmetic or boolean
-depending on the operands.
-
-\paragraph{Boolean operations.} Finally, \tool chooses Yao for all
-the boolean operations such as comparison, shifts, multiplexors,
-etc. \aseem{Can we write a sentence here that Demmler et al. show this
-  is the optimal choice?}
+communication in a LAN setting). Theoretically, the size of a boolean multiplication circuit is quadratic in the bitwidth, which causes this performance gap.
+Roughly, multiplying two $64$-bit integers using arithmetic sharing requires only $2$ multiplications, whereas Yao requires at least $4096$ AES operations in the online phase.
+Since this gap is quite large, we believe that this choice is optimal for realistic network
+settings. Finally, \tool chooses boolean circuits for all
+the operations lacking arithmetic support in ABY, e.g., comparisons, bit-shifts, etc.
 
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
 %% whether a patient has breast cancer or not. Bob trains a machine learning classification model
