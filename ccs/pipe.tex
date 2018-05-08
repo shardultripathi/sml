@@ -10,6 +10,9 @@
 
 In this section, we describe our ``secure code partitioning'' technique that
 allows \tool to execute programs that require large circuits.
+Our techniques take inspiration from the idea of pipelining Yao's garbled circuits described in FastGC \cite{yao-pipe}.
+However, unlike FastGC, we do not operate at a circuit level and partitioning is independent of the specific
+\mpc protocol. 
 Let $\prog$ be a program in our source language that
 generates a circuit $\crct$. For some programs, the circuit $\crct$
 can be larger than
@@ -30,9 +33,6 @@ correct ($\prog$ and sequential execution of $\progn_1,\progn_2,\ldots,\progn_k$
 the same functionality) and secure (sequential execution of
 $\progn_1,\progn_2,\ldots,\progn_k$ does
 not reveal any more information than $\prog$). 
-Our techniques take inspiration from the idea of pipelining Yao's garbled circuits described in FastGC \cite{yao-pipe}.
-However, unlike FastGC, we do not operate at a circuit level and partitioning is independent of the specific
-\mpc protocol. 
 %
 %Prior works such as FastGC \cite{yao-pipe} and ObliVM \cite{oblivm} have developed similar techniques specific to garbled circuits that work at the level of circuits.
 %
