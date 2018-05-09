@@ -195,7 +195,7 @@ guarantees.
 \subsection{Comparison with garbled circuits}
 \label{sec:oblivm}
 We show that it is critical to use a mix of arithmetic and boolean circuits  for performance.
- Previous work has observed that Yao's garbled circuits do not scale to machine learning examples that require a large number of multiplications~\cite{aby,tasty,autoS,secureml,minionn,chameleon}.
+ Previous works have observed that Yao's garbled circuits do not scale to machine learning examples that require a large number of multiplications~\cite{aby,tasty,autoS,secureml,minionn,chameleon}.
 Indeed, this is one of the main drivers behind the development of various specialized \mpc protocols in previous works~\cite{secureml,minionn,shafindss} (we compare against them in~\sectionref{eval}) .
 Here, we empirically demonstrate the performance benefits of mixed computations over boolean-only compute by comparing with state of the art Yao-based compilers CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm}.
 
@@ -217,9 +217,8 @@ The largest benchmark in CBMC-GC is a multiplication of two $8\times 8$ matrices
  \label{sec:ccc}
 In this section, we explain various heuristics that \tool uses to split
 the computation in a program into arithmetic and
-boolean parts. While finding an optimum split  is an NP-hard problem (the predicates in {\tt if} statements can have arbitrary non-linear arithmetic),
-\tool uses heuristics based
-on empirical micro-benchmarking that  perform well in practice (Section~\ref{sec:eval}).
+boolean parts. Since finding an optimum split  is an NP-hard problem (the predicates in {\tt if} statements can have arbitrary non-linear arithmetic),
+\tool uses heuristics  that  perform well in practice (Section~\ref{sec:eval}).
 
 The split
 between arithmetic and boolean requires knowing the cost of
