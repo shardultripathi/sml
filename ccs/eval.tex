@@ -277,7 +277,7 @@ We observe that our performance is competitive with specialized
 \minion protocols, for both the LAN and the WAN settings. Further, lines
 of \tool source code required is still small. 
 We note that while the \minion implementation is based on the ABY framework, it does not use ABY ``off-the-shelf'' and performs application-specific optimizations. In contrast, \tool focuses on generic
-\mpc and directly exploits the exisiting performant implementations in ABY.
+\mpc and directly exploits the existing performant implementations in ABY.
 % Optimizations such as those found in \minion are part of our future work.
 \minion also reports performance results on a bigger DNN with 7
 convolution layers. In \tool, this benchmark requires partitioning and
@@ -447,7 +447,7 @@ succeed.
 illustrate the scalability of partitioning, we evaluate a
 sequence of DNNs with and without partitioning
 (where every layer of each DNN is a separate stage) in~\figureref{partitioning}.
-For DNNs with up to 4 (hidden) layers, the performance is almost idential and the lines overlap, thereby
+For DNNs with up to 4 (hidden) layers, the performance is almost identical and the lines overlap, thereby
 illustrating that partitioning did not cause any noticeable performance overheads.
 Memory issues start showing up in the non-partitioned implementation with the 5 layer DNN and it is slower.
 Performance degrades rapidly thereafter and
@@ -482,7 +482,7 @@ We observe that in the LAN setting, we are about 19 times faster than~\cite{vale
 setting we are about 4 times faster. The main source of these significant speedups is that, unlike~\cite{valeriaMatrix}, \tool does not need to convert the functionality into boolean circuits. 
 However, this benchmark requires more lines of code than the previous benchmarks
 because of  Batcher's sort (450 lines of \tool code in each stage).
-However, the current programmer effort seems miniscule compared to the mammoth implementation effort
+However, the current programmer effort seems minuscule compared to the mammoth implementation effort
 put in by Nikolaenko et al. (Section 5 of ~\cite{valeriaMatrix}) to scale a boolean circuits based
 backend to this benchmark.
 
