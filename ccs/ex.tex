@@ -238,18 +238,19 @@ Since each conversion has roughly the same cost as a boolean addition,
  \tool performs
 addition using a boolean circuit
 if the operands  are boolean shared, else it uses an arithmetic
-circuit.
+circuit. 
 
 For multiplication, \tool always chooses
 an arithmetic circuit, as the cost of a boolean multiplication is much
 higher than the cost of converting the operands from boolean to
 arithmetic, performing an arithmetic multiplication, and then converting
 the result back to boolean ($\sim9x$ more time $\&$ $\sim20x$ more
-communication in a LAN setting). Theoretically, the size of a boolean multiplication circuit is quadratic in the bit-width, which causes this performance gap.
+communication in a LAN setting). The size of a boolean multiplication circuit is quadratic in the bit-width, which causes this performance gap.
 Roughly, multiplying two $64$-bit integers using arithmetic sharing requires only $2$ multiplications, whereas Yao requires at least $4096$ AES operations in the online phase.
 Since this gap is quite large, we believe that this choice is optimal for realistic network
 settings. Finally, \tool chooses boolean circuits for all
 the operations lacking arithmetic support in ABY, e.g., comparisons, bit-shifts, etc.
+Further implementation details can be found in~\sectionref{impl}.
 
 %% Consider a  cloud service provider Bob that wants to provide a service to diagnose
 %% whether a patient has breast cancer or not. Bob trains a machine learning classification model

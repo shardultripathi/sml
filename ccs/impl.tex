@@ -6,8 +6,8 @@ The  \tool compiler is written in Python and
 compiles each of our benchmarks in under a second to C++ code that
 makes calls to the ABY
 library~\cite{aby}. 
-ABY provides support for Arithmetic computation based on \cite{autoS}, and boolean computations based on GMW~\cite{gmw} as well as Yao's garbled circuits~\cite{yao}. Although \tool can generate code for both kinds of boolean computations, we have observed better performance when using the garbled circuits
-and use it in our evaluation. Hence, \tool generated code uses Arithmetic computation and garbled circuits based boolean computations.
+ABY provides support for Arithmetic computations based on \cite{autoS}, and boolean computations based on GMW~\cite{gmw} as well as Yao's garbled circuits~\cite{yao}. Although \tool can generate code for both kinds of boolean computations, we have observed better performance when using  garbled circuits
+and use it in our evaluation. Hence, \tool generated code uses Arithmetic computations and garbled circuits based boolean computations.
 We use $128$ bits of security and OT
 extension-based arithmetic multiplication triplets generation. ABY
 provides multi-threading support (for the offline phase of the \mpc
@@ -83,6 +83,7 @@ shares are overwritten by assignments.
 In subsequent coercions, \tool  reuses valid pairs (if available)
 instead of inserting code to recompute them afresh.
 These optimizations are standard compiler
-optimizations~\cite{dragonbook}, and we rely on their correctness to
-maintain the correctness and security of the optimized programs.
+optimizations~\cite{dragonbook}, and we rely on their correctness
+(optimizations preserve outputs and well-typedness) to
+maintain the security of the optimized programs.
 
