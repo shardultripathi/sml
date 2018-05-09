@@ -102,7 +102,7 @@ release complete typeset proofs in a tech report.
 \label{fig:srclang}
 \end{figure}
 
-\paragraph{Source language.} Our language
+\noindent\textbf{Source language.} Our language
  is a simple imperative language shown in \figureref{srclang}. Types
 $\psi$ consist of the base types $\sigma$, and arrays
 of base types $\sigma[n]$, where $n$ is the array length. Though we
@@ -259,7 +259,7 @@ exposed to the programmer. \\
 \label{fig:srcsem}
 \end{figure}
 
-\paragraph{Source semantics.} The runtime semantics for the source language is shown in
+\noindent\textbf{Source semantics.} The runtime semantics for the source language is shown in
 \figureref{srcsem}. These semantics show how a ``trusted third party" computes the outputs when given the inputs of both the parties. 
  Values $v$, runtime environments $\rho$, and
 observations $O$ are defined as follows:
@@ -337,7 +337,7 @@ expression, and adds its value to the observations.
 \label{fig:interlang}
 \end{figure}
 
-\paragraph{Intermediate language.} \figureref{interlang} shows the
+\noindent\textbf{Intermediate language.} \figureref{interlang} shows the
 intermediate language of our compiler. The syntax follows that of the source
 language, except that the types and operators are \emph{labeled}. 
 %Below we mainly focus on the bits that are different from the source
@@ -357,7 +357,7 @@ form $\langle \ell \rhd m \rangle\:\widetilde{e}$ denotes coercing
 $\widetilde{e}$ from label $\ell$ to label $m$.
 %The statements $\widetilde{s}$ are analogous to $s$.
 
-\paragraph{Source to intermediate compilation.} We provide the compilation
+\noindent\textbf{Source to intermediate compilation.} We provide the compilation
 rules in \figureref{compile}. We present the rules in a
 declarative style, where the rules are non-syntax
 directed, and the labels $\ell$ are chosen
@@ -623,7 +623,7 @@ secret inputs.
 Below, we first provide the language for the circuits followed by the
 evaluation rules.
 
-\paragraph{Evaluation to Circuits.}
+\noindent\textbf{Evaluation to Circuits.}
 \figureref{circuits} shows the syntax of circuits. A wire id range
 $\wire$ denotes a set of circuit wires that carry the runtime value of a
  variable with a secret label (we will concretely define these runtime
@@ -856,7 +856,7 @@ assignment rules (not shown in the figure) are similar. The rule
 array contents are secret. Finally, rule ({\sc{S-Out}}) compiles to an
 \kw{out} circuit.
 
-\paragraph{Circuit semantics.} Evaluating a program in the
+\noindent\textbf{Circuit semantics.} Evaluating a program in the
 intermediate language produces a
 circuit to be computed using a distributed \mpc protocol. With
 our circuit semantics, we model the \emph{functional} aspect
@@ -1021,8 +1021,7 @@ observations.
 \label{fig:cktsem}
 \end{figure}
 
-
-\paragraph{Correctness Theorem.} We prove that all well typed programs always terminate successfully (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program. That is, if a source statement $s$ is well-typed, and compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the circuit semantics with the same observations $O$. Formally, the correctness theorem is as follows (the environments on the left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
+\noindent\textbf{Correctness Theorem.} We prove that all well typed programs always terminate successfully (array indices are always in bounds, there are no unbounded loops, etc.) and the \mpc protocol produces the same outputs as the source program. That is, if a source statement $s$ is well-typed, and compiles to $\widetilde{s}$ in the intermediate language, then $s$ terminates in the source semantics with observations $O$, $\widetilde{s}$ evaluates to circuit $\crct$, and $\crct$ terminates in the circuit semantics with the same observations $O$. Formally, the correctness theorem is as follows (the environments on the left of $\vdash$ are empty and we elide the environments on the right of $\vdash$ for brevity):
 
 
 %\subsubsection*{Correctness theorem}

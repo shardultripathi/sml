@@ -17,7 +17,7 @@
 \figureref{toolchain} shows an overview of the \tool
 toolchain. We give a brief overview of each of these phases below.
 
-\paragraph{Source language.}
+\noindent\textbf{Source language.}
 Consider the example $w^Tx >b$ from \sectionref{intro}, where
 $w$ and $b$ are the server's input (a classifier) and $x$ is
 the client's input vector. \figureref{ex-sml} shows the \tool code
@@ -34,8 +34,7 @@ details. The language provides multi-dimensional arrays with public indices, con
 expressions (the ternary $?\::$ operator), \ls{for}~loops,
 \ls{if}~statements, and special syntax for input/output from each party.
 
-
-\paragraph{\tool compiler.}
+\noindent\textbf{\tool compiler.}
 \tool compiler takes as input a source program and produces a C++
 program as output. \figureref{ex-aby} shows the output code for
 the example in \figureref{ex-sml} -- this is also how a program written directly in
@@ -160,7 +159,7 @@ $\mathtt{
 \end{figure}
 
 
-\paragraph{Circuit generation and evaluation.} The next step in
+\noindent\textbf{Circuit generation and evaluation.} The next step in
 \tool is to
 compile the output C++ code and execute it. Doing so evaluates away the
 public parts of the program, including the array accesses, and
@@ -169,7 +168,7 @@ with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
 
 
-\paragraph{Advantages of \tool} We can now concretely see the advantages of \tool. Unarguably, it is
+\noindent\textbf{Advantages of \tool} We can now concretely see the advantages of \tool. Unarguably, it is
 easier for a developer to program and get the code right in
 \figureref{ex-sml}, rather than the code in
 \figureref{ex-aby}.

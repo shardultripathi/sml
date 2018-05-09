@@ -43,7 +43,7 @@ are related to machine learning and we set up (largely standard) notation and de
 %\divya{notation can be moved somewhere... } \\
 
 \subsection{Secure prediction}
-\paragraph{Standard classifiers.}
+\noindent\textbf{Standard classifiers.}
 %\label{sec:shallow}
 We evaluate the three standard classifiers, linear, Na\"{i}ve Bayes, and
 decision trees, from~\cite{shafindss} on the following data sets from the UCI
@@ -198,7 +198,7 @@ specialized protocols. Table~\ref{tab:dt}
 compares against the more recent work of~\cite{wu}
 on decision trees and further validates this claim.
 
-\paragraph{Deep neural nets.}
+\noindent\textbf{Deep neural nets.}
 We evaluate \tool on the DNNs described in SecureML~\cite{secureml},
 Cryptonets~\cite{cryptonets}, and the CNN from \minion~\cite{minionn}. For
 comparison, we consider their implementations from
@@ -283,7 +283,7 @@ We note that while the \minion implementation is based on the ABY framework, it 
 convolution layers. In \tool, this benchmark requires partitioning and
 we discuss it in \sectionref{pipeeval}.
 
-\paragraph{State-of-the-art classifiers.}
+\noindent\textbf{State-of-the-art classifiers.}
 Tensorflow~\cite{tensorflow} is a standard machine learning toolkit.
 Its introductory tutorial describes two prediction models for handwritten digit recognition
 using the MNIST dataset~\cite{mnist}.
@@ -443,20 +443,20 @@ large enough DNN, \minion could run
 out of memory but an appropriately partitioned \tool implementation would still
 succeed.
 
-\paragraph{Scalability.}  To
+\noindent\textbf{Scalability.}  To
 illustrate the scalability of partitioning, we evaluate a
-sequence of DNNs with and without partitioning
-(where every layer of each DNN is a separate stage) in~\figureref{partitioning}.
-For DNNs with up to 4 (hidden) layers, the performance is almost identical and the lines overlap, thereby
-illustrating that partitioning did not cause any noticeable performance overheads.
-Memory issues start showing up in the non-partitioned implementation with the 5 layer DNN and it is slower.
+sequence of DNNs with and without partitioning in~\figureref{partitioning}.
+All layers are identical and partitioning places each layer in a separate stage. 
+For DNNs with up to 4  layers, the performance, with and without partitioning, is almost identical and the lines overlap, thereby
+illustrating that partitioning does not cause any noticeable performance overheads.
+Memory issues start showing up in the non-partitioned implementation of the 5 layer DNN and it is slower.
 Performance degrades rapidly thereafter and
 DNNs with 6 or more layers fail to execute (terminate with a ``bus error").
 However, the partitioned implementation scales well to even these large DNNs.
 
 \begin{figure}
 \includegraphics[width=8cm]{partitioning.png}
-\caption{Comparison of \tool code with and without partitioning. x-axis denotes the number of layers of the DNN, while y-axis denotes time in seconds for the secure protocol.}
+\caption{Comparison of \tool code with and without partitioning. x-axis denotes the number of layers in the DNN, while y-axis denotes time in seconds for the secure protocol.}
 \label{fig:partitioning}
 \end{figure}
 
