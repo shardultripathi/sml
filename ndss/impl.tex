@@ -1,0 +1,89 @@
+\vspace{-0.1in}
+\section{Implementation}
+\label{sec:impl}
+We discuss some  implementation details of \tool.
+The  \tool compiler is written in Python and
+compiles each of our benchmarks in under a second to C++ code that
+makes calls to the ABY
+library~\cite{aby}. 
+ABY provides support for Arithmetic computations based on \cite{autoS}, and boolean computations based on GMW~\cite{gmw} as well as Yao's garbled circuits~\cite{yao}. Although \tool can generate code for both kinds of boolean computations, we have observed better performance when using  garbled circuits
+and use it in our evaluation. Hence, \tool generated code uses Arithmetic computations and garbled circuits based boolean computations.
+We use $128$ bits of security and OT
+extension-based arithmetic multiplication triplets generation. ABY
+provides multi-threading support (for the offline phase of the \mpc
+protocol); we leverage the support and use at most four threads in our
+evaluation. 
+
+\tool programs can have the following operators:
+addition, subtraction, multiplication, division by powers of two, left
+shift,
+logical and arithmetic right shifts, bitwise-(and, or, xor), unary
+negation, 
+bitwise-negation, logical-(not, and, or, xor), and comparisons (less
+than, greater than, equality).  
+Because of their high cost, integral division and floating-point
+operators are not supported natively by \tool. 
+However, we have implemented integral division in 30 lines of \tool,
+while the floating-point support in ABY is under active
+development~\cite{ddkssz15}.
+
+Some of our benchmarks require accessing arrays at secret
+indices. While \tool enforces the array indices to be
+public, secret indices can be encoded in \tool using multiplexers.
+For example, consider the expression $A[x]$ where $A$ is an array of
+size 2 and $x$ is secret-shared. The developer can express
+this functionality in \tool as $\cond{x > 0}{A[1]}{A[0]}$. In general,
+a secret access to an array of
+size $n$ requires ${n}-1$ multiplexers in \tool.
+
+%Moved this to Section 4 since P_i and Q_i are ill defined here
+%Secure code partitioning currently requires a manual step.
+%In particular, the developer needs to decompose a program $P$ into
+%$P_1||\ldots||P_k$ manually (Section~\ref{sec:pipe}). Then \tool
+%generates $Q_1||\ldots||Q_k$ (the sub-programs with appropriate
+%wrappers) automatically.
+%Automating the decomposition step requires an analysis that can 
+%statically estimate the resource usage of an \tool program. We leave
+%the construction of such an analysis as future work.
+
+We use an off-the-shelf solver
+(SeaHorn~\cite{seahorn}) to check that the array indices
+are within bounds ($\models e < n$
+in ({\sc {T-Read}}) and ({\sc{T-Write}}),
+\figureref{compile}). We take the \tool source program and
+translate it as an input C program to the solver. The solver takes less
+than a minute on our largest benchmark to verify that all the array
+accesses are in-bounds. This C program also enables
+validation of \tool generated protocols via differential testing~\cite{mckeeman,frigate}.
+
+Our implementation assigns the type labels (rule~{\sc{T-Decl}})
+conservatively. Only the variables that govern the control flow, i.e.,
+variables in \kw{if}-conditions and \kw{for}-loop counters are
+assigned public labels.
+All other variables are assigned arithmetic labels (that can later be
+coerced to boolean).
+We leave a more sophisticated type inference procedure for future work.
+
+The compilation rules of \figureref{compile} can introduce
+repeated coercions from arithmetic to
+boolean and vice versa.
+Since \tool is aware of the cryptographic costs associated with these coercions,
+it tries to minimize them using several optimizations, e.g., by
+%For instance, if boolean shares of a variable are available in scope and the %variable is involved in
+%an addition then \tool performs the addition in boolean rather than first %coercing boolean to arithmetic
+%and then performing an arithmetic addition. 
+%However, multiplication is always performed in arithmetic as the cost of a %boolean multiplication is much higher than the cost of coercing from boolean %to arithmetic, performing an arithmetic multiplication, and then coercing from %arithmetic to boolean~\cite{aby}.
+%Other optimizations include
+the standard ``common subexpression elimination"
+optimization~\cite{dragonbook}.
+On each coercion, \tool memorizes the pair of arithmetic
+share and boolean share involved in the coercion. 
+\tool invalidates such pairs when the variables corresponding to the
+shares are overwritten by assignments. 
+In subsequent coercions, \tool  reuses valid pairs (if available)
+instead of inserting code to recompute them afresh.
+These optimizations are standard compiler
+optimizations~\cite{dragonbook}, and we rely on their correctness
+(optimizations preserve outputs and well-typedness) to
+maintain the security of the optimized programs.
+

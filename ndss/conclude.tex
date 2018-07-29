@@ -1,0 +1,42 @@
+\section{Conclusion and Future Work}
+\label{sec:conclude}
+
+We presented \tool, the first
+cryptographic-cost aware framework that generates efficient and
+scalable \mpc protocols from high-level programs.
+The generated protocols comprise combinations
+of arithmetic and boolean circuits and have performance comparable to, or better than the previously known custom specialized
+protocols from previous works.
+The compiler is backed by formal semantics that help 
+%it
+%insert type coercions between boolean and arithmetic parts automatically while 
+it maintain correctness, security,
+and efficiency.
+
+Currently, we are working on a front-end to translate Tensorflow code to \tool. The aim here is to provide a push button implementation  that generates secure implementations for existing Tensorflow models.  
+In the future, we would like to extend our security guarantees to malicious adversaries. 
+ The cryptographic backends continue to improve and the modular design of \tool makes it easy to integrate with the best available backends.
+However, we are currently unaware of a maliciously secure \mpc implementation for combinations of
+arithmetic and boolean circuits.
+Finally, we will explore the possibility of mechanically verifying the  compiler implementation.
+
+
+
+
+
+
+%% \section{Conclusion}
+%% \label{sec:conclude}
+%% We presented \tool, the first
+%% cryptographic-cost aware framework that generates efficient and
+%% scalable \mpc protocols from high-level programs.
+%% The generated protocols comprise combinations
+%% of arithmetic and boolean circuits and have performance comparable to, or better than the custom, specialized
+%% protocols from previous works.
+%% The \mpc backend we use provides security against semi-honest or passive adversaries.
+%% %our compiler is oblivious to the ``type of adversary'' for the underlying \mpc backend.
+%% Given a \mpc backend secure against malicious or active adversaries, Theorem \ref{theorem:security} 
+%% can be extended to obtain a framework with malicious security. Furthermore,  
+%% partitioning can be modified to provide malicious security by {\it signing} the shares of the intermediate states. However, we are not aware of efficient maliciously secure \mpc implementation for combinations of
+%% arithmetic and boolean circuits and hence leave a complete treatment of malicious security to future work.
+%% % Several areas of improvement remain: a) While the backend that we use~\cite{aby} only provides security against a semi-honest adversary, our compiler is oblivious to the ``type of adversary'' for the underlying backend cryptographic protocol. In particular, if our cryptographic backend were maliciously secure, then Theorem \ref{theorem:security} would provide us a framework with malicious security. Furthermore, modifying our code partitioning to provide malicious security is fairly easy (one would instead provide {\em signed} shares of intermediate states in the decomposed programs to obtain malicious security). b) Our compiler converts programs into circuits before executing a \mpc and is efficient for the applications we present. However, one could consider executing programs that exploit secret-dependent memory accesses (such as binary search) to obtain better performance (as in \cite{oblivm}). It would be interesting to see if our techniques can be combined with that of \cite{oblivm}. \nc{Too much? Should we simply say only about the malicious security and stop?}
