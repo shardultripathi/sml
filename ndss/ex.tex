@@ -52,7 +52,7 @@ compiler realizes that the array index \ls{i} in the inner product loop
 is public, and hence the access locations need not be hidden.
 Therefore, it compiles the \ls{for}~loop into a C++
 \ls{for}~loop that will be executed in-clear
-(line~\ref{line:dotproductloop}).
+(line~\ref{line:dotproductloop}). We remark that, in our experiments, assigning public labels to control flow variables is critical for performance and/or security. However, we have observed that conservatively creating circuits for other public variables incurs minimal cost in practice.
 
 Within the secret components, the \tool compiler is ``cryptographic
 cost-aware'', and appropriately picks either arithmetic or boolean
@@ -67,7 +67,7 @@ representation, the \tool compiler uses the Yao circuit builder
 \ls{ycirc} to build the corresponding circuits
 (lines~\ref{line:condyaobegin} to~\ref{line:condyaoend}) (in our usage
 of ABY, boolean is synonymous with Yao, we elaborate in
-\sectionref{impl}). We elaborate on cryptographic cost awareness in
+\sectionref{impl}). At the expression level, \tool provides secret conditionals (using the '? :' operator) which are implemented using multiplexers, while secret dependent array accesses can also be implemented using the '? :' operator. We elaborate on cryptographic cost awareness in
 \sectionref{ccc}.
 
 Using both arithmetic and boolean representations requires conversions between them.
@@ -168,7 +168,7 @@ with appropriate conversion gates. The circuit is then evaluated using
 a \mpc protocol.
 
 
-\noindent\textbf{Advantages of \tool} We can now concretely see the advantages of \tool. Unarguably, it is
+\noindent\textbf{Advantages of \tool.} We can now concretely see the advantages of \tool. Unarguably, it is
 easier for a developer to program and get the code right in
 \figureref{ex-sml}, rather than the code in
 \figureref{ex-aby}.
@@ -199,7 +199,11 @@ Indeed, this is one of the main drivers behind the development of various specia
 Here, we empirically demonstrate the performance benefits of mixed computations over boolean-only compute by comparing with state of the art Yao-based compilers CBMC-GC~\cite{cbmcgc} and ObliVM~\cite{oblivm}.
 
 The largest benchmark in CBMC-GC is a multiplication of two $8\times 8$ matrices for which it generates about a million gates and takes about ten seconds to run. In contrast, \tool uses arithmetic sharing, generates 1218 gates, and runs in less than 0.1 seconds. When we tried multiplying two $20\times 20$ matrices with CBMC-GC, it timed out after 5 hours. Our benchmarks require much bigger computations (e.g., multiplying a $64\times576$ matrix with a $576\times1024$ matrix). Unlike CBMC-GC, ObliVM can scale to larger benchmarks (because it uses Yao-pipelining \cite{yao-pipe}). We evaluated the program in \figureref{ex-sml} with vectors of lengths varying between $10^3$ and $10^6$ using both \tool and ObliVM. 
-\tool evaluates the inner-product in arithmetic and, empirically, is at least 25x faster than ObliVM. 
+\tool evaluates the inner-product in arithmetic and, empirically, is at least 25x faster than ObliVM on the same hardware. 
+
+\subsection{Comparison with handwritten ABY code}
+
+We have evaluated against handwritten ABY code for the examples in the ABY repository and \tool has comparable performance. However, these examples are not representative of practical ML tasks. Writing sophisticated ML applications such as neural networks in ABY is a very tedious and nearly impossible engineering task even for crypto experts -- automating the same is our main contribution.
 
 %% \subsection{Cryptographic cost-aware compiler}
 %% \label{sec:ccc}
