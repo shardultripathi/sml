@@ -69,7 +69,7 @@ frameworks use cryptographic backends that take as input
 the computation expressed either as a boolean
 circuit~(\cite{yao,gmw}) or as an arithmetic circuit~(\cite{sss,viff,gentry}). 
 %
-\dg{Do we want to say sharemind? It is only 3PC.}
+%\dg{Do we want to say sharemind? It is only 3PC.}
 %
 The efficiency of the generated \mpc protocol is thus bounded by the
 efficiency of representing the computation in \emph{one} of
@@ -377,7 +377,7 @@ intermediate values or indexing into arrays at secret indices.
 Wysteria~\cite{wysteria} handles the former using dependent types
 and ObliVM~\cite{oblivm} uses Oblivious RAM for the latter.
 These situations seldomly arise in the machine learning applications that we consider:
-intermediate values don't need to be declassified and arrays are traversed in an oblivious manner. We provide a detailed survey of related
+intermediate values don't need to be declassified and arrays are mostly traversed in an oblivious manner. We provide a detailed survey of related
 work in \sectionref{related}.
 
 %\dg{Cite works like Wysteria~\cite{wysteria} for public inputs and declassification of intermediate values, ObliVM~\cite{oblivm} for hiding secret array indices using Oblivious RAM. But since the focus of this work is machine learning applications, we do not concern ourselves with these language complexities.}
