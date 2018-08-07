@@ -11,34 +11,36 @@
 In this section, we describe our ``secure code partitioning'' technique that
 allows \tool to execute programs that require large circuits. The
 reason to implement partitioning is as follows: when compiling from a
-high level functionality to a circuit, the generated circuits
+high level functionality to a circuit, the generated circuits,
+especially for ML applications,
 can quite often be larger than the total memory
-available on the machines executing 2PC. The secure protocol for
-evaluating this circuit cannot then be generated without swapping the
-circuit in and out of main memory, thereby causing large slowdowns
-(see Section \ref{sec:pipeeval}). In order to avoid this problem, we
+available on the machines executing the 2PC protocol. The secure
+protocol for evaluating this circuit cannot then be generated without
+swapping the circuit in and out of the main memory, thereby causing large slowdowns
+(see Section \ref{sec:pipeeval}). To avoid this problem, we use
+partitioning to
 ``split'' the high level functionality into smaller programs that
-compile into small circuits whose secure evaluation can completely fit
-into main memory. These smaller circuits are then evaluated
-sequentially to evaluate the entire program. Naturally, care must be
+compile into small circuits that can completely fit
+into the main memory. These small circuits are then evaluated
+sequentially, with proper threading of the intermediate outputs, to
+evaluate the entire program. Naturally, care must be
 taken to ensure that the partial evaluation of these circuits do not
 reveal any more information than the final output of the overall
-functionality. More details follow. 
+functionality.
 
-Our techniques take inspiration from the idea of pipelining Yao's garbled circuits described in FastGC \cite{yao-pipe}.
-However, unlike FastGC, we do not operate at a circuit level and partitioning is independent of the specific
-\mpc protocol. 
-Let $\prog$ be a program in our source language that
+Concretely, let $\prog$ be a program in our source language that
 generates a circuit $\crct$. For some programs, the circuit $\crct$
 can be larger than
 the memory size\footnote{In fact, there is
   an upper limit of $2^{32}-1$ gates for the circuit size in ABY but
   for most machines the memory limit is hit first.} and fail to
-execute. Partitioning enables us to 
-execute such programs via a source to source transformation that is
-oblivious to the underlying \mpc backend. Partitioning decomposes the
+execute.
+%% Partitioning enables us to 
+%% execute such programs via a source to source transformation that is
+%% oblivious to the underlying \mpc backend.
+Partitioning decomposes the
 program $\prog$ into a sequence of smaller \tool programs
-$\progn_1,\progn_2,\ldots,\progn_k$ (as defined below) such
+$\progn_1,\progn_2,\ldots,\progn_k$, as described below, such
 that the circuit size
 requirement for each of the $\progn_i$ itself is manageable. We compile
 and execute each $\progn_i$ sequentially, feeding the outputs of
@@ -48,14 +50,22 @@ correct ($\prog$ and sequential execution of $\progn_1,\progn_2,\ldots,\progn_k$
 the same functionality) and secure (sequential execution of
 $\progn_1,\progn_2,\ldots,\progn_k$ does
 not reveal any more information than $\prog$). 
+
+
+Our techniques take inspiration from the idea of pipelining Yao's garbled circuits described in FastGC \cite{yao-pipe}.
+However, unlike FastGC, we do not operate at a circuit level and the
+scheme itself is independent of the specific
+\mpc protocol. 
 %
 %Prior works such as FastGC \cite{yao-pipe} and ObliVM \cite{oblivm} have developed similar techniques specific to garbled circuits that work at the level of circuits.
 %
 %considered the idea of pipelining of circuits for secure computation based on Yao's garbled circuits that allows them to scale to large circuits. Our technique of secure code partitioning works with high level programs and does source code transformation. This gives a generic way to execute programs with large underlying circuits (even a mix of arithmetic and Boolean) and is not tied to the specific details of the cryptographic protocol used.
 %}
-More formal details follow, while an example illustrating the technique of secure code partitioning is provided in the full version. %\appendixref{codepartitioning}. 
+We now describe the instrumentation to ensure the security of the
+partitioning scheme.
+%More formal details follow, while an example illustrating the technique of secure code partitioning is provided in the full version. %\appendixref{codepartitioning}. 
 
-Let $\prog$ be a program that takes (secret) inputs $x$ from Alice and
+Let $\prog$ takes (secret) inputs $x$ from Alice and
 $y$ from Bob and produces an output $z$ to both parties. Let
 $\prog_1\seq\prog_2\seq\dots\seq\prog_k$ be a decomposition of $\prog$
 such that the following holds. Define $\stateq_0 = \bot$ (the public empty
