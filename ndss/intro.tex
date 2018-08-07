@@ -116,12 +116,12 @@ to~\cite{shafindss,wu,minionn,valeriaMatrix}) for her tasks.
 
 
 
-%Unfortunately, implementing functionalities using \mpc protocols requires thorough understanding of cryptography. To allow for widespread use of \mpc, it is critical that \mpc protocols are programmable by non-cryptographic experts. To cater to this, there have been several efforts developing domain-specific languages that are programmer friendly and compile to a SMC protocol. Most notable of these domain specific languages and systems include \cite{...}. All of these works build on a cryptographic back-end that is either entirely boolean \cite{yao,gmw} or arithmetic \cite{homo}. In fact, most of these works use boolean circuits based scheme for completeness\footnote{Note that comparisons cannot be expressed in arithmetic circuits}. However, most interesting functions require a mix of arithmetic and boolean computations.  Examples include ......... As one can expect, compiling these programs to boolean circuits is one of the biggest efficiency bottlenecks. \divya{Our work addresses this performance bottleneck.}
+%Unfortunately, implementing functionalities using \mpc protocols requires thorough understanding of cryptography. To allow for widespread use of \mpc, it is critical that \mpc protocols are programmable by non-cryptographic experts. To cater to this, there have been several efforts developing domain-specific languages that are programmer friendly and compile to a SMC protocol. Most notable of these domain specific languages and systems include \cite{...}. All of these works build on a cryptographic backend that is either entirely boolean \cite{yao,gmw} or arithmetic \cite{homo}. In fact, most of these works use boolean circuits based scheme for completeness\footnote{Note that comparisons cannot be expressed in arithmetic circuits}. However, most interesting functions require a mix of arithmetic and boolean computations.  Examples include ......... As one can expect, compiling these programs to boolean circuits is one of the biggest efficiency bottlenecks. \divya{Our work addresses this performance bottleneck.}
 
 %To address this issue \divya{on the cryptographic side}, recently Demmler et al. \cite{aby} gave a cryptographic protocol for SMC where the parties can mix arithmetic and boolean computations and claimed potentially great performance benefits. However, using their system requires the programmer to be aware of trade-offs of arithmetic and boolean cryptographic schemes. In their framework, the programmer is required to write circuits consisting of a mix of arithmetic and boolean gates along with appropriate conversion gates. In short, as is also mentioned by the authors themselves, the current system is not suitable to be used by non-specialist programmers.
 
 
-%%%%%%%Recent works \cite{aby,secureml,minion} have shown that great performance benefit can be obtained by mixing arithmetic and boolean computations in the back-end. Certain computations such as integer multiplication are efficient when implemented using arithmetic SMC \cite{gmw} whereas max(x,0) needs to be computed using a boolean back-end \cite{yao}. More details later.. ABY \cite{aby} requires programmer to be aware of arithmetic and boolean trade-offs and  write high-level circuits consisting of both arithmetic and boolean gates and share-conversion gates. Other works such as \cite{secureml,minion} build on ideas from \cite{aby} and develop tailor made algorithms for neural network training and prediction \cite{ml} and claim huge improvements over only boolean implementations. As is already mentioned in these works, their systems are mere proofs-of-concept and far from being implementable.
+%%%%%%%Recent works \cite{aby,secureml,minion} have shown that great performance benefit can be obtained by mixing arithmetic and boolean computations in the backend. Certain computations such as integer multiplication are efficient when implemented using arithmetic SMC \cite{gmw} whereas max(x,0) needs to be computed using a boolean backend \cite{yao}. More details later.. ABY \cite{aby} requires programmer to be aware of arithmetic and boolean trade-offs and  write high-level circuits consisting of both arithmetic and boolean gates and share-conversion gates. Other works such as \cite{secureml,minion} build on ideas from \cite{aby} and develop tailor made algorithms for neural network training and prediction \cite{ml} and claim huge improvements over only boolean implementations. As is already mentioned in these works, their systems are mere proofs-of-concept and far from being implementable.
 
 
 
@@ -134,7 +134,7 @@ to~\cite{shafindss,wu,minionn,valeriaMatrix}) for her tasks.
 %work with any secure implementation of a mix of arithmetic and boolean
 %computations. In our work, we focus on semi-honest secure two-party
 %computation. We build on ABY \cite{aby} that provides the suitable
-%cryptographic back-end in this setting. We provide a formal type
+%cryptographic backend in this setting. We provide a formal type
 %system and prove correctness and security of our compiler. We evaluate
 %our system on various benchmarks such as logistic regression and
 %convolutional neural network (CNN) for MNIST data \cite{minionn},
@@ -144,7 +144,7 @@ to~\cite{shafindss,wu,minionn,valeriaMatrix}) for her tasks.
 %\sectionref{eval}). Below, we will  give an overview of \tool and
 %describe our contributions in more detail.
 
-%The programmer is oblivious of the cryptographic back-end being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. \divya{Say something about what kind of backend we want. provides \mpc for a mix of arithmetic and boolean circuit with appropriate secure conversion between two types and ABY provides such a framework for semi-honest 2pc.} Our work is compatible with malicious, multiparty as well... etc We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
+%The programmer is oblivious of the cryptographic backend being used. Our compiler automatically compiles it to a circuit framework consisting to both arithmetic and boolean gates as well share-conversion gates wherever required. We use ABY as the cryptographic backend. \divya{Say something about what kind of backend we want. provides \mpc for a mix of arithmetic and boolean circuit with appropriate secure conversion between two types and ABY provides such a framework for semi-honest 2pc.} Our work is compatible with malicious, multiparty as well... etc We give a type system, correctness ..... We evaluate our framework on ... and show performance comparable and even better than tailor made protocols. It is simple to program in our framework and our work provides a meaningful baseline for future works designing tailor made protocols for specific functionalities.
 
 %\subsubsection*{\tool}
 %\label{sec:contrib}
@@ -155,7 +155,10 @@ This paper presents \tool\footnote{Read as ``easy peasy'',
 stands for Easy 2 Party Computation.}, the first
 ``cryptographic-cost aware'' compiler that generates efficient and
 scalable \mpc protocols using combinations of
-arithmetic and boolean circuits. \tool is backed by a formal model
+arithmetic and boolean circuits. \tool source language is a simple
+imperative language absent of any cryptographic details. The compiler
+is
+backed by a formal model
 that enables it to choose arithmetic or boolean representations for
 different parts of
 the program, while automatically inserting inter-conversion gates as
@@ -285,7 +288,7 @@ securely is upper-bounded by the largest circuit that can fit in the
 machine memory\footnote{Using swap and
 disk space is feasible but it causes huge slowdown.}. This is a
 show-stopper for applications like secure machine learning, secure
-prediction, etc. that operate on large amounts of data.
+prediction, etc. that operate on large data.
 %\aseem{Can we
 %cite something here to support this claim?}
 \tool addresses the scalability concern using a novel technique that
@@ -322,7 +325,7 @@ successfully terminate
 observable outputs. For
 the security theorem, we formally reduce the security
 of our scheme against semi-honest (or ``honest but curious")
-adversaries to the semi honest security of the  \mpc back-end. The
+adversaries to the semi honest security of the  \mpc backend. The
 theorem provides protection against side-channels arising from
 conditionals and memory access patterns.
  We also prove a formal security theorem against semi-honest
@@ -331,7 +334,7 @@ scheme (\sectionref{ld} and~\sectionref{pipe}).
 
 \subsubsection{Evaluation}We implemented \tool
 using ABY~\cite{aby} as the
-cryptographic back-end.
+cryptographic backend.
 We compare \tool with Yao-based compilers in~\sectionref{oblivm}
 and with specialized protocols in~\sectionref{eval}. 
  We evaluate \tool by implementing a wide range
@@ -349,14 +352,27 @@ generated by \tool are comparable to or better than (up to 19x) their state-of-t
 demonstrate the usefulness of partitioning by implementing an application
 that requires more than 300 million gates (\sectionref{impl} and~\sectionref{eval}).
 
-\noindent\textbf{Summary.} To summarize the above five points, the novelty of \tool is in implementing cryptographic cost awareness inside a compiler, allowing the programmers to program in a high-level language absent of all the cryptographic details, while the compiler chooses the best circuit representation (boolean or arithmetic) for different parts of the program and also handles interconversions between them -- all this in a provably secure manner. Prior compilers such as Wysteria, ObliVM, and CBMC-GC use backends with single representations (either boolean or arithmetic), and so the  challenges associated with multiple representations and interconversions are absent. Moreover, as shown in \sectionref{oblivm}, they perform poorly on ML tasks that involve a mix of arithmetic and boolean computations. The work of Kerschbaum {\em et al.}~\cite{autoS} integrates a backend with both boolean and arithmetic represenations. However it operates over circuits represented as a sequence of dyadic operations, while \tool provides a high-level programming language with loops and branches. \tool compilation is automatic and sub-quadratic in the size of generated ABY programs (e.g. \figureref{ex-aby}) after switching off memory safety checking. In sharp contrast, \cite{autoS} describes approaches that would be doubly exponential and exponential in the length of ABY programs. Finally, our partitioning technique, unlike prior work, which is specific to and works on Yao’s garbled circuits, works at the source level and is agnostic to the cryptographic backend.
-
-These features (ease-of-programming, use of multiple crypto backends, and scalability through partitioning) enable us to write and evaluate a wide array of ML algorithms such as matrix factorization with efficient generic 2PC techniques. Without \tool, this would have been a near-impossible task and has never been done.
-
-
+\noindent\textbf{Summary.} \tool is carefully designed to enable
+non-cryptographers (and cryptographer alike) to write efficient \mpc
+protocols for ML algorithms. With the novel combination of language
+design, cryptographic cost aware compiler, and scalability through
+partitioning, programmers can program in a high-level
+language absent of all the cryptographic details, while the compiler
+chooses the best circuit representation (boolean or arithmetic) for
+different parts of the program and also handles interconversions
+between them -- all this in a provably secure manner. Without \tool,
+implementing \mpc protocols for the wide array of ML algorithms from
+Section~\ref{sec:eval} would be a near-impossible task.
 
 \subsection{Related Work}
-Before ABY~\cite{aby}, several works have proposed
+Compilers
+such as Wysteria~\cite{wysteria}, ObliVM~\cite{oblivm},
+and CBMC-GC~\cite{cbmcgc} use backends with single
+representations (either boolean or arithmetic), and so the challenges
+associated with multiple representations and interconversions are
+absent. Moreover, as shown in \sectionref{oblivm}, they perform poorly
+on ML tasks that involve a mix of arithmetic and boolean
+computations. Before ABY~\cite{aby}, several works have proposed
 combining secure computation protocols based on homomorphic
 encryption and Yao's garbled circuits
 (e.g. \cite{barni,blanton,brickell,franz,huang,valeriaMatrix,valeriaRidge,schropferK11}),
@@ -367,18 +383,29 @@ al.~\cite{aby} observe, due
 homomorphic encryption and Yao's garbled circuits, these combined
 protocols do not gain much performance over a single
 protocol. 
-Additionally, these prior works provide informal languages
+Additionally, these prior works are either low-level, or provide
+informal languages
 or libraries that lack formal semantics and static guarantees.
 Finally, we focus on the language
 features necessary to implement machine learning applications.
-In particular, we do not discuss declassification of
-intermediate values or indexing into arrays at secret indices.
- Handling them requires additional complexity. For example,
-Wysteria~\cite{wysteria} handles the former using dependent types
-and ObliVM~\cite{oblivm} uses Oblivious RAM for the latter.
-These situations seldomly arise in the machine learning applications that we consider:
-intermediate values don't need to be declassified and arrays are mostly traversed in an oblivious manner. We provide a detailed survey of related
+For example, we currently do not support declassification of
+intermediate values. Handling them requires additional complexity, e.g.
+using Wysteria~\cite{wysteria} like dependent types.
+These situations seldomly arise in the machine learning applications
+that we consider. We provide a detailed survey of related
 work in \sectionref{related}.
+
+%% To summarize the above five points, the
+%% novelty of \tool is in implementing cryptographic cost awareness
+%% inside a compiler, allowing the .  Finally, our partitioning technique, unlike prior work,
+%% which is specific to and works on Yao’s garbled circuits, works at the
+%% source level and is agnostic to the cryptographic backend.
+
+%% These features (ease-of-programming, use of multiple crypto backends,
+%% and scalability through partitioning) enable us to write and evaluate
+%% a wide array of ML algorithms such as matrix factorization with
+%% efficient generic 2PC techniques. Without \tool, this would have been
+%% a near-impossible task and has never been done.
 
 %\dg{Cite works like Wysteria~\cite{wysteria} for public inputs and declassification of intermediate values, ObliVM~\cite{oblivm} for hiding secret array indices using Oblivious RAM. But since the focus of this work is machine learning applications, we do not concern ourselves with these language complexities.}
 %Can be added to related work
@@ -461,10 +488,10 @@ work in \sectionref{related}.
 %% \tool is a programmer-friendly
 %% framework to
 %% express the function to be computed and uses a mix of arithmetic and
-%% boolean \mpc back-ends. We illustrate the above example of $w^Tx
+%% boolean \mpc backends. We illustrate the above example of $w^Tx
 %% >b$ in our language in \figureref{ex-sml}. 
 %% As is clear from the code, the programmer can remain completely
-%% oblivious of the cryptographic back-end and underlying circuit
+%% oblivious of the cryptographic backend and underlying circuit
 %% representation.
 %% Also,  the programmer is not required to write keywords such as {\em
 %% secret}
@@ -508,7 +535,7 @@ work in \sectionref{related}.
 %% It is compatible with any implementation of \mpc that allows a mix of
 %% arithmetic and boolean circuits.
 %% We focus on semi-honest secure two-party computation and use
-%% ABY \cite{aby} as the suitable cryptographic back-end.
+%% ABY \cite{aby} as the suitable cryptographic backend.
 %% We provide a formal type system and operational semantics for our
 %% language and prove correctness and security of our compiler.
 %% Our evaluations show that protocols generated

@@ -13,8 +13,13 @@ The compiler is backed by formal semantics that help
 it maintain correctness, security,
 and efficiency.
 
-Currently, we are working on a front-end to translate Tensorflow code to \tool. The aim here is to provide a push button implementation  that generates secure implementations for existing Tensorflow models.  
-In the future, we would like to extend our security guarantees to malicious adversaries. 
+Currently, we are working on a front-end to translate Tensorflow code
+to \tool. The aim here is to provide a push button implementation
+that generates secure implementations for existing Tensorflow models. 
+In the future, we would like to extend our security guarantees to
+malicious adversaries. We think that, with suitable
+changes to operator costs, \tool can target other backends including 3PC or
+MPC, or protocols secure against malicious adversaries.
  The cryptographic backends continue to improve and the modular design of \tool makes it easy to integrate with the best available backends.
 However, we are currently unaware of a maliciously secure \mpc implementation for combinations of
 arithmetic and boolean circuits.

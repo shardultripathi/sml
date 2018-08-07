@@ -46,13 +46,13 @@ computation.
 The compiler splits the input
 program into \emph{public} and \emph{secret} components. The public
 components translate into regular C++ code, while the secret
-components translate into API calls into our \mpc back-end
+components translate into API calls into our \mpc backend
 (ABY). For example, in \figureref{ex-sml}, the \tool
 compiler realizes that the array index \ls{i} in the inner product loop
 is public, and hence the access locations need not be hidden.
 Therefore, it compiles the \ls{for}~loop into a C++
 \ls{for}~loop that will be executed in-clear
-(line~\ref{line:dotproductloop}). We remark that, in our experiments, assigning public labels to control flow variables is critical for performance and/or security. However, we have observed that conservatively creating circuits for other public variables incurs minimal cost in practice.
+(line~\ref{line:dotproductloop}).
 
 Within the secret components, the \tool compiler is ``cryptographic
 cost-aware'', and appropriately picks either arithmetic or boolean
@@ -62,13 +62,16 @@ efficient in the arithmetic representation, and therefore it builds
 the corresponding circuit using the arithmetic circuit builder
 \ls{acirc} (lines~\ref{line:dotmulgate} and~\ref{line:dotaddgate}). On
 the other hand, since the comparison with \ls{b}, and the conditional
-expression computation are more efficient in the boolean
-representation, the \tool compiler uses the Yao circuit builder
-\ls{ycirc} to build the corresponding circuits
+expression (the '? :' operator) computation are more efficient in the
+boolean representation, the \tool compiler uses the Yao circuit
+builder \ls{ycirc} to build the corresponding comparison and
+multiplexer circuits
 (lines~\ref{line:condyaobegin} to~\ref{line:condyaoend}) (in our usage
 of ABY, boolean is synonymous with Yao, we elaborate in
-\sectionref{impl}). At the expression level, \tool provides secret conditionals (using the '? :' operator) which are implemented using multiplexers, while secret dependent array accesses can also be implemented using the '? :' operator. We elaborate on cryptographic cost awareness in
-\sectionref{ccc}.
+\sectionref{impl}).
+
+%% At the expression level, \tool provides secret conditionals  which are implemented using multiplexers, while secret dependent array accesses can also be implemented using the '? :' operator. We elaborate on cryptographic cost awareness in
+%% \sectionref{ccc}.
 
 Using both arithmetic and boolean representations requires conversions between them.
 The \tool compiler also
@@ -174,7 +177,7 @@ easier for a developer to program and get the code right in
 \figureref{ex-aby}.
 % (as we mentioned in Section~\ref{sec:intro},
 %other high-level languages are limited in their use of a single,
-%arithmetic or boolean, crypto back-end). 
+%arithmetic or boolean, crypto backend). 
 \tool also enables the
 programmer to easily modify their code, while the compiler takes care
 of efficiency. For example, consider in \figureref{ex-sml} a

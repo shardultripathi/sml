@@ -39,9 +39,21 @@ Next, we discuss tools that expose libraries which  developers can use to descri
 To generate efficient protocols for a functionality, the programmer must break the functionality into components and call the appropriate library functions. For example,  ABY \cite{aby} falls in this category. The TASTY tool~\cite{tasty} allows mixing homomorphic encryption based arithmetic computations 
 and garbled circuits based boolean computations and the interconversions between the two are inserted by the programmer explicitly.
 % While, the programmer need not know how ABY implements boolean or arithmetic computation, he or she must know the type of compute (boolean or arithmetic) that is more efficient for specific sub-computations and also explicitly write calls to convert shares from one scheme to another (boolean secret sharing to arithmetic secret sharing and vice-versa). 
-The work of Kerschbaum et al.~\cite{autoS} provides a scheme to automatically assign homomorphic encryption or garbled circuits to each operator in a computation that is expressed as a sequence of dyadic operations. They conjecture that the problem is NP hard and gave a linear programming based solution and a quadratic time greedy heuristic. 
-These techniques are not directly applicable to \tool programs because of $\mathtt{for}$-loops and $\mathtt{if}$-conditions.
-However, we are exploring if these ideas can be extended to yield better type inference.
+Kerschbaum et al.~\cite{autoS} provide a scheme to
+automatically assign homomorphic encryption or garbled circuits to
+each operator in a computation. They conjecture that the problem is NP
+hard and gave a linear programming based solution and a quadratic time
+greedy heuristic. However they operate over circuits represented as a
+sequence of dyadic operations, while \tool provides a high-level
+programming language with loops and branches. \tool compilation is
+automatic and sub-quadratic in the size of generated ABY programs
+(e.g. \figureref{ex-aby}) after switching off memory safety
+checking. In sharp contrast, \cite{autoS} describes approaches that
+would be doubly exponential and exponential in the length of ABY
+programs. As a result, these techniques are not directly applicable to
+\tool. However, we are exploring if these ideas can be extended to
+yield better type inference.
+
 %Their performance is much poorer than ABY due to the high 
 %costs associated with homomorphic encryption~\cite{aby}.
 %conversion costs between homomorphic encryption and boolean shares~\cite{aby}.  %On the other hand \tool uses a simpler constant time heuristic to assign arithmetic secret sharing or garbled circuits to sub-computations in a richer language with control flow statements such as loops and branches.
