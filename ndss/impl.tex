@@ -49,7 +49,7 @@ in \tool.
 
 We use an off-the-shelf solver
 (SeaHorn~\cite{seahorn}) to check that the array indices
-are within bounds ($\models e < n$
+are within bounds ($\Gamma \models e < n$
 in ({\sc {T-Read}}) and ({\sc{T-Write}}),
 \figureref{compile}). We take the \tool source program and
 translate it as an input C program to the solver. The solver takes less

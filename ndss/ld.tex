@@ -488,7 +488,7 @@ scheme in our implementation.
                  \Gamma \vdash x : \sigma^{\ell}[n] \leadsto x\\\\
                  \Gamma \vdash e_{1} : \kw{uint}^{\mathcal{P}} \leadsto \widetilde{e_{1}}\\\\
                  \Gamma \vdash e_{2} : \sigma^{\ell} \leadsto \widetilde{e_{2}}\\\\
-                  \models e_{1} < n
+                 \Gamma \models e_{1} < n
                }
                {
                  \Gamma \vdash x[e_{1}] := e_{2} \leadsto x[\widetilde{e_{1}}] := \widetilde{e_{2}} \mid \Gamma
