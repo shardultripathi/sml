@@ -1,6 +1,9 @@
 %\newpage
 
 \section{Description of benchmarks}\label{app:benchmarks}
+
+\subsection{Benchmarks}
+
 We use $[N]$ to denote $\{0,1,\dotsc, N-1\}$. Further, given a vector
 $x\in\R^d$, we say $\mathsf{argmax}\ x = i$ if $x_i =
 \mathsf{max}\ \{x_0,\ldots,x_{d-1}\}$. Finally, if $A$ is
@@ -148,7 +151,7 @@ $-1 < y < 1$ and $\mathrm{sign}(y)$ otherwise.
 %of the path traversed from root to the leaf and not just the leaf
 %itself.
 
-In the following, we implement these classifiers in \tool and report
+We implement these classifiers in \tool and report
 the time taken for making secure predictions. Ideally, the machine
 learning classifiers are mathematical expressions over $\R$ that are
 usually approximated by floating-point operations. 
