@@ -100,7 +100,7 @@ boolean circuits. However, here, the programming interface is quite
 low-level: the programmer is required to first manually split the
 computation into arithmetic and boolean components, and then write the
 circuits for all the components manually, including the appropriate
-inter-conversion gates between them. Clearly, writing correct
+interconversion gates between them. Clearly, writing correct
 and efficient protocols in such a framework is beyond an average
 programmer who does not understand the various trade-offs between
 arithmetic and boolean circuits, and even for an expert cryptographer,
@@ -153,7 +153,7 @@ to~\cite{shafindss,wu,minionn,valeriaMatrix}) for her tasks.
 \subsection{Our Contributions}
 This paper presents \tool\footnote{Read as ``easy peasy'',
 stands for Easy 2 Party Computation.}, the first
-``cryptographic-cost aware'' compiler that generates efficient and
+``cryptographic cost aware'' compiler that generates efficient and
 scalable \mpc protocols using combinations of
 arithmetic and boolean circuits. \tool source language is a simple
 imperative language absent of any cryptographic details. The compiler
@@ -161,7 +161,7 @@ is
 backed by a formal model
 that enables it to choose arithmetic or boolean representations for
 different parts of
-the program, while automatically inserting inter-conversion gates as
+the program, while automatically inserting interconversion gates as
 necessary. In addition to guiding the compiler, the formal model also
 provides strong correctness and
 security theorems. Our comprehensive evaluation shows that the
@@ -186,7 +186,7 @@ the salient features of \tool.
 %% while maintaining provable correctness, security, and
 %% efficiency. \aseem{Provable efficiency? Perhaps provable should
 %% be rescoped. And again, type conversions may not be clear at this
-%% point. I would simply say that EzPC inserts inter-conversion gates
+%% point. I would simply say that EzPC inserts interconversion gates
 %% automatically. It is backed by a formal model and provides
 %% provable correctness and security, and efficiency.}
 
@@ -207,7 +207,7 @@ the salient features of \tool.
 %% while maintaining provable correctness, security, and
 %% efficiency. \aseem{Provable efficiency? Perhaps provable should
 %% be rescoped. And again, type conversions may not be clear at this
-%% point. I would simply say that EzPC inserts inter-conversion gates
+%% point. I would simply say that EzPC inserts interconversion gates
 %% automatically. It is backed by a formal model and provides
 %% provable correctness and security, and efficiency.}
 %% The automatically generated protocols have performance comparable to
@@ -263,7 +263,7 @@ is easy to maintain and modify the programs. Needless to say,
 frameworks that expose low-level circuit APIs to the programmer do not
 enjoy these benefits.
 
-\subsubsection{Cryptographic-cost aware compiler} The \tool compiler
+\subsubsection{Cryptographic cost aware compiler} The \tool compiler
 compiles a source program to a hybrid computation consisting
 of \emph{public} and \emph{secret} parts. In the example above, for
 instance, \tool compiler realizes that the array index~\ls{i} is
@@ -274,11 +274,11 @@ of the cryptographic costs of arithmetic and boolean representations
 of the source language operators. Based on these costs, the compiler
 automatically picks arithmetic or boolean
 representations for different sub-parts, and generates the
-corresponding circuits along with the required inter-conversion
+corresponding circuits along with the required interconversion
 gates. The outcome is an efficient \mpc protocol combining arithmetic
 and boolean circuits, while the programmer remains
 oblivious of all these cryptographic details. Indeed, \tool is the
-first such cryptographic-cost aware compiler.
+first such cryptographic cost aware compiler.
 
 \subsubsection{Scalability (secure code partitioning)} \mpc tools
 often do not scale to large functionalities. The reason is that
@@ -286,7 +286,7 @@ most \mpc implementations use a circuit-like representation as an
 intermediate language. Hence, the largest compute that can be done
 securely is upper-bounded by the largest circuit that can fit in the
 machine memory\footnote{Using swap and
-disk space is feasible but it causes huge slowdown ~\figureref{partitioning}).}. This is a
+disk space is feasible but it causes huge slowdown (\figureref{partitioning}).}. This is a
 show-stopper for applications like secure machine learning, secure
 prediction, etc. that operate on large data.
 %\aseem{Can we
@@ -325,7 +325,7 @@ successfully terminate
 observable outputs. For
 the security theorem, we formally reduce the security
 of our scheme against semi-honest (or ``honest but curious")
-adversaries to the semi honest security of the  \mpc backend. The
+adversaries to the semi-honest security of the  \mpc backend. The
 theorem provides protection against side-channels arising from
 conditionals and memory access patterns.
  We also prove a formal security theorem against semi-honest
@@ -348,7 +348,7 @@ implementation of \bonsai~\cite{bonsai}, and it was programmed in the
 high-level \tool source language by a non-cryptographer. Second, the
 performance
 of the protocols
-generated by \tool are comparable to or better than (up to 19x) their state-of-the-art, hand-crafted implementations. Finally, we
+generated by \tool is comparable to or better than (up to 19x) their state-of-the-art, hand-crafted implementations. Finally, we
 demonstrate the usefulness of partitioning by implementing an application
 that requires more than 300 million gates (\sectionref{impl} and~\sectionref{eval}).
 
