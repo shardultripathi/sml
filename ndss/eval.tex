@@ -450,7 +450,8 @@ All layers are identical and partitioning places each layer in a separate stage.
 For DNNs with up to 4  layers, the performance, with and without partitioning, is almost identical and the lines overlap, thereby
 illustrating that partitioning does not cause any noticeable performance overheads.
 Memory issues start showing up in the non-partitioned implementation of the 5 layer DNN and it is slower.
-Performance degrades rapidly thereafter and
+In particular, the circuit for this DNN does not fit in RAM and uses swap space.
+Performance degrades rapidly thereafter: executing the 5 layer DNN and half operations of the sixth layer incurs a 2x slowdown.
 DNNs with 6 or more layers fail to execute (terminate with a ``bus error").
 However, the partitioned implementation scales well to even these large DNNs.
 
