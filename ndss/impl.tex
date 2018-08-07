@@ -108,8 +108,9 @@ and we describe a heuristic analysis.
 To build $s_1$, we consider the longest
 prefix of $s$ whose computation {\it size} is below the threshold enforced by the available memory of the machine.
 If $\prog = \prog_1; \prog_r$ then we recurse on $\prog_r$ to obtain $\prog_2,\ldots,\prog_k$.
-For a program $\mprog$, to estimate ${\it size}(\mprog)$, we need to discuss three important cases: if $\mprog\equiv\mprog_1;\mprog_2$
-then ${\it size}(\mprog)={\it size}(\mprog_1)+{\it size}(\mprog_2)$; if $\mprog\equiv\ite{e_1}{\mprog_1}{\mprog_2}$ then ${\it size}(\mprog)=\max({\it size}(\mprog_1),{\it size}(\mprog_2))$; if $s\equiv\forl{i}{n_1}{n_2}{\mprog_1}$ then
+For a program $\mprog$, to estimate ${\it size}(\mprog)$, we need to
+consider three important cases: if $\mprog\equiv\mprog_1;\mprog_2$
+then ${\it size}(\mprog)={\it size}(\mprog_1)+{\it size}(\mprog_2)$; if $\mprog\equiv\ite{e_1}{\mprog_1}{\mprog_2}$ then ${\it size}(\mprog)=\max({\it size}(\mprog_1),{\it size}(\mprog_2))$;if $\mprog\equiv\forl{i}{n_1}{n_2}{\mprog_1}$ then
 ${\it size}(\mprog)=(n_2-n_1){\it size}(\mprog_1)$. If $(n_2-n_1){\it size}(\mprog_1)$ is above the threshold then
 we replace $\mprog$ by 
 \[\forl{i}{n_1}{\frac{n_1+n_2}{2}}{\mprog_1}; \forl{i}{\frac{n_1+n_2}{2}}{n_2}{\mprog_1}\]
