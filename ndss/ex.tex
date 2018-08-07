@@ -55,7 +55,7 @@ Therefore, it compiles the \ls{for}~loop into a C++
 (line~\ref{line:dotproductloop}).
 
 Within the secret components, the \tool compiler is ``cryptographic
-cost-aware'', and appropriately picks either arithmetic or boolean
+cost aware'', and appropriately picks either arithmetic or boolean
 circuit representations for different sub-components. For example,
 the compiler realizes that the inner product computation is more
 efficient in the arithmetic representation, and therefore it builds
@@ -213,10 +213,10 @@ sophisticated ML applications such as neural networks in ABY is a very
 tedious and nearly-impossible engineering task even for crypto experts
 -- automating the same is our main contribution.
 
-%% \subsection{Cryptographic cost-aware compiler}
+%% \subsection{Cryptographic cost aware compiler}
 %% \label{sec:ccc}
 %% One of the main challenges for our compiler is to split the compute between arithmetic and boolean parts well. 
-%% As mentioned above, \tool is a cryptographic cost-aware compiler and uses the arithmetic and boolean costs of primitive operators and the inter-conversion costs to make the split. Cryptographic cost of converting an arithmetic share to a boolean share requires computing a garbled circuit for addition that is linear in size. Similarly, the cost of converting from boolean to arithmetic is computing a subtraction circuit inside garbled circuit that is again linear in size. ABY analyses all of these costs by running microbenchmarks for basic operations and interconversions (see Figures 2 and 3 in \cite{aby}). Based on these costs, our compiler has some hard constraints. For example, multiplication should always be performed in arithmetic circuit as the cost of boolean multiplication is much higher than  the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean ($\sim9x$ more time $\&$ $\sim20x$ more communication in a LAN setting). Since the performance gap between arithmetic and boolean multiplication is quite large, we believe that this choice is optimal for realistic network settings.
+%% As mentioned above, \tool is a cryptographic cost aware compiler and uses the arithmetic and boolean costs of primitive operators and the inter-conversion costs to make the split. Cryptographic cost of converting an arithmetic share to a boolean share requires computing a garbled circuit for addition that is linear in size. Similarly, the cost of converting from boolean to arithmetic is computing a subtraction circuit inside garbled circuit that is again linear in size. ABY analyses all of these costs by running microbenchmarks for basic operations and interconversions (see Figures 2 and 3 in \cite{aby}). Based on these costs, our compiler has some hard constraints. For example, multiplication should always be performed in arithmetic circuit as the cost of boolean multiplication is much higher than  the cost of coercing from boolean to arithmetic, performing an arithmetic multiplication, and then coercing from arithmetic to boolean ($\sim9x$ more time $\&$ $\sim20x$ more communication in a LAN setting). Since the performance gap between arithmetic and boolean multiplication is quite large, we believe that this choice is optimal for realistic network settings.
 %% However, this is not the case for addition. In \tool, if both the operands of addition are boolean shared, we do the addition using boolean circuit, else we use arithmetic circuit. Hence, addition may be done in arithmetic or boolean depending on the operands. 
 %% Finally, all the boolean operations such as comparison, shifts, multiplexors, etc are done using Yao.
 %% We note that doing an optimal split between arithmetic and boolean is an NP-hard problem and in this work, we use heuristics based on costs observed using microbenchmarking. 
